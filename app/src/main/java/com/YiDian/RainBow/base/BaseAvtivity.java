@@ -39,7 +39,6 @@ public abstract class BaseAvtivity<P extends BasePresenter> extends AppCompatAct
     private P presenter;
     private Unbinder bind;
     Dialog mLoadingDialog;
-    private LatitudeandlongitudeBean latitudeandlongitudeBean;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

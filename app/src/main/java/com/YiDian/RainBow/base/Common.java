@@ -6,7 +6,7 @@ import android.graphics.Color;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.LianXiangKeJi.SupplyChain.utils.SPUtil;
+import com.YiDian.RainBow.utils.SPUtil;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;

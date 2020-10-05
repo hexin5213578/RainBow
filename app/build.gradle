@@ -6,8 +6,8 @@ android {
 
     defaultConfig {
         applicationId "com.YiDian.RainBow"
-        minSdkVersion 30
-        targetSdkVersion 30
+        minSdkVersion 28
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
 
@@ -19,6 +19,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions{
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -39,6 +43,8 @@ dependencies {
     implementation 'com.amap.api:search:latest.integration'
     //fresco图片加载
     implementation 'com.facebook.fresco:fresco:1.12.1'
+    //侧滑
+    implementation 'com.github.mcxtzhang:ZLayoutManager:V1.1.0'
 
     //头条适配依赖
     implementation 'me.jessyan:autosize:1.2.1'
