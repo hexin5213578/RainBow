@@ -29,5 +29,74 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    // 引入multidex库
+    implementation 'com.android.support:multidex:1.0.3'
+    //3D地图so及jar
+    implementation 'com.amap.api:3dmap:latest.integration'
+    //定位功能
+    implementation 'com.amap.api:location:latest.integration'
+    //搜索功能
+    implementation 'com.amap.api:search:latest.integration'
+    //fresco图片加载
+    implementation 'com.facebook.fresco:fresco:1.12.1'
+
+    //头条适配依赖
+    implementation 'me.jessyan:autosize:1.2.1'
+
+    //相册获取依赖
+    //implementation 'com.github.wildma:PictureSelector:2.1.0'
+
+    //eventBus依赖
+    implementation 'org.greenrobot:eventbus:3.0.0'
+    //butterknife依赖
+    implementation 'com.jakewharton:butterknife:10.2.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+
+    //ok依赖
+    implementation 'com.squareup.okhttp3:okhttp:3.2.0'
+
+    //ok 日志的拦截器
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.0'
+
+    //Gson依赖
+    implementation 'com.google.code.gson:gson:2.4'
+
+    //recyclerview依赖
+
+    implementation 'com.android.support:recyclerview-v7:30.0.0'
+
+    //TabLayout的依赖
+    implementation 'com.android.support:design:30.0.0'
+
+    //Glide图片依赖
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
+
+    //Xbanner依赖
+
+    //上拉刷新下拉加载
+    implementation 'com.liaoinstan.springview:library:1.2.6'
+
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'//导入retrofit
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    implementation 'io.reactivex.rxjava2:rxjava:2.x.y'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'//转换器，请求结果转换成Model
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'//配合Rxjava 使用
+
+    implementation 'com.bigkoo:pickerview:2.1.0'
+
+    //微信支付
+    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
+
+    //关联图片选择器模块
+
+    // 支付宝支付
+
+    //bugly更新
+    implementation 'com.tencent.bugly:crashreport_upgrade:latest.release'//其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
+    implementation 'com.tencent.bugly:nativecrashreport:latest.release' //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
+
+    //异常上报
+    //implementation 'com.tencent.bugly:crashreport:latest.release' //其中latest.release指代最新Bugly SDK版本号，也可以指定明确的版本号，例如2.1.9
 
 }
