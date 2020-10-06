@@ -2,10 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.YiDian.RainBow">
-    <!--允许应用程序改变网络状态-->
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
-    <!--允许应用程序改变WIFI连接状态-->
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <!-- 允许应用程序改变网络状态 -->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> <!-- 允许应用程序改变WIFI连接状态 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -25,34 +24,38 @@
         android:value="360" />
     <meta-data
         android:name="design_height_in_dp"
-        android:value="640" />
-
-    <!-- 适配小米刘海屏 -->
+        android:value="640" /> <!-- 适配小米刘海屏 -->
     <meta-data
         android:name="notch.config"
-        android:value="portrait" />
-    <!-- 适配华为刘海屏 -->
+        android:value="portrait" /> <!-- 适配华为刘海屏 -->
     <meta-data
         android:name="android.notch_support"
         android:value="true" />
 
-
     <application
+        android:name=".base.App"
         android:allowBackup="true"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:name=".base.App"
-        android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/AppTheme">
-        <activity android:name=".welcome.MainActivity">
+        <activity android:name=".welcome.WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".main.activity.MainActivity" />
+        <activity android:name=".regist.activity.RegistActivity" />
+        <activity android:name=".login.activity.LoginActivity" />
+        <activity android:name=".setpwd.activity.SetPwdActivity" />
+        <activity android:name=".remember.activity.RememberPwdActivity" />
+        <activity android:name=".login.activity.CompleteMsgActivity" />
+        <activity android:name=".feedback.FeedBackActivity" />
     </application>
 
 </manifest>

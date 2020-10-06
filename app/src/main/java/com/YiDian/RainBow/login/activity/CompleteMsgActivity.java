@@ -1,0 +1,135 @@
+package com.YiDian.RainBow.login.activity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+
+import com.YiDian.RainBow.R;
+import com.YiDian.RainBow.base.BaseAvtivity;
+import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.custom.RadioGroupEx;
+import com.YiDian.RainBow.main.activity.MainActivity;
+import com.YiDian.RainBow.utils.BasisTimesUtils;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
+import com.wildma.pictureselector.PictureBean;
+import com.wildma.pictureselector.PictureSelectActivity;
+import com.wildma.pictureselector.PictureSelector;
+
+import java.io.File;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickListener {
+    @BindView(R.id.tv_jump_main)
+    TextView tvJumpMain;
+    @BindView(R.id.iv_headimg)
+    ImageView ivHeadimg;
+    @BindView(R.id.et_name)
+    EditText etName;
+    @BindView(R.id.tv_birth)
+    TextView tvBirth;
+    @BindView(R.id.rb1)
+    RadioButton rb1;
+    @BindView(R.id.rb2)
+    RadioButton rb2;
+    @BindView(R.id.rb3)
+    RadioButton rb3;
+    @BindView(R.id.rb4)
+    RadioButton rb4;
+    @BindView(R.id.rb5)
+    RadioButton rb5;
+    @BindView(R.id.rg)
+    RadioGroupEx rg;
+    @BindView(R.id.bt_confirm)
+    Button btconfirm;
+    String str = "";
+    @Override
+    protected int getResId() {
+        return R.layout.activity_complete_msg;
+    }
+
+    @Override
+    protected void getData() {
+        Glide.with(CompleteMsgActivity.this).load(R.mipmap.headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+        tvBirth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BasisTimesUtils.showDatePickerDialog(CompleteMsgActivity.this, "请选择年月日", 2015, 1, 1, new BasisTimesUtils.OnDatePickerListener() {
+                    @Override
+                    public void onConfirm(int year, int month, int dayOfMonth) {
+                        tvBirth.setText(year + "-" + month + "-" + dayOfMonth);
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+                });
+            }
+        });
+        tvJumpMain.setOnClickListener(this);
+        btconfirm.setOnClickListener(this);
+        ivHeadimg.setOnClickListener(this);
+    }
+
+    @Override
+    protected BasePresenter initPresenter() {
+        return null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.iv_headimg:
+                PictureSelector.create(CompleteMsgActivity.this, PictureSelector.SELECT_REQUEST_CODE).selectPicture(true,300,300,0,0);
+                break;
+            case R.id.tv_jump_main:
+                startActivity(new Intent(CompleteMsgActivity.this, MainActivity.class));
+                break;
+            case R.id.bt_confirm:
+                //判断选中的选项
+                if(rb1.isChecked()){
+                    str= rb1.getText().toString();
+                }
+                if(rb2.isChecked()){
+                    str= rb2.getText().toString();
+                }
+                if(rb3.isChecked()){
+                    str= rb3.getText().toString();
+                }
+                if(rb4.isChecked()){
+                    str= rb4.getText().toString();
+                }
+                if(rb5.isChecked()){
+                    str= rb5.getText().toString();
+                }
+                Toast.makeText(this, ""+str, Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode==RESULT_OK&&requestCode==PictureSelector.SELECT_REQUEST_CODE){
+            if (data != null) {
+                PictureBean bean = data.getParcelableExtra(PictureSelector.PICTURE_RESULT);
+                String stringExtra = bean.getPath();
+                File file = new File(stringExtra);
+
+                //将选择的图片进行展示
+                Glide.with(CompleteMsgActivity.this).load(stringExtra).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+            }
+        }
+    }
+}

@@ -4,20 +4,46 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
+    signingConfigs {
+        release {
+            storeFile file("rainbow.jks")
+            storePassword "caihong"
+            keyAlias "key0"
+            keyPassword "caihong"
+        }
+        debug {
+            storeFile file("rainbow.jks")
+            storePassword "caihong"
+            keyAlias "key0"
+            keyPassword "caihong"
+        }
+
+
+    }
     defaultConfig {
         applicationId "com.YiDian.RainBow"
         minSdkVersion 28
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
+            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "x86","x86_64"
+        }
     }
 
     buildTypes {
         release {
+            debuggable true
             minifyEnabled false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug{
+            debuggable true
+            minifyEnabled false  //不启用Proguard
+            signingConfig signingConfigs.debug
         }
     }
     compileOptions{
@@ -44,7 +70,7 @@ dependencies {
     //fresco图片加载
     implementation 'com.facebook.fresco:fresco:1.12.1'
     //侧滑
-    implementation 'com.github.mcxtzhang:ZLayoutManager:V1.1.0'
+    compile(name:'android-card-stack-0.1.6', ext:'aar')
 
     //头条适配依赖
     implementation 'me.jessyan:autosize:1.2.1'
@@ -95,7 +121,7 @@ dependencies {
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
 
     //关联图片选择器模块
-
+    implementation project(':pictureselector')
     // 支付宝支付
 
     //bugly更新

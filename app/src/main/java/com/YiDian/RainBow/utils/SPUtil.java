@@ -28,33 +28,13 @@ import java.util.Set;
  * @Author: hmy
  */
 public class SPUtil {
-    /**
-     * id : 85b002a2-da0b-4a07-9005-6b4438b95c422913
-     * username : 群福超市
-     * password : hexin521
-     * phone : 15652578310
-     * token : eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijg1YjAwMmEyLWRhMGItNGEwNy05MDA1LTZiNDQzOGI5NWM0MjI5MTMiLCJwYXNzd29yZCI6ImhleGluNTIxIiwicGhvbmUiOiIxNTY1MjU3ODMxMCIsInVzZXJuYW1lIjoi576k56aP6LaF5biCIn0.kH0SpmazC1_doewQmSaMH2c5z3HQq4FLd8PC_bU-IHkVTsQMXTQMvTt6HKXRPz4o6lQdt3FfbC_K_bcdvUk-1h3l4ZqNUMUcu2H-glKhkSlo88aofrPmgDZSOfpBcQPrQ9Ob7BThhzSekaBCXYI4nvSlNXbPYqtT_dNUTxhJm9FtJh8AhaiuGkLO7NUuYGK1HGs0jM7BJJqKnN_9XeKC_VjT3kn8eHyyeL0oZ_26cIZI91x8qm0RPbr7jElnLBtTGWC97YsBaWC5vQ4wV9i1-sn1Cwj36KPhD1yGMTQ1Ru6sSjBAfsG3Y_Qs7wSWiQqoKENVcMF3pF60ufvm-D_lFg
-     * headUrl : 123
-     * doorUrl : http://47.114.1.170/lianxiangguanwang/pics/c304ecb7-3894-4043-a3b8-67822ddb46a16095.jpg
-     * licenseUrl : http://47.114.1.170/lianxiangguanwang/pics/6860b6ba-0ccc-408e-b3d4-2375bbe93fd98068.jpg
-     * setTime : 2020-07-29T03:31:03.000+0000
-     * checkStatus : 1
-     * code : 2849
-     */
-
-
 
     public static final String FILE_NAME = "userInfo";
     public static final String KEY_TOKEN = "token";
-    public static final String LATITUDE = "latitude";
-    public static final String LONGITUDE = "longitude";
     public static final String USER_NAME = "username";
-    public static final String HEAD_URL = "hearurl";
-    public static final String CHECK_STATUS = "checkstatus";
-    public static final String KEY_ID = "id";
-    public static final String KEY_ADDRESS = "address";
-    public static final String KEY_SCOPE = "scope";
     public static final String KEY_PHONE = "phone";
+    public static final String HEAD_URL = "hearurl";
+    public static final String USER_ID = "id";
 
 
     public static final String FILE_NAME_GOODS = "goodsId";
