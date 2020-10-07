@@ -9,7 +9,23 @@
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
 
+    <color name="fafafa"> #FAFAFA</color>
+
+    <color name="eaeaea"> #EAEAEA</color>
     <color name="main_select_TextColor">#3062C8</color>
     <color name="main_notSelect_TextColor">#000000</color>
+
+    <color name="home_select_TextColor">#3A005A</color>
+
+    <color name="home_notSelect_TextColor">#9A9A9A</color>
+
+
+    <color name="find_select_TextColor">#FFFFFF</color>
+
+    <color name="find_notSelect_Color">#946AE4</color>
+
+    <color name="start">#8868E7</color>
+    <color name="end">#C476DA</color>
+
 
 </resources>

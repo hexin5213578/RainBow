@@ -94,7 +94,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.4'
 
     //recyclerview依赖
-
     implementation 'com.android.support:recyclerview-v7:30.0.0'
 
     //TabLayout的依赖
@@ -103,6 +102,9 @@ dependencies {
     //Glide图片依赖
     implementation 'com.github.bumptech.glide:glide:4.7.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
+
+    //状态栏工具类
+    implementation 'com.github.Ye-Miao:StatusBarUtil:1.7.5'
 
     //Xbanner依赖
 
@@ -121,7 +123,7 @@ dependencies {
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
 
     //关联图片选择器模块
-    implementation project(':pictureselector')
+    implementation project(':image_select')
     // 支付宝支付
 
     //bugly更新

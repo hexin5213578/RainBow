@@ -1,7 +1,7 @@
 package com.YiDian.RainBow.login.activity;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,20 +15,18 @@ import androidx.annotation.Nullable;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
-import com.YiDian.RainBow.custom.RadioGroupEx;
+import com.YiDian.RainBow.custom.customradio.RadioGroupEx;
 import com.YiDian.RainBow.main.activity.MainActivity;
 import com.YiDian.RainBow.utils.BasisTimesUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
-import com.wildma.pictureselector.PictureBean;
-import com.wildma.pictureselector.PictureSelectActivity;
-import com.wildma.pictureselector.PictureSelector;
 
-import java.io.File;
+import org.lym.image.select.PictureSelector;
+
+import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickListener {
     @BindView(R.id.tv_jump_main)
@@ -70,7 +68,6 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
                     public void onConfirm(int year, int month, int dayOfMonth) {
                         tvBirth.setText(year + "-" + month + "-" + dayOfMonth);
                     }
-
                     @Override
                     public void onCancel() {
 
@@ -92,7 +89,17 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.iv_headimg:
-                PictureSelector.create(CompleteMsgActivity.this, PictureSelector.SELECT_REQUEST_CODE).selectPicture(true,300,300,0,0);
+                PictureSelector
+                        .with(this)
+                        .selectSpec()
+                        .setOpenCamera()
+                        .needCrop()
+                        .setOutputX(200)
+                        .setOutputY(200)
+                        //开启拍照功能一定得设置该属性，为了兼容Android7.0相机拍照问题
+                        //在manifest文件中也需要注册该provider
+                        .setAuthority("com.YiDian.RainBow.utils.MyFileProvider")
+                        .startForResult(100);
                 break;
             case R.id.tv_jump_main:
                 startActivity(new Intent(CompleteMsgActivity.this, MainActivity.class));
@@ -121,14 +128,12 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode==RESULT_OK&&requestCode==PictureSelector.SELECT_REQUEST_CODE){
-            if (data != null) {
-                PictureBean bean = data.getParcelableExtra(PictureSelector.PICTURE_RESULT);
-                String stringExtra = bean.getPath();
-                File file = new File(stringExtra);
-
-                //将选择的图片进行展示
-                Glide.with(CompleteMsgActivity.this).load(stringExtra).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+        if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
+            if (null != data) {
+                //图片单选和多选数据都是以ArrayList的字符串数组返回的。
+                List<String> paths = PictureSelector.obtainPathResult(data);
+                String s = paths.get(0);
+                Glide.with(CompleteMsgActivity.this).load(s).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
             }
         }
     }

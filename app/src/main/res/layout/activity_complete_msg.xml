@@ -25,15 +25,16 @@
             android:layout_height="@dimen/dp_20">
         </TextView>
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_30"
             android:text="跳过"
             android:id="@+id/tv_jump_main"
+            android:gravity="center"
             android:layout_alignParentRight="true"
             android:textSize="@dimen/sp_14"
             android:textColor="@color/white"
-            android:layout_marginTop="@dimen/dp_28"
+            android:layout_marginTop="@dimen/dp_20"
             android:layout_marginRight="@dimen/dp_15"
-            android:layout_height="wrap_content">
+            android:layout_height="@dimen/dp_30">
         </TextView>
     </RelativeLayout>
     <ImageView
@@ -71,6 +72,7 @@
         android:layout_below="@id/rl1"
         android:background="@null"
         android:hint="偏爱"
+        android:textColor="#9A9A9A"
         android:id="@+id/et_name"
         android:textSize="@dimen/sp_14"
         android:layout_marginTop="@dimen/dp_96"
@@ -132,7 +134,7 @@
         android:layout_marginLeft="@dimen/dp_58"
         android:layout_height="wrap_content">
     </TextView>
-    <com.YiDian.RainBow.custom.RadioGroupEx
+    <com.YiDian.RainBow.custom.customradio.RadioGroupEx
         android:layout_width="match_parent"
         android:layout_below="@id/person"
         android:orientation="horizontal"
@@ -190,7 +192,7 @@
             android:layout_height="@dimen/dp_19"
             android:text="保密"
             ></RadioButton>
-    </com.YiDian.RainBow.custom.RadioGroupEx>
+    </com.YiDian.RainBow.custom.customradio.RadioGroupEx>
     <Button
         android:layout_width="@dimen/dp_180"
         android:layout_below="@id/rg"

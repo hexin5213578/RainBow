@@ -2,7 +2,6 @@ package com.YiDian.RainBow.remember.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -16,8 +15,7 @@ import android.widget.TextView;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
-import com.YiDian.RainBow.feedback.FeedBackActivity;
-import com.YiDian.RainBow.setpwd.activity.SetPwdActivity;
+import com.YiDian.RainBow.feedback.activity.FeedBackActivity;
 
 import butterknife.BindView;
 

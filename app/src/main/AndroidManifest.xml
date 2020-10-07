@@ -41,6 +41,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.YiDian.RainBow.utils.MyFileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/external_path"/>
+        </provider>
+
+
         <activity android:name=".welcome.WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -55,7 +66,7 @@
         <activity android:name=".setpwd.activity.SetPwdActivity" />
         <activity android:name=".remember.activity.RememberPwdActivity" />
         <activity android:name=".login.activity.CompleteMsgActivity" />
-        <activity android:name=".feedback.FeedBackActivity" />
+        <activity android:name=".feedback.activity.FeedBackActivity" />
     </application>
 
 </manifest>

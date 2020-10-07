@@ -2,8 +2,6 @@ package com.YiDian.RainBow.setpwd.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Bundle;
-import android.text.InputType;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.MotionEvent;
@@ -17,13 +15,10 @@ import android.widget.Toast;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
-import com.YiDian.RainBow.feedback.FeedBackActivity;
+import com.YiDian.RainBow.feedback.activity.FeedBackActivity;
 import com.YiDian.RainBow.login.activity.CompleteMsgActivity;
-import com.YiDian.RainBow.main.activity.MainActivity;
-import com.YiDian.RainBow.regist.activity.RegistActivity;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 
 public class SetPwdActivity extends BaseAvtivity implements View.OnClickListener {

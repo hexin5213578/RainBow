@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
-import com.YiDian.RainBow.feedback.FeedBackActivity;
+import com.YiDian.RainBow.feedback.activity.FeedBackActivity;
 import com.YiDian.RainBow.regist.activity.RegistActivity;
 import com.YiDian.RainBow.remember.activity.RememberPwdActivity;
 

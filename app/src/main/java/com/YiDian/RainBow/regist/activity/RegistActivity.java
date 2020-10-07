@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
-import com.YiDian.RainBow.feedback.FeedBackActivity;
+import com.YiDian.RainBow.feedback.activity.FeedBackActivity;
 import com.YiDian.RainBow.setpwd.activity.SetPwdActivity;
 
 import butterknife.BindView;

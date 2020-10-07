@@ -3,6 +3,7 @@ package com.YiDian.RainBow.main.activity;
 import android.annotation.SuppressLint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -10,8 +11,10 @@ import android.view.KeyEvent;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -19,11 +22,12 @@ import androidx.fragment.app.FragmentTransaction;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.main.fragment.FragmentFind;
 import com.YiDian.RainBow.main.fragment.FragmentHome;
 import com.YiDian.RainBow.main.fragment.FragmentIM;
-import com.YiDian.RainBow.main.fragment.FragmentFind;
 import com.YiDian.RainBow.main.fragment.FragmentMine;
-import com.YiDian.RainBow.main.fragment.FragmentNews;
+import com.YiDian.RainBow.main.fragment.FragmentMsg;
+import com.leaf.library.StatusBarUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,6 +49,9 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     @BindView(R.id.rgMenu)
     RadioGroup rgMenu;
     RadioButton[] rbs = new RadioButton[5];
+    @BindView(R.id.rl_main)
+    RelativeLayout rlMain;
+
     private FragmentManager fmManager;
 
     /**
@@ -62,7 +69,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     private FragmentHome fragmentHome;
     private FragmentIM fragmentIM;
     private FragmentFind fragmentfind;
-    private FragmentNews fragmentNews;
+    private FragmentMsg fragmentMsg;
     private FragmentMine fragmentmine;
 
     @Override
@@ -70,8 +77,11 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
         return R.layout.activity_main;
     }
 
+    @SuppressLint({"UseCompatLoadingForDrawables", "ResourceAsColor"})
     @Override
     protected void getData() {
+        StatusBarUtil.setColor(this,R.color.fafafa);
+
         rbs[0] = rbHome;
         rbs[1] = rbIM;
         rbs[2] = rbFind;
@@ -96,7 +106,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
         fragmentHome = new FragmentHome();
         fragmentIM = new FragmentIM();
         fragmentfind = new FragmentFind();
-        fragmentNews = new FragmentNews();
+        fragmentMsg = new FragmentMsg();
         fragmentmine = new FragmentMine();
         /**
          * 首次进入加载第一个界面
@@ -127,13 +137,6 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
-
-    @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {
             case R.id.rbHome:
@@ -146,7 +149,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
                 replace(fragmentfind);
                 break;
             case R.id.rbMsg:
-                replace(fragmentNews);
+                replace(fragmentMsg);
                 break;
             case R.id.rbMine:
                 replace(fragmentmine);
@@ -155,6 +158,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
                 break;
         }
     }
+
     /**
      * 切换页面显示fragment
      *
@@ -185,35 +189,42 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     }
 
     //定义一个变量，来标识是否退出
-    private static int isExit=0;
+    private static int isExit = 0;
 
     //实现按两次后退才退出
-    Handler handler=new Handler(){
+    Handler handler = new Handler() {
         @SuppressLint("HandlerLeak")
         @Override
-        public void handleMessage(Message msg){
+        public void handleMessage(Message msg) {
             super.handleMessage(msg);
             isExit--;
         }
     };
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event){
-        if(keyCode==KeyEvent.KEYCODE_BACK){
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             isExit++;
             exit();
             return false;
         }
-        return super.onKeyDown(keyCode,event);
+        return super.onKeyDown(keyCode, event);
     }
 
-    private void exit(){
-        if(isExit<2){
+    private void exit() {
+        if (isExit < 2) {
             Toast.makeText(this, "再按一次退出", Toast.LENGTH_SHORT).show();
             //利用handler延迟发送更改状态信息
-            handler.sendEmptyMessageDelayed(0,2000);
-        }else{
+            handler.sendEmptyMessageDelayed(0, 2000);
+        } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }
