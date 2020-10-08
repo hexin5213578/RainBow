@@ -14,15 +14,24 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.YiDian.RainBow.R;
+import com.YiDian.RainBow.base.App;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentAttDynamic;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentHotDynamic;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentNearDynamic;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentNewDynamic;
+import com.YiDian.RainBow.utils.NetUtils;
 import com.leaf.library.StatusBarUtil;
 
+import java.util.List;
+
 import butterknife.BindView;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedChangeListener {
     @BindView(R.id.ll_search)
@@ -43,6 +52,8 @@ public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedCh
     FrameLayout flContent;
 
     RadioButton[] rbs = new RadioButton[4];
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     private FragmentManager fmManager;
 
@@ -78,7 +89,10 @@ public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedCh
     @SuppressLint("ResourceAsColor")
     @Override
     protected void getData() {
+        StatusBarUtil.setGradientColor(getActivity(), toolbar);
 
+
+        StatusBarUtil.setDarkMode(getActivity());
 
         rbs[0] = rbNewDynamic;
         rbs[1] = rbNearDynamic;
@@ -98,6 +112,7 @@ public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedCh
         rbNewDynamic.setChecked(true);
         rbNewDynamic.setTextSize(18);
         rbNewDynamic.setTextAppearance(R.style.txt_bold);
+
 
     }
 

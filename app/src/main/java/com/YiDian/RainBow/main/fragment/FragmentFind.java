@@ -72,11 +72,9 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
 
     @Override
     protected void getData() {
-        //int [] colors = {};
-        //GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, colors);
-        //toolbar.setBackground(gradientDrawable);
-
+        //设置状态栏颜色与字体颜色
         StatusBarUtil.setGradientColor(getActivity(), toolbar);
+        StatusBarUtil.setDarkMode(getActivity());
 
         rbs[0] = rbMatch;
         rbs[1] = rbMeet;

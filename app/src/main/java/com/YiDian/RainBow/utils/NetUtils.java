@@ -1,8 +1,5 @@
 package com.YiDian.RainBow.utils;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -50,12 +47,12 @@ public class NetUtils {
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(10,TimeUnit.SECONDS)
                 .writeTimeout(10,TimeUnit.SECONDS)
-                .addInterceptor(new HeaderInterceptor())
                 .addInterceptor(httpLoggingInterceptor)
+                .addInterceptor(new HeaderInterceptor())
                 .build();
 
         Retrofit.Builder builder = new Retrofit.Builder();
-        Retrofit retrofit = builder.client(build).baseUrl("https://www.luoyanglx.com:8443/lianxiang_app/")
+        Retrofit retrofit = builder.client(build).baseUrl("http://192.168.10.223:8088/")
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -76,7 +73,6 @@ public class NetUtils {
              return chain.proceed(request);
            }
             Request requestNew = request.newBuilder().addHeader("Content-Type","application/json;charset=UTF-8")
-                    .addHeader("token",token)
                     .build();;
 
             return chain.proceed(requestNew);

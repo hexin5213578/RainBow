@@ -12,6 +12,18 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/gsy" />
+            <option value="$PROJECT_DIR$/gsyVideoPlayer" />
+            <option value="$PROJECT_DIR$/gsyVideoPlayer-armv5" />
+            <option value="$PROJECT_DIR$/gsyVideoPlayer-armv64" />
+            <option value="$PROJECT_DIR$/gsyVideoPlayer-armv7a" />
+            <option value="$PROJECT_DIR$/gsyVideoPlayer-base" />
+            <option value="$PROJECT_DIR$/gsyVideoPlayer-ex_so" />
+            <option value="$PROJECT_DIR$/gsyVideoPlayer-exo_player2" />
+            <option value="$PROJECT_DIR$/gsyVideoPlayer-java" />
+            <option value="$PROJECT_DIR$/gsyVideoPlayer-proxy_cache" />
+            <option value="$PROJECT_DIR$/gsyVideoPlayer-x86" />
+            <option value="$PROJECT_DIR$/gsyVideoPlayer-x86_64" />
             <option value="$PROJECT_DIR$/image_select" />
             <option value="$PROJECT_DIR$/library" />
             <option value="$PROJECT_DIR$/pictureselector" />

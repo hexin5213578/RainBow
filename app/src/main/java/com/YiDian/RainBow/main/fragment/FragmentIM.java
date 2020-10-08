@@ -35,6 +35,8 @@ public class FragmentIM extends BaseFragment implements RadioGroup.OnCheckedChan
     @BindView(R.id.flContent)
     FrameLayout flContent;
     RadioButton[] rbs = new RadioButton[2];
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     private FragmentManager fmManager;
 
@@ -68,6 +70,8 @@ public class FragmentIM extends BaseFragment implements RadioGroup.OnCheckedChan
     @Override
     protected void getData() {
 
+        StatusBarUtil.setGradientColor(getActivity(), toolbar);
+        StatusBarUtil.setDarkMode(getActivity());
 
         ivAdd.setOnClickListener(this);
         ivSearch.setOnClickListener(this);

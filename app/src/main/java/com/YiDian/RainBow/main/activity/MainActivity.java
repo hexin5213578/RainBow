@@ -1,19 +1,27 @@
 package com.YiDian.RainBow.main.activity;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.KeyEvent;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.annotation.IntDef;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -27,10 +35,20 @@ import com.YiDian.RainBow.main.fragment.FragmentHome;
 import com.YiDian.RainBow.main.fragment.FragmentIM;
 import com.YiDian.RainBow.main.fragment.FragmentMine;
 import com.YiDian.RainBow.main.fragment.FragmentMsg;
+import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
+import com.YiDian.RainBow.utils.NetUtils;
 import com.leaf.library.StatusBarUtil;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedChangeListener {
 
@@ -51,7 +69,6 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     RadioButton[] rbs = new RadioButton[5];
     @BindView(R.id.rl_main)
     RelativeLayout rlMain;
-
     private FragmentManager fmManager;
 
     /**
@@ -80,7 +97,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     @SuppressLint({"UseCompatLoadingForDrawables", "ResourceAsColor"})
     @Override
     protected void getData() {
-        StatusBarUtil.setColor(this,R.color.fafafa);
+
 
         rbs[0] = rbHome;
         rbs[1] = rbIM;
@@ -227,4 +244,5 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
         // TODO: add setContentView(...) invocation
         ButterKnife.bind(this);
     }
+
 }
