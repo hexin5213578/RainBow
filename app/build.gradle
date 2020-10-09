@@ -71,7 +71,6 @@ dependencies {
     implementation 'com.facebook.fresco:fresco:1.12.1'
     //侧滑
     compile(name:'android-card-stack-0.1.6', ext:'aar')
-
     //头条适配依赖
     implementation 'me.jessyan:autosize:1.2.1'
 
@@ -122,8 +121,10 @@ dependencies {
     //微信支付
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
 
+
     //关联图片选择器模块
     implementation project(':image_select')
+    //implementation project(':picuter_list')
     // 支付宝支付
 
     //bugly更新
@@ -147,4 +148,6 @@ dependencies {
     implementation 'com.shuyu:gsyVideoPlayer-arm64:7.1.6'
     implementation 'com.shuyu:gsyVideoPlayer-x64:7.1.6'
     implementation 'com.shuyu:gsyVideoPlayer-x86:7.1.6'
+
+    implementation  'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
 }

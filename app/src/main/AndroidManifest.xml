@@ -51,22 +51,59 @@
                 android:resource="@xml/external_path"/>
         </provider>
 
-
-        <activity android:name=".welcome.WelcomeActivity">
+        <activity android:name=".welcome.WelcomeActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".main.activity.MainActivity" />
-        <activity android:name=".regist.activity.RegistActivity" />
-        <activity android:name=".login.activity.LoginActivity" />
-        <activity android:name=".setpwd.activity.SetPwdActivity" />
-        <activity android:name=".remember.activity.RememberPwdActivity" />
-        <activity android:name=".login.activity.CompleteMsgActivity" />
-        <activity android:name=".feedback.activity.FeedBackActivity" />
+        <!-- 主页 -->
+        <activity
+            android:name=".main.activity.MainActivity"
+            android:screenOrientation="portrait"
+            />
+        <!-- 注册 -->
+        <activity
+            android:name=".regist.activity.RegistActivity"
+            android:screenOrientation="portrait"
+            />
+        <!-- 登录 -->
+        <activity
+            android:name=".login.activity.LoginActivity"
+            android:screenOrientation="portrait"
+            />
+        <!-- 设置密码 -->
+        <activity
+            android:name=".setpwd.activity.SetPwdActivity"
+            android:screenOrientation="portrait"
+            />
+        <!-- 忘记密码 -->
+        <activity
+            android:name=".remember.activity.RememberPwdActivity"
+            android:screenOrientation="portrait"
+            />
+        <!-- 完善资料 -->
+        <activity
+            android:name=".login.activity.CompleteMsgActivity"
+            android:screenOrientation="portrait"
+            />
+        <!-- 问题反馈 -->
+        <activity
+            android:name=".feedback.activity.FeedBackActivity"
+            android:screenOrientation="portrait"
+            />
+        <!-- 直接播放 -->
+        <activity
+            android:name=".main.fragment.activity.SimplePlayerActivity"
+            android:screenOrientation="portrait" />
+        <!-- 直接播放 -->
+        <activity
+            android:name=".main.fragment.home.activity.NewDynamicImage"
+            android:screenOrientation="portrait"
+            >
+        </activity>
     </application>
 
 </manifest>

@@ -1,3 +1,5 @@
+include ':picuter_list'
+include ':image'
 include ':gsy'
 include ':gsyVideoPlayer-base'
 include ':gsyVideoPlayer-proxy_cache'

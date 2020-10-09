@@ -24,9 +24,11 @@
             <option value="$PROJECT_DIR$/gsyVideoPlayer-proxy_cache" />
             <option value="$PROJECT_DIR$/gsyVideoPlayer-x86" />
             <option value="$PROJECT_DIR$/gsyVideoPlayer-x86_64" />
+            <option value="$PROJECT_DIR$/image" />
             <option value="$PROJECT_DIR$/image_select" />
             <option value="$PROJECT_DIR$/library" />
             <option value="$PROJECT_DIR$/pictureselector" />
+            <option value="$PROJECT_DIR$/picuter_list" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

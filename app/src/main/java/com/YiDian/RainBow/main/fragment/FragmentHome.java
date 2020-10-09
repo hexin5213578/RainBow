@@ -24,6 +24,7 @@ import com.YiDian.RainBow.main.fragment.home.fragment.FragmentNearDynamic;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentNewDynamic;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.leaf.library.StatusBarUtil;
+import com.shuyu.gsyvideoplayer.GSYVideoManager;
 
 import java.util.List;
 
@@ -208,5 +209,30 @@ public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedCh
         }
         transaction.commitAllowingStateLoss();
         currentFragment = to;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        GSYVideoManager.onPause();
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        GSYVideoManager.releaseAllVideos();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        GSYVideoManager.onResume();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        GSYVideoManager.releaseAllVideos();
     }
 }

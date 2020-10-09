@@ -3,6 +3,7 @@ package com.YiDian.RainBow.main.activity;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -35,9 +36,17 @@ import com.YiDian.RainBow.main.fragment.FragmentHome;
 import com.YiDian.RainBow.main.fragment.FragmentIM;
 import com.YiDian.RainBow.main.fragment.FragmentMine;
 import com.YiDian.RainBow.main.fragment.FragmentMsg;
+import com.YiDian.RainBow.main.fragment.home.activity.NewDynamicImage;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.leaf.library.StatusBarUtil;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.shuyu.gsyvideoplayer.GSYVideoManager;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -98,7 +107,6 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     @Override
     protected void getData() {
 
-
         rbs[0] = rbHome;
         rbs[1] = rbIM;
         rbs[2] = rbFind;
@@ -133,21 +141,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
 
     }
 
-    /*    @Override
-        protected void onResume() {
-            super.onResume();
-            if(!EventBus.getDefault().isRegistered(this)){
-                EventBus.getDefault().register(this);
-            }
-        }
 
-        @Override
-        protected void onDestroy() {
-            super.onDestroy();
-            if(EventBus.getDefault().isRegistered(this)){
-                EventBus.getDefault().unregister(this);
-            }
-        }*/
     @Override
     protected BasePresenter initPresenter() {
         return null;
@@ -239,10 +233,32 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
+    public void onBackPressed() {
+        if (GSYVideoManager.backFromWindowFull(this)) {
+            return;
+        }
+        super.onBackPressed();
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        GSYVideoManager.onPause();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        GSYVideoManager.onResume(false);
+        /*if(!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }*/
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        GSYVideoManager.releaseAllVideos();
+       /*   if(EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }*/
+    }
 }

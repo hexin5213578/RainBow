@@ -7,7 +7,7 @@ public class NewDynamicBean {
     /**
      * msg : getContentsByTime
      * type : OK
-     * object : {"total":3,"list":[{"id":15,"userId":101,"contentInfo":"从大V那个iwerhgwerfowqpedoqwpe","contentImg":"https://media.w3.org/2010/05/sintel/trailer.mp4","lng":333,"lat":333,"createTime":"2020-09-28 11:15:49","status":1,"viewNum":null,"clickNum":null,"isOpen":1},{"id":14,"userId":101,"contentInfo":"你是否加班收费金额花白头发淘宝网","contentImg":"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1602150723010&di=0d0bc7a61eeaed1dd3b5eb3fa2c58700&imgtype=0&src=http%3A%2F%2Fa0.att.hudong.com%2F70%2F91%2F01300000261284122542917592865.jpg","lng":222,"lat":222,"createTime":"2020-09-28 10:21:08","status":1,"viewNum":null,"clickNum":null,"isOpen":1},{"id":13,"userId":101,"contentInfo":"当要DAO层的方法参数是一个数组时，mapper.xml的parameter则为数组的类型，然后使用<foreach>标签进行遍历，collection属性值为\"array\"。  例如：public void deletes(Integer[] ids);(DAO层方法)    则对应的:\r\n\r\n<delete id=\"deleteBrands\" parameterType=\"Integer\">","contentImg":"","lng":1111,"lat":1111,"createTime":"2020-09-28 10:20:41","status":1,"viewNum":null,"clickNum":null,"isOpen":1}],"pageNum":1,"pageSize":5,"size":3,"startRow":1,"endRow":3,"pages":1,"prePage":0,"nextPage":0,"isFirstPage":true,"isLastPage":true,"hasPreviousPage":false,"hasNextPage":false,"navigatePages":8,"navigatepageNums":[1],"navigateFirstPage":1,"navigateLastPage":1}
+     * object : {"total":6,"list":[{"id":15,"userId":101,"contentInfo":"从大V那个iwerhgwerfowqpedoqwpe","contentImg":"https://media.w3.org/2010/05/sintel/trailer.mp4","lng":333,"lat":333,"createTime":"2020-09-28 11:15:49","status":1,"viewNum":null,"clickNum":null,"isOpen":1,"imgType":3},{"id":14,"userId":101,"contentInfo":"你是否加班收费金额花白头发淘宝网","contentImg":"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1602150723010&di=0d0bc7a61eeaed1dd3b5eb3fa2c58700&imgtype=0&src=http%3A%2F%2Fa0.att.hudong.com%2F70%2F91%2F01300000261284122542917592865.jpg","lng":222,"lat":222,"createTime":"2020-09-28 10:21:08","status":1,"viewNum":null,"clickNum":null,"isOpen":1,"imgType":2},{"id":13,"userId":101,"contentInfo":"当要DAO层的方法参数是一个数组时，mapper.xml的parameter则为数组的类型，然后使用<foreach>标签进行遍历，collection属性值为\"array\"。  例如：public void deletes(Integer[] ids);(DAO层方法)    则对应的:\r\n\r\n<delete id=\"deleteBrands\" parameterType=\"Integer\">","contentImg":"","lng":1111,"lat":1111,"createTime":"2020-09-28 10:20:41","status":1,"viewNum":null,"clickNum":null,"isOpen":1,"imgType":1},{"id":19,"userId":101,"contentInfo":"how are you !","contentImg":"http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4","lng":114,"lat":444,"createTime":null,"status":1,"viewNum":null,"clickNum":null,"isOpen":1,"imgType":3},{"id":20,"userId":101,"contentInfo":"I am fine,thanks and you!","contentImg":" http://www.w3school.com.cn/example/html5/mov_bbb.mp4","lng":555,"lat":555,"createTime":null,"status":1,"viewNum":null,"clickNum":null,"isOpen":1,"imgType":3},{"id":21,"userId":101,"contentInfo":"Is fine day today.1!","contentImg":"https://media.w3.org/2010/05/sintel/trailer.mp4","lng":222,"lat":111,"createTime":null,"status":1,"viewNum":null,"clickNum":null,"isOpen":1,"imgType":3}],"pageNum":1,"pageSize":10,"size":6,"startRow":1,"endRow":6,"pages":1,"prePage":0,"nextPage":0,"isFirstPage":true,"isLastPage":true,"hasPreviousPage":false,"hasNextPage":false,"navigatePages":8,"navigatepageNums":[1],"navigateFirstPage":1,"navigateLastPage":1}
      */
 
     private String msg;
@@ -40,13 +40,13 @@ public class NewDynamicBean {
 
     public static class ObjectBean {
         /**
-         * total : 3
-         * list : [{"id":15,"userId":101,"contentInfo":"从大V那个iwerhgwerfowqpedoqwpe","contentImg":"https://media.w3.org/2010/05/sintel/trailer.mp4","lng":333,"lat":333,"createTime":"2020-09-28 11:15:49","status":1,"viewNum":null,"clickNum":null,"isOpen":1},{"id":14,"userId":101,"contentInfo":"你是否加班收费金额花白头发淘宝网","contentImg":"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1602150723010&di=0d0bc7a61eeaed1dd3b5eb3fa2c58700&imgtype=0&src=http%3A%2F%2Fa0.att.hudong.com%2F70%2F91%2F01300000261284122542917592865.jpg","lng":222,"lat":222,"createTime":"2020-09-28 10:21:08","status":1,"viewNum":null,"clickNum":null,"isOpen":1},{"id":13,"userId":101,"contentInfo":"当要DAO层的方法参数是一个数组时，mapper.xml的parameter则为数组的类型，然后使用<foreach>标签进行遍历，collection属性值为\"array\"。  例如：public void deletes(Integer[] ids);(DAO层方法)    则对应的:\r\n\r\n<delete id=\"deleteBrands\" parameterType=\"Integer\">","contentImg":"","lng":1111,"lat":1111,"createTime":"2020-09-28 10:20:41","status":1,"viewNum":null,"clickNum":null,"isOpen":1}]
+         * total : 6
+         * list : [{"id":15,"userId":101,"contentInfo":"从大V那个iwerhgwerfowqpedoqwpe","contentImg":"https://media.w3.org/2010/05/sintel/trailer.mp4","lng":333,"lat":333,"createTime":"2020-09-28 11:15:49","status":1,"viewNum":null,"clickNum":null,"isOpen":1,"imgType":3},{"id":14,"userId":101,"contentInfo":"你是否加班收费金额花白头发淘宝网","contentImg":"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1602150723010&di=0d0bc7a61eeaed1dd3b5eb3fa2c58700&imgtype=0&src=http%3A%2F%2Fa0.att.hudong.com%2F70%2F91%2F01300000261284122542917592865.jpg","lng":222,"lat":222,"createTime":"2020-09-28 10:21:08","status":1,"viewNum":null,"clickNum":null,"isOpen":1,"imgType":2},{"id":13,"userId":101,"contentInfo":"当要DAO层的方法参数是一个数组时，mapper.xml的parameter则为数组的类型，然后使用<foreach>标签进行遍历，collection属性值为\"array\"。  例如：public void deletes(Integer[] ids);(DAO层方法)    则对应的:\r\n\r\n<delete id=\"deleteBrands\" parameterType=\"Integer\">","contentImg":"","lng":1111,"lat":1111,"createTime":"2020-09-28 10:20:41","status":1,"viewNum":null,"clickNum":null,"isOpen":1,"imgType":1},{"id":19,"userId":101,"contentInfo":"how are you !","contentImg":"http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4","lng":114,"lat":444,"createTime":null,"status":1,"viewNum":null,"clickNum":null,"isOpen":1,"imgType":3},{"id":20,"userId":101,"contentInfo":"I am fine,thanks and you!","contentImg":" http://www.w3school.com.cn/example/html5/mov_bbb.mp4","lng":555,"lat":555,"createTime":null,"status":1,"viewNum":null,"clickNum":null,"isOpen":1,"imgType":3},{"id":21,"userId":101,"contentInfo":"Is fine day today.1!","contentImg":"https://media.w3.org/2010/05/sintel/trailer.mp4","lng":222,"lat":111,"createTime":null,"status":1,"viewNum":null,"clickNum":null,"isOpen":1,"imgType":3}]
          * pageNum : 1
-         * pageSize : 5
-         * size : 3
+         * pageSize : 10
+         * size : 6
          * startRow : 1
-         * endRow : 3
+         * endRow : 6
          * pages : 1
          * prePage : 0
          * nextPage : 0
@@ -236,6 +236,7 @@ public class NewDynamicBean {
              * viewNum : null
              * clickNum : null
              * isOpen : 1
+             * imgType : 3
              */
 
             private int id;
@@ -249,6 +250,7 @@ public class NewDynamicBean {
             private Object viewNum;
             private Object clickNum;
             private int isOpen;
+            private int imgType;
 
             public int getId() {
                 return id;
@@ -336,6 +338,14 @@ public class NewDynamicBean {
 
             public void setIsOpen(int isOpen) {
                 this.isOpen = isOpen;
+            }
+
+            public int getImgType() {
+                return imgType;
+            }
+
+            public void setImgType(int imgType) {
+                this.imgType = imgType;
             }
         }
     }
