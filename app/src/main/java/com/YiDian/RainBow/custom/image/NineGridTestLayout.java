@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -28,7 +29,9 @@ import androidx.viewpager.widget.ViewPager;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.App;
 import com.YiDian.RainBow.custom.viewpager.HackyViewPager;
+import com.YiDian.RainBow.main.activity.MainActivity;
 import com.YiDian.RainBow.main.fragment.home.activity.NewDynamicImage;
+import com.YiDian.RainBow.utils.PhotoLoader;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -38,21 +41,14 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.List;
 
+import indi.liyi.viewer.ImageViewer;
+
+import static com.YiDian.RainBow.main.fragment.home.activity.NewDynamicImage.EXTRA_IMAGE_URLS;
+
 public class NineGridTestLayout extends NineGridLayout {
 
 
     protected static final int MAX_W_H_RATIO = 3;
-    private List<String> urlimg;
-
-    public List<String> getUrlimg() {
-        return urlimg;
-    }
-
-    public void setUrlimg(List<String> urlimg) {
-        this.urlimg = urlimg;
-    }
-
-
 
     public NineGridTestLayout(Context context) {
         super(context);
@@ -110,9 +106,13 @@ public class NineGridTestLayout extends NineGridLayout {
 
     @Override
     protected void onClickImage(int i, String url, List<String> urlList) {
-        Log.d("xxx","图片集合长度为"+urlList.size());
         //大图展示
-        urlimg = new ArrayList<>();
-        urlimg = urlList;
+        Intent intent = new Intent(App.getContext(), NewDynamicImage.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
+        intent.putExtra("index",i);
+        intent.putStringArrayListExtra("img", (ArrayList<String>) urlList);
+        App.getContext().startActivity(intent);
+
+
     }
 }

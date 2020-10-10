@@ -18,143 +18,152 @@
            <TextView
                android:layout_width="wrap_content"
                android:text="快速匹配"
-               android:textSize="@dimen/sp_17"
+               android:textSize="@dimen/sp_16"
                android:textColor="#333333"
                android:layout_marginLeft="@dimen/dp_34"
                android:id="@+id/fast"
                android:layout_marginTop="@dimen/dp_10"
                android:layout_height="wrap_content">
            </TextView>
-           <RelativeLayout
-               android:id="@+id/rl1"
-               android:layout_width="@dimen/dp_75"
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:id="@+id/l1"
                android:layout_below="@id/fast"
-               android:background="#FFFFFF"
                android:layout_marginTop="@dimen/dp_10"
                android:layout_marginLeft="@dimen/dp_15"
-               android:layout_height="@dimen/dp_75">
-               <ImageView
-                   android:layout_width="@dimen/dp_30"
-                   android:src="@mipmap/fire"
-                   android:layout_centerInParent="true"
-                   android:layout_height="@dimen/dp_30">
-               </ImageView>
-           </RelativeLayout>
-           <RelativeLayout
-               android:id="@+id/rl2"
-               android:layout_toRightOf="@id/rl1"
-               android:layout_width="@dimen/dp_75"
-               android:layout_below="@id/fast"
-               android:background="#FFFFFF"
-               android:layout_marginTop="@dimen/dp_10"
-               android:layout_marginLeft="@dimen/dp_10"
-               android:layout_height="@dimen/dp_75">
-               <ImageView
-                   android:layout_width="@dimen/dp_30"
-                   android:src="@mipmap/fire"
-                   android:layout_centerInParent="true"
-                   android:layout_height="@dimen/dp_30">
-               </ImageView>
-           </RelativeLayout>
-           <RelativeLayout
-               android:id="@+id/rl3"
-               android:layout_toRightOf="@id/rl2"
-               android:layout_width="@dimen/dp_75"
-               android:layout_below="@id/fast"
-               android:background="#FFFFFF"
-               android:layout_marginTop="@dimen/dp_10"
-               android:layout_marginLeft="@dimen/dp_10"
-               android:layout_height="@dimen/dp_75">
-               <ImageView
-                   android:layout_width="@dimen/dp_30"
-                   android:src="@mipmap/fire"
-                   android:layout_centerInParent="true"
-                   android:layout_height="@dimen/dp_30">
-               </ImageView>
-           </RelativeLayout>
-           <RelativeLayout
-               android:id="@+id/rl4"
-               android:layout_toRightOf="@id/rl3"
-               android:layout_width="@dimen/dp_75"
-               android:layout_below="@id/fast"
-               android:background="#FFFFFF"
-               android:layout_marginTop="@dimen/dp_10"
-               android:layout_marginLeft="@dimen/dp_10"
-               android:layout_height="@dimen/dp_75">
-               <ImageView
-                   android:layout_width="@dimen/dp_30"
-                   android:src="@mipmap/fire"
-                   android:layout_centerInParent="true"
-                   android:layout_height="@dimen/dp_30">
-               </ImageView>
-           </RelativeLayout>
-           <RelativeLayout
-               android:id="@+id/rl5"
-               android:layout_width="@dimen/dp_75"
-               android:layout_below="@id/rl1"
-               android:background="#FFFFFF"
+               android:layout_marginRight="@dimen/dp_15"
+               android:layout_height="wrap_content">
+               <RelativeLayout
+                   android:id="@+id/rl1"
+                   android:layout_width="0dp"
+                   android:layout_weight="1"
+                   android:background="#FFFFFF"
+                   android:layout_height="@dimen/dp_75">
+                   <ImageView
+                       android:layout_width="@dimen/dp_30"
+                       android:src="@mipmap/fire"
+                       android:layout_centerInParent="true"
+                       android:layout_height="@dimen/dp_30">
+                   </ImageView>
+               </RelativeLayout>
+               <RelativeLayout
+                   android:id="@+id/rl2"
+                   android:layout_toRightOf="@id/rl1"
+                   android:layout_width="0dp"
+                   android:layout_weight="1"
+                   android:background="#FFFFFF"
+                   android:layout_marginLeft="@dimen/dp_10"
+                   android:layout_height="@dimen/dp_75">
+                   <ImageView
+                       android:layout_width="@dimen/dp_30"
+                       android:src="@mipmap/fire"
+                       android:layout_centerInParent="true"
+                       android:layout_height="@dimen/dp_30">
+                   </ImageView>
+               </RelativeLayout>
+               <RelativeLayout
+                   android:id="@+id/rl3"
+                   android:layout_toRightOf="@id/rl2"
+                   android:layout_width="0dp"
+                   android:layout_weight="1"
+                   android:background="#FFFFFF"
+                   android:layout_marginLeft="@dimen/dp_10"
+                   android:layout_height="@dimen/dp_75">
+                   <ImageView
+                       android:layout_width="@dimen/dp_30"
+                       android:src="@mipmap/fire"
+                       android:layout_centerInParent="true"
+                       android:layout_height="@dimen/dp_30">
+                   </ImageView>
+               </RelativeLayout>
+               <RelativeLayout
+                   android:id="@+id/rl4"
+                   android:layout_toRightOf="@id/rl3"
+                   android:layout_width="0dp"
+                   android:layout_weight="1"
+                   android:background="#FFFFFF"
+                   android:layout_marginLeft="@dimen/dp_10"
+                   android:layout_height="@dimen/dp_75">
+                   <ImageView
+                       android:layout_width="@dimen/dp_30"
+                       android:src="@mipmap/fire"
+                       android:layout_centerInParent="true"
+                       android:layout_height="@dimen/dp_30">
+                   </ImageView>
+               </RelativeLayout>
+           </LinearLayout>
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:id="@+id/l2"
+               android:layout_below="@id/l1"
                android:layout_marginTop="@dimen/dp_12"
                android:layout_marginLeft="@dimen/dp_15"
-               android:layout_height="@dimen/dp_75">
-               <ImageView
-                   android:layout_width="@dimen/dp_30"
-                   android:src="@mipmap/fire"
-                   android:layout_centerInParent="true"
-                   android:layout_height="@dimen/dp_30">
-               </ImageView>
-           </RelativeLayout>
-           <RelativeLayout
-               android:id="@+id/rl6"
-               android:layout_width="@dimen/dp_75"
-               android:layout_toRightOf="@id/rl5"
-               android:layout_below="@id/rl1"
-               android:background="#FFFFFF"
-               android:layout_marginTop="@dimen/dp_12"
-               android:layout_marginLeft="@dimen/dp_10"
-               android:layout_height="@dimen/dp_75">
-               <ImageView
-                   android:layout_width="@dimen/dp_30"
-                   android:src="@mipmap/fire"
-                   android:layout_centerInParent="true"
-                   android:layout_height="@dimen/dp_30">
-               </ImageView>
-           </RelativeLayout>
-           <RelativeLayout
-               android:id="@+id/rl7"
-               android:layout_width="@dimen/dp_75"
-               android:layout_toRightOf="@id/rl6"
-               android:layout_below="@id/rl1"
-               android:background="#FFFFFF"
-               android:layout_marginTop="@dimen/dp_12"
-               android:layout_marginLeft="@dimen/dp_10"
-               android:layout_height="@dimen/dp_75">
-               <ImageView
-                   android:layout_width="@dimen/dp_30"
-                   android:src="@mipmap/fire"
-                   android:layout_centerInParent="true"
-                   android:layout_height="@dimen/dp_30">
-               </ImageView>
-           </RelativeLayout>
-           <RelativeLayout
-               android:id="@+id/rl8"
-               android:layout_width="@dimen/dp_75"
-               android:layout_toRightOf="@id/rl7"
-               android:layout_below="@id/rl1"
-               android:background="#FFFFFF"
-               android:layout_marginTop="@dimen/dp_12"
-               android:layout_marginLeft="@dimen/dp_10"
-               android:layout_height="@dimen/dp_75">
-               <ImageView
-                   android:layout_width="@dimen/dp_30"
-                   android:src="@mipmap/fire"
-                   android:layout_centerInParent="true"
-                   android:layout_height="@dimen/dp_30">
-               </ImageView>
-           </RelativeLayout>
+               android:layout_marginRight="@dimen/dp_15"
+               android:layout_height="wrap_content">
+               <RelativeLayout
+                   android:id="@+id/rl5"
+                   android:layout_width="0dp"
+                   android:layout_weight="1"
+                   android:background="#FFFFFF"
+                   android:layout_height="@dimen/dp_75">
+                   <ImageView
+                       android:layout_width="@dimen/dp_30"
+                       android:src="@mipmap/fire"
+                       android:layout_centerInParent="true"
+                       android:layout_height="@dimen/dp_30">
+                   </ImageView>
+               </RelativeLayout>
+               <RelativeLayout
+                   android:id="@+id/rl6"
+                   android:layout_width="0dp"
+                   android:layout_weight="1"
+                   android:layout_toRightOf="@id/rl5"
+                   android:background="#FFFFFF"
+                   android:layout_marginLeft="@dimen/dp_10"
+                   android:layout_height="@dimen/dp_75">
+                   <ImageView
+                       android:layout_width="@dimen/dp_30"
+                       android:src="@mipmap/fire"
+                       android:layout_centerInParent="true"
+                       android:layout_height="@dimen/dp_30">
+                   </ImageView>
+               </RelativeLayout>
+               <RelativeLayout
+                   android:id="@+id/rl7"
+                   android:layout_width="0dp"
+                   android:layout_weight="1"
+                   android:layout_toRightOf="@id/rl6"
+                   android:background="#FFFFFF"
+                   android:layout_marginLeft="@dimen/dp_10"
+                   android:layout_height="@dimen/dp_75">
+                   <ImageView
+                       android:layout_width="@dimen/dp_30"
+                       android:src="@mipmap/fire"
+                       android:layout_centerInParent="true"
+                       android:layout_height="@dimen/dp_30">
+                   </ImageView>
+               </RelativeLayout>
+               <RelativeLayout
+                   android:id="@+id/rl8"
+                   android:layout_width="0dp"
+                   android:layout_weight="1"
+                   android:layout_toRightOf="@id/rl7"
+                   android:background="#FFFFFF"
+                   android:layout_marginLeft="@dimen/dp_10"
+                   android:layout_height="@dimen/dp_75">
+                   <ImageView
+                       android:layout_width="@dimen/dp_30"
+                       android:src="@mipmap/fire"
+                       android:layout_centerInParent="true"
+                       android:layout_height="@dimen/dp_30">
+                   </ImageView>
+               </RelativeLayout>
+           </LinearLayout>
+
            <ImageView
                android:layout_width="@dimen/dp_15"
                android:scaleType="centerCrop"
-               android:layout_below="@id/rl8"
+               android:layout_below="@id/l2"
                android:layout_marginLeft="@dimen/dp_15"
                android:layout_marginTop="@dimen/dp_15"
                android:layout_height="@dimen/dp_20"
@@ -163,8 +172,8 @@
            <TextView
                android:layout_width="wrap_content"
                android:text="推荐房间"
-               android:textSize="@dimen/sp_17"
-               android:layout_below="@id/rl8"
+               android:textSize="@dimen/sp_16"
+               android:layout_below="@id/l2"
                android:textColor="#333333"
                android:layout_marginLeft="@dimen/dp_34"
                android:id="@+id/room"
@@ -173,7 +182,7 @@
            </TextView>
            <LinearLayout
                android:layout_width="wrap_content"
-               android:layout_below="@id/rl8"
+               android:layout_below="@id/l2"
                android:id="@+id/ll_filter"
                android:layout_marginTop="@dimen/dp_20"
                android:layout_alignParentRight="true"

@@ -1,12 +1,17 @@
 package com.YiDian.RainBow.login.activity;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,10 +53,11 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
     @BindView(R.id.rb5)
     RadioButton rb5;
     @BindView(R.id.rg)
-    RadioGroupEx rg;
+    RadioGroup rg;
     @BindView(R.id.bt_confirm)
     Button btconfirm;
     String str = "";
+
     @Override
     protected int getResId() {
         return R.layout.activity_complete_msg;
@@ -59,6 +65,15 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
 
     @Override
     protected void getData() {
+        //申请开启内存卡权限
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) && (CompleteMsgActivity.this.checkSelfPermission
+                (Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
+            //请求权限
+            CompleteMsgActivity.this.requestPermissions(new String[]{
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
+
         Glide.with(CompleteMsgActivity.this).load(R.mipmap.headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
         tvBirth.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +83,7 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
                     public void onConfirm(int year, int month, int dayOfMonth) {
                         tvBirth.setText(year + "-" + month + "-" + dayOfMonth);
                     }
+
                     @Override
                     public void onCancel() {
 
@@ -85,9 +101,10 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
         return null;
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.iv_headimg:
                 PictureSelector
                         .with(this)
@@ -106,25 +123,26 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
                 break;
             case R.id.bt_confirm:
                 //判断选中的选项
-                if(rb1.isChecked()){
-                    str= rb1.getText().toString();
+                if (rb1.isChecked()) {
+                    str = rb1.getText().toString();
                 }
-                if(rb2.isChecked()){
-                    str= rb2.getText().toString();
+                if (rb2.isChecked()) {
+                    str = rb2.getText().toString();
                 }
-                if(rb3.isChecked()){
-                    str= rb3.getText().toString();
+                if (rb3.isChecked()) {
+                    str = rb3.getText().toString();
                 }
-                if(rb4.isChecked()){
-                    str= rb4.getText().toString();
+                if (rb4.isChecked()) {
+                    str = rb4.getText().toString();
                 }
-                if(rb5.isChecked()){
-                    str= rb5.getText().toString();
+                if (rb5.isChecked()) {
+                    str = rb5.getText().toString();
                 }
-                Toast.makeText(this, ""+str, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "" + str, Toast.LENGTH_SHORT).show();
                 break;
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

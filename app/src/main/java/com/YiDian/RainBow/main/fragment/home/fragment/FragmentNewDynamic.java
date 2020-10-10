@@ -25,6 +25,7 @@ import com.liaoinstan.springview.container.MeituanHeader;
 import com.liaoinstan.springview.widget.SpringView;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -70,11 +71,7 @@ public class FragmentNewDynamic extends BaseFragment {
         sv.setHeader(new AliHeader(getContext()));
         sv.setFooter(new AliFooter(getContext()));
 
-        NineGridTestLayout nineGridTestLayout = new NineGridTestLayout(getContext());
-        List<String> urlimg = nineGridTestLayout.getUrlimg();
-        if(urlimg.size()>=0){
-            Log.d("xxx","传递过来的图片集合长度"+urlimg.size()+"");
-        }
+
         //下拉刷新下拉加载
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
@@ -155,7 +152,6 @@ public class FragmentNewDynamic extends BaseFragment {
                     }
                 });
     }
-
     @Override
     public void onPause() {
         super.onPause();

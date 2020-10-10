@@ -11,14 +11,15 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.feedback.activity.FeedBackActivity;
+import com.YiDian.RainBow.login.activity.LoginActivity;
 import com.YiDian.RainBow.setpwd.activity.SetPwdActivity;
 
 import butterknife.BindView;
 
 public class RegistActivity extends BaseAvtivity implements View.OnClickListener {
 
-    @BindView(R.id.tv_mt_pro)
-    TextView tvMtPro;
+    @BindView(R.id.tv_go_login)
+    TextView goLogin;
     @BindView(R.id.et_phone)
     EditText etPhone;
     @BindView(R.id.et_code)
@@ -36,7 +37,7 @@ public class RegistActivity extends BaseAvtivity implements View.OnClickListener
 
     @Override
     protected void getData() {
-        tvMtPro.setOnClickListener(this);
+        goLogin.setOnClickListener(this);
         tvGetcode.setOnClickListener(this);
         btRegist.setOnClickListener(this);
     }
@@ -49,8 +50,9 @@ public class RegistActivity extends BaseAvtivity implements View.OnClickListener
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_mt_pro:
-                startActivity(new Intent(RegistActivity.this, FeedBackActivity.class));
+            case R.id.tv_go_login:
+                startActivity(new Intent(RegistActivity.this, LoginActivity.class));
+                finish();
                 break;
             case R.id.tv_getcode:
                 //调用倒计时方法

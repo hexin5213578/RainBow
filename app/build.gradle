@@ -150,4 +150,5 @@ dependencies {
     implementation 'com.shuyu:gsyVideoPlayer-x86:7.1.6'
 
     implementation  'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
+    implementation 'indi.liyi.view:image-viewer:3.0.1'
 }

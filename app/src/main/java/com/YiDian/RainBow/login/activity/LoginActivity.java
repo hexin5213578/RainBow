@@ -96,6 +96,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener 
                 //跳转注册页
                 Intent intent = new Intent(LoginActivity.this, RegistActivity.class);
                 startActivity(intent);
+                finish();
                 break;
             case R.id.tv_reme_pwd:
                 startActivity(new Intent(LoginActivity.this, RememberPwdActivity.class));

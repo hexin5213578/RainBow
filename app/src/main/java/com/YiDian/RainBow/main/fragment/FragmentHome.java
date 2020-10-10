@@ -91,8 +91,6 @@ public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedCh
     @Override
     protected void getData() {
         StatusBarUtil.setGradientColor(getActivity(), toolbar);
-
-
         StatusBarUtil.setDarkMode(getActivity());
 
         rbs[0] = rbNewDynamic;

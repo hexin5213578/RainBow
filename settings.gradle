@@ -1,3 +1,8 @@
+include ':imageviewe'
+include ':imageshow'
+include ':imageviewer'
+include ':photoview'
+include ':sample'
 include ':picuter_list'
 include ':image'
 include ':gsy'

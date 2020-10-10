@@ -134,68 +134,86 @@
         android:layout_marginLeft="@dimen/dp_58"
         android:layout_height="wrap_content">
     </TextView>
-    <com.YiDian.RainBow.custom.customradio.RadioGroupEx
-        android:layout_width="match_parent"
+    <LinearLayout
         android:layout_below="@id/person"
-        android:orientation="horizontal"
-        android:layout_marginLeft="@dimen/dp_58"
         android:layout_marginTop="@dimen/dp_12"
-        android:id="@+id/rg"
-        android:layout_marginRight="@dimen/dp_58"
+        android:id="@+id/l1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <RadioButton
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_19"
-            android:text="T"
-            android:background="@drawable/radio_bg"
-            android:id="@+id/rb1"
-            android:gravity="center"
-            android:button="@null"
-            ></RadioButton>
-        <RadioButton
-            android:layout_width="@dimen/dp_50"
-            android:layout_marginLeft="@dimen/dp_14"
-            android:layout_height="@dimen/dp_19"
-            android:id="@+id/rb2"
-            android:background="@drawable/radio_bg"
-            android:text="P"
-            android:gravity="center"
-            android:button="@null"
-            ></RadioButton>
-        <RadioButton
-            android:layout_width="@dimen/dp_50"
-            android:layout_marginLeft="@dimen/dp_14"
-            android:background="@drawable/radio_bg"
-            android:id="@+id/rb3"
-            android:layout_height="@dimen/dp_19"
-            android:text="H"
-            android:button="@null"
-            android:gravity="center"
-            ></RadioButton>
-        <RadioButton
-            android:gravity="center"
-            android:layout_width="@dimen/dp_50"
-            android:id="@+id/rb4"
-            android:layout_marginLeft="@dimen/dp_14"
-            android:button="@null"
-            android:background="@drawable/radio_bg"
-            android:layout_height="@dimen/dp_19"
-            android:text="BI"
-            ></RadioButton>
-        <RadioButton
-            android:gravity="center"
-            android:id="@+id/rb5"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_width="@dimen/dp_50"
-            android:button="@null"
-            android:background="@drawable/radio_bg"
-            android:layout_height="@dimen/dp_19"
-            android:text="保密"
-            ></RadioButton>
-    </com.YiDian.RainBow.custom.customradio.RadioGroupEx>
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginLeft="@dimen/dp_58"
+            android:id="@+id/rg"
+            android:layout_marginRight="@dimen/dp_58"
+            android:layout_height="wrap_content">
+            <RadioButton
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textColor="@drawable/selector_xingbie_text_color"
+                android:layout_height="@dimen/dp_19"
+                android:text="T"
+                android:background="@drawable/radio_bg"
+                android:id="@+id/rb1"
+                android:gravity="center"
+                android:button="@null"
+                ></RadioButton>
+            <RadioButton
+                android:layout_width="0dp"
+                android:textColor="@drawable/selector_xingbie_text_color"
+
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_height="@dimen/dp_19"
+                android:id="@+id/rb2"
+                android:background="@drawable/radio_bg"
+                android:text="P"
+                android:gravity="center"
+                android:button="@null"
+                ></RadioButton>
+            <RadioButton
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textColor="@drawable/selector_xingbie_text_color"
+
+                android:layout_marginLeft="@dimen/dp_8"
+                android:background="@drawable/radio_bg"
+                android:id="@+id/rb3"
+                android:layout_height="@dimen/dp_19"
+                android:text="H"
+                android:button="@null"
+                android:gravity="center"
+                ></RadioButton>
+            <RadioButton
+                android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textColor="@drawable/selector_xingbie_text_color"
+                android:id="@+id/rb4"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:button="@null"
+                android:background="@drawable/radio_bg"
+                android:layout_height="@dimen/dp_19"
+                android:text="BI"
+                ></RadioButton>
+            <RadioButton
+                android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textColor="@drawable/selector_xingbie_text_color"
+                android:id="@+id/rb5"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:button="@null"
+                android:background="@drawable/radio_bg"
+                android:layout_height="@dimen/dp_19"
+                android:text="保密"
+                ></RadioButton>
+        </RadioGroup>
+    </LinearLayout>
+
     <Button
         android:layout_width="@dimen/dp_180"
-        android:layout_below="@id/rg"
+        android:layout_below="@id/l1"
         android:background="@drawable/background_gradient"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_70"

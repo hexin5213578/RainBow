@@ -23,26 +23,31 @@
         <RadioButton
             android:id="@+id/rbHome"
             style="@style/MainTab"
+            android:background="@null"
             android:drawableTop="@drawable/selector_main_home"
             android:text="首页" />
         <RadioButton
             android:id="@+id/rbIM"
             style="@style/MainTab"
+            android:background="@null"
             android:drawableTop="@drawable/selector_main_im"
             android:text="聊天" />
         <RadioButton
             android:id="@+id/rbFind"
             style="@style/MainTab"
+            android:background="@null"
             android:drawableTop="@drawable/selector_main_find"
             android:text="发现" />
         <RadioButton
             android:id="@+id/rbMsg"
             style="@style/MainTab"
+            android:background="@null"
             android:drawableTop="@drawable/selector_main_msg"
             android:text="消息" />
         <RadioButton
             android:id="@+id/rbMine"
             style="@style/MainTab"
+            android:background="@null"
             android:drawableTop="@drawable/selector_main_mine"
             android:text="我的" />
     </RadioGroup>

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">彩虹</string>
+    <string name="viewpager_indicator">1</string>
 </resources>

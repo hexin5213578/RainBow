@@ -8,6 +8,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:src="@mipmap/welcome"
+        android:scaleType="centerCrop"
         android:layout_height="match_parent">
     </ImageView>
 </RelativeLayout>

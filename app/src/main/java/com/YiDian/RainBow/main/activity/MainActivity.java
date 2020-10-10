@@ -1,29 +1,19 @@
 package com.YiDian.RainBow.main.activity;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.KeyEvent;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import androidx.annotation.IntDef;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -36,28 +26,14 @@ import com.YiDian.RainBow.main.fragment.FragmentHome;
 import com.YiDian.RainBow.main.fragment.FragmentIM;
 import com.YiDian.RainBow.main.fragment.FragmentMine;
 import com.YiDian.RainBow.main.fragment.FragmentMsg;
-import com.YiDian.RainBow.main.fragment.home.activity.NewDynamicImage;
-import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
-import com.YiDian.RainBow.utils.NetUtils;
-import com.leaf.library.StatusBarUtil;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.YiDian.RainBow.utils.PhotoLoader;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.List;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+import indi.liyi.viewer.ImageViewer;
 
 public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedChangeListener {
 
@@ -103,7 +79,6 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
         return R.layout.activity_main;
     }
 
-    @SuppressLint({"UseCompatLoadingForDrawables", "ResourceAsColor"})
     @Override
     protected void getData() {
 
@@ -239,6 +214,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
         }
         super.onBackPressed();
     }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -253,6 +229,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
             EventBus.getDefault().register(this);
         }*/
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -260,5 +237,12 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
        /*   if(EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().unregister(this);
         }*/
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }
