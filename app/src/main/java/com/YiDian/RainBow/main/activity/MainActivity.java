@@ -29,6 +29,10 @@ import com.YiDian.RainBow.main.fragment.FragmentMsg;
 import com.YiDian.RainBow.utils.PhotoLoader;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -145,6 +149,14 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
         }
     }
 
+    //跳转到匹配页
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getId(String str){
+        if (str.equals("跳转到匹配页")){
+            replace(fragmentfind);
+            rbFind.setChecked(true);
+        }
+    }
     /**
      * 切换页面显示fragment
      *
@@ -225,18 +237,18 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     protected void onResume() {
         super.onResume();
         GSYVideoManager.onResume(false);
-        /*if(!EventBus.getDefault().isRegistered(this)){
+        if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
-        }*/
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         GSYVideoManager.releaseAllVideos();
-       /*   if(EventBus.getDefault().isRegistered(this)){
+          if(EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().unregister(this);
-        }*/
+        }
     }
 
     @Override

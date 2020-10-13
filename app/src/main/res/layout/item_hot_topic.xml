@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_item"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <ImageView
+        android:layout_width="@dimen/dp_42"
+        android:layout_marginTop="@dimen/dp_15"
+        android:id="@+id/iv_headimg"
+        android:src="@mipmap/headimg"
+        android:layout_height="@dimen/dp_42">
+    </ImageView>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_toRightOf="@id/iv_headimg"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:text="#话题#"
+        android:layout_marginTop="@dimen/dp_15"
+        android:textSize="@dimen/sp_12"
+        android:textColor="#666666"
+        android:id="@+id/tv_topic"
+        android:layout_height="wrap_content">
+    </TextView>
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="如花美眷，似水流年，回得了过去，回不了当初"
+        android:textSize="@dimen/sp_10"
+        android:textColor="#999999"
+        android:id="@+id/tv_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_toRightOf="@id/iv_headimg"
+        android:layout_below="@id/tv_topic"
+        android:layout_height="wrap_content">
+    </TextView>
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="20366人参与"
+        android:textSize="@dimen/sp_10"
+        android:id="@+id/tv_num"
+        android:layout_marginTop="@dimen/dp_15"
+        android:textColor="#999999"
+        android:layout_alignParentRight="true"
+        android:layout_height="wrap_content">
+    </TextView>
+</RelativeLayout>

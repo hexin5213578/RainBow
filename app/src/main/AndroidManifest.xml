@@ -18,18 +18,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <meta-data
-        android:name="design_width_in_dp"
-        android:value="360" />
-    <meta-data
-        android:name="design_height_in_dp"
-        android:value="640" /> <!-- 适配小米刘海屏 -->
-    <meta-data
-        android:name="notch.config"
-        android:value="portrait" /> <!-- 适配华为刘海屏 -->
-    <meta-data
-        android:name="android.notch_support"
-        android:value="true" />
+
 
     <application
         android:name=".base.App"
@@ -40,6 +29,37 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="design_width_in_dp"
+            android:value="360" />
+        <meta-data
+            android:name="design_height_in_dp"
+            android:value="640" /> <!-- 适配小米刘海屏 -->
+        <meta-data
+            android:name="notch.config"
+            android:value="portrait" /> <!-- 适配华为刘海屏 -->
+        <meta-data
+            android:name="android.notch_support"
+            android:value="true" />
+        <!-- 高德地图 -->
+        <meta-data
+            android:name="com.amap.api.v2.apikey" android:value="6bbee3d776ea777c5a13959c27c7fa14">
+        </meta-data>
+
+        <!-- 高德地图定位 -->
+        <service android:name="com.amap.api.location.APSService" />
+
+
+        <!-- Since JCore2.0.0 Required SDK核心功能-->
+        <!-- 这个Service要继承JCommonService -->
+        <service android:name=".jiguang.JiguangService"
+            android:process=":pushcore"
+            >
+            <intent-filter>
+                <action android:name="cn.jiguang.user.service.action" />
+            </intent-filter>
+        </service>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.YiDian.RainBow.utils.MyFileProvider"
@@ -52,11 +72,7 @@
 
         <activity android:name=".welcome.WelcomeActivity"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <!-- 主页 -->
         <activity
@@ -100,6 +116,31 @@
         <!-- 直接播放 -->
         <activity
             android:name=".main.fragment.home.activity.NewDynamicImage"
+            android:screenOrientation="portrait"
+            >
+        </activity>
+        <!-- 用户详情 -->
+        <activity android:name=".main.fragment.find.activity.UserDetailsActivity"
+            android:screenOrientation="portrait"
+            >
+        </activity>
+        <!-- 搜索话题用户 -->
+        <activity android:name=".search.SearchActivity"
+            android:screenOrientation="portrait"
+            >
+        </activity>
+        <!-- 搜索信息展示 -->
+        <activity android:name=".search.activity.SearchMsgActivity"
+            android:screenOrientation="portrait"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!-- 话题详情 -->
+        <activity android:name=".search.activity.TopicDetailsActivity"
             android:screenOrientation="portrait"
             >
         </activity>

@@ -51,6 +51,31 @@
         <item name="android:textColor">@drawable/selector_find_tab_text_color</item>
     </style>
 
+    <!--搜索 Tab-->
+    <style name="SearchTab">
+        <item name="android:button">@null</item>
+        <item name="android:drawablePadding">2dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">6dp</item>
+        <item name="android:textSize">@dimen/sp_16</item>
+        <item name="android:textColor">@drawable/search_tab_text_color</item>
+    </style>
+
+    <!--用户详情 Tab-->
+    <style name="UserDetailsTab">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:button">@null</item>
+        <item name="android:drawablePadding">2dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">6dp</item>
+        <item name="android:textSize">@dimen/sp_10</item>
+        <item name="android:textColor">@drawable/user_details_textcolor</item>
+    </style>
+
+
+
     <!--tab选中字体加粗-->
     <style name="txt_bold" parent="Theme.AppCompat.Light">
         <item name="android:textStyle">bold</item>
@@ -59,5 +84,4 @@
     <style name="txt_nomal" parent="Theme.AppCompat.Light">
         <item name="android:textStyle">normal</item>
     </style>
-
 </resources>

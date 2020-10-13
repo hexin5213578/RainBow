@@ -52,22 +52,22 @@
             android:layout_height="@dimen/dp_1">
         </View>
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_below="@id/v1"
-            android:layout_marginTop="@dimen/dp_26"
-            android:visibility="gone"
+            android:layout_marginTop="@dimen/dp_16"
             android:id="@+id/rc_pro_img"
+            android:layout_marginRight="@dimen/dp_12"
             android:layout_marginLeft="@dimen/dp_12"
-            android:layout_height="@dimen/dp_44">
+            android:layout_height="@dimen/dp_65">
         </androidx.recyclerview.widget.RecyclerView>
         <RelativeLayout
-            android:layout_width="@dimen/dp_44"
+            android:layout_width="@dimen/dp_64"
             android:layout_below="@id/v1"
             android:id="@+id/rl_selectedimg"
             android:layout_marginLeft="@dimen/dp_12"
             android:background="@drawable/feedback_selectimg"
-            android:layout_marginTop="@dimen/dp_26"
-            android:layout_height="@dimen/dp_44">
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_height="@dimen/dp_64">
             <View
                 android:layout_width="@dimen/dp_22"
                 android:background="#E6E6E6"
@@ -88,7 +88,7 @@
             android:id="@+id/tv_selectedimg"
             android:textColor="#C2C2C2"
             android:layout_marginLeft="@dimen/dp_12"
-            android:textSize="@dimen/sp_10"
+            android:textSize="@dimen/sp_12"
             android:layout_toRightOf="@id/rl_selectedimg"
             android:layout_marginTop="@dimen/dp_40"
             android:layout_height="wrap_content">
@@ -121,5 +121,4 @@
         android:textColor="@color/white"
         android:layout_height="@dimen/dp_40">
     </Button>
-
 </RelativeLayout>

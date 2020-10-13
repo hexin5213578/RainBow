@@ -74,20 +74,22 @@ public class NewDynamicImage extends FragmentActivity {
                 .imageData(urls) // 图片数据
                 .imageLoader(new PhotoLoader()) // 设置图片加载方式
                 .playEnterAnim(true) // 是否开启进场动画，默认为true
-                .playExitAnim(true) // 是否开启退场动画，默认为true
+                .playExitAnim(false) // 是否开启退场动画，默认为true
                 .draggable(false)
                 .showIndex(true) // 是否显示图片索引，默认为true
                 .watch(index); // 开启浏览
         vp.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public boolean onItemClick(int position, ImageView imageView) {
-                Handler handler = new Handler();
+                finish();
+
+/*              Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        finish();
+
                     }
-                }, 400);//2秒后执行Runnable中的run方法
+                }, 200);//2秒后执行Runnable中的run方法*/
                 return false;
             }
         });

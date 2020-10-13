@@ -35,6 +35,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import cn.jpush.im.android.api.JMessageClient;
+
 
 /**
  * @ClassName: App
@@ -70,6 +72,10 @@ public class App extends Application {
         //CrashReport.initCrashReport(getApplicationContext(), "c11555727a", false);
         // 如果通过“AndroidManifest.xml”来配置APP信息，初始化方法如下
         // CrashReport.initCrashReport(context, strategy);
+
+        //初始化极光
+        JMessageClient.setDebugMode(true);
+        JMessageClient.init(this);
     }
 
     private void initWX() {

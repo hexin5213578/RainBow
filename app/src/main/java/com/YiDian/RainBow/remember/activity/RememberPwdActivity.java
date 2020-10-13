@@ -37,7 +37,7 @@ public class RememberPwdActivity extends BaseAvtivity implements View.OnClickLis
     @BindView(R.id.bt_confirm)
     Button btConfirm;
     private CountDownTimer mTimer;
-
+    private boolean isplayer =false;
     @Override
     protected int getResId() {
         return R.layout.activity_remember_pwd;
@@ -103,16 +103,25 @@ public class RememberPwdActivity extends BaseAvtivity implements View.OnClickLis
             @Override
             public void onTick(long millisUntilFinished) {
                 tvGetcode.setText(millisUntilFinished / 1000 + "秒重发");
+                isplayer = true;
             }
 
             @Override
             public void onFinish() {
                 tvGetcode.setEnabled(true);
                 tvGetcode.setText("获取验证码");
+                isplayer  =false;
                 cancel();
             }
         };
         mTimer.start();
         tvGetcode.setEnabled(false);
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(isplayer){
+            mTimer.cancel();
+        }
     }
 }

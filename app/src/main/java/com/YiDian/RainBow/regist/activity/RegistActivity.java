@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
@@ -13,8 +14,16 @@ import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.feedback.activity.FeedBackActivity;
 import com.YiDian.RainBow.login.activity.LoginActivity;
 import com.YiDian.RainBow.setpwd.activity.SetPwdActivity;
+import com.YiDian.RainBow.setpwd.bean.GetPhoneCodeBean;
+import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.StringUtil;
 
 import butterknife.BindView;
+import io.reactivex.Observer;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class RegistActivity extends BaseAvtivity implements View.OnClickListener {
 
@@ -29,6 +38,9 @@ public class RegistActivity extends BaseAvtivity implements View.OnClickListener
     @BindView(R.id.bt_regist)
     Button btRegist;
     private CountDownTimer mTimer;
+    private boolean  isplayer = false;
+    private String phone;
+    private String auth;
 
     @Override
     protected int getResId() {
@@ -40,6 +52,8 @@ public class RegistActivity extends BaseAvtivity implements View.OnClickListener
         goLogin.setOnClickListener(this);
         tvGetcode.setOnClickListener(this);
         btRegist.setOnClickListener(this);
+
+
     }
 
     @Override
@@ -55,12 +69,49 @@ public class RegistActivity extends BaseAvtivity implements View.OnClickListener
                 finish();
                 break;
             case R.id.tv_getcode:
-                //调用倒计时方法
-                countDownTime();
+                phone = etPhone.getText().toString();
+                if(StringUtil.checkPhoneNumber(phone)){
+                    //调用倒计时方法
+                    countDownTime();
+                    NetUtils.getInstance().getApis().getPhoneCode(phone)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Observer<GetPhoneCodeBean>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
+
+                                }
+
+                                @Override
+                                public void onNext(GetPhoneCodeBean getPhoneCodeBean) {
+                                    if(getPhoneCodeBean.getMsg().equals("验证码返回成功")){
+                                        auth = getPhoneCodeBean.getObject();
+                                    }else{
+                                        Toast.makeText(RegistActivity.this, ""+getPhoneCodeBean.getMsg(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+
+                                }
+                            });
+                }
                 break;
             case R.id.bt_regist:
-                Intent intent = new Intent(RegistActivity.this, SetPwdActivity.class);
-                startActivity(intent);
+                String code = etCode.getText().toString();
+                if(code.equals(auth)){
+                    Intent intent = new Intent(RegistActivity.this, SetPwdActivity.class);
+                    intent.putExtra("phone", phone);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(this, "验证码输入有误", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }
@@ -71,16 +122,26 @@ public class RegistActivity extends BaseAvtivity implements View.OnClickListener
              @Override
              public void onTick(long millisUntilFinished) {
                  tvGetcode.setText(millisUntilFinished / 1000 + "秒重发");
+                 isplayer = true;
              }
 
              @Override
              public void onFinish() {
                  tvGetcode.setEnabled(true);
                  tvGetcode.setText("获取验证码");
+                 isplayer = false;
                  cancel();
              }
          };
         mTimer.start();
         tvGetcode.setEnabled(false);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(isplayer){
+            mTimer.cancel();
+        }
     }
 }

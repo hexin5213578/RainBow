@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RadioGroup;
 
+//自定义RadioGroup
 public class RadioGroupEx extends RadioGroup {
     private static final String TAG = "RadioGroupEx";
 

@@ -31,17 +31,15 @@ public class SPUtil {
 
     public static final String FILE_NAME = "userInfo";
     public static final String KEY_TOKEN = "token";
-    public static final String USER_NAME = "username";
+    //存储是否已经登录  0已登录 1未登录或退出登录
+    public static final String IS_LOGIN = "islogin";
     public static final String KEY_PHONE = "phone";
-    public static final String HEAD_URL = "hearurl";
-    public static final String USER_ID = "id";
-
-
+    public static final String USER_NAME = "username";
+    public static final String USER_ID = "user_id";
     public static final String FILE_NAME_GOODS = "goodsId";
 
     private SPUtil() {
     }
-
 
     private static class SingleInstance{
         private static SPUtil sSPUtil = new SPUtil();

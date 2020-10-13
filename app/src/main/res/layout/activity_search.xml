@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:layout_height="match_parent">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0_1"
+        android:background="@color/white"
+        />
+
+    <RelativeLayout
+        android:id="@+id/rl1"
+        android:layout_width="match_parent"
+        android:layout_below="@id/toolbar"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:src="@mipmap/back"
+            android:id="@+id/iv_back"
+            android:layout_marginTop="@dimen/dp_38"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_height="wrap_content">
+        </ImageView>
+        <RadioGroup
+            android:id="@+id/rgTab"
+            android:layout_width="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_33"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/rbSearchHuati"
+                style="@style/SearchTab"
+                android:background="@null"
+                android:text="搜话题" />
+            <RadioButton
+                android:id="@+id/rbSearchPerson"
+                style="@style/SearchTab"
+                android:background="@null"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:text="搜用户" />
+            <RadioButton
+                android:id="@+id/rbSearchRoom"
+                style="@style/SearchTab"
+                android:background="@null"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:text="搜房间" />
+        </RadioGroup>
+    </RelativeLayout>
+    <FrameLayout
+        android:id="@+id/flContent"
+        android:layout_below="@id/rl1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+</RelativeLayout>

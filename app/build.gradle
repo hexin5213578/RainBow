@@ -31,8 +31,14 @@ android {
             //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
             abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "x86","x86_64"
         }
+        manifestPlaceholders = [
+                JPUSH_PKGNAME : applicationId,
+                JPUSH_APPKEY : "87ce5706efafab51ddd2be08", //JPush上注册的包名对应的appkey.
+                JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+        ]
     }
-
+    // appkey  87ce5706efafab51ddd2be08
+    // Master Secret 4124e98b4785385c45c8267f
     buildTypes {
         release {
             debuggable true
@@ -106,6 +112,7 @@ dependencies {
     implementation 'com.github.Ye-Miao:StatusBarUtil:1.7.5'
 
     //Xbanner依赖
+    implementation 'com.xhb:xbanner:1.3.1'
 
     //上拉刷新下拉加载
     implementation 'com.liaoinstan.springview:library:1.2.6'
@@ -150,5 +157,11 @@ dependencies {
     implementation 'com.shuyu:gsyVideoPlayer-x86:7.1.6'
 
     implementation  'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
+    //图片预览
     implementation 'indi.liyi.view:image-viewer:3.0.1'
+
+    //极光
+    implementation 'cn.jiguang.sdk:jmessage:2.9.2'  // 此处以JMessage 2.9.2 版本为例。
+    implementation 'cn.jiguang.sdk:jcore:2.3.0'  // 此处以JCore 2.3.0 版本为例。
+
 }

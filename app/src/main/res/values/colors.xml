@@ -15,6 +15,13 @@
     <color name="main_select_TextColor">#3062C8</color>
     <color name="main_notSelect_TextColor">#000000</color>
 
+    <color name="color_333333">#333333</color>
+    <color name="color_999999">#999999</color>
+    <color name="color_666666">#666666</color>
+    <color name="color_f7f7f7">#f7f7f7</color>
+
+    <color name="f2f2f2">#F2F2F2</color>
+
     <color name="home_select_TextColor">#3A005A</color>
 
     <color name="home_notSelect_TextColor">#9A9A9A</color>

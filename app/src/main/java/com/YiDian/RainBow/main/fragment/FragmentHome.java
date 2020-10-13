@@ -1,6 +1,7 @@
 package com.YiDian.RainBow.main.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -22,6 +23,7 @@ import com.YiDian.RainBow.main.fragment.home.fragment.FragmentAttDynamic;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentHotDynamic;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentNearDynamic;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentNewDynamic;
+import com.YiDian.RainBow.search.SearchActivity;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.leaf.library.StatusBarUtil;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
@@ -93,6 +95,13 @@ public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedCh
         StatusBarUtil.setGradientColor(getActivity(), toolbar);
         StatusBarUtil.setDarkMode(getActivity());
 
+        llSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //跳转到搜索页
+                startActivity(new Intent(getContext(), SearchActivity.class));
+            }
+        });
         rbs[0] = rbNewDynamic;
         rbs[1] = rbNearDynamic;
         rbs[2] = rbAttDynamic;

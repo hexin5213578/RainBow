@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="#私聊"
+        android:textSize="@dimen/sp_12"
+        android:textColor="@color/color_999999"
+        android:paddingLeft="@dimen/dp_12"
+        android:id="@+id/tv_label_name"
+        android:paddingRight="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_3"
+        android:background="@drawable/search_history_bg"
+        android:paddingTop="@dimen/dp_3"
+        android:layout_height="wrap_content">
+    </TextView>
+</RelativeLayout>
