@@ -9,6 +9,8 @@ import android.view.WindowManager;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.main.activity.MainActivity;
 import com.YiDian.RainBow.regist.activity.RegistActivity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -36,9 +38,22 @@ public class WelcomeActivity extends BaseAvtivity{
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(WelcomeActivity.this, RegistActivity.class);
-                startActivity(intent);
-                finish();
+                String isLogin = Common.getIsLogin();
+                if(isLogin!=null){
+                    if(isLogin.equals("0")){
+                        Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }else{
+                        Intent intent = new Intent(WelcomeActivity.this, RegistActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                }else{
+                    Intent intent = new Intent(WelcomeActivity.this, RegistActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
             }
         }, 2000);//2秒后执行Runnable中的run方法
     }

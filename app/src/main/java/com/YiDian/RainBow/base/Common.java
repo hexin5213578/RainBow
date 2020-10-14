@@ -40,8 +40,6 @@ import java.util.regex.Pattern;
  */
 public  class Common {
 
-    //支付宝appid 2021001185635349
-
     /**
      * 获取token,不为空内种
      *
@@ -49,6 +47,26 @@ public  class Common {
      */
     public static String getToken() {
         return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.KEY_TOKEN);
+    }
+
+    //获取userid
+    public static String getUserId() {
+        return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.USER_ID);
+    }
+
+    //获取手机号
+    public static String getPhone() {
+        return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.KEY_PHONE);
+    }
+
+    //获取是否已经登录过状态
+    public static String getIsLogin() {
+        return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.IS_LOGIN);
+    }
+
+    //社会是否完善信息
+    public static String getIsPerfect() {
+        return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.IS_PERFECT);
     }
 
 

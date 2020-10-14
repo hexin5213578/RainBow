@@ -2,9 +2,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent" android:layout_height="match_parent">
-
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0_1"
+        android:background="@drawable/gradient_color"
+        />
     <RelativeLayout
         android:id="@+id/rl1"
+        android:layout_below="@id/toolbar"
         android:layout_width="match_parent"
         android:background="@drawable/background_gradient1"
         android:layout_height="@dimen/dp_98">
@@ -71,7 +77,7 @@
         android:layout_width="@dimen/dp_200"
         android:layout_below="@id/rl1"
         android:background="@null"
-        android:hint="偏爱"
+        android:hint="请输入昵称"
         android:textColor="#9A9A9A"
         android:id="@+id/et_name"
         android:textSize="@dimen/sp_14"
@@ -105,7 +111,7 @@
         android:layout_width="@dimen/dp_200"
         android:layout_below="@id/v1"
         android:background="@null"
-        android:text="2020-09-17"
+        android:text="2000-01-01"
         android:id="@+id/tv_birth"
         android:textColor="#9A9A9A"
         android:textSize="@dimen/sp_14"

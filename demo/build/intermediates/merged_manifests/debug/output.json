@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "applicationId": "com.YiDian.RainBow",
+  "variantType": "BASE_APK",
+  "elements": [
+    {
+      "outputType": {
+        "type": "MERGED_MANIFESTS"
+      },
+      "apkData": {
+        "type": "MAIN",
+        "splits": [],
+        "versionCode": 380,
+        "versionName": "3.8.0",
+        "outputFile": "demo-debug.apk",
+        "fullName": "debug",
+        "baseName": "debug",
+        "dirName": ""
+      },
+      "path": "AndroidManifest.xml",
+      "properties": {
+        "packageId": "com.YiDian.RainBow",
+        "split": "",
+        "minSdkVersion": "9"
+      }
+    }
+  ]
+}

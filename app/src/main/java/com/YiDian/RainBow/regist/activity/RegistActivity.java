@@ -105,12 +105,17 @@ public class RegistActivity extends BaseAvtivity implements View.OnClickListener
                 break;
             case R.id.bt_regist:
                 String code = etCode.getText().toString();
-                if(code.equals(auth)){
-                    Intent intent = new Intent(RegistActivity.this, SetPwdActivity.class);
-                    intent.putExtra("phone", phone);
-                    startActivity(intent);
-                }else{
-                    Toast.makeText(this, "验证码输入有误", Toast.LENGTH_SHORT).show();
+                if(StringUtil.checkPhoneNumber(phone)){
+                    if(StringUtil.checkSms(code)){
+                        if(code.equals(auth)){
+                            Intent intent = new Intent(RegistActivity.this, SetPwdActivity.class);
+                            intent.putExtra("phone", phone);
+                            startActivity(intent);
+                        }else{
+                            Toast.makeText(this, "验证码输入有误", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
                 }
                 break;
         }

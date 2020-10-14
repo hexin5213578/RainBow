@@ -4,8 +4,9 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Build;
-import android.os.Bundle;
+import android.os.Message;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -19,25 +20,51 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.YiDian.RainBow.R;
+import com.YiDian.RainBow.base.App;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.feedback.activity.FeedBackActivity;
+import com.YiDian.RainBow.login.bean.LoginBean;
+import com.YiDian.RainBow.login.bean.QLoginSuccessBean;
+import com.YiDian.RainBow.login.bean.QLoginUserInfoBean;
+import com.YiDian.RainBow.main.activity.MainActivity;
 import com.YiDian.RainBow.regist.activity.RegistActivity;
 import com.YiDian.RainBow.remember.activity.RememberPwdActivity;
+import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.SPUtil;
+import com.YiDian.RainBow.utils.StringUtil;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.google.gson.Gson;
+import com.tencent.connect.UserInfo;
+import com.tencent.connect.auth.QQToken;
+import com.tencent.tauth.IUiListener;
+import com.tencent.tauth.Tencent;
+import com.tencent.tauth.UiError;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.api.BasicCallback;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.internal.Util;
+
 
 public class LoginActivity extends BaseAvtivity implements View.OnClickListener, AMapLocationListener {
 
@@ -65,6 +92,10 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
     AMapLocationClient mlocationClient;
     //声明mLocationOption对象
     AMapLocationClientOption mLocationOption = null;
+    //需要腾讯提供的一个Tencent类
+    private Tencent mTencent;
+    //还需要一个IUiListener 的实现类（LogInListener implements IUiListener）
+    private BaseUiListener mListener;
     @Override
     protected int getResId() {
         return R.layout.activity_login;
@@ -101,8 +132,19 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
         Request();
         //开启定位
         doLocation();
+
+
+
+
+        //首先需要用APP ID 获取到一个Tencent实例
+        mTencent = Tencent.createInstance("101906973", this.getApplicationContext());
+        //初始化一个IUiListener对象，在IUiListener接口的回调方法中获取到有关授权的某些信息
+        // （千万别忘了覆写onActivityResult方法，否则接收不到回调）
+        mListener = new BaseUiListener();
+
     }
-    public void doLocation(){
+
+    public void doLocation() {
         mlocationClient = new AMapLocationClient(this);
         //初始化定位参数
         mLocationOption = new AMapLocationClientOption();
@@ -121,6 +163,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
         //启动定位
         mlocationClient.startLocation();
     }
+
     @Override
     public void onLocationChanged(AMapLocation amapLocation) {
         if (amapLocation != null) {
@@ -137,12 +180,13 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                 df.format(date);//定位时间
             } else {
                 //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
-                Log.e("AmapError","location Error, ErrCode:"
+                Log.e("AmapError", "location Error, ErrCode:"
                         + amapLocation.getErrorCode() + ", errInfo:"
                         + amapLocation.getErrorInfo());
             }
         }
     }
+
     @Override
     protected BasePresenter initPresenter() {
         return null;
@@ -166,15 +210,87 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                 //跳转忘记密码页
                 break;
             case R.id.bt_login:
-
                 //调用注册登录接口
-                Toast.makeText(this, "登录"+latitude+"   "+longitude, Toast.LENGTH_SHORT).show();
+                String phone = etPhone.getText().toString();
+                String pwd = etPwd1.getText().toString();
+                if (StringUtil.checkPhoneNumber(phone)) {
+                    if (StringUtil.checkPassword(pwd)) {
+                        if (longitude == 0.0 && latitude == 0.0) {
+                            Toast.makeText(LoginActivity.this, "正在获取当前位置信息，请稍后再试", Toast.LENGTH_SHORT).show();
+                        } else {
+                            NetUtils.getInstance().getApis().doPwdLogin(phone, pwd, 1, longitude, latitude)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Observer<LoginBean>() {
+                                        @Override
+                                        public void onSubscribe(Disposable d) {
 
+                                        }
+
+                                        @Override
+                                        public void onNext(LoginBean loginBean) {
+                                            LoginBean.ObjectBean object = loginBean.getObject();
+
+                                            if (loginBean.getType().equals("OK")) {
+                                                String id = String.valueOf(object.getId());
+                                                double lng = object.getLng();
+                                                double lat = object.getLat();
+                                                //极光注册登录
+                                                JMessageClient.register(id, id, new BasicCallback() {
+                                                    @Override
+                                                    public void gotResult(int i, String s) {
+                                                        Log.d("xxx", "极光注册状态为" + i + "原因为" + s);
+                                                        if (i == 0 || i == 898001) {
+                                                            JMessageClient.login(id, id, new BasicCallback() {
+                                                                @Override
+                                                                public void gotResult(int i, String s) {
+                                                                    Log.d("xxx", "极光登录状态为" + i + "原因为" + s);
+                                                                    if (i == 0) {
+                                                                        //记录登录后的信息
+                                                                        SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_ID, id);
+                                                                        SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.KEY_PHONE, phone);
+                                                                        SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.IS_LOGIN, "0");
+                                                                        //登录成功跳转至完善信息页
+                                                                        String isPerfect = Common.getIsPerfect();
+                                                                        Log.d("hmy", isPerfect);
+                                                                        if (isPerfect != null) {
+                                                                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                                                        } else {
+                                                                            startActivity(new Intent(LoginActivity.this, CompleteMsgActivity.class));
+                                                                        }
+                                                                        finish();
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                    }
+                                                });
+                                            } else {
+                                                Toast.makeText(LoginActivity.this, "" + loginBean.getMsg(), Toast.LENGTH_SHORT).show();
+                                            }
+
+
+                                        }
+
+                                        @Override
+                                        public void onError(Throwable e) {
+
+                                        }
+
+                                        @Override
+                                        public void onComplete() {
+
+                                        }
+                                    });
+                        }
+                    }
+                }
                 break;
             case R.id.rl_qq_login:
                 // TODO: 2020/10/6 0006 调用QQ登录
-                
+                //创建接口实例
 
+                doQlogin();
                 break;
             case R.id.rl_wechat_login:
                 // TODO: 2020/10/6 0006 调用微信登录
@@ -183,6 +299,22 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                 break;
         }
     }
+
+    //QQ登录
+    public void doQlogin() {
+        if (!mTencent.isSessionValid()) {
+            mTencent.login(this, "all",new BaseUiListener());
+
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Tencent.onActivityResultData(requestCode, resultCode, data, mListener);
+    }
+
     //安卓10.0定位权限
     public void Request() {
         if (Build.VERSION.SDK_INT >= 23) {
@@ -191,14 +323,14 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
             {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
                 return;//
-            }
-            else {
+            } else {
 
             }
         } else {
 
         }
     }
+
     //参数 requestCode是我们在申请权限的时候使用的唯一的申请码
     //String[] permission则是权限列表，一般用不到
     //int[] grantResults 是用户的操作响应，包含这权限是够请求成功
@@ -206,7 +338,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-     if(requestCode==100){
+        if (requestCode == 100) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
             } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
@@ -219,10 +351,94 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(null != mlocationClient){
+        if (null != mlocationClient) {
             //页面销毁停止定位
             mlocationClient.stopLocation();
             mlocationClient.onDestroy();
         }
+    }
+    private class BaseUiListener implements IUiListener {
+        @Override
+        public void onComplete(Object o) {
+            Toast.makeText(App.getContext(), "登陆成功", Toast.LENGTH_SHORT).show();
+            Log.d("xxx",o.toString());
+
+            //创建gson对象
+            Gson gson = new Gson();
+            QLoginSuccessBean qLoginSuccessBean = gson.fromJson(o.toString(), QLoginSuccessBean.class);
+            //获取Q登录的OpenId
+            String openid = qLoginSuccessBean.getOpenid();
+
+            //调取QQ登录的接口
+
+
+            JSONObject jsonObject = (JSONObject) o;
+            //设置openid和token，否则获取不到下面的信息
+            initOpenidAndToken(jsonObject);
+            //获取QQ用户的各信息
+            getUserInfo();
+        }
+
+        @Override
+        public void onError(UiError uiError) {
+            Toast.makeText(App.getContext(), "登录失败", Toast.LENGTH_SHORT).show();
+            Log.d("xxx",uiError.errorCode+"");
+
+        }
+
+        @Override
+        public void onCancel() {
+            Toast.makeText(App.getContext(), "登录取消", Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+
+    private void initOpenidAndToken(JSONObject jsonObject) {
+        try {
+            String openid = jsonObject.getString("openid");
+            String token = jsonObject.getString("access_token");
+            String expires = jsonObject.getString("expires_in");
+
+            mTencent.setAccessToken(token, expires);
+            mTencent.setOpenId(openid);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getUserInfo() {
+
+        //sdk给我们提供了一个类UserInfo，这个类中封装了QQ用户的一些信息，我么可以通过这个类拿到这些信息
+        QQToken mQQToken = mTencent.getQQToken();
+        UserInfo userInfo = new UserInfo(LoginActivity.this, mQQToken);
+        userInfo.getUserInfo(new IUiListener() {
+                                 @Override
+                                 public void onComplete(final Object o) {
+                                     JSONObject userInfoJson = (JSONObject) o;
+                                     Log.e("xxx",o.toString());
+                                     Gson gson = new Gson();
+                                     QLoginUserInfoBean qLoginUserInfoBean = gson.fromJson(o.toString(), QLoginUserInfoBean.class);
+
+                                     //获取
+                                     String headImg = qLoginUserInfoBean.getFigureurl_2();
+                                     String nickname = qLoginUserInfoBean.getNickname();
+
+                                 }
+
+                                 @Override
+                                 public void onError(UiError uiError) {
+                                     Log.e("xxx", "获取qq用户信息错误");
+                                     Toast.makeText(LoginActivity.this, "获取qq用户信息错误", Toast.LENGTH_SHORT).show();
+                                 }
+
+                                 @Override
+                                 public void onCancel() {
+                                     Log.e("xxx", "获取qq用户信息取消");
+                                     Toast.makeText(LoginActivity.this, "获取qq用户信息取消", Toast.LENGTH_SHORT).show();
+                                 }
+                             }
+        );
     }
 }

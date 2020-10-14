@@ -23,11 +23,15 @@ import androidx.core.content.ContextCompat;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.feedback.activity.FeedBackActivity;
 import com.YiDian.RainBow.login.activity.CompleteMsgActivity;
+import com.YiDian.RainBow.login.activity.LoginActivity;
 import com.YiDian.RainBow.login.bean.LoginBean;
+import com.YiDian.RainBow.main.activity.MainActivity;
 import com.YiDian.RainBow.regist.bean.RegistBean;
 import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.SPUtil;
 import com.YiDian.RainBow.utils.StringUtil;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -38,6 +42,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import butterknife.BindView;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.api.BasicCallback;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -144,8 +150,8 @@ public class SetPwdActivity extends BaseAvtivity implements View.OnClickListener
                 String pwd1 = etPwd1.getText().toString();
                 String pwd2 = etPwd2.getText().toString();
                 //调用注册接口
-                if (StringUtil.checkPassword(pwd1)&&StringUtil.checkPassword(pwd2)){
-                    NetUtils.getInstance().getApis().doRegist(phone,pwd1)
+                if (StringUtil.checkPassword(pwd1) && StringUtil.checkPassword(pwd2)) {
+                    NetUtils.getInstance().getApis().doRegist(phone, pwd1)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Observer<RegistBean>() {
@@ -157,36 +163,72 @@ public class SetPwdActivity extends BaseAvtivity implements View.OnClickListener
                                 @Override
                                 public void onNext(RegistBean registBean) {
                                     //判断注册成功调用登录接口
-                                    if(registBean.getType().equals("OK")){
-                                        NetUtils.getInstance().getApis().doPwdLogin(phone,pwd1,1,longitude,latitude)
-                                                .subscribeOn(Schedulers.io())
-                                                .observeOn(AndroidSchedulers.mainThread())
-                                                .subscribe(new Observer<LoginBean>() {
-                                                    @Override
-                                                    public void onSubscribe(Disposable d) {
+                                    if (registBean.getType().equals("OK")) {
+                                        if(longitude==0.0 && latitude==0.0){
+                                            Toast.makeText(SetPwdActivity.this, "正在获取当前位置信息，请稍后再试", Toast.LENGTH_SHORT).show();
+                                        }else{
+                                            NetUtils.getInstance().getApis().doPwdLogin(phone, pwd1, 1, longitude, latitude)
+                                                    .subscribeOn(Schedulers.io())
+                                                    .observeOn(AndroidSchedulers.mainThread())
+                                                    .subscribe(new Observer<LoginBean>() {
+                                                        @Override
+                                                        public void onSubscribe(Disposable d) {
 
-                                                    }
+                                                        }
 
-                                                    @Override
-                                                    public void onNext(LoginBean loginBean) {
-                                                        //登录成功跳转至主页
-                                                        startActivity(new Intent(SetPwdActivity.this, CompleteMsgActivity.class));
+                                                        @Override
+                                                        public void onNext(LoginBean loginBean) {
+                                                            LoginBean.ObjectBean object = loginBean.getObject();
+                                                            String id = String.valueOf(object.getId());
+                                                            double lng = object.getLng();
+                                                            double lat = object.getLat();
+                                                            //极光注册登录
+                                                            JMessageClient.register(id, id, new BasicCallback() {
+                                                                @Override
+                                                                public void gotResult(int i, String s) {
+                                                                    if(i==0|| i==898001){
+                                                                        JMessageClient.login(id, id, new BasicCallback() {
+                                                                            @Override
+                                                                            public void gotResult(int i, String s) {
+                                                                                if(i==0){
+                                                                                    //记录登录后的信息
+                                                                                    SPUtil.getInstance().saveData(SetPwdActivity.this,SPUtil.FILE_NAME,SPUtil.USER_ID,id);
+                                                                                    SPUtil.getInstance().saveData(SetPwdActivity.this,SPUtil.FILE_NAME,SPUtil.KEY_PHONE,phone);
+                                                                                    SPUtil.getInstance().saveData(SetPwdActivity.this,SPUtil.FILE_NAME,SPUtil.IS_LOGIN,"0");
+                                                                                    //登录成功跳转至主页
+                                                                                    //登录成功跳转至完善信息页
+                                                                                    String isPerfect = Common.getIsPerfect();
+                                                                                    if (isPerfect!=null){
+                                                                                            startActivity(new Intent(SetPwdActivity.this, MainActivity.class));
+                                                                                            finish();
+                                                                                    }else{
+                                                                                        startActivity(new Intent(SetPwdActivity.this, CompleteMsgActivity.class));
+                                                                                        finish();
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                }
+                                                            });
 
-                                                        //记录登录后的信息
+                                                        }
 
-                                                    }
-                                                    @Override
-                                                    public void onError(Throwable e) {
+                                                        @Override
+                                                        public void onError(Throwable e) {
 
-                                                    }
+                                                        }
 
-                                                    @Override
-                                                    public void onComplete() {
+                                                        @Override
+                                                        public void onComplete() {
 
-                                                    }
-                                                });
+                                                        }
+                                                    });
+                                        }
+                                        
                                     }
                                 }
+
                                 @Override
                                 public void onError(Throwable e) {
                                 }
@@ -200,7 +242,8 @@ public class SetPwdActivity extends BaseAvtivity implements View.OnClickListener
                 break;
         }
     }
-    public void doLocation(){
+
+    public void doLocation() {
         mlocationClient = new AMapLocationClient(this);
         //初始化定位参数
         mLocationOption = new AMapLocationClientOption();
@@ -219,6 +262,7 @@ public class SetPwdActivity extends BaseAvtivity implements View.OnClickListener
         //启动定位
         mlocationClient.startLocation();
     }
+
     @Override
     public void onLocationChanged(AMapLocation amapLocation) {
         if (amapLocation != null) {
@@ -235,7 +279,7 @@ public class SetPwdActivity extends BaseAvtivity implements View.OnClickListener
                 df.format(date);//定位时间
             } else {
                 //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
-                Log.e("AmapError","location Error, ErrCode:"
+                Log.e("AmapError", "location Error, ErrCode:"
                         + amapLocation.getErrorCode() + ", errInfo:"
                         + amapLocation.getErrorInfo());
             }
@@ -246,6 +290,7 @@ public class SetPwdActivity extends BaseAvtivity implements View.OnClickListener
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
+
     //安卓10.0定位权限
     public void Request() {
         if (Build.VERSION.SDK_INT >= 23) {
@@ -254,14 +299,14 @@ public class SetPwdActivity extends BaseAvtivity implements View.OnClickListener
             {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
                 return;//
-            }
-            else {
+            } else {
 
             }
         } else {
 
         }
     }
+
     //参数 requestCode是我们在申请权限的时候使用的唯一的申请码
     //String[] permission则是权限列表，一般用不到
     //int[] grantResults 是用户的操作响应，包含这权限是够请求成功
@@ -269,7 +314,7 @@ public class SetPwdActivity extends BaseAvtivity implements View.OnClickListener
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode==100){
+        if (requestCode == 100) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
             } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
@@ -282,7 +327,7 @@ public class SetPwdActivity extends BaseAvtivity implements View.OnClickListener
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(null != mlocationClient){
+        if (null != mlocationClient) {
             //页面销毁停止定位
             mlocationClient.stopLocation();
             mlocationClient.onDestroy();

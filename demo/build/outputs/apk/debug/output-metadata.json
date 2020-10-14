@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.YiDian.RainBow",
+  "variantName": "debug",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "properties": [],
+      "versionCode": 380,
+      "versionName": "3.8.0",
+      "enabled": true,
+      "outputFile": "demo-debug.apk"
+    }
+  ]
+}

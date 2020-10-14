@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import cn.jpush.android.api.JPushInterface;
 import cn.jpush.im.android.api.JMessageClient;
 
 
@@ -76,6 +77,10 @@ public class App extends Application {
         //初始化极光
         JMessageClient.setDebugMode(true);
         JMessageClient.init(this);
+
+        //初始化极光推送
+        JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
+        JPushInterface.init(this);     		// 初始化 JPush
     }
 
     private void initWX() {

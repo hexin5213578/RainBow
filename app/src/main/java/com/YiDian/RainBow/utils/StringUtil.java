@@ -618,11 +618,6 @@ public class StringUtil {
             Toast.makeText(App.getContext(), "请输入密码", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (StringFilter(password)) {
-            Toast.makeText(App.getContext(), "密码不可包含特殊字符", Toast.LENGTH_SHORT).show();
-
-            return false;
-        }
         return true;
     }
 

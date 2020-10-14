@@ -60,6 +60,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation fileTree(dir: 'libs', include: '*.jar')
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     testImplementation 'junit:junit:4.12'
@@ -163,5 +164,6 @@ dependencies {
     //极光
     implementation 'cn.jiguang.sdk:jmessage:2.9.2'  // 此处以JMessage 2.9.2 版本为例。
     implementation 'cn.jiguang.sdk:jcore:2.3.0'  // 此处以JCore 2.3.0 版本为例。
-
+    //极光推送
+    implementation 'cn.jiguang.sdk:jpush:3.7.0'  // 此处以JPush 3.7.0 版本为例。
 }

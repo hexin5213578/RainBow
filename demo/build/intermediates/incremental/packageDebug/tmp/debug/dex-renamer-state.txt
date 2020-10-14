@@ -1,0 +1,4 @@
+#Wed Oct 14 10:01:12 CST 2020
+base.0=D\:\\Androidworkspace\\RainBow\\demo\\build\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex

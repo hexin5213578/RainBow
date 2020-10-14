@@ -11,13 +11,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.feedback.activity.FeedBackActivity;
+import com.YiDian.RainBow.remember.bean.RememberPwdBean;
+import com.YiDian.RainBow.setpwd.bean.GetPhoneCodeBean;
+import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.StringUtil;
 
 import butterknife.BindView;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class RememberPwdActivity extends BaseAvtivity implements View.OnClickListener {
     @BindView(R.id.back)
@@ -38,6 +48,9 @@ public class RememberPwdActivity extends BaseAvtivity implements View.OnClickLis
     Button btConfirm;
     private CountDownTimer mTimer;
     private boolean isplayer =false;
+    private String phone;
+    private String auth;
+
     @Override
     protected int getResId() {
         return R.layout.activity_remember_pwd;
@@ -85,7 +98,39 @@ public class RememberPwdActivity extends BaseAvtivity implements View.OnClickLis
                 //确认修改密码
             case R.id.bt_confirm:
                 // TODO: 2020/10/6 0006 调用修改密码接口  修改成功后跳转至登录页
+                String code = etCode.getText().toString();
+                String pwd = etPwd1.getText().toString();
+                if(code.equals(auth)){
+                    if(StringUtil.checkPassword(pwd)){
+                        NetUtils.getInstance().getApis().doRemeberPwd(pwd,phone)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Observer<RememberPwdBean>() {
+                                    @Override
+                                    public void onSubscribe(Disposable d) {
 
+                                    }
+                                    @Override
+                                    public void onNext(RememberPwdBean rememberPwdBean) {
+                                        if(rememberPwdBean.getType().equals("OK")){
+                                            Toast.makeText(RememberPwdActivity.this, "密码重置成功", Toast.LENGTH_SHORT).show();
+                                            finish();
+                                        }
+                                    }
+                                    @Override
+                                    public void onError(Throwable e) {
+
+                                    }
+                                    @Override
+                                    public void onComplete() {
+
+                                    }
+                                });
+                    }
+                }else {
+                    Toast.makeText(this, "验证码输入有误", Toast.LENGTH_SHORT).show();
+                }
+                
                 break;
                 //跳转至遇到问题界面
             case R.id.tv_mt_pro:
@@ -93,7 +138,39 @@ public class RememberPwdActivity extends BaseAvtivity implements View.OnClickLis
                 break;
                 //获取验证码
             case R.id.tv_getcode:
-                countDownTime();
+                phone = etPhone.getText().toString();
+
+                if(StringUtil.checkPhoneNumber(phone)){
+                    countDownTime();
+
+                    NetUtils.getInstance().getApis().getPhoneCode(phone)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Observer<GetPhoneCodeBean>() {
+
+                                @Override
+                                public void onSubscribe(Disposable d) {
+
+                                }
+
+                                @Override
+                                public void onNext(GetPhoneCodeBean getPhoneCodeBean) {
+                                    if(getPhoneCodeBean.getType().equals("OK")){
+                                        auth = getPhoneCodeBean.getObject();
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+
+                                }
+                            });
+                }
                 break;
         }
     }

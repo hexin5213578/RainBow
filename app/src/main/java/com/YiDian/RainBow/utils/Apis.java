@@ -1,9 +1,11 @@
 package com.YiDian.RainBow.utils;
 
 
+import com.YiDian.RainBow.login.bean.ComPleteMsgBean;
 import com.YiDian.RainBow.login.bean.LoginBean;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.regist.bean.RegistBean;
+import com.YiDian.RainBow.remember.bean.RememberPwdBean;
 import com.YiDian.RainBow.setpwd.bean.GetPhoneCodeBean;
 
 import java.net.URL;
@@ -37,5 +39,13 @@ public interface Apis {
     //微信登录
     @GET("user/userLogin")
     Observable<LoginBean> doWechatLogin(@Query("accountType") int type,@Query("weChatOpenId")String wechatId,@Query("lng")double lng,@Query("lat")double lat);
+
+    //完善资料
+    @GET("user/updateUserInfo")
+    Observable<ComPleteMsgBean> doComPleteMsg(@Query("nickName")String username,@Query("headImg")String headImg,@Query("birthday")String birthday,@Query("userRole")String gender,@Query("isSingle")int isSingle,@Query("id")int userid);
+
+    //修改 忘记密码
+    @GET("user/updatePassword")
+    Observable<RememberPwdBean> doRemeberPwd(@Query("password")String pwd,@Query("phoneNum")String phone);
 
 }

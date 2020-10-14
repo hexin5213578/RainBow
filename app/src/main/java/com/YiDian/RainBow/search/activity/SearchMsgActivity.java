@@ -18,18 +18,7 @@ public class SearchMsgActivity extends BaseAvtivity {
 
     @Override
     protected void getData() {
-      /*  JMessageClient.register("zhangsan", "111111", new BasicCallback() {
-            @Override
-            public void gotResult(int i, String s) {
-                Log.d("hmy","i为:"+i+"  s为:"+s);
-            }
-        });*/
-      JMessageClient.login("zhangsan", "111111", new BasicCallback() {
-          @Override
-          public void gotResult(int i, String s) {
-              Log.d("hmy","i为:"+i+"  s为:"+s);
-          }
-      });
+
     }
 
     @Override

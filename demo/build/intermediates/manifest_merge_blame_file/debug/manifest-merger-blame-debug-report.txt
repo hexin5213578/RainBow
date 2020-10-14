@@ -1,0 +1,442 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.YiDian.RainBow"
+4    android:versionCode="380"
+5    android:versionName="3.8.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="9"
+8-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml
+9        android:targetSdkVersion="26" />
+9-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml
+10    <!-- Required -->
+11    <permission
+12        android:name="com.YiDian.RainBow.permission.JPUSH_MESSAGE"
+12-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:7:9-65
+13        android:protectionLevel="signature" />
+13-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:8:9-44
+14
+15    <!-- Required  一些系统要求的权限，如访问网络等 -->
+16    <uses-permission android:name="com.YiDian.RainBow.permission.JPUSH_MESSAGE" />
+16-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:11:22-78
+17    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
+17-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:12:5-79
+17-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:12:22-76
+18    <uses-permission android:name="android.permission.INTERNET" />
+18-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:13:5-67
+18-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:13:22-64
+19    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+19-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:14:5-75
+19-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:14:22-72
+20    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+20-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:15:5-81
+20-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:15:22-78
+21    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+21-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:16:5-80
+21-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:16:22-77
+22    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+22-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:17:5-84
+22-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:17:22-81
+23    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+23-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:18:5-79
+23-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:18:22-76
+24    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+24-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:19:5-76
+24-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:19:22-73
+25
+26    <!-- 华为角标 -->
+27    <uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE" />
+27-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:22:5-23:77
+27-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:23:9-75
+28
+29    <!-- Optional for location -->
+30    <uses-permission android:name="android.permission.VIBRATE" />
+30-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:27:5-66
+30-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:27:22-63
+31    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- 用于开启 debug 版本的应用在6.0 系统上 层叠窗口权限 -->
+31-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:28:5-78
+31-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:28:22-75
+32    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+32-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:29:5-81
+32-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:29:22-78
+33    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+33-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:30:5-76
+33-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:30:22-73
+34    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+34-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:31:5-79
+34-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:31:22-76
+35    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> <!-- Android Q后台定位权限 -->
+35-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:32:5-85
+35-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:32:22-82
+36    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+36-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:33:5-89
+36-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:33:22-86
+37    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+37-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:34:5-79
+37-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:34:22-76
+38    <uses-permission android:name="android.permission.GET_TASKS" />
+38-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:35:5-67
+38-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:35:22-65
+39    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+39-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:36:5-76
+39-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:36:22-74
+40    <!-- for androidR targetSdkVersion >=30 -->
+41    <!-- <queries > -->
+42    <!-- <intent> -->
+43    <!-- <action android:name="cn.jpush.android.intent.PushService" /> -->
+44    <!-- </intent> -->
+45    <!-- </queries> -->
+46    <application
+46-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:45:5-227:19
+47        android:name="com.example.jpushdemo.ExampleApplication"
+47-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:49:9-64
+48        android:allowBackup="false"
+48-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:47:9-36
+49        android:debuggable="true"
+50        android:icon="@drawable/ic_launcher"
+50-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:46:9-45
+51        android:label="@string/app_name"
+51-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:48:9-41
+52        android:testOnly="true" >
+53
+54        <!-- For test only 测试的主程序 -->
+55        <activity
+55-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:52:9-59:20
+56            android:name="com.example.jpushdemo.MainActivity"
+56-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:53:13-62
+57            android:label="@string/app_name" >
+57-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:54:13-45
+58            <intent-filter>
+58-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:55:13-58:29
+59                <action android:name="android.intent.action.MAIN" />
+59-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:56:17-69
+59-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:56:25-66
+60
+61                <category android:name="android.intent.category.LAUNCHER" />
+61-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:57:17-77
+61-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:57:27-74
+62            </intent-filter>
+63        </activity>
+64        <!-- For test only 测试高级功能 -->
+65        <activity
+65-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:61:8-115
+66            android:name="com.example.jpushdemo.PushSetActivity"
+66-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:61:18-70
+67            android:label="@string/app_name" />
+67-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:61:71-103
+68        <!-- For test only 测试设置 -->
+69        <activity
+69-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:63:8-115
+70            android:name="com.example.jpushdemo.SettingActivity"
+70-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:63:18-70
+71            android:label="@string/app_name" />
+71-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:63:71-103
+72        <!-- For test only 测试状态通知栏，需要打开的Activity -->
+73        <activity
+73-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:65:9-70:20
+74            android:name="com.example.jpushdemo.TestActivity"
+74-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:65:19-68
+75            android:exported="false" >
+75-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:65:69-93
+76            <intent-filter>
+76-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:66:13-69:29
+77                <action android:name="jpush.testAction" />
+77-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:67:17-59
+77-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:67:25-56
+78
+79                <category android:name="jpush.testCategory" />
+79-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:68:17-63
+79-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:68:27-60
+80            </intent-filter>
+81        </activity>
+82
+83        <!-- Rich push 核心功能 since 2.0.6 -->
+84        <activity
+84-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:73:9-77:20
+85            android:name="cn.jpush.android.ui.PopWinActivity"
+85-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:74:13-62
+86            android:exported="false"
+86-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:76:13-37
+87            android:theme="@style/MyDialogStyle" >
+87-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:75:13-49
+88        </activity>
+89
+90        <!-- Required SDK核心功能 -->
+91        <activity
+91-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:80:9-90:20
+92            android:name="cn.jpush.android.ui.PushActivity"
+92-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:81:13-60
+93            android:configChanges="orientation|keyboardHidden"
+93-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:82:13-63
+94            android:exported="false"
+94-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:84:13-37
+95            android:theme="@android:style/Theme.NoTitleBar" >
+95-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:83:13-60
+96            <intent-filter>
+96-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:85:13-89:29
+97                <action android:name="cn.jpush.android.ui.PushActivity" />
+97-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:86:17-75
+97-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:86:25-72
+98
+99                <category android:name="android.intent.category.DEFAULT" />
+99-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:87:17-76
+99-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:87:27-73
+100                <category android:name="com.YiDian.RainBow" />
+100-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:88:27-58
+101            </intent-filter>
+102        </activity>
+103
+104        <!-- Required SDK 核心功能 -->
+105        <!-- 可配置android:process参数将PushService放在其他进程中 -->
+106        <service
+106-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:94:9-103:19
+107            android:name="cn.jpush.android.service.PushService"
+107-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:95:13-64
+108            android:process=":pushcore" >
+108-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:96:13-40
+109            <intent-filter>
+109-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:97:13-102:29
+110                <action android:name="cn.jpush.android.intent.REGISTER" />
+110-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:98:17-75
+110-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:98:25-72
+111                <action android:name="cn.jpush.android.intent.REPORT" />
+111-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:99:17-73
+111-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:99:25-70
+112                <action android:name="cn.jpush.android.intent.PushService" />
+112-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:100:17-78
+112-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:100:25-75
+113                <action android:name="cn.jpush.android.intent.PUSH_TIME" />
+113-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:101:17-76
+113-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:101:25-73
+114            </intent-filter>
+115        </service>
+116
+117        <!-- since 3.0.9 Required SDK 核心功能 -->
+118        <provider
+119            android:name="cn.jpush.android.service.DataProvider"
+119-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:108:13-65
+120            android:authorities="com.YiDian.RainBow.DataProvider"
+120-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:107:13-64
+121            android:exported="false"
+121-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:110:13-37
+122            android:process=":pushcore" />
+122-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:109:13-40
+123
+124        <!-- since 1.8.0 option 可选项。用于同一设备中不同应用的JPush服务相互拉起的功能。 -->
+125        <!-- 若不启用该功能可删除该组件，或把 enabled 设置成 false ；App 不会被其他 App 拉起，但会拉起其他的 App。 -->
+126        <service
+126-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:115:9-124:19
+127            android:name="cn.jpush.android.service.DaemonService"
+127-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:116:13-66
+128            android:enabled="true"
+128-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:117:13-35
+129            android:exported="true" >
+129-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:118:13-36
+130            <intent-filter>
+130-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:119:13-122:29
+131                <action android:name="cn.jpush.android.intent.DaemonService" />
+131-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:120:17-80
+131-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:120:25-77
+132
+133                <category android:name="com.YiDian.RainBow" />
+133-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:88:27-58
+134            </intent-filter>
+135        </service>
+136
+137        <!-- 可选，如果使用静态Activity方式拉起，该组件必须声明 -->
+138        <activity
+138-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:127:9-136:20
+139            android:name="cn.jpush.android.service.DActivity"
+139-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:127:19-68
+140            android:enabled="true"
+140-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:128:13-35
+141            android:exported="true"
+141-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:129:13-36
+142            android:taskAffinity="jpush.custom"
+142-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:131:13-48
+143            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+143-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:130:13-72
+144            <intent-filter>
+144-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:132:13-135:29
+145                <action android:name="cn.jpush.android.intent.DActivity" />
+145-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:133:17-75
+145-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:133:25-73
+146
+147                <category android:name="com.YiDian.RainBow" />
+147-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:88:27-58
+148            </intent-filter>
+149        </activity>
+150
+151        <!-- since 3.1.0 Required SDK 核心功能 -->
+152        <provider
+153            android:name="cn.jpush.android.service.DownloadProvider"
+153-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:141:13-69
+154            android:authorities="com.YiDian.RainBow.DownloadProvider"
+154-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:140:13-68
+155            android:exported="true" />
+155-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:142:13-36
+156
+157        <!-- Required SDK核心功能 -->
+158        <receiver
+158-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:146:9-164:20
+159            android:name="cn.jpush.android.service.PushReceiver"
+159-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:147:13-65
+160            android:enabled="true" >
+160-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:148:13-35
+161            <intent-filter android:priority="1000" >
+161-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:149:13-152:29
+161-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:149:28-51
+162                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" /> <!-- Required  显示通知栏 -->
+162-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:150:17-94
+162-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:150:25-91
+163                <category android:name="com.YiDian.RainBow" />
+163-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:88:27-58
+164            </intent-filter>
+165            <intent-filter>
+165-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:153:13-156:29
+166                <action android:name="android.intent.action.USER_PRESENT" />
+166-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:154:17-77
+166-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:154:25-74
+167                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+167-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:155:17-79
+167-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:155:25-76
+168            </intent-filter>
+169            <!-- Optional -->
+170            <intent-filter>
+170-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:158:13-163:29
+171                <action android:name="android.intent.action.PACKAGE_ADDED" />
+171-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:159:17-78
+171-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:159:25-75
+172                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+172-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:160:17-80
+172-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:160:25-77
+173
+174                <data android:scheme="package" />
+174-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:162:17-50
+174-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:162:23-47
+175            </intent-filter>
+176        </receiver>
+177
+178        <!-- Required SDK核心功能 -->
+179        <receiver
+179-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:167:9-99
+180            android:name="cn.jpush.android.service.AlarmReceiver"
+180-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:167:19-72
+181            android:exported="false" />
+181-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:167:73-97
+182
+183        <!-- 3.5.0新增，用于定时展示功能 -->
+184        <receiver
+184-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:170:9-103
+185            android:name="cn.jpush.android.service.SchedulerReceiver"
+185-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:170:19-76
+186            android:exported="false" />
+186-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:170:77-101
+187
+188        <!-- 3.6.7 新增，用于负反馈组件 -->
+189        <service android:name="cn.jpush.android.service.MessagingIntentService" />
+189-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:173:9-83
+189-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:173:18-80
+190
+191        <!-- User defined.  For test only  用户自定义的广播接收器 -->
+192        <receiver
+192-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:176:9-187:20
+193            android:name="com.example.jpushdemo.MyReceiver"
+193-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:177:13-60
+194            android:enabled="true" >
+194-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:178:13-35
+195            <intent-filter>
+195-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:179:13-186:29
+196                <action android:name="cn.jpush.android.intent.REGISTRATION" /> <!-- Required  用户注册SDK的intent -->
+196-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:180:17-79
+196-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:180:25-76
+197                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" /> <!-- Required  用户接收SDK消息的intent -->
+197-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:181:17-83
+197-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:181:25-80
+198                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" /> <!-- Required  用户接收SDK通知栏信息的intent -->
+198-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:182:17-88
+198-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:182:25-85
+199                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" /> <!-- Required  用户打开自定义通知栏的intent -->
+199-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:183:17-86
+199-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:183:25-83
+200                <action android:name="cn.jpush.android.intent.CONNECTION" /> <!-- 接收网络变化 连接/断开 since 1.6.3 -->
+200-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:184:17-77
+200-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:184:25-74
+201                <category android:name="com.YiDian.RainBow" />
+201-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:88:27-58
+202            </intent-filter>
+203        </receiver>
+204
+205        <!-- User defined.  For test only  用户自定义接收消息器,3.0.7开始支持,目前新tag/alias接口设置结果会在该广播接收器对应的方法中回调 -->
+206        <!-- since 3.3.0 接收JPush相关事件 -->
+207        <receiver android:name="com.example.jpushdemo.PushMessageReceiver" >
+207-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:193:9-198:20
+207-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:193:19-75
+208            <intent-filter>
+208-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:194:13-197:29
+209                <action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE" />
+209-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:195:17-82
+209-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:195:25-79
+210
+211                <category android:name="com.YiDian.RainBow" />
+211-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:88:27-58
+212            </intent-filter>
+213        </receiver>
+214
+215        <!-- since 3.3.0 Required SDK核心功能 -->
+216        <activity
+216-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:201:9-210:20
+217            android:name="cn.jpush.android.service.JNotifyActivity"
+217-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:202:13-68
+218            android:exported="false"
+218-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:203:13-37
+219            android:taskAffinity="jpush.custom"
+219-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:204:13-48
+220            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+220-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:205:13-72
+221            <intent-filter>
+221-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:206:13-209:29
+222                <action android:name="cn.jpush.android.intent.JNotifyActivity" />
+222-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:207:17-82
+222-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:207:25-79
+223
+224                <category android:name="com.YiDian.RainBow" />
+224-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:88:27-58
+225            </intent-filter>
+226        </activity>
+227
+228        <!-- since 3.3.0 Required SDK 核心功能 -->
+229        <!-- 可配置android:process参数将PushService放在其他进程中 -->
+230        <!-- User defined.  For test only 继承自cn.jpush.android.service.JCommonService -->
+231        <service
+231-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:215:9-220:19
+232            android:name="com.example.jpushdemo.PushService"
+232-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:215:18-66
+233            android:process=":pushcore" >
+233-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:216:13-40
+234            <intent-filter>
+234-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:217:13-219:29
+235                <action android:name="cn.jiguang.user.service.action" />
+235-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:218:17-73
+235-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:218:25-70
+236            </intent-filter>
+237        </service>
+238        <!-- since 3.5.6 新增华硕通道 -->
+239        <receiver android:name="cn.jpush.android.asus.AsusPushMessageReceiver" />
+239-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:222:9-91
+239-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:222:19-79
+240        <!-- Required  . Enable it you can get statistics data with channel -->
+241        <meta-data
+242            android:name="JPUSH_CHANNEL"
+242-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:224:20-48
+243            android:value="default_developer" />
+243-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:224:49-81
+244        <meta-data
+245            android:name="JPUSH_APPKEY"
+245-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:225:20-47
+246            android:value="87ce5706efafab51ddd2be08" /> <!-- </>值来自开发者平台取得的AppKey -->
+246-->D:\Androidworkspace\RainBow\demo\src\main\AndroidManifest.xml:225:48-79
+247
+248    </application>
+249
+250</manifest>

@@ -138,7 +138,7 @@ public class FragmentNewDynamic extends BaseFragment {
                         linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
                         rcNewDynamic.setLayoutManager(linearLayoutManager);
                         newDynamicAdapter = new NewDynamicAdapter(getContext(), list);
-                        rcNewDynamic.setAdapter(newDynamicAdapter);
+                        //rcNewDynamic.setAdapter(newDynamicAdapter);
                     }
 
                     @Override

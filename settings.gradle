@@ -1,3 +1,4 @@
+include ':demo'
 include ':imageviewe'
 include ':imageshow'
 include ':imageviewer'
