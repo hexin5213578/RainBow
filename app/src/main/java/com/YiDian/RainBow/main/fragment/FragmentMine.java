@@ -1,5 +1,6 @@
 package com.YiDian.RainBow.main.fragment;
 
+import android.hardware.camera2.CameraCaptureSession;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -229,7 +230,6 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
                 break;
                 //扫一扫
             case R.id.ll_saoyisao:
-
                 break;
                 //设置
             case R.id.ll_shezhi:

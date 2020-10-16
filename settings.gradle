@@ -1,3 +1,4 @@
+include ':libzxing-master'
 include ':demo'
 include ':imageviewe'
 include ':imageshow'
