@@ -91,9 +91,13 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
-        String data = SPUtil.getInstance().getData(this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG);
-        if(data!=null){
-            Glide.with(CompleteMsgActivity.this).load(data).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+        path = SPUtil.getInstance().getData(this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG);
+        if(path!=null){
+            Glide.with(CompleteMsgActivity.this).load(path).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+        }
+        String data1 = SPUtil.getInstance().getData(this, SPUtil.FILE_NAME, SPUtil.USER_NAME);
+        if(data1!=null){
+            etName.setText(data1);
         }
         tvBirth.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -215,12 +219,5 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
                 Glide.with(CompleteMsgActivity.this).load(path).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
             }
         }
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
     }
 }

@@ -132,7 +132,6 @@ public class FragmentHotTopic extends BaseFragment implements View.OnClickListen
                         label.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Toast.makeText(getContext(), "" + string, Toast.LENGTH_SHORT).show();
                                 //将选择的历史记录回显到输入框
                                 etSearch.setText(string);
                             }

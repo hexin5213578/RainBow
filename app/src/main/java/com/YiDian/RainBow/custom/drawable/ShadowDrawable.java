@@ -29,8 +29,8 @@ public class ShadowDrawable extends Drawable {
     private int mBgColor[];
     private RectF mRect;
 
-    public final static int SHAPE_ROUND = 1;
-    public final static int SHAPE_CIRCLE = 2;
+    public final static int SHAPE_ROUND = 1;    // 表示圆角矩形
+    public final static int SHAPE_CIRCLE = 2;   // 表示圆
 
     private ShadowDrawable(int shape, int[] bgColor, int shapeRadius, int shadowColor, int shadowRadius, int offsetX, int offsetY) {
         this.mShape = shape;

@@ -43,6 +43,7 @@ public class Fragmentmatch extends BaseFragment {
     protected void getData() {
         container.setStackMargin(20);
 
+
         CardsDataAdapter cardsDataAdapter = new CardsDataAdapter(getContext(), R.layout.card_layout);
         container.setAdapter(cardsDataAdapter);
         cardsDataAdapter.add("test1");

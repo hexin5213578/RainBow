@@ -1,5 +1,6 @@
 package com.YiDian.RainBow.search.activity;
 
+import android.content.Intent;
 import android.util.Log;
 
 import com.YiDian.RainBow.R;
@@ -18,6 +19,10 @@ public class SearchMsgActivity extends BaseAvtivity {
 
     @Override
     protected void getData() {
+        Intent intent = getIntent();
+        //获取要搜索的内容
+        String text = intent.getStringExtra("text");
+
 
     }
 

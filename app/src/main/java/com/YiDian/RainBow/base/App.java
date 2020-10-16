@@ -1,17 +1,14 @@
 package com.YiDian.RainBow.base;
 
 import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.Window;
-import android.view.WindowManager;
 
 
 import androidx.multidex.MultiDex;
@@ -29,6 +26,9 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.decode.BaseImageDecoder;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
+import com.tencent.mm.opensdk.constants.ConstantsAPI;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -37,6 +37,8 @@ import java.io.IOException;
 
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.im.android.api.JMessageClient;
+
+import static android.provider.UserDictionary.Words.APP_ID;
 
 
 /**
@@ -58,7 +60,6 @@ public class App extends Application {
         //EnvUtils.setEnv(EnvUtils.EnvEnum.SANDBOX);
         //imageloader初始化
         initImageloader();
-        initWX();
        // Bugly.init(getApplicationContext(), "c11555727a", false);
 
         Context context = getApplicationContext();
@@ -83,19 +84,12 @@ public class App extends Application {
         JPushInterface.init(this);     		// 初始化 JPush
     }
 
-    private void initWX() {
-       // mWXApi = WXAPIFactory.createWXAPI(context, null);
-       // mWXApi.registerApp("wxacf956e14f407890");
-    }
 
-   /* public static IWXAPI getWXApi() {
-        return mWXApi;
-    }*/
+
 
     public static Context getContext() {
         return context;
     }
-
     /**
      * 获取进程号对应的进程名
      *

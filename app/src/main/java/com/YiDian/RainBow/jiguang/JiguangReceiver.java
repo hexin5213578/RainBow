@@ -20,11 +20,8 @@ import cn.jpush.android.service.JPushMessageReceiver;
 
 public class JiguangReceiver extends JPushMessageReceiver {
     private static final String TAG = "MyReceiver";
-
     private NotificationManager nm;
-
-/*    @Override
-    public void onReceive(Context context, Intent intent) {
+/*    public void onReceive(Context context, Intent intent) {
         if (null == nm) {
             nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         }
