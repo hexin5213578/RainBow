@@ -101,6 +101,8 @@ dependencies {
 
     //recyclerview依赖
     implementation 'com.android.support:recyclerview-v7:30.0.0'
+    //侧滑recycleview
+    implementation 'com.yanzhenjie:recyclerview-swipe:1.1.4'
 
     //TabLayout的依赖
     implementation 'com.android.support:design:30.0.0'

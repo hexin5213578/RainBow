@@ -135,11 +135,7 @@
         <!-- 引导页 -->
         <activity android:name=".welcome.WelcomeActivity"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <!-- 主页 -->
         <activity
@@ -211,6 +207,16 @@
         <activity android:name=".search.activity.TopicDetailsActivity"
             android:screenOrientation="portrait"
             >
+        </activity>
+        <!-- 设置 -->
+        <activity android:name=".setup.SetupActivity"
+            android:screenOrientation="portrait"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

@@ -1,9 +1,23 @@
 package com.YiDian.RainBow.main.fragment;
 
+import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
+import android.graphics.drawable.BitmapDrawable;
 import android.hardware.camera2.CameraCaptureSession;
+import android.os.Build;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
@@ -52,8 +66,6 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
     LinearLayout llGreat;
     @BindView(R.id.rc_hobby)
     RecyclerView rcHobby;
-    @BindView(R.id.tv_add_hobby)
-    TextView tvAddHobby;
     @BindView(R.id.tv_count_haoyou)
     TextView tvCountHaoyou;
     @BindView(R.id.ll_haoyou)
@@ -80,7 +92,7 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
     LinearLayout llShoucang;
     @BindView(R.id.ll_yaoqing)
     LinearLayout llYaoqing;
-    @BindView(R.id.ll_jinbi)
+    @BindView(R.id.ll_qiandao)
     LinearLayout llJinbi;
     @BindView(R.id.ll_liwu)
     LinearLayout llLiwu;
@@ -89,6 +101,7 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
     @BindView(R.id.ll_shezhi)
     LinearLayout llShezhi;
     int space = 9;
+    private PopupWindow mPopupWindow;
 
     @Override
     protected void getid(View view) {
@@ -111,7 +124,6 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
         ivQrCode.setOnClickListener(this);
         llCertification.setOnClickListener(this);
         llGreat.setOnClickListener(this);
-        tvAddHobby.setOnClickListener(this);
         tvCopy.setOnClickListener(this);
         llHaoyou.setOnClickListener(this);
         llFensi.setOnClickListener(this);
@@ -180,10 +192,6 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
             case R.id.ll_great:
 
                 break;
-                //添加更多爱好
-            case R.id.tv_add_hobby:
-
-                break;
                 //好友
             case R.id.ll_haoyou:
 
@@ -202,7 +210,8 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
                 break;
                 //编辑个性签名
             case R.id.tv_signature:
-
+                //展示自定义弹出框
+                showSelect();
                 break;
                 //发布的动态
             case R.id.ll_dongtai:
@@ -220,8 +229,8 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
             case R.id.ll_yaoqing:
 
                 break;
-                //金币
-            case R.id.ll_jinbi:
+                //去签到
+            case R.id.ll_qiandao:
 
                 break;
                 //礼物记录
@@ -230,12 +239,132 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
                 break;
                 //扫一扫
             case R.id.ll_saoyisao:
+
+
                 break;
                 //设置
             case R.id.ll_shezhi:
 
                 break;
 
+        }
+    }
+    //弹出选择规格
+    public void showSelect() {
+        //创建popwiondow弹出框
+        mPopupWindow = new PopupWindow();
+        mPopupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        mPopupWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_qianming,null);
+
+        TextView  cancle = view.findViewById(R.id.tv_cancle);
+        TextView  confrim = view.findViewById(R.id.tv_confirm);
+        TextView  count = view.findViewById(R.id.tv_count);
+        EditText text = view.findViewById(R.id.et_text);
+        cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+        confrim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //调用更换签名的接口
+
+
+
+                //更换成功隐藏弹出框
+                dismiss();
+            }
+        });
+        //设置EditText的显示方式为多行文本输入
+        text.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        //文本显示的位置在EditText的最上方
+        text.setGravity(Gravity.TOP);
+        text.setSingleLine(false);
+        //输入框文本监听
+        text.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //输入完后获取当前文本长度 给右下角文本长度赋值
+                int length = text.getText().length();
+
+                count.setText(30-length+"");
+
+            }
+        });
+        //popwindow设置属性
+        mPopupWindow.setAnimationStyle(R.style.popwindow_anim_style);
+        mPopupWindow.setContentView(view);
+        mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
+        mPopupWindow.setFocusable(true);
+        mPopupWindow.setOutsideTouchable(true);
+        mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                setWindowAlpa(false);
+            }
+        });
+        show(view);
+
+    }
+
+    //设置透明度
+    public void setWindowAlpa(boolean isopen) {
+        if (android.os.Build.VERSION.SDK_INT < 11) {
+            return;
+        }
+        final Window window = getActivity().getWindow();
+        final WindowManager.LayoutParams lp = window.getAttributes();
+        window.setFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND, WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        ValueAnimator animator;
+        if (isopen) {
+            animator = ValueAnimator.ofFloat(1.0f, 0.5f);
+        } else {
+            animator = ValueAnimator.ofFloat(0.5f, 1.0f);
+        }
+        animator.setDuration(400);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float alpha = (float) animation.getAnimatedValue();
+                lp.alpha = alpha;
+                window.setAttributes(lp);
+            }
+        });
+        animator.start();
+    }
+
+    /**
+     * 显示PopupWindow
+     */
+    private void show(View v) {
+        if (mPopupWindow != null && !mPopupWindow.isShowing()) {
+            mPopupWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
+        }
+        setWindowAlpa(true);
+
+    }
+
+    /**
+     * 消失PopupWindow
+     */
+    public void dismiss() {
+        if (mPopupWindow != null && mPopupWindow.isShowing()) {
+            mPopupWindow.dismiss();
         }
     }
 }
