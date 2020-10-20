@@ -2,8 +2,10 @@ package com.YiDian.RainBow.login.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -47,6 +49,7 @@ import com.amap.api.location.AMapLocationListener;
 import com.google.gson.Gson;
 import com.tencent.connect.UserInfo;
 import com.tencent.connect.auth.QQToken;
+import com.tencent.connect.common.Constants;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
@@ -59,6 +62,7 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import cn.jpush.im.android.api.JMessageClient;
@@ -68,6 +72,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.internal.Util;
+
+import static com.tencent.connect.common.Constants.PACKAGE_QQ;
 
 
 public class LoginActivity extends BaseAvtivity implements View.OnClickListener, AMapLocationListener {
@@ -99,12 +105,16 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
     //需要腾讯提供的一个Tencent类
     private Tencent mTencent;
     //还需要一个IUiListener 的实现类（LogInListener implements IUiListener）
-    private BaseUiListener mListener;
-    private String openid;
+    private IUiListener listener;
     private String wechatName;
     private String wechatHeadimgurl;
     private IWXAPI mWXApi;
-    private static final String WX_AppId = "wxe3fcbe8a55cd33ff";
+    private static final String WX_AppId = "wxf8a5f128098b4df3";
+    private String openid1;
+    private static final String TAG = "LoginActivity";
+    private String avatar;
+    private String nickName;
+    private String openId;
 
     @Override
     protected int getResId() {
@@ -143,15 +153,13 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
         //开启定位
         doLocation();
 
+        //登录QQ
+
+        //腾讯AppId(替换你自己App Id)、上下文
+        mTencent = Tencent.createInstance("101906973", this);
+
         //注册微信
         initWX();
-
-        //首先需要用APP ID 获取到一个Tencent实例
-        mTencent = Tencent.createInstance("101906973", this.getApplicationContext());
-        //初始化一个IUiListener对象，在IUiListener接口的回调方法中获取到有关授权的某些信息
-        // （千万别忘了覆写onActivityResult方法，否则接收不到回调）
-        mListener = new BaseUiListener();
-
     }
 
     public void doLocation() {
@@ -306,7 +314,16 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
 
                     Request();
                 }else{
-                    doQlogin();
+                    //注意：此段非必要，如果手机未安装应用则会跳转网页进行授权
+                    if (!hasApp(LoginActivity.this, PACKAGE_QQ)) {
+                        Toast.makeText(LoginActivity.this, "未安装QQ应用",
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    //如果session无效，就开始做登录操作
+                    if (!mTencent.isSessionValid()) {
+                        doQlogin();
+                    }
                 }
                 break;
             case R.id.rl_wechat_login:
@@ -324,7 +341,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
         }
     }
     private void initWX() {
-        mWXApi = WXAPIFactory.createWXAPI(LoginActivity.this, null);
+        mWXApi = WXAPIFactory.createWXAPI(LoginActivity.this, WX_AppId,false);
         mWXApi.registerApp(WX_AppId);
     }
     //微信登录
@@ -351,27 +368,77 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                 JSONObject jsonObject = new JSONObject(responseInfo);
                 wechatName = jsonObject.getString("nickname");
                 wechatHeadimgurl = jsonObject.getString("headimgurl");
+                openid1 = jsonObject.getString("openid");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            SharedPreferences.Editor editor = getSharedPreferences("userInfo", MODE_PRIVATE).edit();
+            SharedPreferences.Editor editor = getSharedPreferences("wechatInfo", MODE_PRIVATE).edit();
             editor.clear();
             editor.commit();
-        }
 
+            Log.e("xxx","openid"+openid1+"    name"+wechatName+"    头像"+wechatHeadimgurl);
+        }
     }
         //QQ登录
-    public void doQlogin() {
-        if (!mTencent.isSessionValid()) {
-            mTencent.login(this, "all", new BaseUiListener());
+        private void doQlogin() {
+            listener = new IUiListener() {
+                @Override
+                public void onComplete(Object object) {
+
+                    Log.e(TAG, "登录成功: " + object.toString() );
+
+                    JSONObject jsonObject = (JSONObject) object;
+                    try {
+                        //得到token、expires、openId等参数
+                        String token = jsonObject.getString(Constants.PARAM_ACCESS_TOKEN);
+                        String expires = jsonObject.getString(Constants.PARAM_EXPIRES_IN);
+                        openId = jsonObject.getString(Constants.PARAM_OPEN_ID);
+
+                        mTencent.setAccessToken(token, expires);
+                        mTencent.setOpenId(openId);
+                        Log.e(TAG, "token: " + token);
+                        Log.e(TAG, "expires: " + expires);
+                        Log.e(TAG, "openId: " + openId);
+
+                        //获取个人信息
+                        getQQInfo();
+                    } catch (Exception e) {
+                    }
+                }
+
+                @Override
+                public void onError(UiError uiError) {
+                    //登录失败
+                    Log.e(TAG, "登录失败" + uiError.errorDetail);
+                    Log.e(TAG, "登录失败" + uiError.errorMessage);
+                    Log.e(TAG, "登录失败" + uiError.errorCode + "");
+
+                }
+
+                @Override
+                public void onCancel() {
+                    //登录取消
+                    Log.e(TAG, "登录取消");
+
+                }
+            };
+            //context上下文、第二个参数SCOPO 是一个String类型的字符串，表示一些权限
+            //应用需要获得权限，由“,”分隔。例如：SCOPE = “get_user_info,add_t”；所有权限用“all”
+            //第三个参数事件监听器
+            mTencent.login(this, "all", listener);
+            //注销登录
         }
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        Tencent.onActivityResultData(requestCode, resultCode, data, mListener);
+        //腾讯QQ回调
+        Tencent.onActivityResultData(requestCode, resultCode, data, listener);
+        if (requestCode == Constants.REQUEST_API) {
+            if (resultCode == Constants.REQUEST_LOGIN) {
+                Tencent.handleResultData(data, listener);
+            }
+        }
     }
 
     //安卓10.0定位权限
@@ -416,151 +483,116 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
             mlocationClient.onDestroy();
         }
     }
+    /**
+     * 获取QQ个人信息
+     */
+    private void getQQInfo() {
+        //获取基本信息
+        QQToken qqToken = mTencent.getQQToken();
+        UserInfo info = new UserInfo(this, qqToken);
+        info.getUserInfo(new IUiListener() {
+            @Override
+            public void onComplete(Object object) {
+                try {
+                    Log.e(TAG, "个人信息：" + object.toString());
+                    //头像
+                    avatar = ((JSONObject) object).getString("figureurl_2");
+                    nickName = ((JSONObject) object).getString("nickname");
+                    //将用户信息存入SP
 
-    private class BaseUiListener implements IUiListener {
-        @Override
-        public void onComplete(Object o) {
-            Toast.makeText(App.getContext(), "登陆成功", Toast.LENGTH_SHORT).show();
+                    SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME, nickName);
+                    SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG, avatar);
 
-            //创建gson对象
-            Gson gson = new Gson();
-            QLoginSuccessBean qLoginSuccessBean = gson.fromJson(o.toString(), QLoginSuccessBean.class);
-            //获取Q登录的OpenId
-            openid = qLoginSuccessBean.getOpenid();
+                    //将登录状态改为已经登录
+                    SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.IS_LOGIN, "0");
 
-            JSONObject jsonObject = (JSONObject) o;
-            //设置openid和token，否则获取不到下面的信息
-            initOpenidAndToken(jsonObject);
-            //获取QQ用户的各信息
-            getUserInfo();
+                    //获取完用户信息调用QQ登录接口
+                    NetUtils.getInstance().getApis().doQqLogin(3, openId, longitude, latitude)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Observer<LoginBean>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
 
-        }
+                                }
 
-        @Override
-        public void onError(UiError uiError) {
-            Toast.makeText(App.getContext(), "登录失败", Toast.LENGTH_SHORT).show();
-            Log.d("xxx", uiError.errorCode + "");
+                                @Override
+                                public void onNext(LoginBean loginBean) {
+                                    if (loginBean.getType().equals("OK")) {
+                                        LoginBean.ObjectBean object = loginBean.getObject();
+                                        String id = String.valueOf(object.getId());
+                                        SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_ID, id);
+                                        //极光注册登录
+                                        JMessageClient.register(id, id, new BasicCallback() {
+                                            @Override
+                                            public void gotResult(int i, String s) {
+                                                Log.d("xxx", "极光注册状态为" + i + "原因为" + s);
+                                                if (i == 0 || i == 898001) {
+                                                    JMessageClient.login(id, id, new BasicCallback() {
+                                                        @Override
+                                                        public void gotResult(int i, String s) {
+                                                            Log.d("xxx", "极光登录状态为" + i + "原因为" + s);
+                                                            if (i == 0) {
+                                                                //登录成功跳转至完善信息页
+                                                                String isPerfect = Common.getIsPerfect();
+                                                                if (isPerfect != null) {
+                                                                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                                                } else {
+                                                                    startActivity(new Intent(LoginActivity.this, CompleteMsgActivity.class));
+                                                                }
+                                                                finish();
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
 
-        }
+                                    }
 
-        @Override
-        public void onCancel() {
-            Toast.makeText(App.getContext(), "登录取消", Toast.LENGTH_SHORT).show();
 
-        }
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+
+                                }
+                            });
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(UiError uiError) {
+            }
+
+            @Override
+            public void onCancel() {
+            }
+        });
     }
 
-
-    private void initOpenidAndToken(JSONObject jsonObject) {
-        try {
-            String openid = jsonObject.getString("openid");
-            String token = jsonObject.getString("access_token");
-            String expires = jsonObject.getString("expires_in");
-
-            mTencent.setAccessToken(token, expires);
-            mTencent.setOpenId(openid);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
+    /**
+     * true 安装了相应包名的app
+     */
+    private boolean hasApp(Context context, String packName) {
+        boolean is = false;
+        List<PackageInfo> packages = context.getPackageManager()
+                .getInstalledPackages(0);
+        for (int i = 0; i < packages.size(); i++) {
+            PackageInfo packageInfo = packages.get(i);
+            String packageName = packageInfo.packageName;
+            if (packageName.equals(packName)) {
+                is = true;
+            }
         }
-    }
-
-    private void getUserInfo() {
-
-        //sdk给我们提供了一个类UserInfo，这个类中封装了QQ用户的一些信息，我么可以通过这个类拿到这些信息
-        QQToken mQQToken = mTencent.getQQToken();
-        UserInfo userInfo = new UserInfo(LoginActivity.this, mQQToken);
-        userInfo.getUserInfo(new IUiListener() {
-                                 @Override
-                                 public void onComplete(final Object o) {
-                                     JSONObject userInfoJson = (JSONObject) o;
-                                     Log.e("xxx", o.toString());
-                                     Gson gson = new Gson();
-                                     QLoginUserInfoBean qLoginUserInfoBean = gson.fromJson(o.toString(), QLoginUserInfoBean.class);
-
-                                     //获取
-                                     String headImg = qLoginUserInfoBean.getFigureurl_2();
-                                     String nickname = qLoginUserInfoBean.getNickname();
-                                     //将用户信息存入SP
-                                     SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME, nickname);
-                                     SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG, headImg);
-
-                                     //将登录状态改为已经登录
-                                     SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.IS_LOGIN, "0");
-
-                                     //获取完用户信息调用QQ登录接口
-                                     NetUtils.getInstance().getApis().doQqLogin(3, openid, longitude, latitude)
-                                             .subscribeOn(Schedulers.io())
-                                             .observeOn(AndroidSchedulers.mainThread())
-                                             .subscribe(new Observer<LoginBean>() {
-                                                 @Override
-                                                 public void onSubscribe(Disposable d) {
-
-                                                 }
-
-                                                 @Override
-                                                 public void onNext(LoginBean loginBean) {
-                                                     if (loginBean.getType().equals("OK")) {
-                                                         LoginBean.ObjectBean object = loginBean.getObject();
-                                                         String id = String.valueOf(object.getId());
-                                                         SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_ID, id);
-                                                         //极光注册登录
-                                                         JMessageClient.register(id, id, new BasicCallback() {
-                                                             @Override
-                                                             public void gotResult(int i, String s) {
-                                                                 Log.d("xxx", "极光注册状态为" + i + "原因为" + s);
-                                                                 if (i == 0 || i == 898001) {
-                                                                     JMessageClient.login(id, id, new BasicCallback() {
-                                                                         @Override
-                                                                         public void gotResult(int i, String s) {
-                                                                             Log.d("xxx", "极光登录状态为" + i + "原因为" + s);
-                                                                             if (i == 0) {
-                                                                                 //登录成功跳转至完善信息页
-                                                                                 String isPerfect = Common.getIsPerfect();
-                                                                                 if (isPerfect != null) {
-                                                                                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                                                                 } else {
-                                                                                     startActivity(new Intent(LoginActivity.this, CompleteMsgActivity.class));
-                                                                                 }
-                                                                                 finish();
-                                                                             }
-                                                                         }
-                                                                     });
-                                                                 }
-                                                             }
-                                                         });
-
-                                                     }
-
-
-                                                 }
-
-                                                 @Override
-                                                 public void onError(Throwable e) {
-
-                                                 }
-
-                                                 @Override
-                                                 public void onComplete() {
-
-                                                 }
-                                             });
-
-
-                                 }
-
-                                 @Override
-                                 public void onError(UiError uiError) {
-                                     Log.e("xxx", "获取qq用户信息错误");
-                                     Toast.makeText(LoginActivity.this, "获取qq用户信息错误", Toast.LENGTH_SHORT).show();
-                                 }
-
-                                 @Override
-                                 public void onCancel() {
-                                     Log.e("xxx", "获取qq用户信息取消");
-                                     Toast.makeText(LoginActivity.this, "获取qq用户信息取消", Toast.LENGTH_SHORT).show();
-                                 }
-                             }
-        );
+        return is;
     }
 }

@@ -140,31 +140,29 @@
         android:id="@+id/rl_qq_login"
         android:layout_width="@dimen/dp_30"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/wechatandqq_login_bg"
         android:layout_marginBottom="@dimen/dp_48"
         android:layout_marginLeft="@dimen/dp_91"
         android:layout_height="@dimen/dp_30">
         <ImageView
-            android:layout_width="@dimen/dp_15"
+            android:layout_width="@dimen/dp_30"
             android:src="@mipmap/qq"
             android:layout_centerInParent="true"
-            android:layout_height="@dimen/dp_17">
+            android:layout_height="@dimen/dp_30">
         </ImageView>
     </RelativeLayout>
     <RelativeLayout
         android:id="@+id/rl_wechat_login"
         android:layout_width="@dimen/dp_30"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/wechatandqq_login_bg"
         android:layout_marginBottom="@dimen/dp_48"
         android:layout_alignParentRight="true"
         android:layout_marginRight="@dimen/dp_91"
         android:layout_height="@dimen/dp_30">
         <ImageView
-            android:layout_width="@dimen/dp_15"
+            android:layout_width="match_parent"
             android:src="@mipmap/wechat"
             android:layout_centerInParent="true"
-            android:layout_height="@dimen/dp_17">
+            android:layout_height="match_parent">
         </ImageView>
     </RelativeLayout>
 </RelativeLayout>

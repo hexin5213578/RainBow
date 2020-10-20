@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
+import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,25 +30,23 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class WXEntryActivity extends AppCompatActivity implements IWXAPIEventHandler {
+
     private IWXAPI iwxapi;
-    private Context mContext;
     private ProgressDialog mProgressDialog;
-
+    private Context mContext;
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         //接收到分享以及登录的intent传递handleIntent方法，处理结果
-        iwxapi = WXAPIFactory.createWXAPI(this, "wxe3fcbe8a55cd33ff", false);
+        iwxapi = WXAPIFactory.createWXAPI(this, "wxf8a5f128098b4df3", false);
         iwxapi.handleIntent(getIntent(), this);
-
     }
 
-    @Override
+        @Override
     public void onReq(BaseReq baseReq) {
 
     }
 
-    //请求回调结果处理
     @Override
     public void onResp(BaseResp baseResp) {
         //登录回调
@@ -70,16 +69,15 @@ public class WXEntryActivity extends AppCompatActivity implements IWXAPIEventHan
         }
 
     }
-
     private void getAccessToken(String code) {
         createProgressDialog();
         //获取授权
         StringBuffer loginUrl = new StringBuffer();
         loginUrl.append("https://api.weixin.qq.com/sns/oauth2/access_token")
                 .append("?appid=")
-                .append("wx45ccf8958a0a24c7")
+                .append("wxf8a5f128098b4df3")
                 .append("&secret=")
-                .append("e9c071f3326663856bc6cf02c2d6b657")
+                .append("8be2e90b3272cbcc121e13f6adc97ad5")
                 .append("&code=")
                 .append(code)
                 .append("&grant_type=authorization_code");
@@ -115,9 +113,8 @@ public class WXEntryActivity extends AppCompatActivity implements IWXAPIEventHan
             }
         });
     }
-
     private void createProgressDialog() {
-        mContext = this;
+        mContext=this;
         mProgressDialog = new ProgressDialog(mContext);
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);//转盘
         mProgressDialog.setCancelable(false);
@@ -126,7 +123,6 @@ public class WXEntryActivity extends AppCompatActivity implements IWXAPIEventHan
         mProgressDialog.setMessage("登录中，请稍后");
         mProgressDialog.show();
     }
-
     private void getUserInfo(String access, String openid) {
         String getUserInfoUrl = "https://api.weixin.qq.com/sns/userinfo?access_token=" + access + "&openid=" + openid;
         OkHttpClient okHttpClient = new OkHttpClient();
