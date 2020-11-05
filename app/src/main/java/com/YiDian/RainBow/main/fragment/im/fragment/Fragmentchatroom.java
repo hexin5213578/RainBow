@@ -1,5 +1,6 @@
 package com.YiDian.RainBow.main.fragment.im.fragment;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.main.fragment.im.activity.MordRoomActivity;
 import com.YiDian.RainBow.main.fragment.im.adapter.ChatRoomAdapter;
 
 import java.util.ArrayList;
@@ -17,7 +19,7 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public class Fragmentchatroom extends BaseFragment {
+public class Fragmentchatroom extends BaseFragment implements View.OnClickListener {
     @BindView(R.id.rl1)
     RelativeLayout rl1;
     @BindView(R.id.rl2)
@@ -34,8 +36,8 @@ public class Fragmentchatroom extends BaseFragment {
     RelativeLayout rl7;
     @BindView(R.id.rl8)
     RelativeLayout rl8;
-    @BindView(R.id.ll_filter)
-    LinearLayout llFilter;
+    @BindView(R.id.ll_more)
+    LinearLayout llmore;
     @BindView(R.id.rc_chatroom)
     RecyclerView rcChatroom;
     private List<String> list = new ArrayList();
@@ -56,11 +58,25 @@ public class Fragmentchatroom extends BaseFragment {
 
     @Override
     protected void getData() {
+        llmore.setOnClickListener(this);
+
+
         list.add("何梦洋");
         //测试推荐房间
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
         rcChatroom.setLayoutManager(gridLayoutManager);
         ChatRoomAdapter chatRoomAdapter = new ChatRoomAdapter(getContext(), list);
         rcChatroom.setAdapter(chatRoomAdapter);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.ll_more:
+                //跳转到更多房间页
+                Intent intent = new Intent(getContext(), MordRoomActivity.class);
+                startActivity(intent);
+                break;
+        }
     }
 }

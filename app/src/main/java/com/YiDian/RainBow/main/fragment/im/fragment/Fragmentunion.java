@@ -6,6 +6,7 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 
+//公会界面
 public class Fragmentunion extends BaseFragment {
     @Override
     protected void getid(View view) {

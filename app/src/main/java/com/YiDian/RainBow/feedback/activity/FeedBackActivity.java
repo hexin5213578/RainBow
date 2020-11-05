@@ -34,6 +34,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import indi.liyi.viewer.ImageViewer;
 
+//问题反馈
 public class FeedBackActivity extends BaseAvtivity implements View.OnClickListener {
     @BindView(R.id.back)
     ImageView back;

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -38,9 +39,9 @@ public class UserDetailsActivity extends BaseAvtivity implements RadioGroup.OnCh
     @BindView(R.id.xbn)
     XBanner xbn;
     @BindView(R.id.back)
-    ImageView back;
+    LinearLayout back;
     @BindView(R.id.sandian)
-    ImageView sandian;
+    LinearLayout sandian;
     @BindView(R.id.tv_userId)
     TextView tvUserId;
     @BindView(R.id.tv_username)

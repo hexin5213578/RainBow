@@ -2,8 +2,10 @@ package com.YiDian.RainBow.main.fragment;
 
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
-import android.hardware.camera2.CameraCaptureSession;
 import android.os.Build;
 import android.text.Editable;
 import android.text.InputType;
@@ -19,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,11 +31,11 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.custom.customrecycle.SpacesItemDecoration;
-import com.YiDian.RainBow.main.fragment.mine.HobbyAdapter;
-import com.YiDian.RainBow.main.fragment.msg.adapter.MsgRecordingAdapter;
+import com.YiDian.RainBow.main.fragment.mine.adapter.HobbyAdapter;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
+import com.leaf.library.StatusBarUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,6 +123,11 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
 
     @Override
     protected void getData() {
+
+        //设置状态栏颜色与字体颜色
+
+        StatusBarUtil.setDarkMode(getActivity());
+
         llMyMoney.setOnClickListener(this);
         ivQrCode.setOnClickListener(this);
         llCertification.setOnClickListener(this);
@@ -186,7 +194,15 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
                 break;
                 //复制我的ID
             case R.id.tv_copy:
-
+                //获取id
+                String id= tvUserId.getText().toString();
+                //获取剪贴板管理器：
+                ClipboardManager cm = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                // 创建普通字符型ClipData
+                ClipData mClipData = ClipData.newPlainText("Label", id);
+                // 将ClipData内容放到系统剪贴板里。
+                cm.setPrimaryClip(mClipData);
+                Toast.makeText(getContext(), "已复制到剪切板", Toast.LENGTH_SHORT).show();
                 break;
                 //查看点赞详情
             case R.id.ll_great:

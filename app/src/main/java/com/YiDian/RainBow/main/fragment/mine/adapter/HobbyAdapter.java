@@ -1,4 +1,4 @@
-package com.YiDian.RainBow.main.fragment.mine;
+package com.YiDian.RainBow.main.fragment.mine.adapter;
 
 import android.content.Context;
 import android.view.View;

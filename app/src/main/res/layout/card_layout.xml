@@ -9,7 +9,7 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/rl_allcard"
         android:background="@drawable/find_match_car_bg"
-        android:layout_marginTop="@dimen/dp_42"
+        android:layout_marginTop="@dimen/dp_62"
         android:layout_height="@dimen/dp_400">
 
         <com.YiDian.RainBow.custom.image.CustomRoundAngleImageView

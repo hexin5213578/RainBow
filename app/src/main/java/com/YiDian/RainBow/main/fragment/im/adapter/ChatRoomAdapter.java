@@ -51,14 +51,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     }
 
-    //设置圆角图片
-/*    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg); // 先从资源中把背景图获取出来
-    Bitmap roundBitmap = getRoundCornerImage(bitmap, 30, HalfType.TOP); // 将图片的上半部分圆弧化。
-    ImageView image = (ImageView) findViewById(R.id.image);
-    Drawable dw = new BitmapDrawable(getResources(),roundBitmap);
-        image.setBackgroundDrawable(dw); // 设置背景。API>=16的話，可以直接用setBackground方法*/
-
-
     @Override
     public int getItemCount() {
         return 10;

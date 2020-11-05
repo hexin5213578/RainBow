@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -27,7 +28,7 @@ public class SearchActivity extends BaseAvtivity implements RadioGroup.OnChecked
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.iv_back)
-    ImageView ivBack;
+    LinearLayout ivBack;
     @BindView(R.id.rbSearchHuati)
     RadioButton rbSearchHuati;
     @BindView(R.id.rbSearchPerson)
@@ -97,6 +98,9 @@ public class SearchActivity extends BaseAvtivity implements RadioGroup.OnChecked
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {
+            case R.id.iv_back:
+                finish();
+                break;
             //设置切换页面及选中字体大小
             case R.id.rbSearchHuati:
                 //调用切换界面方法

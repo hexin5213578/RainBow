@@ -13,14 +13,13 @@
         android:layout_below="@id/toolbar"
         android:layout_width="match_parent"
         android:background="@drawable/background_gradient_noradius"
-        android:layout_height="@dimen/dp_224">
-
+        android:layout_height="@dimen/dp_228">
         <ImageView
             android:layout_width="@dimen/dp_20"
             android:src="@mipmap/qrcode"
             android:layout_alignParentRight="true"
             android:id="@+id/iv_QrCode"
-            android:layout_marginTop="@dimen/dp_34"
+            android:layout_marginTop="@dimen/dp_49"
             android:layout_marginRight="@dimen/dp_15"
             android:layout_height="@dimen/dp_20">
         </ImageView>
@@ -30,7 +29,7 @@
             android:id="@+id/ll_my_money"
             android:orientation="horizontal"
             android:background="@drawable/mine_my_money_bg"
-            android:layout_marginTop="@dimen/dp_34"
+            android:layout_marginTop="@dimen/dp_49"
             android:layout_marginLeft="@dimen/dp_15"
             android:gravity="center"
             android:layout_height="@dimen/dp_15">
@@ -55,7 +54,7 @@
             android:id="@+id/ll_certification"
             android:layout_toRightOf="@id/ll_my_money"
             android:background="@drawable/mine_my_money_bg"
-            android:layout_marginTop="@dimen/dp_34"
+            android:layout_marginTop="@dimen/dp_49"
             android:layout_marginLeft="@dimen/dp_12"
             android:gravity="center"
             android:layout_height="@dimen/dp_15">
@@ -327,7 +326,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:background="@drawable/mine_down_all_bg"
-        android:layout_marginTop="@dimen/dp_211"
+        android:layout_marginTop="@dimen/dp_221"
         android:layout_height="match_parent">
         <TextView
             android:layout_width="match_parent"

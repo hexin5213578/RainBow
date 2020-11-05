@@ -39,7 +39,7 @@
                 android:text="不保存"
                 android:id="@+id/tv_cancle"
                 android:textSize="@dimen/sp_14"
-                android:textColor="#8767E7"
+                android:textColor="#C577D8"
                 android:gravity="center"
                 android:layout_height="match_parent">
             </TextView>
@@ -54,7 +54,7 @@
                 android:text="保存"
                 android:gravity="center"
                 android:id="@+id/tv_confirm"
-                android:textColor="#C577D8"
+                android:textColor="#8767E7"
                 android:textSize="@dimen/sp_14"
                 android:layout_height="match_parent">
             </TextView>
