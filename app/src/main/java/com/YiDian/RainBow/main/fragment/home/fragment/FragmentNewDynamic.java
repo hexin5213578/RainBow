@@ -68,8 +68,6 @@ public class FragmentNewDynamic extends BaseFragment {
     protected void getData() {
         getNew(1, 10);
 
-        sv.setHeader(new AliHeader(getContext()));
-        sv.setFooter(new AliFooter(getContext()));
 
 
         //下拉刷新下拉加载
@@ -83,7 +81,6 @@ public class FragmentNewDynamic extends BaseFragment {
                         getNew(1, 10);
                         count = 10;
                         GSYVideoManager.releaseAllVideos();
-
                     }
                 }, 1000);
             }
@@ -134,11 +131,20 @@ public class FragmentNewDynamic extends BaseFragment {
                     public void onNext(NewDynamicBean newDynamicBean) {
                         NewDynamicBean.ObjectBean object = newDynamicBean.getObject();
                         List<NewDynamicBean.ObjectBean.ListBean> list = object.getList();
-                        //创建最新动态适配器
-                        linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                        rcNewDynamic.setLayoutManager(linearLayoutManager);
-                        newDynamicAdapter = new NewDynamicAdapter(getContext(), list);
-                        //rcNewDynamic.setAdapter(newDynamicAdapter);
+                        if(list.size()>0 && list!=null){
+                            sv.setHeader(new AliHeader(getContext()));
+                            //创建最新动态适配器
+                            linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+                            rcNewDynamic.setLayoutManager(linearLayoutManager);
+                            newDynamicAdapter = new NewDynamicAdapter(getContext(), list);
+                            //rcNewDynamic.setAdapter(newDynamicAdapter);
+                        }
+
+                        if(list.size()>10){
+                            sv.setHeader(new AliHeader(getContext()));
+
+                        }
+
                     }
 
                     @Override

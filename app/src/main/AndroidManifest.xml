@@ -242,7 +242,17 @@
             >
         </activity>
 
+        <!-- 公会排行榜 -->
+        <activity android:name=".main.fragment.im.activity.UnionRankingActivity"
+            android:screenOrientation="portrait"
+            >
+        </activity>
 
+        <!-- 我的公会 -->
+        <activity android:name=".main.fragment.im.activity.MyUnionActivity"
+            android:screenOrientation="portrait"
+            >
+        </activity>
     </application>
 
 </manifest>
