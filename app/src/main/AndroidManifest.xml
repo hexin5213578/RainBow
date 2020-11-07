@@ -253,6 +253,12 @@
             android:screenOrientation="portrait"
             >
         </activity>
+
+        <!-- 编辑资料 -->
+        <activity android:name=".main.fragment.mine.activity.EditMsgActivity"
+            android:screenOrientation="portrait"
+            >
+        </activity>
     </application>
 
 </manifest>
