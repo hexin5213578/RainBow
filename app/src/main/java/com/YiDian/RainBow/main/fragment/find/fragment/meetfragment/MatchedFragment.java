@@ -6,14 +6,11 @@ import android.view.View;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
-import com.YiDian.RainBow.custom.seekbar.RangeSeekBar;
+import com.YiDian.RainBow.custom.seekbar.DoubleSlideSeekBar;
 
 import butterknife.BindView;
 
 public class MatchedFragment extends BaseFragment {
-    @BindView(R.id.rangeseekbar)
-    RangeSeekBar rangeseekbar;
-
     @Override
     protected void getid(View view) {
 
@@ -31,12 +28,6 @@ public class MatchedFragment extends BaseFragment {
 
     @Override
     protected void getData() {
-        rangeseekbar.setOnRangeChangedListener(new RangeSeekBar.OnRangeChangedListener() {
 
-            @Override
-            public void onRangeChanged(float lowerRange, float upperRange) {
-                Log.e("xxx",(int) lowerRange + "~" + (int) upperRange);
-            }
-        });
     }
 }

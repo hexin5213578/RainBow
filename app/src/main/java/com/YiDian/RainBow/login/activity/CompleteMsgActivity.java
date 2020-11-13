@@ -102,7 +102,7 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
         tvBirth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BasisTimesUtils.showDatePickerDialog(CompleteMsgActivity.this, "请选择年月日", 2000, 1, 1, new BasisTimesUtils.OnDatePickerListener() {
+                BasisTimesUtils.showDatePickerDialog(CompleteMsgActivity.this, "请选择年月日", 1998, 1, 1, new BasisTimesUtils.OnDatePickerListener() {
                     @Override
                     public void onConfirm(int year, int month, int dayOfMonth) {
                         tvBirth.setText(year + "-" + month + "-" + dayOfMonth);

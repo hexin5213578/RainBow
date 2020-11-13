@@ -2,13 +2,10 @@ package com.YiDian.RainBow.main.fragment;
 
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,10 +19,10 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -34,28 +31,15 @@ import androidx.fragment.app.FragmentTransaction;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
-import com.YiDian.RainBow.main.activity.MainActivity;
+import com.YiDian.RainBow.custom.seekbar.DoubleSlideSeekBar;
+import com.YiDian.RainBow.main.fragment.find.bean.SaveFilterBean;
 import com.YiDian.RainBow.main.fragment.find.fragment.FragmentNear;
 import com.YiDian.RainBow.main.fragment.find.fragment.Fragmentmatch;
 import com.YiDian.RainBow.main.fragment.find.fragment.Fragmentmeet;
-import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
 import com.leaf.library.StatusBarUtil;
 
-import java.io.Serializable;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import butterknife.BindView;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
+import butterknife.ButterKnife;
 
 
 // 发现
@@ -75,6 +59,8 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
+    String Person = "";
+    String IsSingle = "";
     RadioButton[] rbs = new RadioButton[3];
     private FragmentManager fmManager;
 
@@ -157,7 +143,7 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
             case R.id.rbMeet:
                 replace(fragmentmeet);
 
-                ivFilter.setVisibility(View.VISIBLE);
+                ivFilter.setVisibility(View.GONE);
 
                 rbMeet.setTextSize(18);
                 rbMeet.setTextAppearance(R.style.txt_bold);
@@ -215,17 +201,113 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
         transaction.commitAllowingStateLoss();
         currentFragment = to;
     }
+
     //弹出选择规格
     public void showSelect() {
         //创建popwiondow弹出框
         mPopupWindow = new PopupWindow();
         mPopupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         mPopupWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        View view1 = LayoutInflater.from(getContext()).inflate(R.layout.dialog_filter_person,null);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_filter_person, null);
 
+        //找控件
+        LinearLayout ivCancle = view.findViewById(R.id.iv_cancle);
+        RadioButton rb5 = view.findViewById(R.id.rb5);
+        RadioButton rb1 = view.findViewById(R.id.rb1);
+        RadioButton rb2 = view.findViewById(R.id.rb2);
+        RadioButton rb3 = view.findViewById(R.id.rb3);
+        RadioButton rb4 = view.findViewById(R.id.rb4);
+
+        RadioButton rb_issingle = view.findViewById(R.id.rb_issingle);
+        RadioButton rb_isNosingle = view.findViewById(R.id.rb_isNosingle);
+
+        DoubleSlideSeekBar seekBar_age = view.findViewById(R.id.seekbar_age);
+        SeekBar seekBar_distance = view.findViewById(R.id.seekbar_distance);
+        TextView tv_age = view.findViewById(R.id.tv_age);
+        TextView tv_distance = view.findViewById(R.id.tv_distance);
+
+        Button bt_confirm = view.findViewById(R.id.bt_confirm);
+        //隐藏弹出框单击事件
+        ivCancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+        if (rb1.isChecked()) {
+            Person = rb1.getText().toString();
+        }
+        if (rb2.isChecked()) {
+            Person = rb2.getText().toString();
+        }
+        if (rb3.isChecked()) {
+            Person = rb3.getText().toString();
+        }
+        if (rb4.isChecked()) {
+            Person = rb4.getText().toString();
+        }
+        if (rb5.isChecked()) {
+            Person = rb5.getText().toString();
+        }
+
+
+        if (rb_issingle.isChecked()) {
+            IsSingle = rb_issingle.getText().toString();
+        }
+        if (rb_isNosingle.isChecked()) {
+            IsSingle = rb_isNosingle.getText().toString();
+        }
+        //设置距离筛选
+        seekBar_distance.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                tv_distance.setText(progress+1+"km");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        //年龄筛选
+        seekBar_age.setOnRangeListener(new DoubleSlideSeekBar.onRangeListener() {
+            @Override
+            public void onRange(float low, float big) {
+                //设置年龄区间
+                tv_age.setText(Integer.valueOf((int) low)+"-"+Integer.valueOf((int) big));
+            }
+        });
+
+        bt_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String age = tv_age.getText().toString();
+                int progress = seekBar_distance.getProgress();
+
+                Toast.makeText(getContext(), ""+age+(progress+1)+Person+IsSingle, Toast.LENGTH_SHORT).show();
+
+                Bundle bundle = new Bundle();
+                SaveFilterBean saveFilterBean = new SaveFilterBean();
+                saveFilterBean.setRole(Person);
+                saveFilterBean.setAge(age);
+                saveFilterBean.setDistance(progress+1);
+                saveFilterBean.setIsSingle(IsSingle);
+                bundle.putSerializable("Msg",saveFilterBean);
+                //将筛选信息传递到匹配fragment
+                fragmentmatch.setArguments(bundle);
+
+                //关闭弹出框
+                dismiss();
+            }
+        });
         //popwindow设置属性
         mPopupWindow.setAnimationStyle(R.style.popwindow_anim_style);
-        mPopupWindow.setContentView(view1);
+        mPopupWindow.setContentView(view);
         mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
         mPopupWindow.setFocusable(true);
         mPopupWindow.setOutsideTouchable(true);
@@ -235,12 +317,12 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
                 setWindowAlpa(false);
             }
         });
-        show(view1);
+        show(view);
     }
 
     //设置透明度
     public void setWindowAlpa(boolean isopen) {
-        if (android.os.Build.VERSION.SDK_INT < 11) {
+        if (Build.VERSION.SDK_INT < 11) {
             return;
         }
         final Window window = getActivity().getWindow();

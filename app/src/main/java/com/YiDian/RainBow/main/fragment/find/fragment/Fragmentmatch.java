@@ -46,26 +46,10 @@ public class Fragmentmatch extends BaseFragment {
 
         CardsDataAdapter cardsDataAdapter = new CardsDataAdapter(getContext(), R.layout.card_layout);
         container.setAdapter(cardsDataAdapter);
-        cardsDataAdapter.add("test1");
-        cardsDataAdapter.add("test2");
-        cardsDataAdapter.add("test3");
-        cardsDataAdapter.add("test4");
-        cardsDataAdapter.add("test5");
-        cardsDataAdapter.add("test5");
-        cardsDataAdapter.add("test5");
-        cardsDataAdapter.add("test5");
-        cardsDataAdapter.add("test5");
-        cardsDataAdapter.add("test5");
-        cardsDataAdapter.add("test5");
-        cardsDataAdapter.add("test5");
-        cardsDataAdapter.add("test5");
-        cardsDataAdapter.add("test5");
-        cardsDataAdapter.add("test5");
-        cardsDataAdapter.add("test5");
-        cardsDataAdapter.add("test5");
-        cardsDataAdapter.add("test5");
-        cardsDataAdapter.add("test5");
-        cardsDataAdapter.add("test5");
+
+        for (int i =0;i<20;i++){
+            cardsDataAdapter.add("test"+i);
+        }
 
         container.setListener(new CardStack.CardEventListener() {
             @Override
@@ -95,6 +79,15 @@ public class Fragmentmatch extends BaseFragment {
             //关闭动画结束时调用此回调。
             @Override
             public void discarded(int i, int i1) {
+                Log.e("xxx",i+"   "+i1);
+
+                //滑动到最后几条  重新添加数据
+                if (i % 19 == 0){
+                    for (int j =0;j<20;j++){
+                        cardsDataAdapter.add("test"+j);
+                    }
+                }
+
                 index = i;
 
                  //i   下标

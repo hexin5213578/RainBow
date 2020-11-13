@@ -111,7 +111,7 @@
         android:layout_width="@dimen/dp_200"
         android:layout_below="@id/v1"
         android:background="@null"
-        android:text="2000-01-01"
+        android:text="1998-01-01"
         android:id="@+id/tv_birth"
         android:textColor="#9A9A9A"
         android:textSize="@dimen/sp_14"

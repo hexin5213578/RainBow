@@ -6,7 +6,7 @@
         android:paddingTop="4dp">
         <shape>
             <corners android:radius="50dp"/>
-            <solid android:color="@color/color_999999"/>
+            <solid android:color="@color/e6e6e6"/>
         </shape>
     </item>
 
@@ -19,8 +19,8 @@
                 <corners android:radius="50dp"/>
                 <gradient
                     android:angle="0"
-                    android:endColor="#59CBFF"
-                    android:startColor="#59CBFF"/>
+                    android:endColor="#8667E7"
+                    android:startColor="#8667E7"/>
             </shape>
         </clip>
     </item>
