@@ -87,7 +87,6 @@ public class Fragmentmatch extends BaseFragment {
                         cardsDataAdapter.add("test"+j);
                     }
                 }
-
                 index = i;
 
                  //i   下标

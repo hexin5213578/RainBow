@@ -227,7 +227,7 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
                 //编辑个性签名
             case R.id.tv_signature:
                 //展示自定义弹出框
-                showSelect();
+                //showSelect();
                 break;
                 //发布的动态
             case R.id.ll_dongtai:

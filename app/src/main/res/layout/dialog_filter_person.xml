@@ -197,7 +197,7 @@
             android:orientation="horizontal"
             android:layout_height="wrap_content">
             <SeekBar
-                android:progress="0"
+                android:progress="49"
                 android:max="49"
                 android:layout_below="@id/tv1"
                 android:thumb="@mipmap/seekbar_thume"
