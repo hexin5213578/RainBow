@@ -109,7 +109,6 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
     private String wechatName;
     private String wechatHeadimgurl;
     private IWXAPI mWXApi;
-    private static final String WX_AppId = "wxf8a5f128098b4df3";
     private String openid1;
     private static final String TAG = "LoginActivity";
     private String avatar;
@@ -158,8 +157,6 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
         //腾讯AppId(替换你自己App Id)、上下文
         mTencent = Tencent.createInstance("101906973", this);
 
-        //注册微信
-        initWX();
     }
 
     public void doLocation() {
@@ -340,20 +337,16 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                 break;
         }
     }
-    private void initWX() {
-        mWXApi = WXAPIFactory.createWXAPI(LoginActivity.this, WX_AppId,false);
-        mWXApi.registerApp(WX_AppId);
-    }
     //微信登录
     public void doWechatLogin(){
 
-        if (!mWXApi.isWXAppInstalled()) {
+        if (!App.getWXApi().isWXAppInstalled()) {
             Toast.makeText(LoginActivity.this, "您的设备未安装微信客户端", Toast.LENGTH_SHORT).show();
         } else {
             final SendAuth.Req req = new SendAuth.Req();
             req.scope = "snsapi_userinfo";
             req.state = "wechat_sdk_demo_test";
-            mWXApi.sendReq(req);
+            App.getWXApi().sendReq(req);
         }
     }
     //微信回调信息

@@ -48,6 +48,8 @@ import static android.provider.UserDictionary.Words.APP_ID;
  */
 public class App extends Application {
     private static Context context;
+    private static  IWXAPI mWXApi;
+    private static final String WX_AppId = "wxf8a5f128098b4df3";
 
     @Override
     public void onCreate() {
@@ -58,8 +60,12 @@ public class App extends Application {
         Fresco.initialize(context);
         //沙箱测试
         //EnvUtils.setEnv(EnvUtils.EnvEnum.SANDBOX);
+
+
         //imageloader初始化
         initImageloader();
+
+
        // Bugly.init(getApplicationContext(), "c11555727a", false);
 
         Context context = getApplicationContext();
@@ -75,6 +81,8 @@ public class App extends Application {
         // 如果通过“AndroidManifest.xml”来配置APP信息，初始化方法如下
         // CrashReport.initCrashReport(context, strategy);
 
+
+        initWX();
         //初始化极光
         JMessageClient.setDebugMode(true);
         JMessageClient.init(this);
@@ -84,8 +92,14 @@ public class App extends Application {
         JPushInterface.init(this);     		// 初始化 JPush
     }
 
+    private void initWX() {
+        mWXApi = WXAPIFactory.createWXAPI(context, null);
+        mWXApi.registerApp(WX_AppId);
+    }
 
-
+    public static IWXAPI getWXApi() {
+        return mWXApi;
+    }
 
     public static Context getContext() {
         return context;

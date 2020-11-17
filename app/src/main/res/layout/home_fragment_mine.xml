@@ -25,7 +25,7 @@
         </ImageView>
 
         <LinearLayout
-            android:layout_width="@dimen/dp_50"
+            android:layout_width="wrap_content"
             android:id="@+id/ll_my_money"
             android:orientation="horizontal"
             android:background="@drawable/mine_my_money_bg"
@@ -42,6 +42,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:text="3000"
+                android:id="@+id/tv_mygold"
+                android:paddingRight="@dimen/dp_5"
+                android:paddingLeft="@dimen/dp_3"
                 android:textSize="@dimen/sp_10"
                 android:textColor="@color/white"
                 android:layout_height="wrap_content">

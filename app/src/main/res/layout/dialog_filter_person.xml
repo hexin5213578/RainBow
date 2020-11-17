@@ -212,7 +212,7 @@
             </SeekBar>
             <TextView
                 android:layout_width="@dimen/dp_50"
-                android:text="1km"
+                android:text="50km"
                 android:id="@+id/tv_distance"
                 android:layout_gravity="center"
                 android:background="@drawable/tenradious_ff_bg"

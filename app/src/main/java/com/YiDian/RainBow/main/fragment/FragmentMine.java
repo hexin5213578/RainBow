@@ -1,10 +1,13 @@
 package com.YiDian.RainBow.main.fragment;
 
+import android.Manifest;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.text.Editable;
@@ -24,6 +27,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +36,10 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.custom.customrecycle.SpacesItemDecoration;
+import com.YiDian.RainBow.custom.zbar.CaptureActivity;
+import com.YiDian.RainBow.login.activity.CompleteMsgActivity;
+import com.YiDian.RainBow.main.activity.MainActivity;
+import com.YiDian.RainBow.main.fragment.mine.activity.MyQrCodeActivity;
 import com.YiDian.RainBow.main.fragment.mine.adapter.HobbyAdapter;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
@@ -104,6 +113,8 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
     @BindView(R.id.ll_shezhi)
     LinearLayout llShezhi;
     int space = 9;
+    @BindView(R.id.tv_mygold)
+    TextView tvMygold;
     private PopupWindow mPopupWindow;
 
     @Override
@@ -125,7 +136,6 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
     protected void getData() {
 
         //设置状态栏颜色与字体颜色
-
         StatusBarUtil.setDarkMode(getActivity());
 
         llMyMoney.setOnClickListener(this);
@@ -146,6 +156,15 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
         llLiwu.setOnClickListener(this);
         llSaoyisao.setOnClickListener(this);
         llShezhi.setOnClickListener(this);
+
+        //申请开启相机权限
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) && (getContext().checkSelfPermission
+                (Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)) {
+            //请求权限
+            getActivity().requestPermissions(new String[]{
+                    Manifest.permission.CAMERA}, 1);
+        }
+
 
         //加载一张圆角头像
         Glide.with(getContext()).load(R.mipmap.headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
@@ -179,23 +198,26 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             //我的金币
             case R.id.ll_my_money:
+                //跳转到金币充值功能
 
                 break;
-                //特权认证
+            //特权认证
             case R.id.ll_certification:
 
                 break;
-                //我的二维码
+            //我的二维码
             case R.id.iv_QrCode:
-
+                //跳转到我的二维码
+                Intent intent = new Intent(getContext(), MyQrCodeActivity.class);
+                startActivity(intent);
                 break;
-                //复制我的ID
+            //复制我的ID
             case R.id.tv_copy:
                 //获取id
-                String id= tvUserId.getText().toString();
+                String id = tvUserId.getText().toString();
                 //获取剪贴板管理器：
                 ClipboardManager cm = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
                 // 创建普通字符型ClipData
@@ -204,78 +226,80 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
                 cm.setPrimaryClip(mClipData);
                 Toast.makeText(getContext(), "已复制到剪切板", Toast.LENGTH_SHORT).show();
                 break;
-                //查看点赞详情
+            //查看点赞详情
             case R.id.ll_great:
 
                 break;
-                //好友
+            //好友
             case R.id.ll_haoyou:
 
                 break;
-                //粉丝
+            //粉丝
             case R.id.ll_fensi:
 
                 break;
-                //关注
+            //关注
             case R.id.ll_guanzhu:
 
                 break;
-                //群组
+            //群组
             case R.id.ll_qunzu:
 
                 break;
-                //编辑个性签名
+            //编辑个性签名
             case R.id.tv_signature:
                 //展示自定义弹出框
                 //showSelect();
                 break;
-                //发布的动态
+            //发布的动态
             case R.id.ll_dongtai:
 
                 break;
-                //草稿箱
+            //草稿箱
             case R.id.ll_caogaoxiang:
 
                 break;
-                //收藏
+            //收藏
             case R.id.ll_shoucang:
 
                 break;
-                //邀请好友
+            //邀请好友
             case R.id.ll_yaoqing:
 
                 break;
-                //去签到
+            //去签到
             case R.id.ll_qiandao:
 
                 break;
-                //礼物记录
+            //礼物记录
             case R.id.ll_liwu:
 
                 break;
-                //扫一扫
+            //扫一扫
             case R.id.ll_saoyisao:
-
-
+                //扫描二维码
+                Intent intent1 = new Intent(getContext(), CaptureActivity.class);
+                startActivityForResult(intent1, 100);
                 break;
-                //设置
+            //设置
             case R.id.ll_shezhi:
 
                 break;
 
         }
     }
+
     //弹出选择规格
     public void showSelect() {
         //创建popwiondow弹出框
         mPopupWindow = new PopupWindow();
         mPopupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         mPopupWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_qianming,null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_qianming, null);
 
-        TextView  cancle = view.findViewById(R.id.tv_cancle);
-        TextView  confrim = view.findViewById(R.id.tv_confirm);
-        TextView  count = view.findViewById(R.id.tv_count);
+        TextView cancle = view.findViewById(R.id.tv_cancle);
+        TextView confrim = view.findViewById(R.id.tv_confirm);
+        TextView count = view.findViewById(R.id.tv_count);
         EditText text = view.findViewById(R.id.et_text);
         cancle.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -287,7 +311,6 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 //调用更换签名的接口
-
 
 
                 //更换成功隐藏弹出框
@@ -316,7 +339,7 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
                 //输入完后获取当前文本长度 给右下角文本长度赋值
                 int length = text.getText().length();
 
-                count.setText(30-length+"");
+                count.setText(30 - length + "");
 
             }
         });
@@ -338,7 +361,7 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
 
     //设置透明度
     public void setWindowAlpa(boolean isopen) {
-        if (android.os.Build.VERSION.SDK_INT < 11) {
+        if (Build.VERSION.SDK_INT < 11) {
             return;
         }
         final Window window = getActivity().getWindow();
@@ -383,4 +406,5 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
             mPopupWindow.dismiss();
         }
     }
+
 }

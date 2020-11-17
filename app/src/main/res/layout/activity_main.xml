@@ -27,12 +27,6 @@
             android:drawableTop="@drawable/selector_main_home"
             android:text="首页" />
         <RadioButton
-            android:id="@+id/rbIM"
-            style="@style/MainTab"
-            android:background="@null"
-            android:drawableTop="@drawable/selector_main_im"
-            android:text="聊天" />
-        <RadioButton
             android:id="@+id/rbFind"
             style="@style/MainTab"
             android:background="@null"

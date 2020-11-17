@@ -5,7 +5,6 @@
     <!-- 允许应用程序改变网络状态 -->
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> <!-- 允许应用程序改变WIFI连接状态 -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -16,11 +15,16 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="${applicationId}.permission.JPUSH_MESSAGE" />
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- 网络权限 -->
+    <uses-permission android:name="android.permission.VIBRATE" /> <!-- 震动权限 -->
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- 摄像头权限 -->
+    <uses-feature android:name="android.hardware.camera.autofocus" /> <!-- 自动聚焦权限 -->
+    
+
     <uses-permission
         android:name="android.permission.WRITE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
@@ -89,7 +93,6 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
 
-
         <!-- Since JCore2.0.0 Required SDK核心功能-->
         <!-- 这个Service要继承JCommonService -->
         <service android:name=".jiguang.JiguangService"
@@ -156,9 +159,7 @@
         <activity
             android:name=".login.activity.LoginActivity"
             android:screenOrientation="portrait">
-
         </activity>
-
         <!-- 微信回调 -->
         <activity
             android:name=".wxapi.WXEntryActivity"
@@ -167,8 +168,7 @@
             android:taskAffinity="com.YiDian.RainBow"
             android:launchMode="singleTask">
         </activity>
-
-
+        
         <!-- 设置密码 -->
         <activity
             android:name=".setpwd.activity.SetPwdActivity"
@@ -256,6 +256,18 @@
 
         <!-- 编辑资料 -->
         <activity android:name=".main.fragment.mine.activity.EditMsgActivity"
+            android:screenOrientation="portrait"
+            >
+        </activity>
+
+        <!-- 金币充值 -->
+        <activity android:name=".main.fragment.mine.activity.RechargeGlodActivity"
+            android:screenOrientation="portrait"
+            >
+        </activity>
+
+        <!-- 金币充值 -->
+        <activity android:name=".custom.zbar.CaptureActivity"
             android:screenOrientation="portrait"
             >
         </activity>

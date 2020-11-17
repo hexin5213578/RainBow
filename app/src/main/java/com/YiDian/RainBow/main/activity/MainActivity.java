@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
@@ -21,6 +22,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.custom.zbar.CaptureActivity;
 import com.YiDian.RainBow.main.fragment.FragmentFind;
 import com.YiDian.RainBow.main.fragment.FragmentHome;
 import com.YiDian.RainBow.main.fragment.FragmentIM;
@@ -45,8 +47,6 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     FrameLayout flContent;
     @BindView(R.id.rbHome)
     RadioButton rbHome;
-    @BindView(R.id.rbIM)
-    RadioButton rbIM;
     @BindView(R.id.rbFind)
     RadioButton rbFind;
     @BindView(R.id.rbMsg)
@@ -55,7 +55,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     RadioButton rbMine;
     @BindView(R.id.rgMenu)
     RadioGroup rgMenu;
-    RadioButton[] rbs = new RadioButton[5];
+    RadioButton[] rbs = new RadioButton[4];
     @BindView(R.id.rl_main)
     RelativeLayout rlMain;
     private FragmentManager fmManager;
@@ -73,7 +73,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
      * 创建Fragment实例
      */
     private FragmentHome fragmentHome;
-    private FragmentIM fragmentIM;
+    //private FragmentIM fragmentIM;
     private FragmentFind fragmentfind;
     private FragmentMsg fragmentMsg;
     private FragmentMine fragmentmine;
@@ -87,10 +87,10 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     protected void getData() {
 
         rbs[0] = rbHome;
-        rbs[1] = rbIM;
-        rbs[2] = rbFind;
-        rbs[3] = rbMsg;
-        rbs[4] = rbMine;
+        //rbs[1] = rbIM;
+        rbs[1] = rbFind;
+        rbs[2] = rbMsg;
+        rbs[3] = rbMine;
 
         for (RadioButton rb : rbs) {
             //给每个RadioButton加入drawable限制边距控制显示大小
@@ -108,7 +108,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
         rgMenu.setOnCheckedChangeListener(this);
         //创建fragment实例
         fragmentHome = new FragmentHome();
-        fragmentIM = new FragmentIM();
+        //fragmentIM = new FragmentIM();
         fragmentfind = new FragmentFind();
         fragmentMsg = new FragmentMsg();
         fragmentmine = new FragmentMine();
@@ -132,9 +132,9 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
             case R.id.rbHome:
                 replace(fragmentHome);
                 break;
-            case R.id.rbIM:
+            /*case R.id.rbIM:
                 replace(fragmentIM);
-                break;
+                break;*/
             case R.id.rbFind:
                 replace(fragmentfind);
                 break;
@@ -256,5 +256,22 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
         super.onCreate(savedInstanceState);
         // TODO: add setContentView(...) invocation
         ButterKnife.bind(this);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.e("xxx",+requestCode+"   "+resultCode);
+                Log.e("xxx","识别成功");
+                // 扫描二维码回传
+                if (resultCode == RESULT_OK) {
+                    if (data != null) {
+                        //获取扫描结果
+                        Bundle bundle = data.getExtras();
+                        String result = bundle.getString(CaptureActivity.EXTRA_STRING);
+
+                        //判断信息是否属于彩虹 属于彩虹+id格式 跳转到扫描成功页 通过ID查询用户信息
+                        Log.e("xxx", result);
+                    }
+                }
     }
 }

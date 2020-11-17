@@ -1,16 +1,14 @@
 package com.YiDian.RainBow.wxapi;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
-import android.view.WindowManager;
+import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
@@ -33,13 +31,14 @@ public class WXEntryActivity extends AppCompatActivity implements IWXAPIEventHan
 
     private IWXAPI iwxapi;
     private ProgressDialog mProgressDialog;
-    private Context mContext;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         //接收到分享以及登录的intent传递handleIntent方法，处理结果
         iwxapi = WXAPIFactory.createWXAPI(this, "wxf8a5f128098b4df3", false);
         iwxapi.handleIntent(getIntent(), this);
+
     }
 
         @Override
@@ -52,16 +51,50 @@ public class WXEntryActivity extends AppCompatActivity implements IWXAPIEventHan
         //登录回调
         switch (baseResp.errCode) {
             case BaseResp.ErrCode.ERR_OK:
-                String code = ((SendAuth.Resp) baseResp).code;
-                //获取accesstoken
-                getAccessToken(code);
-                Log.d("fantasychongwxlogin", code.toString()+ "");
+                switch (baseResp.getType()){
+                        //微信分享回调
+                    case ConstantsAPI.COMMAND_SENDMESSAGE_TO_WX:
+
+                        Toast.makeText(this, "分享成功", Toast.LENGTH_SHORT).show();
+                        finish();
+
+                        break;
+                        //微信登录回调
+                    case ConstantsAPI.COMMAND_SENDAUTH:
+                        String code = ((SendAuth.Resp) baseResp).code;
+                        //获取accesstoken
+                        getAccessToken(code);
+
+                        break;
+                    default:
+                        finish();
+                        break;
+                }
                 break;
             case BaseResp.ErrCode.ERR_AUTH_DENIED://用户拒绝授权
-                finish();
+                switch (baseResp.getType()){
+                        //微信分享回调
+                    case ConstantsAPI.COMMAND_SENDMESSAGE_TO_WX:
+                        //微信登录回调
+                    case ConstantsAPI.COMMAND_SENDAUTH:
+                        finish();
+                        Toast.makeText(this, "用户拒绝授权", Toast.LENGTH_SHORT).show();
+                        break;
+                }
                 break;
             case BaseResp.ErrCode.ERR_USER_CANCEL://用户取消
-                finish();
+                switch (baseResp.getType()){
+                    //微信分享回调
+                    case ConstantsAPI.COMMAND_SENDMESSAGE_TO_WX:
+                        finish();
+                        Toast.makeText(this, "用户取消分享", Toast.LENGTH_SHORT).show();
+                        break;
+                    //微信登录回调
+                    case ConstantsAPI.COMMAND_SENDAUTH:
+                        finish();
+                        Toast.makeText(this, "用户取消登录", Toast.LENGTH_SHORT).show();
+                        break;
+                }
                 break;
             default:
                 finish();
@@ -114,8 +147,7 @@ public class WXEntryActivity extends AppCompatActivity implements IWXAPIEventHan
         });
     }
     private void createProgressDialog() {
-        mContext=this;
-        mProgressDialog = new ProgressDialog(mContext);
+        mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);//转盘
         mProgressDialog.setCancelable(false);
         mProgressDialog.setCanceledOnTouchOutside(false);
