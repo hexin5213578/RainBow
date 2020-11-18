@@ -40,6 +40,7 @@ import com.YiDian.RainBow.custom.zbar.CaptureActivity;
 import com.YiDian.RainBow.login.activity.CompleteMsgActivity;
 import com.YiDian.RainBow.main.activity.MainActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.MyQrCodeActivity;
+import com.YiDian.RainBow.main.fragment.mine.activity.RechargeGlodActivity;
 import com.YiDian.RainBow.main.fragment.mine.adapter.HobbyAdapter;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
@@ -135,6 +136,7 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
     @Override
     protected void getData() {
 
+
         //设置状态栏颜色与字体颜色
         StatusBarUtil.setDarkMode(getActivity());
 
@@ -202,7 +204,8 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
             //我的金币
             case R.id.ll_my_money:
                 //跳转到金币充值功能
-
+                Intent intent2 = new Intent(getContext(), RechargeGlodActivity.class);
+                startActivity(intent2);
                 break;
             //特权认证
             case R.id.ll_certification:

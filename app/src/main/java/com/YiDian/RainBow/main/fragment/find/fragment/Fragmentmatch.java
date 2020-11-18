@@ -15,7 +15,14 @@ import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.main.fragment.find.activity.UserDetailsActivity;
 import com.YiDian.RainBow.main.fragment.find.adapter.CardsDataAdapter;
+import com.YiDian.RainBow.main.fragment.find.bean.SaveFilterBean;
 import com.wenchao.cardstack.CardStack;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.io.Serializable;
 
 import butterknife.BindView;
 
@@ -24,6 +31,8 @@ public class Fragmentmatch extends BaseFragment {
     @BindView(R.id.container)
     CardStack container;
     int index = 0;
+    private CardsDataAdapter cardsDataAdapter;
+
     @Override
     protected void getid(View view) {
 
@@ -41,10 +50,10 @@ public class Fragmentmatch extends BaseFragment {
 
     @Override
     protected void getData() {
+
         container.setStackMargin(20);
 
-
-        CardsDataAdapter cardsDataAdapter = new CardsDataAdapter(getContext(), R.layout.card_layout);
+        cardsDataAdapter = new CardsDataAdapter(getContext(), R.layout.card_layout);
         container.setAdapter(cardsDataAdapter);
 
         for (int i =0;i<20;i++){
@@ -109,7 +118,23 @@ public class Fragmentmatch extends BaseFragment {
             }
         });
     }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getMsg(SaveFilterBean saveFilterBean){
+        String age = saveFilterBean.getAge();
+        //距离
+        int distance = saveFilterBean.getDistance();
+        //是否单身
+        String isSingle = saveFilterBean.getIsSingle();
+        //角色
+        String role = saveFilterBean.getRole();
 
+        Log.e("xxx",age+"   "+distance+"   "+isSingle+"   "+role);
+
+        // TODO: 2020/11/18 0018 通过该筛选信息 查询列表
+
+
+        // TODO: 2020/11/18 0018 设置给左滑右滑数据源
+    }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -134,6 +159,9 @@ public class Fragmentmatch extends BaseFragment {
         super.onStart();
         index = 0;
         Log.d("hmy","onStart");
+        if(!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
     }
 
     @Override
@@ -146,6 +174,9 @@ public class Fragmentmatch extends BaseFragment {
     public void onStop() {
         super.onStop();
         Log.d("hmy","onStop");
+        if(EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
     }
 
     @Override

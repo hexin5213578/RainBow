@@ -36,6 +36,7 @@
             <ImageView
                 android:layout_width="@dimen/dp_11"
                 android:src="@mipmap/fire"
+                android:layout_marginLeft="@dimen/dp_5"
                 android:layout_gravity="center"
                 android:layout_height="@dimen/dp_11">
             </ImageView>
@@ -44,7 +45,7 @@
                 android:text="3000"
                 android:id="@+id/tv_mygold"
                 android:paddingRight="@dimen/dp_5"
-                android:paddingLeft="@dimen/dp_3"
+                android:paddingLeft="@dimen/dp_4"
                 android:textSize="@dimen/sp_10"
                 android:textColor="@color/white"
                 android:layout_height="wrap_content">
@@ -71,6 +72,7 @@
                 android:layout_width="wrap_content"
                 android:text="特权认证"
                 android:textSize="@dimen/sp_10"
+                android:layout_marginLeft="@dimen/dp_4"
                 android:textColor="@color/white"
                 android:layout_height="wrap_content">
             </TextView>
@@ -336,7 +338,7 @@
             android:layout_marginLeft="@dimen/dp_15"
             android:layout_marginTop="@dimen/dp_13"
             android:paddingLeft="@dimen/dp_9"
-            android:text="点击编辑个性签名"
+            android:text="我肯定是这世上最伟大的天才了"
             android:id="@+id/tv_signature"
             android:textSize="@dimen/sp_10"
             android:background="@drawable/mine_signature_bg"

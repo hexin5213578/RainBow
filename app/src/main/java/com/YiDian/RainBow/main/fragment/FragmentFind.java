@@ -38,6 +38,8 @@ import com.YiDian.RainBow.main.fragment.find.fragment.Fragmentmatch;
 import com.YiDian.RainBow.main.fragment.find.fragment.Fragmentmeet;
 import com.leaf.library.StatusBarUtil;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -234,29 +236,7 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
                 dismiss();
             }
         });
-        if (rb1.isChecked()) {
-            Person = rb1.getText().toString();
-        }
-        if (rb2.isChecked()) {
-            Person = rb2.getText().toString();
-        }
-        if (rb3.isChecked()) {
-            Person = rb3.getText().toString();
-        }
-        if (rb4.isChecked()) {
-            Person = rb4.getText().toString();
-        }
-        if (rb5.isChecked()) {
-            Person = rb5.getText().toString();
-        }
 
-
-        if (rb_issingle.isChecked()) {
-            IsSingle = rb_issingle.getText().toString();
-        }
-        if (rb_isNosingle.isChecked()) {
-            IsSingle = rb_isNosingle.getText().toString();
-        }
         //设置距离筛选
         seekBar_distance.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -288,19 +268,37 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
             public void onClick(View v) {
                 String age = tv_age.getText().toString();
                 int progress = seekBar_distance.getProgress();
+                if (rb1.isChecked()) {
+                    Person = rb1.getText().toString();
+                }
+                if (rb2.isChecked()) {
+                    Person = rb2.getText().toString();
+                }
+                if (rb3.isChecked()) {
+                    Person = rb3.getText().toString();
+                }
+                if (rb4.isChecked()) {
+                    Person = rb4.getText().toString();
+                }
+                if (rb5.isChecked()) {
+                    Person = rb5.getText().toString();
+                }
 
-                Toast.makeText(getContext(), ""+age+(progress+1)+Person+IsSingle, Toast.LENGTH_SHORT).show();
 
-                Bundle bundle = new Bundle();
+                if (rb_issingle.isChecked()) {
+                    IsSingle = rb_issingle.getText().toString();
+                }
+                if (rb_isNosingle.isChecked()) {
+                    IsSingle = rb_isNosingle.getText().toString();
+                }
+
                 SaveFilterBean saveFilterBean = new SaveFilterBean();
                 saveFilterBean.setRole(Person);
                 saveFilterBean.setAge(age);
                 saveFilterBean.setDistance(progress+1);
                 saveFilterBean.setIsSingle(IsSingle);
-                bundle.putSerializable("Msg",saveFilterBean);
-                //将筛选信息传递到匹配fragment
-                fragmentmatch.setArguments(bundle);
 
+                EventBus.getDefault().post(saveFilterBean);
                 //关闭弹出框
                 dismiss();
             }
