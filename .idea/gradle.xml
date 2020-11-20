@@ -32,10 +32,12 @@
             <option value="$PROJECT_DIR$/imageviewer" />
             <option value="$PROJECT_DIR$/library" />
             <option value="$PROJECT_DIR$/libzxing-master" />
+            <option value="$PROJECT_DIR$/mediapicker" />
             <option value="$PROJECT_DIR$/photoview" />
             <option value="$PROJECT_DIR$/pictureselector" />
             <option value="$PROJECT_DIR$/picuter_list" />
             <option value="$PROJECT_DIR$/sample" />
+            <option value="$PROJECT_DIR$/videoprocessor" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

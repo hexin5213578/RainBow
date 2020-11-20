@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
+import com.YiDian.RainBow.custom.image.CustomRoundAngleImageView;
 import com.YiDian.RainBow.main.fragment.home.activity.NewDynamicImage;
 import com.bumptech.glide.Glide;
 
@@ -43,6 +44,7 @@ public class FeedBackImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Glide.with(context).load(list.get(position)).into(((ViewHolder) holder).ivImage);
+
         ((ViewHolder) holder).ivDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,7 +75,7 @@ public class FeedBackImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.iv_image)
-        ImageView ivImage;
+        CustomRoundAngleImageView ivImage;
         @BindView(R.id.iv_delete)
         ImageView ivDelete;
         public ViewHolder(@NonNull View itemView) {

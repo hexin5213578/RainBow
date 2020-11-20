@@ -18,6 +18,7 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.App;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.dynamic.DevelopmentDynamicActivity;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentAttDynamic;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentHotDynamic;
@@ -102,6 +103,14 @@ public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedCh
                 startActivity(new Intent(getContext(), SearchActivity.class));
             }
         });
+        ivAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //跳转到发布动态页
+                startActivity(new Intent(getContext(), DevelopmentDynamicActivity.class));
+            }
+        });
+
         rbs[0] = rbNewDynamic;
         rbs[1] = rbNearDynamic;
         rbs[2] = rbAttDynamic;
@@ -119,7 +128,7 @@ public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedCh
          */
         rbNewDynamic.setChecked(true);
         rbNewDynamic.setTextSize(18);
-        rbNewDynamic.setTextAppearance(R.style.txt_bold);
+        rbNewDynamic.setTextAppearance(getContext(),R.style.txt_bold);
 
 
     }
@@ -131,58 +140,58 @@ public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedCh
             case R.id.rbNewDynamic:
                 replace(fragmentNewDynamic);
                 rbNewDynamic.setTextSize(18);
-                rbNewDynamic.setTextAppearance(R.style.txt_bold);
+                rbNewDynamic.setTextAppearance(getContext(),R.style.txt_bold);
 
                 rbNearDynamic.setTextSize(16);
-                rbNearDynamic.setTextAppearance(R.style.txt_nomal);
+                rbNearDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
 
                 rbAttDynamic.setTextSize(16);
-                rbAttDynamic.setTextAppearance(R.style.txt_nomal);
+                rbAttDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
 
                 rbHotDynamic.setTextSize(16);
-                rbHotDynamic.setTextAppearance(R.style.txt_nomal);
+                rbHotDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
                 break;
             case R.id.rbNearDynamic:
                 replace(fragmentNearDynamic);
                 rbNearDynamic.setTextSize(18);
-                rbNearDynamic.setTextAppearance(R.style.txt_bold);
+                rbNearDynamic.setTextAppearance(getContext(),R.style.txt_bold);
 
                 rbNewDynamic.setTextSize(16);
-                rbNewDynamic.setTextAppearance(R.style.txt_nomal);
+                rbNewDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
 
                 rbAttDynamic.setTextSize(16);
-                rbAttDynamic.setTextAppearance(R.style.txt_nomal);
+                rbAttDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
 
                 rbHotDynamic.setTextSize(16);
-                rbHotDynamic.setTextAppearance(R.style.txt_nomal);
+                rbHotDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
                 break;
             case R.id.rbAttDynamic:
                 replace(fragmentAttDynamic);
                 rbAttDynamic.setTextSize(18);
-                rbAttDynamic.setTextAppearance(R.style.txt_bold);
+                rbAttDynamic.setTextAppearance(getContext(),R.style.txt_bold);
 
                 rbNewDynamic.setTextSize(16);
-                rbNewDynamic.setTextAppearance(R.style.txt_nomal);
+                rbNewDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
 
                 rbNearDynamic.setTextSize(16);
-                rbNearDynamic.setTextAppearance(R.style.txt_nomal);
+                rbNearDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
 
                 rbHotDynamic.setTextSize(16);
-                rbHotDynamic.setTextAppearance(R.style.txt_nomal);
+                rbHotDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
                 break;
             case R.id.rbHotDynamic:
                 replace(fragmentHotDynamic);
                 rbHotDynamic.setTextSize(18);
-                rbHotDynamic.setTextAppearance(R.style.txt_bold);
+                rbHotDynamic.setTextAppearance(getContext(),R.style.txt_bold);
 
                 rbNewDynamic.setTextSize(16);
-                rbNewDynamic.setTextAppearance(R.style.txt_nomal);
+                rbNewDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
 
                 rbNearDynamic.setTextSize(16);
-                rbNearDynamic.setTextAppearance(R.style.txt_nomal);
+                rbNearDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
 
                 rbAttDynamic.setTextSize(16);
-                rbAttDynamic.setTextAppearance(R.style.txt_nomal);
+                rbAttDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
                 break;
             default:
                 break;

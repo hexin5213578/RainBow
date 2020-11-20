@@ -1,3 +1,5 @@
+include ':videoprocessor'
+include ':mediapicker'
 include ':libzxing-master'
 include ':demo'
 include ':imageviewe'

@@ -123,8 +123,6 @@
             </intent-filter>
         </receiver>
 
-
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.YiDian.RainBow.utils.MyFileProvider"
@@ -191,7 +189,9 @@
         <activity
             android:name=".feedback.activity.FeedBackActivity"
             android:screenOrientation="portrait"
-            />
+            >
+
+        </activity>
         <!-- 直接播放 -->
         <activity
             android:name=".main.fragment.activity.SimplePlayerActivity"
@@ -270,6 +270,25 @@
         <activity android:name=".custom.zbar.CaptureActivity"
             android:screenOrientation="portrait"
             >
+        </activity>
+
+
+        <!-- 测试选择视频压缩 -->
+        <activity android:name=".feedback.activity.TextActivity"
+            android:screenOrientation="portrait"
+            >
+
+        </activity>
+        <!-- 压缩成功回调 -->
+        <activity android:name=".feedback.activity.PreviewActivity"
+            android:screenOrientation="portrait"
+            >
+        </activity>
+
+        <!-- 发布新动态 -->
+        <activity android:name=".dynamic.DevelopmentDynamicActivity"
+            android:screenOrientation="portrait">
+
         </activity>
     </application>
 

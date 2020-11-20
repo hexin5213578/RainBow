@@ -17,6 +17,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 
 import com.YiDian.RainBow.R;
@@ -77,6 +78,7 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
         return R.layout.activity_complete_msg;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void getData() {
         //设置状态栏颜色与字体颜色

@@ -37,6 +37,7 @@ import butterknife.ButterKnife;
 import indi.liyi.viewer.ImageViewer;
 import indi.liyi.viewer.listener.OnItemClickListener;
 
+//图片展示
 public class NewDynamicImage extends FragmentActivity {
     private static final String STATE_POSITION = "STATE_POSITION";
     public static final String EXTRA_IMAGE_URLS = "image_urls";
