@@ -374,7 +374,7 @@ public class StringUtil {
      * @param color2  第二种颜色id
      * @return
      */
-    public static SpannableString changeStringColor(Context context, String s, int index, @ColorRes int color1, @ColorRes int color2) {
+    public static SpannableString changeStringColor(Context context, StringBuffer s, int index, @ColorRes int color1, @ColorRes int color2) {
         if (s.length() < index) {
             return new SpannableString(s);
         }

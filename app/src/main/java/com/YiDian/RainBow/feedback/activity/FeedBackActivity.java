@@ -184,7 +184,6 @@ public class FeedBackActivity extends BaseAvtivity implements View.OnClickListen
                         rlSelectedimg.setVisibility(View.GONE);
                     }
                     Log.d("xxx", paths.size() + "");
-
                 }
             }
         }

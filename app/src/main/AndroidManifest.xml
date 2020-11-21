@@ -286,9 +286,14 @@
         </activity>
 
         <!-- 发布新动态 -->
-        <activity android:name=".dynamic.DevelopmentDynamicActivity"
+        <activity android:name=".dynamic.activity.DevelopmentDynamicActivity"
             android:screenOrientation="portrait">
 
+        </activity>
+
+        <!-- 选择@好友 -->
+        <activity android:name=".dynamic.activity.SelectFriendActivity"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

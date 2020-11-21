@@ -44,7 +44,7 @@
             android:id="@+id/tv_release"
             android:paddingLeft="@dimen/dp_12"
             android:paddingRight="@dimen/dp_12"
-            android:background="@drawable/background_gradient_nine_radious"
+            android:background="@drawable/nine_radious_gray"
             android:textColor="@color/white"
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/dp_15"
@@ -67,8 +67,8 @@
             android:maxLength="100"
             android:hint="发布这一刻的想法..."
             android:background="@null"
-            android:textScaleX="1"
-            android:textScaleY="1.5"
+            android:maxLines="12"
+            android:letterSpacing="0.1"
             android:textSize="@dimen/sp_12"
             android:gravity="start"
             android:textColorHint="@color/color_999999"
@@ -87,6 +87,131 @@
             android:layout_marginBottom="@dimen/dp_10"
             android:layout_height="wrap_content">
         </TextView>
+    </RelativeLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="wrap_content"
+        android:layout_below="@id/rl_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:id="@+id/rc_pro_img"
+        android:visibility="gone"
+        android:layout_height="wrap_content">
+    </androidx.recyclerview.widget.RecyclerView>
+    <RelativeLayout
+        android:layout_width="@dimen/dp_75"
+        android:layout_below="@id/rl_content"
+        android:id="@+id/rl_selectedimg"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:background="@drawable/development_selectimg"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_height="@dimen/dp_75">
+        <View
+            android:layout_width="@dimen/dp_38"
+            android:background="#E6E6E6"
+            android:layout_centerInParent="true"
+            android:layout_height="@dimen/dp_2">
+        </View>
+        <View
+            android:layout_width="@dimen/dp_2"
+            android:background="#E6E6E6"
+            android:layout_centerInParent="true"
+            android:layout_height="@dimen/dp_38">
+        </View>
+    </RelativeLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_below="@id/rl_selectedimg"
+        android:id="@+id/rc_hotHuati"
+        android:layout_marginRight="@dimen/dp_15"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_height="@dimen/dp_20">
+    </androidx.recyclerview.widget.RecyclerView>
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_below="@id/rc_hotHuati"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginRight="@dimen/dp_15"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_height="@dimen/dp_20">
+        <LinearLayout
+            android:layout_width="@dimen/dp_70"
+            android:orientation="horizontal"
+            android:id="@+id/ll_my_location"
+            android:background="@drawable/tenradious_f2_bg"
+            android:layout_height="@dimen/dp_20">
+            <ImageView
+                android:layout_width="@dimen/dp_6"
+                android:layout_gravity="center"
+                android:src="@mipmap/fire"
+                android:scaleType="centerCrop"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_height="@dimen/dp_12">
+            </ImageView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:textSize="@dimen/sp_10"
+                android:textColor="@color/color_666666"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp_2"
+                android:id="@+id/tv_mylocation"
+                android:text="我的位置"
+                android:layout_height="@dimen/dp_12">
+            </TextView>
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="@dimen/dp_50"
+            android:background="@drawable/tenradious_f2_bg"
+            android:id="@+id/rl_aiteFriend"
+            android:layout_toRightOf="@id/ll_my_location"
+            android:layout_marginLeft="@dimen/dp_18"
+            android:layout_height="@dimen/dp_20">
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="＠好友"
+                android:layout_centerInParent="true"
+                android:textSize="@dimen/sp_10"
+                android:layout_height="wrap_content">
+            </TextView>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="@dimen/dp_50"
+            android:background="@drawable/tenradious_f2_bg"
+            android:id="@+id/rl_developHuati"
+            android:layout_toRightOf="@id/rl_aiteFriend"
+            android:layout_marginLeft="@dimen/dp_18"
+            android:layout_height="@dimen/dp_20">
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="＃话题"
+                android:layout_centerInParent="true"
+                android:textSize="@dimen/sp_10"
+                android:layout_height="wrap_content">
+            </TextView>
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/ll_whocansee"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_height="@dimen/dp_12">
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="广场可见"
+                android:textColor="@color/color_666666"
+                android:textSize="@dimen/sp_10"
+                android:layout_marginRight="@dimen/dp_5"
+                android:layout_height="wrap_content">
+            </TextView>
+            <ImageView
+                android:layout_width="@dimen/dp_5"
+                android:src="@mipmap/back_to"
+                android:scaleType="centerCrop"
+                android:layout_height="match_parent">
+            </ImageView>
+        </LinearLayout>
     </RelativeLayout>
 
 </RelativeLayout>

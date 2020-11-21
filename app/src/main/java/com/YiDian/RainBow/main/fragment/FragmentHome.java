@@ -15,27 +15,18 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.YiDian.RainBow.R;
-import com.YiDian.RainBow.base.App;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
-import com.YiDian.RainBow.dynamic.DevelopmentDynamicActivity;
-import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
+import com.YiDian.RainBow.dynamic.activity.DevelopmentDynamicActivity;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentAttDynamic;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentHotDynamic;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentNearDynamic;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentNewDynamic;
 import com.YiDian.RainBow.search.SearchActivity;
-import com.YiDian.RainBow.utils.NetUtils;
 import com.leaf.library.StatusBarUtil;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 
-import java.util.List;
-
 import butterknife.BindView;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedChangeListener {
     @BindView(R.id.ll_search)

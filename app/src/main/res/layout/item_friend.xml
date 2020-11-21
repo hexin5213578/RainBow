@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/dp_12"
+        android:background="@color/white"
+        android:layout_height="@dimen/dp_43">
+        <ImageView
+            android:layout_width="@dimen/dp_43"
+            android:src="@mipmap/headimg"
+            android:id="@+id/iv_headimg"
+            android:layout_height="match_parent">
+        </ImageView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="偏爱"
+            android:textSize="@dimen/sp_10"
+            android:textColor="@color/color_333333"
+            android:id="@+id/tv_name"
+            android:layout_toRightOf="@id/iv_headimg"
+            android:layout_marginLeft="@dimen/dp_7"
+            android:layout_height="wrap_content">
+        </TextView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="个性签名"
+            android:textSize="@dimen/sp_8"
+            android:id="@+id/tv_autograph"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@id/iv_headimg"
+            android:layout_marginLeft="@dimen/dp_7"
+            android:layout_height="wrap_content">
+        </TextView>
+        <CheckBox
+            android:id="@+id/check_select"
+            android:layout_width="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:button="@drawable/check_button_bg"
+            android:textColor="#999999">
+        </CheckBox>
+    </RelativeLayout>
+</RelativeLayout>
