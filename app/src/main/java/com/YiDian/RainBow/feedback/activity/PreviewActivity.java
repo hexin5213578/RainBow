@@ -24,7 +24,7 @@ public class PreviewActivity extends AppCompatActivity {
     private VideoView videoView;
     private SeekBar seekBar;
     private int stopPosition;
-    static final String KEY_URI = "uri";
+    public static final String KEY_URI = "uri";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

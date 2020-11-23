@@ -407,12 +407,10 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                     Log.e(TAG, "登录失败" + uiError.errorCode + "");
 
                 }
-
                 @Override
                 public void onCancel() {
                     //登录取消
                     Log.e(TAG, "登录取消");
-
                 }
             };
             //context上下文、第二个参数SCOPO 是一个String类型的字符串，表示一些权限

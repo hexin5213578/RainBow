@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:id="@+id/rl_item"
+        android:layout_height="@dimen/dp_19">
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="#热门话题1#"
+            android:textSize="@dimen/sp_10"
+            android:id="@+id/tv_hothuati"
+            android:maxEms="6"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_10"
+            android:gravity="center"
+            android:textColor="@color/color_666666"
+            android:background="@drawable/tenradious_f2_bg"
+            android:layout_height="match_parent">
+        </TextView>
+    </RelativeLayout>
+</RelativeLayout>

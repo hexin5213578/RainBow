@@ -115,17 +115,7 @@ public class FeedBackActivity extends BaseAvtivity implements View.OnClickListen
             case R.id.bt_submit:
                 // TODO: 2020/10/6 0006 携带提出的问题图片 描述 电话/邮箱 提交到服务器
 
-                //测试视频选择
-                //装被选中的文件
-                select = new ArrayList<>();
-                Intent intent =new Intent(FeedBackActivity.this, PickerActivity.class);
-                intent.putExtra(PickerConfig.SELECT_MODE,PickerConfig.PICKER_VIDEO);//设置选择类型，默认是图片和视频可一起选择(非必填参数)
-                long maxSize=10485760L;//long long long long类型
-                intent.putExtra(PickerConfig.MAX_SELECT_SIZE,maxSize);
-                intent.putExtra(PickerConfig.MAX_SELECT_COUNT,9); //最大选择数量，默认40（非必填参数）
-                ArrayList<Media> defaultSelect = select;//可以设置默认选中的照片，比如把select刚刚选择的list设置成默认的。
-                intent.putExtra(PickerConfig.DEFAULT_SELECTED_LIST,defaultSelect); //可以设置默认选中的照片(非必填参数)
-                FeedBackActivity.this.startActivityForResult(intent,200);
+
 
                 break;
             case R.id.rl_selectedimg:
@@ -187,13 +177,7 @@ public class FeedBackActivity extends BaseAvtivity implements View.OnClickListen
                 }
             }
         }
-        if(requestCode==200 && resultCode==PickerConfig.RESULT_CODE){
-            select=data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT);
-            Log.i("select","select.size"+select.size());
-            for (int i =0;i<select.size();i++){
-                Log.e("select",select.get(i).size+" ");
-            }
-        }
+
 
 
     }

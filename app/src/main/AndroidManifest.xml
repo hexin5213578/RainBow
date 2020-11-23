@@ -295,6 +295,11 @@
         <activity android:name=".dynamic.activity.SelectFriendActivity"
             android:screenOrientation="portrait">
         </activity>
+
+        <!-- 选择谁可以看见 -->
+        <activity android:name=".dynamic.activity.SelectWhoCanSeeActivity"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>
