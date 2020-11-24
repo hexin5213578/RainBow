@@ -103,6 +103,26 @@
                 android:id="@+id/rc_pro_img"
                 android:layout_height="wrap_content">
             </androidx.recyclerview.widget.RecyclerView>
+        <RelativeLayout
+            android:layout_width="@dimen/dp_100"
+            android:id="@+id/rl_vv"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_height="@dimen/dp_100">
+            <VideoView
+                android:layout_width="@dimen/dp_100"
+                android:id="@+id/videoView"
+                android:layout_height="@dimen/dp_100">
+            </VideoView>
+            <ImageView
+                android:layout_width="@dimen/dp_20"
+                android:src="@mipmap/cha"
+                android:id="@+id/iv_delete_vv"
+                android:layout_alignParentRight="true"
+                android:layout_height="@dimen/dp_20">
+            </ImageView>
+        </RelativeLayout>
             <RelativeLayout
                 android:layout_width="@dimen/dp_75"
                 android:id="@+id/rl_selectedimg"
@@ -234,5 +254,16 @@
         </RelativeLayout>
     </LinearLayout>
 
-
+    <com.jaygoo.widget.RangeSeekBar
+        android:id="@+id/rangeSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/videoLayout"
+        android:layout_marginTop="5dp"
+        app:lineColorSelected="#ED1C24"
+        app:thumbSize="20dp"
+        android:visibility="gone"
+        app:seekBarHeight="10dp"
+        app:cellMode="number"
+        app:seekBarMode="range" />
 </RelativeLayout>

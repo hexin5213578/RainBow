@@ -60,7 +60,7 @@ public class TextActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_text);
-        initActionBar();
+
         CL.setLogEnable(true);
 
         final TextView uploadVideo = (TextView) findViewById(R.id.uploadVideo);
@@ -95,67 +95,11 @@ public class TextActivity extends AppCompatActivity {
             }
         });
 
-        cutVideo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (selectedVideoUri != null) {
-                    executeCutVideo((int) (rangeSeekBar.getCurrentRange()[0] * 1000), (int) (rangeSeekBar.getCurrentRange()[1] * 1000));
-                } else {
-                    Toast.makeText(getApplicationContext(), "Please upload a video", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
         scaleVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (selectedVideoUri != null) {
                     executeScaleVideo((int) (rangeSeekBar.getCurrentRange()[0] * 1000), (int) (rangeSeekBar.getCurrentRange()[1] * 1000));
-                } else {
-                    Toast.makeText(getApplicationContext(), "Please upload a video", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        mixAudio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (selectedVideoUri != null) {
-                    executeMixAudio((int) (rangeSeekBar.getCurrentRange()[0] * 1000), (int) (rangeSeekBar.getCurrentRange()[1] * 1000));
-                } else {
-                    Toast.makeText(getApplicationContext(), "Please upload a video", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        increaseSpeed.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (selectedVideoUri != null) {
-                    executeSpeedVideo((int) (rangeSeekBar.getCurrentRange()[0] * 1000), (int) (rangeSeekBar.getCurrentRange()[1] * 1000),
-                            2f);
-                } else {
-                    Toast.makeText(getApplicationContext(), "Please upload a video", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        decreaseSpeed.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (selectedVideoUri != null) {
-                    executeSpeedVideo((int) (rangeSeekBar.getCurrentRange()[0] * 1000), (int) (rangeSeekBar.getCurrentRange()[1] * 1000),
-                            0.5f);
-                } else {
-                    Toast.makeText(getApplicationContext(), "Please upload a video", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        reverseVideo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (selectedVideoUri != null) {
-                    executeRevertVideo((int) (rangeSeekBar.getCurrentRange()[0] * 1000), (int) (rangeSeekBar.getCurrentRange()[1] * 1000));
                 } else {
                     Toast.makeText(getApplicationContext(), "Please upload a video", Toast.LENGTH_SHORT).show();
                 }
@@ -169,28 +113,6 @@ public class TextActivity extends AppCompatActivity {
         return true;
     }
 
-    private void initActionBar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_main_toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setTitle("VideoProcessor");
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.menu_kichiku:
-                        if (selectedVideoUri != null) {
-                            executeKichikuVideo();
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Please upload a video", Toast.LENGTH_SHORT).show();
-                        }
-                        break;
-
-                }
-                return true;
-            }
-        });
-
-    }
 
 
     private void getPermission() {
@@ -274,7 +196,7 @@ public class TextActivity extends AppCompatActivity {
             if (requestCode == REQUEST_TAKE_GALLERY_VIDEO) {
                 selectedVideoUri = data.getData();
 
-
+                Log.d("xxx",selectedVideoUri+"");
                 ViewGroup.LayoutParams layoutParams = videoView.getLayoutParams();
                 try {
                     Pair<Integer,Integer> size = VideoUtil.getVideoSize(new VideoProcessor.MediaSource(this,selectedVideoUri));
@@ -346,39 +268,6 @@ public class TextActivity extends AppCompatActivity {
         return String.format("%02d", hr) + ":" + String.format("%02d", mn) + ":" + String.format("%02d", sec);
     }
 
-    private void executeCutVideo(final int startMs, final int endMs) {
-        progressDialog.show();
-        File moviesDir = getTempMovieDir();
-        String filePrefix = "cut_video";
-        String fileExtn = ".mp4";
-        File dest = new File(moviesDir, filePrefix + fileExtn);
-        int fileNo = 0;
-        while (dest.exists()) {
-            fileNo++;
-            dest = new File(moviesDir, filePrefix + fileNo + fileExtn);
-        }
-        filePath = dest.getAbsolutePath();
-
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                boolean success = true;
-                try {
-                    VideoProcessor.cutVideo(getApplicationContext(), selectedVideoUri, filePath, startMs, endMs);
-                } catch (Exception e) {
-                    success  = false;
-                    e.printStackTrace();
-                    postError();
-                }
-                if(success){
-                    startPreviewActivity(filePath);
-                }
-                progressDialog.dismiss();
-            }
-        }).start();
-    }
-
     private void executeScaleVideo(final int startMs, final int endMs) {
         File moviesDir = getTempMovieDir();
         progressDialog.show();
@@ -392,6 +281,7 @@ public class TextActivity extends AppCompatActivity {
         }
         filePath = dest.getAbsolutePath();
 
+        Log.d("xxx",filePath+"");
 
         new Thread(new Runnable() {
             @Override
@@ -428,147 +318,6 @@ public class TextActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void executeMixAudio(final int startMs, final int endMs) {
-        File moviesDir = getTempMovieDir();
-        progressDialog.show();
-        String filePrefix = "scale_video";
-        String fileExtn = ".mp4";
-        final VideoProcessor.MediaSource selectVideo= new VideoProcessor.MediaSource(TextActivity.this,selectedVideoUri);
-        File dest = new File(moviesDir, filePrefix + fileExtn);
-        int fileNo = 0;
-        while (dest.exists()) {
-            fileNo++;
-            dest = new File(moviesDir, filePrefix + fileNo + fileExtn);
-        }
-        filePath = dest.getAbsolutePath();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                boolean success = true;
-                try {
-                    final String aacPath = new File(getCacheDir(), "test.aac").getAbsolutePath();
-                    copyAssets("test.aac", aacPath);
-                    VideoProcessor.mixAudioTrack(getApplicationContext(), selectVideo, new VideoProcessor.MediaSource(aacPath), filePath, startMs, endMs, 100, 100,
-                            1, 1);
-                } catch (Exception e) {
-                    success = false;
-                    e.printStackTrace();
-                    postError();
-                }
-                if(success){
-                    startPreviewActivity(filePath);
-                }
-                progressDialog.dismiss();
-            }
-        }).start();
-    }
-
-    private void executeKichikuVideo() {
-        File moviesDir = getTempMovieDir();
-        progressDialog.show();
-        String filePrefix = "kichiku_video";
-        String fileExtn = ".mp4";
-        File dest = new File(moviesDir, filePrefix + fileExtn);
-        int fileNo = 0;
-        while (dest.exists()) {
-            fileNo++;
-            dest = new File(moviesDir, filePrefix + fileNo + fileExtn);
-        }
-        filePath = dest.getAbsolutePath();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                boolean success = true;
-                try {
-                    VideoEffects.doKichiku(getApplicationContext(), new VideoProcessor.MediaSource(TextActivity.this,selectedVideoUri), filePath, null, 2, 2000);
-                } catch (Exception e) {
-                    success = false;
-                    e.printStackTrace();
-                    postError();
-                }
-                if(success){
-                    startPreviewActivity(filePath);
-                }
-                progressDialog.dismiss();
-            }
-        }).start();
-    }
-
-    private void executeSpeedVideo(final int startMs, final int endMs, final float speed) {
-        File moviesDir =getTempMovieDir();
-        progressDialog.show();
-        String filePrefix = "speed_video";
-        String fileExtn = ".mp4";
-        File dest = new File(moviesDir, filePrefix + fileExtn);
-        int fileNo = 0;
-        while (dest.exists()) {
-            fileNo++;
-            dest = new File(moviesDir, filePrefix + fileNo + fileExtn);
-        }
-        filePath = dest.getAbsolutePath();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                boolean success = true;
-                try {
-                    long s = System.currentTimeMillis();
-                    VideoProcessor.processor(getApplicationContext())
-                            .input(selectedVideoUri)
-                            .output(filePath)
-                            .startTimeMs(startMs)
-                            .endTimeMs(endMs)
-                            .speed(speed)
-                            .changeAudioSpeed(true)
-                            .process();
-                    long e = System.currentTimeMillis();
-                    CL.w("减速已完成，耗时:" + (e - s) / 1000f + "s");
-                } catch (Exception e) {
-                    success = false;
-                    e.printStackTrace();
-                    postError();
-                }
-                if(success){
-                    startPreviewActivity(filePath);
-                }
-                progressDialog.dismiss();
-            }
-        }).start();
-    }
-
-    private void executeRevertVideo(final int startMs, final int endMs) {
-        File moviesDir = getTempMovieDir();
-        progressDialog.show();
-        String filePrefix = "revert_video";
-        String fileExtn = ".mp4";
-        File dest = new File(moviesDir, filePrefix + fileExtn);
-        int fileNo = 0;
-        while (dest.exists()) {
-            fileNo++;
-            dest = new File(moviesDir, filePrefix + fileNo + fileExtn);
-        }
-        filePath = dest.getAbsolutePath();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                boolean success = true;
-                try {
-                    VideoProcessor.reverseVideo(getApplicationContext(),new VideoProcessor.MediaSource(TextActivity.this,selectedVideoUri), filePath,true,null);
-                } catch (Exception e) {
-                    success = false;
-                    e.printStackTrace();
-                    postError();
-                }
-                if(success){
-                    startPreviewActivity(filePath);
-                }
-                progressDialog.dismiss();
-            }
-        }).start();
-    }
 
     private void startPreviewActivity(String videoPath){
         String name = new File(videoPath).getName();
@@ -587,13 +336,6 @@ public class TextActivity extends AppCompatActivity {
         File movie = new File(getCacheDir(), "movie");
         movie.mkdirs();
         return movie;
-    }
-
-    private void copyAssets(String assetsName, String path) throws IOException {
-        AssetFileDescriptor assetFileDescriptor = getAssets().openFd(assetsName);
-        FileChannel from = new FileInputStream(assetFileDescriptor.getFileDescriptor()).getChannel();
-        FileChannel to = new FileOutputStream(path).getChannel();
-        from.transferTo(assetFileDescriptor.getStartOffset(), assetFileDescriptor.getLength(), to);
     }
 
     private void postError() {

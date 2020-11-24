@@ -7,9 +7,10 @@ import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.MediaExtractor;
 import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,11 +27,13 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -48,8 +51,9 @@ import com.YiDian.RainBow.dynamic.adapter.HotHuatiAdapter;
 import com.YiDian.RainBow.dynamic.bean.SaveAiteBean;
 import com.YiDian.RainBow.dynamic.bean.SaveHotHuatiBean;
 import com.YiDian.RainBow.dynamic.bean.SaveWhoCanseeBean;
-import com.YiDian.RainBow.feedback.activity.PreviewActivity;
-import com.YiDian.RainBow.main.activity.MainActivity;
+import com.YiDian.RainBow.feedback.activity.PathUtil;
+import com.YiDian.RainBow.main.fragment.activity.SimplePlayerActivity;
+import com.YiDian.RainBow.utils.KeyBoardUtils;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
@@ -59,6 +63,8 @@ import com.dmcbig.mediapicker.PickerConfig;
 import com.dmcbig.mediapicker.entity.Media;
 import com.hw.videoprocessor.VideoProcessor;
 import com.hw.videoprocessor.VideoUtil;
+import com.hw.videoprocessor.util.CL;
+import com.jaygoo.widget.RangeSeekBar;
 import com.leaf.library.StatusBarUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -66,7 +72,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -112,6 +117,14 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
     LinearLayout llWhocansee;
     @BindView(R.id.tv_whocansee)
     TextView tvWhocansee;
+    @BindView(R.id.rangeSeekBar)
+    RangeSeekBar rangeSeekBar;
+    @BindView(R.id.videoView)
+    VideoView videoView;
+    @BindView(R.id.iv_delete_vv)
+    ImageView ivDeleteVv;
+    @BindView(R.id.rl_vv)
+    RelativeLayout rlVv;
     private PopupWindow mPopupWindow1;
     private ArrayList<Media> select;
     private ArrayList<Media> select1;
@@ -120,11 +133,19 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
     //声明mLocationOption对象
     public AMapLocationClientOption mLocationOption = null;
     boolean isSelect = false;
+    //文本的长度
     private int length;
     private DevelogmentImgAdapter develogmentImgAdapter;
-    private String filepath;
+    private String filePath;
     private Uri selectedVideoUri;
     private ProgressDialog progressDialog;
+    //压缩后的视频路径
+    private String strUri;
+    private HashMap<Integer, Integer> map = new HashMap<>();
+    private HashMap<Integer, Integer> map1 = new HashMap<>();
+    private SpannableString builder;
+
+    private String substring;
 
     @Override
     protected int getResId() {
@@ -141,8 +162,9 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle(null);
         progressDialog.setCancelable(false);
-        progressDialog.setMessage("正在压缩，请稍后");
+        progressDialog.setMessage("正在压缩视频，请耐心等待..");
 
+        CL.setLogEnable(true);
 
         //申请开启内存卡权限
         if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) && (DevelopmentDynamicActivity.this.checkSelfPermission
@@ -179,7 +201,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
         rlAiteFriend.setOnClickListener(this);
         rlDevelopHuati.setOnClickListener(this);
         llWhocansee.setOnClickListener(this);
-
+        ivDeleteVv.setOnClickListener(this);
         //初次进入内容为空 不能发布动态
         tvRelease.setBackground(this.getDrawable(R.drawable.nine_radious_gray));
         tvRelease.setClickable(false);
@@ -201,17 +223,14 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                 length = etContent.getText().length();
                 //判断输入字符串长度 大于0有内容可以发布 等于0不能发布
                 if (length > 0) {
-                    if (select == null && select1 == null) {
-                        tvRelease.setBackground(DevelopmentDynamicActivity.this.getDrawable(R.drawable.background_gradient_nine_radious));
-                        tvRelease.setClickable(true);
-                    } else {
-                        if (select.size() > 0 && select1.size() > 0) {
-                            tvRelease.setBackground(DevelopmentDynamicActivity.this.getDrawable(R.drawable.background_gradient_nine_radious));
-                            tvRelease.setClickable(true);
-                        }
-                    }
+                    tvRelease.setBackground(DevelopmentDynamicActivity.this.getDrawable(R.drawable.background_gradient_nine_radious));
+                    tvRelease.setClickable(true);
                 } else {
-                    if (select == null && select1 == null) {
+
+                    tvRelease.setBackground(DevelopmentDynamicActivity.this.getDrawable(R.drawable.nine_radious_gray));
+                    tvRelease.setClickable(false);
+
+                    if (select.size() == 0 && select1.size() == 0) {
                         tvRelease.setBackground(DevelopmentDynamicActivity.this.getDrawable(R.drawable.nine_radious_gray));
                         tvRelease.setClickable(false);
                     } else {
@@ -236,9 +255,19 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
         HotHuatiAdapter hotHuatiAdapter = new HotHuatiAdapter(this, hotHuati);
         rcHotHuati.setAdapter(hotHuatiAdapter);
 
+
+        videoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DevelopmentDynamicActivity.this, SimplePlayerActivity.class);
+                intent.putExtra("url", strUri);
+                startActivity(intent);
+            }
+        });
     }
 
     //获取热门话题
+    @SuppressLint("ResourceAsColor")
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getHotHuati(SaveHotHuatiBean saveHotHuatiBean) {
         String str = saveHotHuatiBean.getStr();
@@ -249,33 +278,15 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
         //插入到光标所在位置
         Editable editable = etContent.getEditableText();
         editable.insert(index, str);
+        //插入到光标所在位置
+        int end = index + str.length();//获取文本长度
+        editable.setSpan(new ForegroundColorSpan(R.color.start), index, end,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);//关键字变色
+
 
         String s = etContent.getText().toString();
-
-
-        HashMap<Integer, Integer> map = new HashMap<>();
-        if (s.contains("#")) {
-            Pattern patern = Pattern.compile("#(.*?)#");
-            Matcher m = patern.matcher(s);
-            while (m.find()) {
-                int i = 1;
-                map.put(m.start(), m.end());
-                i++;
-            }
-        }
-        SpannableString builder = new SpannableString(s);
-
-        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-
-            @SuppressLint("ResourceAsColor") ForegroundColorSpan redSpan = new ForegroundColorSpan(R.color.start);
-
-            builder.setSpan(redSpan, entry.getKey(), entry.getValue(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-            etContent.setText(builder);
-        }
         //设置光标到最后
         etContent.setSelection(s.length());
-
 
         tvRelease.setBackground(DevelopmentDynamicActivity.this.getDrawable(R.drawable.background_gradient_nine_radious));
         tvRelease.setClickable(true);
@@ -284,36 +295,22 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
     //获取选择的好友
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getAiteFriend(SaveAiteBean bean) {
-        String substring = bean.getString();
+        substring = bean.getString();
 
         //获取当前光标所在位置
         int index = etContent.getSelectionStart();
         Editable editable = etContent.getEditableText();
         //插入到光标所在位置
-        editable.insert(index, " @" + substring);
+        editable.insert(index, " @" + substring + " ");
+        int end = index + substring.length() + 1;//获取文本长度
+
+        editable.setSpan(new ForegroundColorSpan(Color.BLUE), index, end,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);//关键字变色
 
         String s = etContent.getText().toString();
-        /*HashMap<Integer,Integer> map = new HashMap<>();
-        if (s.contains("@")) {
-            Pattern patern = Pattern.compile("@(.*?),");
-            Matcher m = patern.matcher(s);
-            while (m.find()) {
-                int i = 1;
-                map.put(m.start(),m.end());
-                i++;
-            }
-        }
-        SpannableString builder = new SpannableString(s);
 
-        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-
-            @SuppressLint("ResourceAsColor") ForegroundColorSpan redSpan = new ForegroundColorSpan(Color.BLUE);
-
-            builder.setSpan(redSpan, entry.getKey(), entry.getValue(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-            etContent.setText(builder);
-        }*/
-
+        //设置光标到最后
+        etContent.setSelection(s.length());
 
         tvRelease.setBackground(DevelopmentDynamicActivity.this.getDrawable(R.drawable.background_gradient_nine_radious));
         tvRelease.setClickable(true);
@@ -331,6 +328,13 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
     protected void onResume() {
         super.onResume();
         dismiss();
+        videoView.resume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        videoView.pause();
     }
 
     @Override
@@ -341,6 +345,14 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
         }
         //停止定位
         mlocationClient.stopLocation();
+        if (videoView != null) {
+            if (videoView.isPlaying()) {
+                videoView.stopPlayback();
+                videoView.suspend();
+            }
+        }
+
+
     }
 
     @Override
@@ -360,7 +372,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
             //发布
             case R.id.tv_release:
                 // TODO: 2020/11/21 0021 获取内容 判断发布类型  1纯文本 2纯图片 3纯视频  21文本加图片 31文本加视频
-
+                Toast.makeText(this, "发布动态", Toast.LENGTH_SHORT).show();
 
                 break;
             //选择图片或视频
@@ -395,31 +407,17 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                 Editable editable = etContent.getEditableText();
                 editable.insert(index, "##");
 
+                //插入到光标所在位置
+                int end = index + 2 ;//获取文本长度
+
+                editable.setSpan(new ForegroundColorSpan(R.color.start), index, end,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);//关键字变色
+                //设置光标到##中间
                 String s = etContent.getText().toString();
 
-
-                HashMap<Integer, Integer> map = new HashMap<>();
-                if (s.contains("#")) {
-                    Pattern patern = Pattern.compile("#(.*?)#");
-                    Matcher m = patern.matcher(s);
-                    while (m.find()) {
-                        int i = 1;
-                        map.put(m.start(), m.end());
-                        i++;
-                    }
-                }
-                SpannableString builder = new SpannableString(s);
-
-                for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-
-                    @SuppressLint("ResourceAsColor") ForegroundColorSpan redSpan = new ForegroundColorSpan(R.color.start);
-
-                    builder.setSpan(redSpan, entry.getKey(), entry.getValue(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                    etContent.setText(builder);
-                }
-                //设置光标到##中间
-                etContent.setSelection(s.length() - 1);
+                etContent.setSelection(s.length()-1);
+                //打开键盘
+                KeyBoardUtils.openKeyBoard(etContent);
 
                 tvRelease.setBackground(DevelopmentDynamicActivity.this.getDrawable(R.drawable.background_gradient_nine_radious));
                 tvRelease.setClickable(true);
@@ -434,6 +432,26 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                     Intent intent = new Intent(DevelopmentDynamicActivity.this, SelectWhoCanSeeActivity.class);
                     intent.putExtra("msg", str);
                     startActivity(intent);
+                }
+                break;
+            //删除视频
+            case R.id.iv_delete_vv:
+
+                //释放videoview 隐藏VideoView 弹出选择框
+                videoView.stopPlayback();
+                rlVv.setVisibility(View.GONE);
+                rlSelectedimg.setVisibility(View.VISIBLE);
+
+                //清除视频
+                select1.clear();
+
+                //清除视频后判断别的内容是否为空
+                if (length > 0 || select.size() > 0) {
+                    tvRelease.setBackground(DevelopmentDynamicActivity.this.getDrawable(R.drawable.background_gradient_nine_radious));
+                    tvRelease.setClickable(true);
+                } else {
+                    tvRelease.setBackground(DevelopmentDynamicActivity.this.getDrawable(R.drawable.nine_radious_gray));
+                    tvRelease.setClickable(false);
                 }
                 break;
         }
@@ -451,7 +469,6 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
             if (aMapLocation.getErrorCode() == 0) {
                 //定位成功回调信息，设置相关消息
                 String district = aMapLocation.getDistrict();
-                Log.d("xxx", district);
 
                 tvMylocation.setText(district);
             } else {
@@ -467,6 +484,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
     //删除列表内
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getint(Integer id) {
+        //判断是否已经存在占位图
         boolean ch = false;
         select.remove(id);
         Log.d("xxx", select.size() + "");
@@ -485,8 +503,11 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
             select.add(new Media("123", "123", 1, 1, 1, 1, "123"));
             ch = false;
         }
-        if(select.size()==1){
+        if (select.size() == 1) {
             select.clear();
+            tvRelease.setBackground(DevelopmentDynamicActivity.this.getDrawable(R.drawable.nine_radious_gray));
+            tvRelease.setClickable(false);
+
         }
         develogmentImgAdapter.notifyDataSetChanged();
 
@@ -593,28 +614,26 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 200 && resultCode == PickerConfig.RESULT_CODE) {
-            if(data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT).size()>0){
+            if (data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT).size() > 0) {
                 select1 = data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT);
+
             }
+
             Log.i("select", "select1.size" + select1.size());
             if (select1.size() > 0) {
                 tvRelease.setBackground(DevelopmentDynamicActivity.this.getDrawable(R.drawable.background_gradient_nine_radious));
                 tvRelease.setClickable(true);
                 Media media = select1.get(0);
                 //将视频压缩并回显
-                Log.d("xxx","mediaPath   "+media.path);
-
                 selectedVideoUri = Uri.parse(media.path);
-
-                Log.d("xxx","selectedVideoUri+    "+selectedVideoUri);
+                Log.d("xxx", "selectedVideoUri    " + selectedVideoUri);
 
                 //压缩视频
                 if (selectedVideoUri != null) {
-                    executeScaleVideo(0,0);
+                    executeScaleVideo((int) (rangeSeekBar.getCurrentRange()[0] * 1000), (int) (rangeSeekBar.getCurrentRange()[1] * 1000));
                 } else {
                     Toast.makeText(getApplicationContext(), "Please upload a video", Toast.LENGTH_SHORT).show();
                 }
-
 
             } else {
                 tvRelease.setBackground(DevelopmentDynamicActivity.this.getDrawable(R.drawable.nine_radious_gray));
@@ -622,7 +641,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
             }
         } else if (requestCode == 201 && resultCode == PickerConfig.RESULT_CODE) {
 
-            if(data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT).size()>0){
+            if (data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT).size() > 0) {
                 select = data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT);
             }
             Log.i("select", "select.size" + select.size());
@@ -713,19 +732,6 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
         }
     }
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
-
-    private File getTempMovieDir(){
-        File movie = new File(getCacheDir(), "movie");
-        movie.mkdirs();
-        return movie;
-    }
     private void executeScaleVideo(final int startMs, final int endMs) {
         File moviesDir = getTempMovieDir();
         progressDialog.show();
@@ -737,42 +743,77 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
             fileNo++;
             dest = new File(moviesDir, filePrefix + fileNo + fileExtn);
         }
-        filepath = dest.getAbsolutePath();
+        filePath = dest.getAbsolutePath();
 
+        Log.d("xxx", filePath);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 boolean success = true;
                 try {
                     MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-                    retriever.setDataSource(DevelopmentDynamicActivity.this,selectedVideoUri);
+                    retriever.setDataSource(DevelopmentDynamicActivity.this, selectedVideoUri);
                     int originWidth = Integer.parseInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
                     int originHeight = Integer.parseInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
                     int bitrate = Integer.parseInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE));
 
                     int outWidth = originWidth / 2;
                     int outHeight = originHeight / 2;
-                    VideoProcessor.processor(getApplicationContext())
-                            .input(selectedVideoUri)
-                            .output(filepath)
-                            .outWidth(outWidth)
-                            .outHeight(outHeight)
-                            .startTimeMs(startMs)
-                            .endTimeMs(endMs)
-                            .bitrate(bitrate / 2)
-                            .process();
+                    VideoProcessor.scaleVideo(getApplicationContext(), selectedVideoUri, filePath, outWidth, outHeight);
+
+
                 } catch (Exception e) {
                     success = false;
                     e.printStackTrace();
                     postError();
                 }
-                if(success){
-                    startPreviewActivity(filepath);
+                if (success) {
+                    startPreviewActivity(filePath);
                 }
                 progressDialog.dismiss();
             }
         }).start();
     }
+
+
+    private void startPreviewActivity(String videoPath) {
+        String name = new File(videoPath).getName();
+        int end = name.lastIndexOf('.');
+        if (end > 0) {
+            name = name.substring(0, end);
+        }
+        strUri = VideoUtil.savaVideoToMediaStore(this, videoPath, name, "From VideoProcessor", "video/mp4");
+
+
+        Log.d("xxx", strUri);
+        // TODO: 2020/11/24 0024 压缩成功 处理压缩后的视频
+
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                rlSelectedimg.setVisibility(View.GONE);
+                rlVv.setVisibility(View.VISIBLE);
+
+                videoView.setVideoPath(strUri);
+                videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mp) {
+                        //视频加载完成,准备好播放视频的回调
+                        //开始播放
+                        videoView.start();
+                    }
+                });
+
+            }
+        });
+    }
+
+    private File getTempMovieDir() {
+        File movie = new File(getCacheDir(), "movie");
+        movie.mkdirs();
+        return movie;
+    }
+
     private void postError() {
         runOnUiThread(new Runnable() {
             @Override
@@ -780,28 +821,5 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                 Toast.makeText(getApplicationContext(), "process error!", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private void startPreviewActivity(String videoPath){
-        String name = new File(videoPath).getName();
-        int end = name.lastIndexOf('.');
-        if(end>0){
-            name = name.substring(0,end);
-        }
-        String strUri = VideoUtil.savaVideoToMediaStore(this, videoPath, name, "From VideoProcessor", "video/mp4");
-        Uri uri = Uri.parse(strUri);
-
-        try {
-            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-            retriever.setDataSource(this, uri);
-            retriever.release();
-            MediaExtractor extractor = new MediaExtractor();
-            extractor.setDataSource(this,uri,null);
-
-            Log.d("xxx",uri+" ");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 }

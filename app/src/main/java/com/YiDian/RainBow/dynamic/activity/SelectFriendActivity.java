@@ -126,7 +126,7 @@ public class SelectFriendActivity extends BaseAvtivity implements View.OnClickLi
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void calculationCountAndPrice(String i) {
         str = "";
-        //是否所有的条目都被选中
+
         for (SaveTestBean.ResultBean bean : list) {
             if (bean.isIscheck()){
                 str+=bean.getName()+",";

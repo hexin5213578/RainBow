@@ -1,6 +1,7 @@
 package com.YiDian.RainBow.main.fragment.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
@@ -22,10 +23,10 @@ import butterknife.ButterKnife;
 public class SimplePlayerActivity extends BaseAvtivity {
     @BindView(R.id.viewPlayer)
     StandardGSYVideoPlayer viewPlayer;
-    final String urlH = "https://vd3.bdstatic.com/mda-kiund8tjth20wphr/v1-cae/sc/mda-kiund8tjth20wphr.mp4?auth_key=1602209471-0-0-a5add77a37ec7dcb68acd8c25ad7d7ea&bcevod_channel=searchbox_feed&pd=1&pt=3&abtest=8797_2&sle=1&sl=786&split=720054";
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     private OrientationUtils orientationUtils;
+    private String url;
 
     @Override
     protected int getResId() {
@@ -38,8 +39,11 @@ public class SimplePlayerActivity extends BaseAvtivity {
         StatusBarUtil.setLightMode(this);
         StatusBarUtil.setGradientColor(this, toolbar);
 
+        Intent intent = getIntent();
+        url = intent.getStringExtra("url");
 
-        viewPlayer.setUp(urlH, true, "");
+
+        viewPlayer.setUp(url, true, "");
 
         //增加封面
         ImageView imageView = new ImageView(this);
@@ -69,8 +73,6 @@ public class SimplePlayerActivity extends BaseAvtivity {
             }
         });
         viewPlayer.startPlayLogic();
-
-
     }
 
     @Override
