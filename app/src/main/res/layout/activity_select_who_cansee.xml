@@ -77,7 +77,7 @@
                 android:layout_height="@dimen/dp_25">
             </RadioButton>
             <RadioButton
-                android:text="仅粉丝可见"
+                android:text="仅关注可见"
                 android:gravity="left|center"
                 android:button="@null"
                 android:id="@+id/rb2"

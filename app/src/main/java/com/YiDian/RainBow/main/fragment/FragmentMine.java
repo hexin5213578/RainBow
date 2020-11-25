@@ -26,6 +26,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -133,6 +134,7 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
         return null;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void getData() {
 
@@ -260,6 +262,8 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
                 break;
             //草稿箱
             case R.id.ll_caogaoxiang:
+                //跳转到我的草稿箱
+
 
                 break;
             //收藏

@@ -202,7 +202,6 @@ public class TextActivity extends AppCompatActivity {
                     Pair<Integer,Integer> size = VideoUtil.getVideoSize(new VideoProcessor.MediaSource(this,selectedVideoUri));
 
 
-
                     layoutParams.height = getResources().getDimensionPixelSize(R.dimen.video_height);
                     layoutParams.width = (int) (size.first * (layoutParams.height/(float)size.second));
                 } catch (IOException e) {

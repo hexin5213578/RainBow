@@ -44,15 +44,15 @@ public class NetUtils {
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         //设置缓存时间
         OkHttpClient build = new OkHttpClient.Builder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(10,TimeUnit.SECONDS)
-                .writeTimeout(10,TimeUnit.SECONDS)
+                .connectTimeout(100, TimeUnit.SECONDS)
+                .readTimeout(100,TimeUnit.SECONDS)
+                .writeTimeout(100,TimeUnit.SECONDS)
                 .addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(new HeaderInterceptor())
                 .build();
 
         Retrofit.Builder builder = new Retrofit.Builder();
-        Retrofit retrofit = builder.client(build).baseUrl("http://192.168.10.223:8088/")
+        Retrofit retrofit = builder.client(build).baseUrl("http://192.168.10.107:8088/")
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

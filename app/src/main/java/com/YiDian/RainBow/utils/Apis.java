@@ -1,9 +1,12 @@
 package com.YiDian.RainBow.utils;
 
 
+import com.YiDian.RainBow.dynamic.bean.SaveMsgSuccessBean;
+import com.YiDian.RainBow.dynamic.bean.WriteDevelopmentBean;
 import com.YiDian.RainBow.login.bean.ComPleteMsgBean;
 import com.YiDian.RainBow.login.bean.LoginBean;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
+import com.YiDian.RainBow.main.fragment.mine.bean.SelectAllDraftsBean;
 import com.YiDian.RainBow.regist.bean.RegistBean;
 import com.YiDian.RainBow.remember.bean.RememberPwdBean;
 import com.YiDian.RainBow.setpwd.bean.GetPhoneCodeBean;
@@ -11,7 +14,12 @@ import com.YiDian.RainBow.setpwd.bean.GetPhoneCodeBean;
 import java.net.URL;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import okhttp3.RequestBody;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 import retrofit2.http.Url;
 
@@ -47,5 +55,18 @@ public interface Apis {
     //修改 忘记密码
     @GET("user/updatePassword")
     Observable<RememberPwdBean> doRemeberPwd(@Query("password")String pwd,@Query("phoneNum")String phone);
+
+    //上传文件
+    @POST()
+    Single<SaveMsgSuccessBean> douploadRes(@Url String url, @Body RequestBody body);
+
+    //发布动态
+    @POST("content/writeContent")
+    Observable<WriteDevelopmentBean> doWriteDevelopment(@Query("userId")int userid,@Query("contentInfo")String contentinfo,@Query("contentImg")String contentImg,@Query("lng")Double lng,@Query("lat")Double lat,@Query("IsOpen")int isopen,@Query("ImgType")int ImgType,@Query("status")int status,@Query("area")String area);
+
+    //查询我的草稿箱
+    @GET("content/selectAllDrafts")
+    Observable<SelectAllDraftsBean> doGetAllDraftsBy(@Query("userId")int userid,@Query("page") int page,@Query("pageSize")int pagesize);
+
 
 }

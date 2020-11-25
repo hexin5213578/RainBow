@@ -5,6 +5,7 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -46,14 +47,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.custom.customDialog.CustomDialog;
 import com.YiDian.RainBow.dynamic.adapter.DevelogmentImgAdapter;
 import com.YiDian.RainBow.dynamic.adapter.HotHuatiAdapter;
 import com.YiDian.RainBow.dynamic.bean.SaveAiteBean;
 import com.YiDian.RainBow.dynamic.bean.SaveHotHuatiBean;
+import com.YiDian.RainBow.dynamic.bean.SaveMsgSuccessBean;
 import com.YiDian.RainBow.dynamic.bean.SaveWhoCanseeBean;
+import com.YiDian.RainBow.dynamic.bean.WriteDevelopmentBean;
 import com.YiDian.RainBow.feedback.activity.PathUtil;
 import com.YiDian.RainBow.main.fragment.activity.SimplePlayerActivity;
+import com.YiDian.RainBow.remember.bean.RememberPwdBean;
 import com.YiDian.RainBow.utils.KeyBoardUtils;
+import com.YiDian.RainBow.utils.NetUtils;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
@@ -81,6 +87,14 @@ import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observer;
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 //发布动态
 public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnClickListener, AMapLocationListener {
@@ -141,12 +155,16 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
     private ProgressDialog progressDialog;
     //压缩后的视频路径
     private String strUri;
-    private HashMap<Integer, Integer> map = new HashMap<>();
-    private HashMap<Integer, Integer> map1 = new HashMap<>();
-    private SpannableString builder;
 
     private String substring;
-
+    private double latitude;
+    private double longitude;
+    private String district;
+    private ArrayList<File> list;
+    private File file;
+    private RequestBody requsetBody;
+    int whocansee = 1;
+    int userid = 1031;
     @Override
     protected int getResId() {
         return R.layout.activity_development_dynamic;
@@ -360,20 +378,843 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
         return null;
     }
 
+    //图片
+    public RequestBody getRequsetBody(List<File> files) {
+//        if (map.size() < 1){
+//            return null;
+//        }
+        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        for (int i = 0; i < files.size(); i++) {
+            builder.addFormDataPart("file", files.get(i).getName(), RequestBody.create(MediaType.parse("image/jepg"), files.get(i)));
+        }
+        return builder.build();
+    }
+
+    //视频
+    public RequestBody getVideoRequsetBody(List<File> files) {
+//        if (map.size() < 1){
+//            return null;
+//        }
+        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        builder.addFormDataPart("file", files.get(0).getName(), RequestBody.create(MediaType.parse("video/mp4"), files.get(0)));
+        return builder.build();
+    }
+
+    public void doOkHttp(int userid,String content,String img,Double log,Double lat,int whocansee,int type,int status,String area){
+        NetUtils.getInstance().getApis().doWriteDevelopment(userid, content, img, log, lat, whocansee, type, status, area)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<WriteDevelopmentBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(WriteDevelopmentBean writeDevelopmentBean) {
+                        hideDialog();
+                        Toast.makeText(DevelopmentDynamicActivity.this, "动态发表成功", Toast.LENGTH_SHORT).show();
+                        //发表成功退出界面
+                        finish();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    public void doOkHttpCaogao(int userid,String content,String img,Double log,Double lat,int whocansee,int type,int status,String area){
+        NetUtils.getInstance().getApis().doWriteDevelopment(userid, content, img, log, lat, whocansee, type, status, area)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<WriteDevelopmentBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(WriteDevelopmentBean writeDevelopmentBean) {
+                        hideDialog();
+                        Toast.makeText(DevelopmentDynamicActivity.this, "草稿发布成功", Toast.LENGTH_SHORT).show();
+                        //发表成功退出界面
+                        finish();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
     @SuppressLint("ResourceAsColor")
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             //返回
             case R.id.iv_back:
-                finish();
-                // TODO: 2020/11/21 0021 判断是否有内容可以保存到草稿箱 有内容保存 无内容直接退出
+                // TODO: 2020/11/21 0021 判断是否有内容可以保存到草稿箱 有内容保存 无内容直接退出\
+                if(etContent.getText().toString().length()>0 || select.size()>0 || select1.size()>0){
+                    CustomDialog.Builder builder = new CustomDialog.Builder(this);
+                    builder.setPositiveButton("保存", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            showDialog();
+                            // TODO: 2020/11/21 0021 获取内容 判断发布类型  1纯文本 2纯图片 3纯视频  21文本加图片 31文本加视频
+                            switch (tvWhocansee.getText().toString()) {
+                                case "所有人可见":
+                                    whocansee = 1;
+                                    break;
+                                case "仅关注可见":
+                                    whocansee = 4;
+                                    break;
+                                case "仅相互关注可见":
+                                    whocansee = 3;
+                                    break;
+                                case "仅自己可见":
+                                    whocansee = 0;
+                                    break;
+                            }
+                            String content = etContent.getText().toString();
+                            if (isSelect) {
+                                //传位置
+                                //判断内容
+                                if (content.length() > 0 && select.size()==0 && select1.size()==0) {
+                                    //仅文本
+                                    //类型为 1
+                                    doOkHttpCaogao(userid,content,"", longitude, latitude, whocansee, 1, 0, district);
+                                }
+                                if (content.length() > 0 && select.size() > 0) {
+                                    //文本加图片
+                                    //类型为 21
+                                    //先将图片传到七牛云生成路径 再调用发布动态的接口
+
+                                    list = new ArrayList<>();
+                                    for (int i = 0; i < select.size()-1; i++) {
+                                        String url = select.get(i).path;
+                                        file = new File(url);
+                                        list.add(file);
+                                    }
+
+                                    Log.d("xxx", "上传图片集合长度为:" + list.size() + "");
+
+                                    requsetBody = getRequsetBody(list);
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            NetUtils.getInstance().getApis()
+                                                    .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
+                                                    .subscribeOn(Schedulers.io())
+                                                    .observeOn(AndroidSchedulers.mainThread())
+                                                    .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
+                                                        @Override
+                                                        public void onSubscribe(Disposable d) {
+                                                        }
+
+                                                        @Override
+                                                        public void onSuccess(SaveMsgSuccessBean s) {
+                                                            String imgAddress = s.getImgAddress();
+                                                            doOkHttpCaogao(userid, content, imgAddress, longitude, latitude, whocansee, 21, 0, district);
+                                                        }
+
+                                                        @Override
+                                                        public void onError(Throwable e) {
+                                                            Log.d("xxx", "错误为" + e.getMessage().toString());
+                                                        }
+                                                    });
+
+                                        }
+                                    }).start();
+                                }
+                                if (content.length() > 0 && select1.size() > 0) {
+                                    //文本加视频
+                                    //类型为31
+
+                                    list = new ArrayList<>();
+                                    file = new File(filePath);
+                                    list.add(file);
+
+                                    requsetBody = getVideoRequsetBody(list);
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            NetUtils.getInstance().getApis()
+                                                    .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
+                                                    .subscribeOn(Schedulers.io())
+                                                    .observeOn(AndroidSchedulers.mainThread())
+                                                    .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
+                                                        @Override
+                                                        public void onSubscribe(Disposable d) {
+                                                        }
+
+                                                        @Override
+                                                        public void onSuccess(SaveMsgSuccessBean s) {
+                                                            String imgAddress = s.getImgAddress();
+
+                                                            //调用发布动态接口
+                                                            doOkHttpCaogao(userid, content, imgAddress, longitude, latitude, whocansee, 31, 0, district);
+                                                        }
+
+                                                        @Override
+                                                        public void onError(Throwable e) {
+                                                        }
+                                                    });
+                                        }
+                                    }).start();
+
+
+                                }
+                                if (content.length()==0 && select.size() > 0) {
+                                    //纯图片
+                                    //类型为2
+                                    //先将图片传到七牛云生成路径 再调用发布动态的接口
+                                    //将图片转换
+
+                                    list = new ArrayList<>();
+                                    for (int i = 0; i < select.size()-1; i++) {
+                                        String url = select.get(i).path;
+                                        file = new File(url);
+                                        list.add(file);
+                                    }
+
+                                    Log.d("xxx", "上传图片集合长度为:" + list.size() + "");
+
+                                    requsetBody = getRequsetBody(list);
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            NetUtils.getInstance().getApis()
+                                                    .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
+                                                    .subscribeOn(Schedulers.io())
+                                                    .observeOn(AndroidSchedulers.mainThread())
+                                                    .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
+                                                        @Override
+                                                        public void onSubscribe(Disposable d) {
+                                                        }
+
+                                                        @Override
+                                                        public void onSuccess(SaveMsgSuccessBean s) {
+                                                            String imgAddress = s.getImgAddress();
+                                                            //调用发布动态接口
+
+                                                            doOkHttpCaogao(userid, "", imgAddress, longitude, latitude, whocansee, 2, 0, district);
+                                                        }
+
+                                                        @Override
+                                                        public void onError(Throwable e) {
+                                                            Log.d("xxx", "错误为" + e.getMessage().toString());
+                                                        }
+                                                    });
+                                        }
+                                    }).start();
+
+                                }
+                                if (content.length()==0 && select1.size() > 0) {
+                                    //纯视频
+                                    //类型为3
+
+
+                                    list = new ArrayList<>();
+                                    file = new File(filePath);
+                                    list.add(file);
+
+                                    requsetBody = getVideoRequsetBody(list);
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            NetUtils.getInstance().getApis()
+                                                    .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
+                                                    .subscribeOn(Schedulers.io())
+                                                    .observeOn(AndroidSchedulers.mainThread())
+                                                    .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
+                                                        @Override
+                                                        public void onSubscribe(Disposable d) {
+                                                        }
+
+                                                        @Override
+                                                        public void onSuccess(SaveMsgSuccessBean s) {
+                                                            String imgAddress = s.getImgAddress();
+                                                            doOkHttpCaogao(userid, "", imgAddress, longitude, latitude, whocansee, 3, 0, district);
+                                                        }
+
+                                                        @Override
+                                                        public void onError(Throwable e) {
+                                                        }
+                                                    });
+                                        }
+                                    }).start();
+
+                                }
+
+                            } else {
+                                //不传位置
+                                //判断内容
+                                if (content.length() > 0 && select.size()==0 && select1.size()==0) {
+                                    //仅文本
+                                    //类型为 1
+
+
+                                    doOkHttpCaogao(userid, content, "", null, null, whocansee, 1, 0, "");
+
+                                }
+                                if (content.length() > 0 && select.size() > 0) {
+                                    //文本加图片
+                                    //类型为 21
+                                    list = new ArrayList<>();
+                                    for (int i = 0; i < select.size()-1; i++) {
+                                        String url = select.get(i).path;
+                                        file = new File(url);
+                                        list.add(file);
+                                    }
+
+                                    Log.d("xxx", "上传图片集合长度为:" + list.size() + "");
+
+                                    requsetBody = getRequsetBody(list);
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            NetUtils.getInstance().getApis()
+                                                    .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
+                                                    .subscribeOn(Schedulers.io())
+                                                    .observeOn(AndroidSchedulers.mainThread())
+                                                    .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
+                                                        @Override
+                                                        public void onSubscribe(Disposable d) {
+                                                        }
+
+                                                        @Override
+                                                        public void onSuccess(SaveMsgSuccessBean s) {
+                                                            String imgAddress = s.getImgAddress();
+                                                            doOkHttpCaogao(userid, content, imgAddress, null, null, whocansee, 21, 0, "");
+                                                        }
+
+                                                        @Override
+                                                        public void onError(Throwable e) {
+                                                            Log.d("xxx", "错误为" + e.getMessage().toString());
+                                                        }
+                                                    });
+                                        }
+                                    }).start();
+
+
+
+                                }
+                                if (content.length() > 0 && select1.size()>0) {
+                                    //文本加视频
+                                    //类型为31
+
+
+                                    list = new ArrayList<>();
+                                    file = new File(filePath);
+                                    list.add(file);
+
+                                    requsetBody = getVideoRequsetBody(list);
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            NetUtils.getInstance().getApis()
+                                                    .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
+                                                    .subscribeOn(Schedulers.io())
+                                                    .observeOn(AndroidSchedulers.mainThread())
+                                                    .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
+                                                        @Override
+                                                        public void onSubscribe(Disposable d) {
+                                                        }
+
+                                                        @Override
+                                                        public void onSuccess(SaveMsgSuccessBean s) {
+                                                            String imgAddress = s.getImgAddress();
+
+                                                            //调用发布动态接口
+                                                            doOkHttpCaogao(userid, content, imgAddress, null, null, whocansee, 31, 0, "");
+                                                        }
+
+                                                        @Override
+                                                        public void onError(Throwable e) {
+                                                        }
+                                                    });
+
+                                        }
+                                    }).start();
+                                }
+                                if (content.length() ==0 && select.size() > 0) {
+                                    //纯图片
+                                    //类型为2
+
+
+                                    list = new ArrayList<>();
+                                    for (int i = 0; i < select.size()-1; i++) {
+                                        String url = select.get(i).path;
+                                        file = new File(url);
+                                        list.add(file);
+                                    }
+
+                                    Log.d("xxx", "上传图片集合长度为:" + list.size() + "");
+
+                                    requsetBody = getRequsetBody(list);
+
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            NetUtils.getInstance().getApis()
+                                                    .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
+                                                    .subscribeOn(Schedulers.io())
+                                                    .observeOn(AndroidSchedulers.mainThread())
+                                                    .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
+                                                        @Override
+                                                        public void onSubscribe(Disposable d) {
+                                                        }
+
+                                                        @Override
+                                                        public void onSuccess(SaveMsgSuccessBean s) {
+                                                            String imgAddress = s.getImgAddress();
+                                                            //调用发布动态接口
+                                                            doOkHttpCaogao(userid, "", imgAddress, null, null, whocansee, 2, 0, "");
+                                                        }
+                                                        @Override
+                                                        public void onError(Throwable e) {
+                                                            Log.d("xxx", "错误为" + e.getMessage().toString());
+                                                        }
+                                                    });
+                                        }
+                                    }).start();
+                                }
+                                if (content.length()==0 && select1.size() > 0) {
+                                    //纯视频
+                                    //类型为3
+
+                                    list = new ArrayList<>();
+                                    file = new File(filePath);
+                                    list.add(file);
+                                    requsetBody = getVideoRequsetBody(list);
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            NetUtils.getInstance().getApis()
+                                                    .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
+                                                    .subscribeOn(Schedulers.io())
+                                                    .observeOn(AndroidSchedulers.mainThread())
+                                                    .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
+                                                        @Override
+                                                        public void onSubscribe(Disposable d) {
+                                                        }
+
+                                                        @Override
+                                                        public void onSuccess(SaveMsgSuccessBean s) {
+                                                            String imgAddress = s.getImgAddress();
+                                                            doOkHttpCaogao(userid, "", imgAddress, null, null, whocansee, 3, 0, "");
+                                                        }
+
+                                                        @Override
+                                                        public void onError(Throwable e) {
+                                                            Log.d("xxx",e.getMessage().toString());
+                                                        }
+                                                    });
+                                        }
+                                    }).start();
+                                }
+                            }
+
+
+                        }
+                    });
+                    builder.setNegativeButton("不保存",
+                            new android.content.DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    finish();
+                                }
+                            });
+                    builder.create().show();
+                }
+                else{
+                    finish();
+                }
                 break;
             //发布
             case R.id.tv_release:
-                // TODO: 2020/11/21 0021 获取内容 判断发布类型  1纯文本 2纯图片 3纯视频  21文本加图片 31文本加视频
-                Toast.makeText(this, "发布动态", Toast.LENGTH_SHORT).show();
 
+                showDialog();
+                // TODO: 2020/11/21 0021 获取内容 判断发布类型  1纯文本 2纯图片 3纯视频  21文本加图片 31文本加视频
+                switch (tvWhocansee.getText().toString()) {
+                    case "所有人可见":
+                        whocansee = 1;
+                        break;
+                    case "仅关注可见":
+                        whocansee = 4;
+                        break;
+                    case "仅相互关注可见":
+                        whocansee = 3;
+                        break;
+                    case "仅自己可见":
+                        whocansee = 0;
+                        break;
+                }
+                String content = etContent.getText().toString();
+
+                if (isSelect) {
+                    //传位置
+                    //判断内容
+                    if (content.length() > 0 && select.size()==0 && select1.size()==0) {
+                        //仅文本
+                        //类型为 1
+                        Toast.makeText(this, "仅文本带位置", Toast.LENGTH_SHORT).show();
+                        doOkHttp(userid,content,"", longitude, latitude, whocansee, 1, 1, district);
+                    }
+                    if (content.length() > 0 && select.size() > 0) {
+                        //文本加图片
+                        //类型为 21
+                        //先将图片传到七牛云生成路径 再调用发布动态的接口
+                        Toast.makeText(this, "文本加图片带位置", Toast.LENGTH_SHORT).show();
+
+                        list = new ArrayList<>();
+                        for (int i = 0; i < select.size()-1; i++) {
+                            String url = select.get(i).path;
+                            file = new File(url);
+                            list.add(file);
+                        }
+
+                        Log.d("xxx", "上传图片集合长度为:" + list.size() + "");
+
+                        requsetBody = getRequsetBody(list);
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                NetUtils.getInstance().getApis()
+                                        .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
+                                            @Override
+                                            public void onSubscribe(Disposable d) {
+                                            }
+
+                                            @Override
+                                            public void onSuccess(SaveMsgSuccessBean s) {
+                                                String imgAddress = s.getImgAddress();
+                                                doOkHttp(userid, content, imgAddress, longitude, latitude, whocansee, 21, 1, district);
+                                            }
+
+                                            @Override
+                                            public void onError(Throwable e) {
+                                                Log.d("xxx", "错误为" + e.getMessage().toString());
+                                            }
+                                        });
+
+                            }
+                        }).start();
+                    }
+                    if (content.length() > 0 && select1.size() > 0) {
+                        //文本加视频
+                        //类型为31
+
+
+                        Toast.makeText(this, "文本加视频带位置", Toast.LENGTH_SHORT).show();
+
+                        list = new ArrayList<>();
+                        file = new File(filePath);
+                        list.add(file);
+
+                        requsetBody = getVideoRequsetBody(list);
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                NetUtils.getInstance().getApis()
+                                        .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
+                                            @Override
+                                            public void onSubscribe(Disposable d) {
+                                            }
+
+                                            @Override
+                                            public void onSuccess(SaveMsgSuccessBean s) {
+                                                String imgAddress = s.getImgAddress();
+
+                                                //调用发布动态接口
+                                                doOkHttp(userid, content, imgAddress, longitude, latitude, whocansee, 31, 1, district);
+                                            }
+
+                                            @Override
+                                            public void onError(Throwable e) {
+                                            }
+                                        });
+                            }
+                        }).start();
+
+
+                    }
+                    if (content.length()==0 && select.size() > 0) {
+                        //纯图片
+                        //类型为2
+                        //先将图片传到七牛云生成路径 再调用发布动态的接口
+                        //将图片转换
+                        Toast.makeText(this, "纯图片带位置", Toast.LENGTH_SHORT).show();
+
+                        list = new ArrayList<>();
+                        for (int i = 0; i < select.size()-1; i++) {
+                            String url = select.get(i).path;
+                            file = new File(url);
+                            list.add(file);
+                        }
+
+                        Log.d("xxx", "上传图片集合长度为:" + list.size() + "");
+
+                        requsetBody = getRequsetBody(list);
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                NetUtils.getInstance().getApis()
+                                        .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
+                                            @Override
+                                            public void onSubscribe(Disposable d) {
+                                            }
+
+                                            @Override
+                                            public void onSuccess(SaveMsgSuccessBean s) {
+                                                String imgAddress = s.getImgAddress();
+                                                //调用发布动态接口
+
+                                                doOkHttp(userid, "", imgAddress, longitude, latitude, whocansee, 2, 1, district);
+                                            }
+
+                                            @Override
+                                            public void onError(Throwable e) {
+                                                Log.d("xxx", "错误为" + e.getMessage().toString());
+                                            }
+                                        });
+                            }
+                        }).start();
+
+                    }
+                    if (content.length()==0 && select1.size() > 0) {
+                        //纯视频
+                        //类型为3
+
+                        Toast.makeText(this, "纯视频带位置", Toast.LENGTH_SHORT).show();
+
+                        list = new ArrayList<>();
+                        file = new File(filePath);
+                        list.add(file);
+
+                        requsetBody = getVideoRequsetBody(list);
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                NetUtils.getInstance().getApis()
+                                        .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
+                                            @Override
+                                            public void onSubscribe(Disposable d) {
+                                            }
+
+                                            @Override
+                                            public void onSuccess(SaveMsgSuccessBean s) {
+                                                String imgAddress = s.getImgAddress();
+                                                doOkHttp(userid, "", imgAddress, longitude, latitude, whocansee, 3, 1, district);
+                                            }
+
+                                            @Override
+                                            public void onError(Throwable e) {
+                                            }
+                                        });
+                            }
+                        }).start();
+
+                    }
+
+                } else {
+                    //不传位置
+                    //判断内容
+                    if (content.length() > 0 && select.size()==0 && select1.size()==0) {
+                        //仅文本
+                        //类型为 1
+
+                        Toast.makeText(this, "仅文本不带位置", Toast.LENGTH_SHORT).show();
+
+                        doOkHttp(userid, content, "", null, null, whocansee, 1, 1, "");
+
+                    }
+                    if (content.length() > 0 && select.size() > 0) {
+                        //文本加图片
+                        //类型为 21
+                        list = new ArrayList<>();
+                        for (int i = 0; i < select.size()-1; i++) {
+                            String url = select.get(i).path;
+                            file = new File(url);
+                            list.add(file);
+                        }
+
+                        Log.d("xxx", "上传图片集合长度为:" + list.size() + "");
+
+                        requsetBody = getRequsetBody(list);
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                NetUtils.getInstance().getApis()
+                                        .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
+                                            @Override
+                                            public void onSubscribe(Disposable d) {
+                                            }
+
+                                            @Override
+                                            public void onSuccess(SaveMsgSuccessBean s) {
+                                                String imgAddress = s.getImgAddress();
+                                                doOkHttp(userid, content, imgAddress, null, null, whocansee, 21, 1, "");
+                                            }
+
+                                            @Override
+                                            public void onError(Throwable e) {
+                                                Log.d("xxx", "错误为" + e.getMessage().toString());
+                                            }
+                                        });
+                            }
+                        }).start();
+
+
+
+                    }
+                    if (content.length() > 0 && select1.size()>0) {
+                        //文本加视频
+                        //类型为31
+
+                        Toast.makeText(this, "文本加视频不带位置", Toast.LENGTH_SHORT).show();
+
+                        list = new ArrayList<>();
+                        file = new File(filePath);
+                        list.add(file);
+
+                        requsetBody = getVideoRequsetBody(list);
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                NetUtils.getInstance().getApis()
+                                        .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
+                                            @Override
+                                            public void onSubscribe(Disposable d) {
+                                            }
+
+                                            @Override
+                                            public void onSuccess(SaveMsgSuccessBean s) {
+                                                String imgAddress = s.getImgAddress();
+
+                                                //调用发布动态接口
+                                                doOkHttp(userid, content, imgAddress, null, null, whocansee, 31, 1, "");
+                                            }
+
+                                            @Override
+                                            public void onError(Throwable e) {
+                                            }
+                                        });
+
+                            }
+                        }).start();
+                    }
+                    if (content.length() ==0 && select.size() > 0) {
+                        //纯图片
+                        //类型为2
+
+                        Toast.makeText(this, "纯图片不带位置", Toast.LENGTH_SHORT).show();
+
+                        list = new ArrayList<>();
+                        for (int i = 0; i < select.size()-1; i++) {
+                            String url = select.get(i).path;
+                            file = new File(url);
+                            list.add(file);
+                        }
+
+                        Log.d("xxx", "上传图片集合长度为:" + list.size() + "");
+
+                        requsetBody = getRequsetBody(list);
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                NetUtils.getInstance().getApis()
+                                        .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
+                                            @Override
+                                            public void onSubscribe(Disposable d) {
+                                            }
+
+                                            @Override
+                                            public void onSuccess(SaveMsgSuccessBean s) {
+                                                String imgAddress = s.getImgAddress();
+                                                //调用发布动态接口
+                                                doOkHttp(userid, "", imgAddress, null, null, whocansee, 2, 1, "");
+                                            }
+                                            @Override
+                                            public void onError(Throwable e) {
+                                                Log.d("xxx", "错误为" + e.getMessage().toString());
+                                            }
+                                        });
+                            }
+                        }).start();
+                    }
+                    if (content.length()==0 && select1.size() > 0) {
+                        //纯视频
+                        //类型为3
+
+                        Toast.makeText(this, "纯视频不带位置", Toast.LENGTH_SHORT).show();
+
+                        list = new ArrayList<>();
+                        file = new File(filePath);
+                        list.add(file);
+                        requsetBody = getVideoRequsetBody(list);
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                NetUtils.getInstance().getApis()
+                                        .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
+                                            @Override
+                                            public void onSubscribe(Disposable d) {
+                                            }
+
+                                            @Override
+                                            public void onSuccess(SaveMsgSuccessBean s) {
+                                                String imgAddress = s.getImgAddress();
+                                                doOkHttp(userid, "", imgAddress, null, null, whocansee, 3, 1, "");
+                                            }
+
+                                            @Override
+                                            public void onError(Throwable e) {
+                                                Log.d("xxx",e.getMessage().toString());
+                                            }
+                                        });
+                            }
+                        }).start();
+                    }
+                }
                 break;
             //选择图片或视频
             case R.id.rl_selectedimg:
@@ -408,14 +1249,14 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                 editable.insert(index, "##");
 
                 //插入到光标所在位置
-                int end = index + 2 ;//获取文本长度
+                int end = index + 2;//获取文本长度
 
                 editable.setSpan(new ForegroundColorSpan(R.color.start), index, end,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);//关键字变色
                 //设置光标到##中间
                 String s = etContent.getText().toString();
 
-                etContent.setSelection(s.length()-1);
+                etContent.setSelection(s.length() - 1);
                 //打开键盘
                 KeyBoardUtils.openKeyBoard(etContent);
 
@@ -468,7 +1309,12 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
         if (aMapLocation != null) {
             if (aMapLocation.getErrorCode() == 0) {
                 //定位成功回调信息，设置相关消息
-                String district = aMapLocation.getDistrict();
+                district = aMapLocation.getDistrict();
+
+                //纬度
+                latitude = aMapLocation.getLatitude();
+                //经度
+                longitude = aMapLocation.getLongitude();
 
                 tvMylocation.setText(district);
             } else {
@@ -582,7 +1428,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                 long maxSize = 209715200L;//long long long long类型
                 intent.putExtra(PickerConfig.MAX_SELECT_SIZE, maxSize);
                 intent.putExtra(PickerConfig.MAX_SELECT_COUNT, 1); //最大选择数量，默认40（非必填参数）
-                ArrayList<Media> defaultSelect = select1;//可以设置默认选中的照片，比如把select刚刚选择的list设置成默认的。
+                ArrayList<Media> defaultSelect = select1;//可以设置默认选中的视频，比如把select刚刚选择的list设置成默认的。
                 intent.putExtra(PickerConfig.DEFAULT_SELECTED_LIST, defaultSelect); //可以设置默认选中的照片(非必填参数)
                 DevelopmentDynamicActivity.this.startActivityForResult(intent, 200);
 
@@ -745,7 +1591,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
         }
         filePath = dest.getAbsolutePath();
 
-        Log.d("xxx", filePath);
+        Log.d("xxx", "filePath的路径为:"+filePath);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -785,7 +1631,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
         strUri = VideoUtil.savaVideoToMediaStore(this, videoPath, name, "From VideoProcessor", "video/mp4");
 
 
-        Log.d("xxx", strUri);
+        Log.d("xxx", "压缩后的视频路径为:"+strUri);
         // TODO: 2020/11/24 0024 压缩成功 处理压缩后的视频
 
         this.runOnUiThread(new Runnable() {

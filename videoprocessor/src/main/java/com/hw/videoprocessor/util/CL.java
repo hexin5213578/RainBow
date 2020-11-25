@@ -75,7 +75,6 @@ public class CL {
             String msg = createLogWithoutFileName(tagInfo, message, args);
             Log.v(tagInfo.fileName, msg);
         }
-
     }
 
     public static void v(Throwable ex) {
@@ -83,7 +82,6 @@ public class CL {
             CL.TagInfo tagInfo = getMethodNames(ex.getStackTrace());
             Log.v(tagInfo.fileName, "", ex);
         }
-
     }
 
     public static void vt(String tag, String message, Object... args) {
