@@ -41,8 +41,10 @@ import com.YiDian.RainBow.custom.zbar.CaptureActivity;
 import com.YiDian.RainBow.login.activity.CompleteMsgActivity;
 import com.YiDian.RainBow.main.activity.MainActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.MyQrCodeActivity;
+import com.YiDian.RainBow.main.fragment.mine.activity.MydraftActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.RechargeGlodActivity;
 import com.YiDian.RainBow.main.fragment.mine.adapter.HobbyAdapter;
+import com.YiDian.RainBow.setup.SetupActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
@@ -253,8 +255,6 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
                 break;
             //编辑个性签名
             case R.id.tv_signature:
-                //展示自定义弹出框
-                //showSelect();
                 break;
             //发布的动态
             case R.id.ll_dongtai:
@@ -263,8 +263,8 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
             //草稿箱
             case R.id.ll_caogaoxiang:
                 //跳转到我的草稿箱
-
-
+                Intent intent3 = new Intent(getContext(), MydraftActivity.class);
+                startActivity(intent3);
                 break;
             //收藏
             case R.id.ll_shoucang:
@@ -290,128 +290,12 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
                 break;
             //设置
             case R.id.ll_shezhi:
-
+                startActivity(new Intent(getContext(), SetupActivity.class));
                 break;
 
         }
     }
 
-    //弹出选择规格
-    public void showSelect() {
-        //创建popwiondow弹出框
-        mPopupWindow = new PopupWindow();
-        mPopupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        mPopupWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_qianming, null);
 
-        TextView cancle = view.findViewById(R.id.tv_cancle);
-        TextView confrim = view.findViewById(R.id.tv_confirm);
-        TextView count = view.findViewById(R.id.tv_count);
-        EditText text = view.findViewById(R.id.et_text);
-        cancle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
-        confrim.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //调用更换签名的接口
-
-
-                //更换成功隐藏弹出框
-                dismiss();
-            }
-        });
-        //设置EditText的显示方式为多行文本输入
-        text.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-        //文本显示的位置在EditText的最上方
-        text.setGravity(Gravity.TOP);
-        text.setSingleLine(false);
-        //输入框文本监听
-        text.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                //输入完后获取当前文本长度 给右下角文本长度赋值
-                int length = text.getText().length();
-
-                count.setText(30 - length + "");
-
-            }
-        });
-        //popwindow设置属性
-        mPopupWindow.setAnimationStyle(R.style.popwindow_anim_style);
-        mPopupWindow.setContentView(view);
-        mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
-        mPopupWindow.setFocusable(true);
-        mPopupWindow.setOutsideTouchable(true);
-        mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                setWindowAlpa(false);
-            }
-        });
-        show(view);
-
-    }
-
-    //设置透明度
-    public void setWindowAlpa(boolean isopen) {
-        if (Build.VERSION.SDK_INT < 11) {
-            return;
-        }
-        final Window window = getActivity().getWindow();
-        final WindowManager.LayoutParams lp = window.getAttributes();
-        window.setFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND, WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        ValueAnimator animator;
-        if (isopen) {
-            animator = ValueAnimator.ofFloat(1.0f, 0.5f);
-        } else {
-            animator = ValueAnimator.ofFloat(0.5f, 1.0f);
-        }
-        animator.setDuration(400);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-            @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float alpha = (float) animation.getAnimatedValue();
-                lp.alpha = alpha;
-                window.setAttributes(lp);
-            }
-        });
-        animator.start();
-    }
-
-    /**
-     * 显示PopupWindow
-     */
-    private void show(View v) {
-        if (mPopupWindow != null && !mPopupWindow.isShowing()) {
-            mPopupWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
-        }
-        setWindowAlpa(true);
-
-    }
-
-    /**
-     * 消失PopupWindow
-     */
-    public void dismiss() {
-        if (mPopupWindow != null && mPopupWindow.isShowing()) {
-            mPopupWindow.dismiss();
-        }
-    }
 
 }

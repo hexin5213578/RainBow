@@ -1,6 +1,7 @@
 package com.YiDian.RainBow.main.fragment.mine.activity;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -13,12 +14,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.main.fragment.mine.adapter.MyDraftsAdapter;
 import com.YiDian.RainBow.main.fragment.mine.bean.SelectAllDraftsBean;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.leaf.library.StatusBarUtil;
 import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.container.AliHeader;
 import com.liaoinstan.springview.widget.SpringView;
+import com.shuyu.gsyvideoplayer.GSYVideoManager;
 
 import java.util.List;
 
@@ -59,8 +62,31 @@ public class MydraftActivity extends BaseAvtivity implements View.OnClickListene
 
         ivBack.setOnClickListener(this);
 
+        sv.setListener(new SpringView.OnFreshListener() {
+            @Override
+            public void onRefresh() {
+                page = 1;
+                getData(page,pagesize);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        sv.onFinishFreshAndLoad();
+                    }
+                }, 1000);
+            }
 
-
+            @Override
+            public void onLoadmore() {
+                page++;
+                getData(page,pagesize);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        sv.onFinishFreshAndLoad();
+                    }
+                }, 1000);
+            }
+        });
     }
 
     @Override
@@ -86,14 +112,18 @@ public class MydraftActivity extends BaseAvtivity implements View.OnClickListene
 
                             sv.setHeader(new AliHeader(MydraftActivity.this));
 
+                            //隐藏缺省图 展示列表
                             ivNodata.setVisibility(View.GONE);
                             sv.setVisibility(View.VISIBLE);
 
+                            //创建适配器
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MydraftActivity.this, RecyclerView.VERTICAL, false);
                             rcMydraftDevelopment.setLayoutManager(linearLayoutManager);
 
+                            MyDraftsAdapter myDraftsAdapter = new MyDraftsAdapter(MydraftActivity.this,list);
+                            rcMydraftDevelopment.setAdapter(myDraftsAdapter);
 
-
+                            //集合长度大于14 可以加载更多内容
                             if(list.size()>14){
                                 sv.setFooter(new AliFooter(MydraftActivity.this));
                             }
