@@ -1,35 +1,20 @@
 package com.YiDian.RainBow.main.fragment;
 
 import android.Manifest;
-import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,8 +23,7 @@ import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.custom.customrecycle.SpacesItemDecoration;
 import com.YiDian.RainBow.custom.zbar.CaptureActivity;
-import com.YiDian.RainBow.login.activity.CompleteMsgActivity;
-import com.YiDian.RainBow.main.activity.MainActivity;
+import com.YiDian.RainBow.main.fragment.mine.activity.EditMsgActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.MyQrCodeActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.MydraftActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.RechargeGlodActivity;
@@ -119,7 +103,6 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
     int space = 9;
     @BindView(R.id.tv_mygold)
     TextView tvMygold;
-    private PopupWindow mPopupWindow;
 
     @Override
     protected void getid(View view) {
@@ -144,6 +127,7 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
         //设置状态栏颜色与字体颜色
         StatusBarUtil.setDarkMode(getActivity());
 
+
         llMyMoney.setOnClickListener(this);
         ivQrCode.setOnClickListener(this);
         llCertification.setOnClickListener(this);
@@ -162,6 +146,9 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
         llLiwu.setOnClickListener(this);
         llSaoyisao.setOnClickListener(this);
         llShezhi.setOnClickListener(this);
+        ivHeadimg.setOnClickListener(this);
+        tvUsername.setOnClickListener(this);
+
 
         //申请开启相机权限
         if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) && (getContext().checkSelfPermission
@@ -291,11 +278,17 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
             //设置
             case R.id.ll_shezhi:
                 startActivity(new Intent(getContext(), SetupActivity.class));
+
                 break;
+            //编辑个人信息
+            case R.id.iv_headimg:
+            case R.id.tv_username:
+                startActivity(new Intent(getContext(), EditMsgActivity.class));
+                break;
+
 
         }
     }
-
 
 
 }

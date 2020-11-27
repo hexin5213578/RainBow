@@ -266,7 +266,7 @@
             >
         </activity>
 
-        <!-- 金币充值 -->
+        <!-- 扫描二维码 -->
         <activity android:name=".custom.zbar.CaptureActivity"
             android:screenOrientation="portrait"
             >

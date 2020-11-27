@@ -179,4 +179,13 @@ dependencies {
     //极光推送
     implementation 'cn.jiguang.sdk:jpush:3.7.0'  // 此处以JPush 3.7.0 版本为例。
     implementation 'com.github.Jay-Goo:RangeSeekBar:v1.1.0'
+
+
+    // 1 直接导入
+    implementation 'com.qiniu:qiniu-android-sdk:8.0.+'
+    // 2 如果要修改okhttp依赖的版本，可采用以下方式（强烈建议使用七牛库依赖的okhttp版本）
+    implementation ('com.qiniu:qiniu-android-sdk:8.0.+'){
+        exclude (group: 'com.squareup.okhttp3', module: 'okhttp')
+    }
+    implementation 'com.squareup.okhttp3:okhttp:4.2.2'
 }

@@ -7,7 +7,7 @@ public class SelectAllDraftsBean {
     /**
      * msg : selectAllDrafts
      * type : OK
-     * object : {"total":3,"list":[{"id":99,"userId":1031,"contentInfo":"摸哪具体问#热门话题3# @何梦洋0,何梦洋1, ","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/20201125162104979119_1603545284104.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/20201125162108269846_2020-10-27-20-44-21-10.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011251621091764843_2020-10-25-22-44-58-52.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011251621108604691.jpg","lng":null,"lat":null,"createTime":"2020-11-25 16:23:03","status":0,"viewNum":null,"isOpen":1,"imgType":21,"clickNum":null,"area":""},{"id":100,"userId":1031,"contentInfo":"","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/20201125162142222612_1603545284104.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/2020112516214582175.jpg","lng":null,"lat":null,"createTime":"2020-11-25 16:23:38","status":0,"viewNum":null,"isOpen":1,"imgType":2,"clickNum":null,"area":""},{"id":101,"userId":1031,"contentInfo":"","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/202011251622099574366.mp4","lng":null,"lat":null,"createTime":"2020-11-25 16:24:01","status":0,"viewNum":null,"isOpen":1,"imgType":3,"clickNum":null,"area":""}],"pageNum":1,"pageSize":15,"size":3,"startRow":1,"endRow":3,"pages":1,"prePage":0,"nextPage":0,"isFirstPage":true,"isLastPage":true,"hasPreviousPage":false,"hasNextPage":false,"navigatePages":8,"navigatepageNums":[1],"navigateFirstPage":1,"navigateLastPage":1}
+     * object : {"total":6,"list":[{"id":99,"userId":1031,"contentInfo":"摸哪具体问#热门话题3# @何梦洋0,何梦洋1, ","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/20201125162104979119_1603545284104.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/20201125162108269846_2020-10-27-20-44-21-10.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011251621091764843_2020-10-25-22-44-58-52.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011251621108604691.jpg","lng":null,"lat":null,"createTime":"2020-11-25 16:23:03","status":0,"viewNum":null,"isOpen":1,"imgType":21,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null},{"id":100,"userId":1031,"contentInfo":"","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/20201125162142222612_1603545284104.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/2020112516214582175.jpg","lng":null,"lat":null,"createTime":"2020-11-25 16:23:38","status":0,"viewNum":null,"isOpen":1,"imgType":2,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null},{"id":101,"userId":1031,"contentInfo":"","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/202011251622099574366.mp4","lng":null,"lat":null,"createTime":"2020-11-25 16:24:01","status":0,"viewNum":null,"isOpen":1,"imgType":3,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null},{"id":102,"userId":1031,"contentInfo":"","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/202011271415022549942_2020-10-27-20-48-11-74.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271415046419571_2020-10-27-21-29-09-90.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271415066236481_2020-10-27-20-44-21-10.jpg","lng":null,"lat":null,"createTime":"2020-11-27 14:16:57","status":0,"viewNum":null,"isOpen":1,"imgType":2,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null},{"id":104,"userId":1031,"contentInfo":"","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/202011271419376915828_2020-10-27-21-29-09-90.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419397187954_2020-10-27-20-48-11-74.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419419278357_2020-10-25-22-44-58-52.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419449157517_2020-10-25-20-55-09-45.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419517555401_1603545284104.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419546757391_2020-10-27-20-44-21-10.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419558741109.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271420024118978.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271420077535555.jpg","lng":null,"lat":null,"createTime":"2020-11-27 14:21:57","status":0,"viewNum":null,"isOpen":1,"imgType":2,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null},{"id":105,"userId":1031,"contentInfo":"匿名糯米米怄气明目同","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/20201127142206223272.mp4","lng":null,"lat":null,"createTime":"2020-11-27 14:24:24","status":0,"viewNum":null,"isOpen":1,"imgType":31,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null}],"pageNum":1,"pageSize":6,"size":6,"startRow":0,"endRow":5,"pages":1,"prePage":0,"nextPage":0,"isFirstPage":true,"isLastPage":true,"hasPreviousPage":false,"hasNextPage":false,"navigatePages":8,"navigatepageNums":[1],"navigateFirstPage":1,"navigateLastPage":1}
      */
 
     private String msg;
@@ -40,13 +40,13 @@ public class SelectAllDraftsBean {
 
     public static class ObjectBean {
         /**
-         * total : 3
-         * list : [{"id":99,"userId":1031,"contentInfo":"摸哪具体问#热门话题3# @何梦洋0,何梦洋1, ","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/20201125162104979119_1603545284104.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/20201125162108269846_2020-10-27-20-44-21-10.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011251621091764843_2020-10-25-22-44-58-52.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011251621108604691.jpg","lng":null,"lat":null,"createTime":"2020-11-25 16:23:03","status":0,"viewNum":null,"isOpen":1,"imgType":21,"clickNum":null,"area":""},{"id":100,"userId":1031,"contentInfo":"","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/20201125162142222612_1603545284104.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/2020112516214582175.jpg","lng":null,"lat":null,"createTime":"2020-11-25 16:23:38","status":0,"viewNum":null,"isOpen":1,"imgType":2,"clickNum":null,"area":""},{"id":101,"userId":1031,"contentInfo":"","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/202011251622099574366.mp4","lng":null,"lat":null,"createTime":"2020-11-25 16:24:01","status":0,"viewNum":null,"isOpen":1,"imgType":3,"clickNum":null,"area":""}]
+         * total : 6
+         * list : [{"id":99,"userId":1031,"contentInfo":"摸哪具体问#热门话题3# @何梦洋0,何梦洋1, ","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/20201125162104979119_1603545284104.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/20201125162108269846_2020-10-27-20-44-21-10.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011251621091764843_2020-10-25-22-44-58-52.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011251621108604691.jpg","lng":null,"lat":null,"createTime":"2020-11-25 16:23:03","status":0,"viewNum":null,"isOpen":1,"imgType":21,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null},{"id":100,"userId":1031,"contentInfo":"","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/20201125162142222612_1603545284104.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/2020112516214582175.jpg","lng":null,"lat":null,"createTime":"2020-11-25 16:23:38","status":0,"viewNum":null,"isOpen":1,"imgType":2,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null},{"id":101,"userId":1031,"contentInfo":"","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/202011251622099574366.mp4","lng":null,"lat":null,"createTime":"2020-11-25 16:24:01","status":0,"viewNum":null,"isOpen":1,"imgType":3,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null},{"id":102,"userId":1031,"contentInfo":"","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/202011271415022549942_2020-10-27-20-48-11-74.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271415046419571_2020-10-27-21-29-09-90.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271415066236481_2020-10-27-20-44-21-10.jpg","lng":null,"lat":null,"createTime":"2020-11-27 14:16:57","status":0,"viewNum":null,"isOpen":1,"imgType":2,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null},{"id":104,"userId":1031,"contentInfo":"","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/202011271419376915828_2020-10-27-21-29-09-90.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419397187954_2020-10-27-20-48-11-74.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419419278357_2020-10-25-22-44-58-52.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419449157517_2020-10-25-20-55-09-45.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419517555401_1603545284104.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419546757391_2020-10-27-20-44-21-10.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419558741109.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271420024118978.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271420077535555.jpg","lng":null,"lat":null,"createTime":"2020-11-27 14:21:57","status":0,"viewNum":null,"isOpen":1,"imgType":2,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null},{"id":105,"userId":1031,"contentInfo":"匿名糯米米怄气明目同","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/20201127142206223272.mp4","lng":null,"lat":null,"createTime":"2020-11-27 14:24:24","status":0,"viewNum":null,"isOpen":1,"imgType":31,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null}]
          * pageNum : 1
-         * pageSize : 15
-         * size : 3
-         * startRow : 1
-         * endRow : 3
+         * pageSize : 6
+         * size : 6
+         * startRow : 0
+         * endRow : 5
          * pages : 1
          * prePage : 0
          * nextPage : 0
@@ -236,23 +236,31 @@ public class SelectAllDraftsBean {
              * viewNum : null
              * isOpen : 1
              * imgType : 21
+             * isCollect : null
+             * isClick : null
              * clickNum : null
-             * area :
+             * topics : null
+             * userInfo : {"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null}
+             * distance : null
              */
 
             private int id;
             private int userId;
             private String contentInfo;
             private String contentImg;
-            private Double lng;
-            private Double lat;
+            private Object lng;
+            private Object lat;
             private String createTime;
             private int status;
             private Object viewNum;
             private int isOpen;
             private int imgType;
+            private Object isCollect;
+            private Object isClick;
             private Object clickNum;
-            private String area;
+            private Object topics;
+            private UserInfoBean userInfo;
+            private Object distance;
 
             public int getId() {
                 return id;
@@ -286,19 +294,19 @@ public class SelectAllDraftsBean {
                 this.contentImg = contentImg;
             }
 
-            public Double getLng() {
+            public Object getLng() {
                 return lng;
             }
 
-            public void setLng(Double lng) {
+            public void setLng(Object lng) {
                 this.lng = lng;
             }
 
-            public Double getLat() {
+            public Object getLat() {
                 return lat;
             }
 
-            public void setLat(Double lat) {
+            public void setLat(Object lat) {
                 this.lat = lat;
             }
 
@@ -342,6 +350,22 @@ public class SelectAllDraftsBean {
                 this.imgType = imgType;
             }
 
+            public Object getIsCollect() {
+                return isCollect;
+            }
+
+            public void setIsCollect(Object isCollect) {
+                this.isCollect = isCollect;
+            }
+
+            public Object getIsClick() {
+                return isClick;
+            }
+
+            public void setIsClick(Object isClick) {
+                this.isClick = isClick;
+            }
+
             public Object getClickNum() {
                 return clickNum;
             }
@@ -350,12 +374,224 @@ public class SelectAllDraftsBean {
                 this.clickNum = clickNum;
             }
 
-            public String getArea() {
-                return area;
+            public Object getTopics() {
+                return topics;
             }
 
-            public void setArea(String area) {
-                this.area = area;
+            public void setTopics(Object topics) {
+                this.topics = topics;
+            }
+
+            public UserInfoBean getUserInfo() {
+                return userInfo;
+            }
+
+            public void setUserInfo(UserInfoBean userInfo) {
+                this.userInfo = userInfo;
+            }
+
+            public Object getDistance() {
+                return distance;
+            }
+
+            public void setDistance(Object distance) {
+                this.distance = distance;
+            }
+
+            public static class UserInfoBean {
+                /**
+                 * id : null
+                 * phoneNum : null
+                 * nickName : 李四
+                 * headImg : 头像
+                 * age : null
+                 * explains : null
+                 * birthday : null
+                 * userType : null
+                 * userRole : null
+                 * isSingle : null
+                 * lng : null
+                 * lat : null
+                 * ratio : null
+                 * attestation : null
+                 * createTime : null
+                 * countNum : null
+                 * distance : null
+                 * distancing : null
+                 * invitationCode : null
+                 */
+
+                private Object id;
+                private Object phoneNum;
+                private String nickName;
+                private String headImg;
+                private Object age;
+                private Object explains;
+                private Object birthday;
+                private Object userType;
+                private Object userRole;
+                private Object isSingle;
+                private Object lng;
+                private Object lat;
+                private Object ratio;
+                private Object attestation;
+                private Object createTime;
+                private Object countNum;
+                private Object distance;
+                private Object distancing;
+                private Object invitationCode;
+
+                public Object getId() {
+                    return id;
+                }
+
+                public void setId(Object id) {
+                    this.id = id;
+                }
+
+                public Object getPhoneNum() {
+                    return phoneNum;
+                }
+
+                public void setPhoneNum(Object phoneNum) {
+                    this.phoneNum = phoneNum;
+                }
+
+                public String getNickName() {
+                    return nickName;
+                }
+
+                public void setNickName(String nickName) {
+                    this.nickName = nickName;
+                }
+
+                public String getHeadImg() {
+                    return headImg;
+                }
+
+                public void setHeadImg(String headImg) {
+                    this.headImg = headImg;
+                }
+
+                public Object getAge() {
+                    return age;
+                }
+
+                public void setAge(Object age) {
+                    this.age = age;
+                }
+
+                public Object getExplains() {
+                    return explains;
+                }
+
+                public void setExplains(Object explains) {
+                    this.explains = explains;
+                }
+
+                public Object getBirthday() {
+                    return birthday;
+                }
+
+                public void setBirthday(Object birthday) {
+                    this.birthday = birthday;
+                }
+
+                public Object getUserType() {
+                    return userType;
+                }
+
+                public void setUserType(Object userType) {
+                    this.userType = userType;
+                }
+
+                public Object getUserRole() {
+                    return userRole;
+                }
+
+                public void setUserRole(Object userRole) {
+                    this.userRole = userRole;
+                }
+
+                public Object getIsSingle() {
+                    return isSingle;
+                }
+
+                public void setIsSingle(Object isSingle) {
+                    this.isSingle = isSingle;
+                }
+
+                public Object getLng() {
+                    return lng;
+                }
+
+                public void setLng(Object lng) {
+                    this.lng = lng;
+                }
+
+                public Object getLat() {
+                    return lat;
+                }
+
+                public void setLat(Object lat) {
+                    this.lat = lat;
+                }
+
+                public Object getRatio() {
+                    return ratio;
+                }
+
+                public void setRatio(Object ratio) {
+                    this.ratio = ratio;
+                }
+
+                public Object getAttestation() {
+                    return attestation;
+                }
+
+                public void setAttestation(Object attestation) {
+                    this.attestation = attestation;
+                }
+
+                public Object getCreateTime() {
+                    return createTime;
+                }
+
+                public void setCreateTime(Object createTime) {
+                    this.createTime = createTime;
+                }
+
+                public Object getCountNum() {
+                    return countNum;
+                }
+
+                public void setCountNum(Object countNum) {
+                    this.countNum = countNum;
+                }
+
+                public Object getDistance() {
+                    return distance;
+                }
+
+                public void setDistance(Object distance) {
+                    this.distance = distance;
+                }
+
+                public Object getDistancing() {
+                    return distancing;
+                }
+
+                public void setDistancing(Object distancing) {
+                    this.distancing = distancing;
+                }
+
+                public Object getInvitationCode() {
+                    return invitationCode;
+                }
+
+                public void setInvitationCode(Object invitationCode) {
+                    this.invitationCode = invitationCode;
+                }
             }
         }
     }

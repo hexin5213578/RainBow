@@ -3,20 +3,27 @@ package com.YiDian.RainBow.main.fragment.mine.adapter;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
-import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
-import com.YiDian.RainBow.main.fragment.mine.activity.MydraftActivity;
+import com.YiDian.RainBow.custom.image.NineGridTestLayout;
+import com.YiDian.RainBow.custom.videoplayer.SampleCoverVideo;
 import com.YiDian.RainBow.main.fragment.mine.bean.SelectAllDraftsBean;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MyDraftsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final Context context;
     private final List<SelectAllDraftsBean.ObjectBean.ListBean> list;
+
 
     public MyDraftsAdapter(Context context, List<SelectAllDraftsBean.ObjectBean.ListBean> list) {
 
@@ -29,27 +36,27 @@ public class MyDraftsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //纯文本
         if (viewType == 1) {
-            View view = View.inflate(context, R.layout.item_dynamic_text, null);
+            View view = View.inflate(context, R.layout.item_drafts_text, null);
             return new ViewHolder(view);
         }
         //纯图片
         if (viewType == 2) {
-            View view = View.inflate(context, R.layout.item_dynamic_img, null);
+            View view = View.inflate(context, R.layout.item_drafts_img, null);
             return new ViewHolder(view);
         }
         //文本加图片
         if (viewType == 21) {
-            View view = View.inflate(context, R.layout.item_dynamic_text_img, null);
+            View view = View.inflate(context, R.layout.item_drafts_text_img, null);
             return new ViewHolder(view);
         }
         //纯视频
         if (viewType == 3) {
-            View view = View.inflate(context, R.layout.item_dynamic_video, null);
+            View view = View.inflate(context, R.layout.item_drafts_video, null);
             return new ViewHolder(view);
         }
         //视频加文本
         if (viewType == 31) {
-            View view = View.inflate(context, R.layout.item_dynamic_video_text, null);
+            View view = View.inflate(context, R.layout.item_drafts_video_text, null);
             return new ViewHolder(view);
         }
         return null;
@@ -57,16 +64,63 @@ public class MyDraftsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        SelectAllDraftsBean.ObjectBean.ListBean listBean = list.get(position);
+        int imgType = listBean.getImgType();
 
+
+        if (imgType == 1) {
+
+        }
+
+        if (imgType == 2) {
+
+        }
+
+        if (imgType == 21) {
+
+        }
+        if (imgType == 3) {
+
+        }
+
+        if (imgType == 31) {
+
+        }
     }
 
     @Override
     public int getItemCount() {
         return list.size();
     }
-    public class ViewHolder extends RecyclerView.ViewHolder{
+
+    @Override
+    public int getItemViewType(int position) {
+        int imgType = list.get(position).getImgType();
+
+        return imgType;
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.iv_headimg)
+        ImageView ivHeadimg;
+        @BindView(R.id.tv_age)
+        TextView tvAge;
+        @BindView(R.id.tv_username)
+        TextView tvUsername;
+        @BindView(R.id.tv_time)
+        TextView tvTime;
+        @BindView(R.id.rl_xiala)
+        RelativeLayout rlXiala;
+        @BindView(R.id.tv_dynamic_text)
+        TextView tvDynamicText;
+        @BindView(R.id.rc_image)
+        NineGridTestLayout rcImage;
+        @BindView(R.id.video_player)
+        SampleCoverVideo videoPlayer;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

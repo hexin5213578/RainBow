@@ -2,91 +2,62 @@ package com.YiDian.RainBow.setup;
 
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.InputType;
-import android.text.Spanned;
-import android.text.TextUtils;
-import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
-import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.bumptech.glide.request.RequestOptions;
+import com.YiDian.RainBow.utils.DataCleanManager;
 import com.leaf.library.StatusBarUtil;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
-//设置页
 public class SetupActivity extends BaseAvtivity implements View.OnClickListener {
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.iv_back)
     LinearLayout ivBack;
-    @BindView(R.id.iv_headimg)
-    ImageView ivHeadimg;
-    @BindView(R.id.rl_change_headimg)
-    RelativeLayout rlChangeHeadimg;
-    @BindView(R.id.tv_name)
-    TextView tvName;
-    @BindView(R.id.rl_name)
-    RelativeLayout rlName;
-    @BindView(R.id.tv_age)
-    TextView tvAge;
-    @BindView(R.id.rl_age)
-    RelativeLayout rlAge;
-    @BindView(R.id.tv_qianming)
-    TextView tvQianming;
-    @BindView(R.id.rl_qianming)
-    RelativeLayout rlQianming;
-    @BindView(R.id.tv_myrole)
-    TextView tvMyrole;
-    @BindView(R.id.rl_myrole)
-    RelativeLayout rlMyrole;
-    @BindView(R.id.tv_mylikerole)
-    TextView tvMylikerole;
-    @BindView(R.id.rl_mylikerole)
-    RelativeLayout rlMylikerole;
-    @BindView(R.id.tv_mystate)
-    TextView tvMystate;
-    @BindView(R.id.rl_ganqingstate)
-    RelativeLayout rlGanqingstate;
-    @BindView(R.id.tv_mylable)
-    TextView tvMylable;
-    @BindView(R.id.rl_mylable)
-    RelativeLayout rlMylable;
+    @BindView(R.id.rl_safe)
+    RelativeLayout rlSafe;
+    @BindView(R.id.tv_IsRealname)
+    TextView tvIsRealname;
+    @BindView(R.id.rl_shiming)
+    RelativeLayout rlShiming;
+    @BindView(R.id.rl_yinsi)
+    RelativeLayout rlYinsi;
+    @BindView(R.id.rl_kefu)
+    RelativeLayout rlKefu;
+    @BindView(R.id.rl_guanyu)
+    RelativeLayout rlGuanyu;
+    @BindView(R.id.tv_Memory)
+    TextView tvMemory;
+    @BindView(R.id.rl_clean)
+    RelativeLayout rlClean;
+    @BindView(R.id.tv_edition)
+    TextView tvEdition;
+    @BindView(R.id.rl_update)
+    RelativeLayout rlUpdate;
+    @BindView(R.id.rl_loginout)
+    RelativeLayout rlLoginout;
     private PopupWindow mPopupWindow;
-    private PopupWindow mPopupWindow1;
 
     @Override
     protected int getResId() {
@@ -95,25 +66,40 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
 
     @Override
     protected void getData() {
-        //设置状态栏颜色及字体颜色
         StatusBarUtil.setGradientColor(this,toolbar);
         StatusBarUtil.setDarkMode(this);
-
-        rlChangeHeadimg.setOnClickListener(this);
-        rlName.setOnClickListener(this);
-        rlAge.setOnClickListener(this);
-        rlQianming.setOnClickListener(this);
-        rlMyrole.setOnClickListener(this);
-        rlMylikerole.setOnClickListener(this);
-        rlGanqingstate.setOnClickListener(this);
-        rlMylable.setOnClickListener(this);
+        //绑定单击事件
         ivBack.setOnClickListener(this);
+        rlSafe.setOnClickListener(this);
+        rlShiming.setOnClickListener(this);
+        rlYinsi.setOnClickListener(this);
+        rlKefu.setOnClickListener(this);
+        rlGuanyu.setOnClickListener(this);
+        rlClean.setOnClickListener(this);
+        rlUpdate.setOnClickListener(this);
+        rlLoginout.setOnClickListener(this);
 
-        // TODO: 2020/11/26 0026 获取当前用户个人信息展示
 
-        //加载圆角图
-        Glide.with(this).load(R.mipmap.headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+        //获取当前应用版本号
+        String appVersionName = "";
+        try {
+            PackageInfo packageInfo = this.getApplicationContext()
+                    .getPackageManager()
+                    .getPackageInfo(this.getPackageName(), 0);
+            appVersionName = packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e("", e.getMessage());
+        }
+        tvEdition.setText(appVersionName + "");
 
+        //获取缓存
+        String totalCacheSize = null;
+        try {
+            totalCacheSize = DataCleanManager.getTotalCacheSize(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        tvMemory.setText(totalCacheSize);
 
     }
 
@@ -128,134 +114,75 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
             case R.id.iv_back:
                 finish();
                 break;
-                //更换头像
-            case R.id.rl_change_headimg:
+                //账户安全
+            case R.id.rl_safe:
 
                 break;
-                //更换昵称
-            case R.id.rl_name:
-                showChangeName();
-                break;
-                //年龄
-            case R.id.rl_age:
+                //实名认证
+            case R.id.rl_shiming:
 
                 break;
-                //个性签名
-            case R.id.rl_qianming:
-                //展示自定义弹出框
-                showChangeQianming();
-                break;
-                //我的角色
-            case R.id.rl_myrole:
+                //隐私设置
+            case R.id.rl_yinsi:
 
                 break;
-                //我喜欢的角色
-            case R.id.rl_mylikerole:
+                //客服中心
+            case R.id.rl_kefu:
 
                 break;
-                //我的感情状态
-            case R.id.rl_ganqingstate:
+                //关于我们
+            case R.id.rl_guanyu:
 
                 break;
-                //我的标签
-            case R.id.rl_mylable:
+                //清除缓存
+            case R.id.rl_clean:
+                //展示清除缓存的弹出框
+                showCleanManager();
+                break;
+                //版本更新
+            case R.id.rl_update:
+
+                break;
+                //登出
+            case R.id.rl_loginout:
 
                 break;
         }
     }
-    /**
-     * 禁止EditText输入空格
-     * @param editText
-     */
-    public static void setEditTextInhibitInputSpace(EditText editText){
-        InputFilter filter=new InputFilter() {
-            @Override
-            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                if(source.equals(" "))return "";
-                else return null;
-            }
-        };
-        editText.setFilters(new InputFilter[]{filter});
-    }
-
-    /**
-     * 禁止EditText输入特殊字符
-     * @param editText
-     */
-    public static void setEditTextInhibitInputSpeChat(EditText editText){
-
-        InputFilter filter=new InputFilter() {
-            @Override
-            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                String speChat="[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
-                Pattern pattern = Pattern.compile(speChat);
-                Matcher matcher = pattern.matcher(source.toString());
-                if(matcher.find())return "";
-                else return null;
-            }
-        };
-        editText.setFilters(new InputFilter[]{filter});
-    }
-
-    //弹出编辑个性签名
-    public void showChangeQianming() {
+    // 弹出清除缓存
+    public void showCleanManager() {
         //创建popwiondow弹出框
         mPopupWindow = new PopupWindow();
         mPopupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         mPopupWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        View view = LayoutInflater.from(this).inflate(R.layout.dialog_qianming, null);
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_cleanmanager, null);
 
-        TextView cancle = view.findViewById(R.id.tv_cancle);
-        TextView confrim = view.findViewById(R.id.tv_confirm);
-        TextView count = view.findViewById(R.id.tv_count);
-        EditText text = view.findViewById(R.id.et_text);
-        cancle.setOnClickListener(new View.OnClickListener() {
+        //取消
+        view.findViewById(R.id.tv_cancle).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
             }
         });
-        confrim.setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.tv_confirm).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 2020/11/26 0026  调用更换签名的接口
-                String str = text.getText().toString();
+                //清除缓存
+                DataCleanManager.clearAllCache(SetupActivity.this);
 
-
-
-                tvQianming.setText(str);
-                //更换成功隐藏弹出框
+                //重新获取缓存
+                String totalCacheSize = null;
+                try {
+                    totalCacheSize = DataCleanManager.getTotalCacheSize(SetupActivity.this);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                tvMemory.setText(totalCacheSize);
                 dismiss();
             }
         });
-        //设置EditText的显示方式为多行文本输入
-        text.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-        //文本显示的位置在EditText的最上方
-        text.setGravity(Gravity.TOP);
-        text.setSingleLine(false);
-        //输入框文本监听
-        text.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                //输入完后获取当前文本长度 给右下角文本长度赋值
-                int length = text.getText().length();
-
-                count.setText(30 - length + "");
-
-            }
-        });
         //popwindow设置属性
-        mPopupWindow.setAnimationStyle(R.style.popwindow_anim_style);
         mPopupWindow.setContentView(view);
         mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
         mPopupWindow.setFocusable(true);
@@ -267,10 +194,9 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
             }
         });
         show(view);
-
     }
 
-    //设置透明度
+    // 设置透明度
     public void setWindowAlpa(boolean isopen) {
         if (Build.VERSION.SDK_INT < 11) {
             return;
@@ -303,11 +229,11 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
      */
     private void show(View v) {
         if (mPopupWindow != null && !mPopupWindow.isShowing()) {
-            mPopupWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
+            mPopupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
         }
         setWindowAlpa(true);
-
     }
+
 
     /**
      * 消失PopupWindow
@@ -315,100 +241,6 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
     public void dismiss() {
         if (mPopupWindow != null && mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
-        }
-    }
-
-    // 弹出修改昵称弹出框
-    public void showChangeName() {
-        //创建popwiondow弹出框
-        mPopupWindow1 = new PopupWindow();
-        mPopupWindow1.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        mPopupWindow1.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        View view = LayoutInflater.from(this).inflate(R.layout.dialog_changename, null);
-        EditText et_name = view.findViewById(R.id.et_name);
-        TextView tv_rem = view.findViewById(R.id.tv_Rem);
-
-        //将用户名 回显到输入框
-        et_name.setText(tvName.getText().toString());
-
-        //禁止输入特殊字符及空格
-        setEditTextInhibitInputSpace(et_name);
-        setEditTextInhibitInputSpeChat(et_name);
-
-        //文本输入前 获取长度赋值给长度计算
-        int length = et_name.getText().length();
-        tv_rem.setText(length + "/10");
-        //输入框监听器
-        et_name.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                //文本输入结束后 获取长度赋值给长度计算
-                int length = et_name.getText().length();
-                tv_rem.setText(length + "/10");
-            }
-        });
-        //取消
-        view.findViewById(R.id.tv_cancle).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss1();
-            }
-        });
-        view.findViewById(R.id.tv_confirm).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //获取输入框文本  判空发起更换昵称的网络请求  请求成功关闭弹出框
-                String s = et_name.getText().toString();
-                if (!TextUtils.isEmpty(s)) {
-                    // TODO: 2020/10/28 0028 调用修改昵称的接口
-
-
-                } else {
-                    Toast.makeText(SetupActivity.this, "昵称不能为空", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        //popwindow设置属性
-        mPopupWindow1.setContentView(view);
-        mPopupWindow1.setBackgroundDrawable(new BitmapDrawable());
-        mPopupWindow1.setFocusable(true);
-        mPopupWindow1.setOutsideTouchable(true);
-        mPopupWindow1.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                setWindowAlpa(false);
-            }
-        });
-        show1(view);
-    }
-    /**
-     * 显示PopupWindow
-     */
-    private void show1(View v) {
-        if (mPopupWindow1 != null && !mPopupWindow1.isShowing()) {
-            mPopupWindow1.showAtLocation(v, Gravity.CENTER, 0, 0);
-        }
-        setWindowAlpa(true);
-
-    }
-
-    /**
-     * 消失PopupWindow
-     */
-    public void dismiss1() {
-        if (mPopupWindow1 != null && mPopupWindow1.isShowing()) {
-            mPopupWindow1.dismiss();
         }
     }
 }

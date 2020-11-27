@@ -15,6 +15,8 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -49,6 +51,7 @@ import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.custom.customDialog.CustomDialog;
 import com.YiDian.RainBow.dynamic.adapter.DevelogmentImgAdapter;
+import com.YiDian.RainBow.dynamic.adapter.DevelogmentImgAdapter$ViewHolder_ViewBinding;
 import com.YiDian.RainBow.dynamic.adapter.HotHuatiAdapter;
 import com.YiDian.RainBow.dynamic.bean.SaveAiteBean;
 import com.YiDian.RainBow.dynamic.bean.SaveHotHuatiBean;
@@ -72,18 +75,32 @@ import com.hw.videoprocessor.VideoUtil;
 import com.hw.videoprocessor.util.CL;
 import com.jaygoo.widget.RangeSeekBar;
 import com.leaf.library.StatusBarUtil;
+import com.qiniu.android.common.Config;
+import com.qiniu.android.http.ResponseInfo;
+import com.qiniu.android.storage.Configuration;
+import com.qiniu.android.storage.UpCompletionHandler;
+import com.qiniu.android.storage.UpProgressHandler;
+import com.qiniu.android.storage.UploadManager;
+import com.qiniu.android.storage.UploadOptions;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.crypto.Mac;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -160,11 +177,15 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
     private double latitude;
     private double longitude;
     private String district;
-    private ArrayList<File> list;
-    private File file;
-    private RequestBody requsetBody;
+    private ArrayList<String> list;
     int whocansee = 1;
     int userid = 1031;
+    private UploadManager uploadManager;
+    private String upToken;
+    private ArrayList<String> upimg_key_list;
+    private String imgAddress;
+    private Handler handler;
+    private static final String serverPath = "http://qjvorl4f2.hn-bkt.clouddn.com/";
     @Override
     protected int getResId() {
         return R.layout.activity_development_dynamic;
@@ -173,6 +194,8 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void getData() {
+        handler = new Handler();
+
         //设置状态栏颜色 跟状态栏字体颜色
         StatusBarUtil.setGradientColor(DevelopmentDynamicActivity.this, toolbar);
         StatusBarUtil.setDarkMode(DevelopmentDynamicActivity.this);
@@ -282,6 +305,32 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                 startActivity(intent);
             }
         });
+
+        //获取七牛云uploadToken
+        NetUtils.getInstance().getApis().getUpdateToken("http://192.168.10.101:8089/img/uploadToken")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<SaveMsgSuccessBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(SaveMsgSuccessBean saveMsgSuccessBean) {
+                        upToken = saveMsgSuccessBean.getUpToken();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     //获取热门话题
@@ -378,28 +427,6 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
         return null;
     }
 
-    //图片
-    public RequestBody getRequsetBody(List<File> files) {
-//        if (map.size() < 1){
-//            return null;
-//        }
-        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        for (int i = 0; i < files.size(); i++) {
-            builder.addFormDataPart("file", files.get(i).getName(), RequestBody.create(MediaType.parse("image/jepg"), files.get(i)));
-        }
-        return builder.build();
-    }
-
-    //视频
-    public RequestBody getVideoRequsetBody(List<File> files) {
-//        if (map.size() < 1){
-//            return null;
-//        }
-        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        builder.addFormDataPart("file", files.get(0).getName(), RequestBody.create(MediaType.parse("video/mp4"), files.get(0)));
-        return builder.build();
-    }
-
     public void doOkHttp(int userid,String content,String img,Double log,Double lat,int whocansee,int type,int status,String area){
         NetUtils.getInstance().getApis().doWriteDevelopment(userid, content, img, log, lat, whocansee, type, status, area)
                 .subscribeOn(Schedulers.io())
@@ -459,7 +486,49 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                     }
                 });
     }
+    public void getUpimg(String imagePath,int picSize,Handler mHandler){
 
+        Log.d("xxx","到这里了");
+        upimg_key_list = new ArrayList<String>();
+        new Thread() {
+            public void run() {
+                // 图片上传到七牛 重用 uploadManager。一般地，只需要创建一个 uploadManager 对象
+                uploadManager = new UploadManager();
+
+               SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+                // 设置名字
+                String key = serverPath+imagePath;
+
+                uploadManager.put(imagePath, key, upToken,
+                        new UpCompletionHandler() {
+                            @Override
+                            public void complete(String key, ResponseInfo info,
+                                                 JSONObject res) {
+                                // res 包含hash、key等信息，具体字段取决于上传策略的设置。
+                                Log.i("xxx", key + ",\r\n " + info + ",\r\n "
+                                        + res);
+                                try {
+                                    // 七牛返回的文件名
+                                    String upimg = res.getString("key");
+                                    upimg_key_list.add(upimg);//将七牛返回图片的文件名添加到list集合中
+
+                                    if(upimg_key_list.size() == picSize){
+                                        Bundle bundle = new Bundle();
+                                        bundle.putStringArrayList("resultImagePath",upimg_key_list);
+                                        Message message = new Message();
+                                        message.what = 1;
+                                        message.setData(bundle);
+                                        handler.sendMessage(message);
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Log.d("xxx",e.getMessage());
+                                }
+                            }
+                        }, null);
+            }
+        }.start();
+    }
     @SuppressLint("ResourceAsColor")
     @Override
     public void onClick(View v) {
@@ -502,78 +571,76 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                     //类型为 21
                                     //先将图片传到七牛云生成路径 再调用发布动态的接口
 
-                                    list = new ArrayList<>();
                                     for (int i = 0; i < select.size()-1; i++) {
                                         String url = select.get(i).path;
-                                        file = new File(url);
-                                        list.add(file);
+                                        getUpimg(url,select.size()-1,handler);
                                     }
-
-                                    Log.d("xxx", "上传图片集合长度为:" + list.size() + "");
-
-                                    requsetBody = getRequsetBody(list);
-                                    new Thread(new Runnable() {
+                                    handler = new Handler() {
                                         @Override
-                                        public void run() {
-                                            NetUtils.getInstance().getApis()
-                                                    .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
-                                                    .subscribeOn(Schedulers.io())
-                                                    .observeOn(AndroidSchedulers.mainThread())
-                                                    .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
-                                                        @Override
-                                                        public void onSubscribe(Disposable d) {
+                                        public void handleMessage(Message msg) {
+                                            super.handleMessage(msg);
+                                            switch (msg.what) {
+                                                case 1:
+                                                    Bundle bundle = msg.getData();
+                                                    if(null != bundle){
+                                                        list = bundle.getStringArrayList("resultImagePath");
+                                                        Log.d("xxx",list.size()+"======"+list.toString());
+
+                                                        if(upimg_key_list.size()>2){
+                                                            for (int i =0;i<upimg_key_list.size();i++){
+                                                                imgAddress = upimg_key_list.get(i)+",";
+                                                            }
+                                                        }else{
+                                                            imgAddress = upimg_key_list.get(0);
                                                         }
 
-                                                        @Override
-                                                        public void onSuccess(SaveMsgSuccessBean s) {
-                                                            String imgAddress = s.getImgAddress();
-                                                            doOkHttpCaogao(userid, content, imgAddress, longitude, latitude, whocansee, 21, 0, district);
-                                                        }
-
-                                                        @Override
-                                                        public void onError(Throwable e) {
-                                                            Log.d("xxx", "错误为" + e.getMessage().toString());
-                                                        }
-                                                    });
-
+                                                        doOkHttpCaogao(userid, content, imgAddress, longitude, latitude, whocansee, 21, 0, district);
+                                                    }
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
                                         }
-                                    }).start();
+                                    };
+
+
                                 }
                                 if (content.length() > 0 && select1.size() > 0) {
                                     //文本加视频
                                     //类型为31
 
-                                    list = new ArrayList<>();
-                                    file = new File(filePath);
-                                    list.add(file);
+                                    getUpimg(filePath,select1.size(),handler);
 
-                                    requsetBody = getVideoRequsetBody(list);
-                                    new Thread(new Runnable() {
+                                    handler = new Handler() {
                                         @Override
-                                        public void run() {
-                                            NetUtils.getInstance().getApis()
-                                                    .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
-                                                    .subscribeOn(Schedulers.io())
-                                                    .observeOn(AndroidSchedulers.mainThread())
-                                                    .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
-                                                        @Override
-                                                        public void onSubscribe(Disposable d) {
+                                        public void handleMessage(Message msg) {
+                                            super.handleMessage(msg);
+                                            switch (msg.what) {
+                                                case 1:
+                                                    Bundle bundle = msg.getData();
+                                                    if(null != bundle){
+                                                        list = bundle.getStringArrayList("resultImagePath");
+                                                        Log.d("xxx",list.size()+"======"+list.toString());
+
+                                                        if(upimg_key_list.size()>2){
+                                                            for (int i =0;i<upimg_key_list.size();i++){
+                                                                imgAddress = upimg_key_list.get(i)+",";
+                                                            }
+                                                        }else{
+                                                            imgAddress = upimg_key_list.get(0);
                                                         }
 
-                                                        @Override
-                                                        public void onSuccess(SaveMsgSuccessBean s) {
-                                                            String imgAddress = s.getImgAddress();
-
-                                                            //调用发布动态接口
-                                                            doOkHttpCaogao(userid, content, imgAddress, longitude, latitude, whocansee, 31, 0, district);
-                                                        }
-
-                                                        @Override
-                                                        public void onError(Throwable e) {
-                                                        }
-                                                    });
+                                                        //调用发布动态接口
+                                                        doOkHttpCaogao(userid, content, imgAddress, longitude, latitude, whocansee, 31, 0, district);
+                                                    }
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
                                         }
-                                    }).start();
+                                    };
+
+
 
 
                                 }
@@ -583,79 +650,76 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                     //先将图片传到七牛云生成路径 再调用发布动态的接口
                                     //将图片转换
 
-                                    list = new ArrayList<>();
                                     for (int i = 0; i < select.size()-1; i++) {
                                         String url = select.get(i).path;
-                                        file = new File(url);
-                                        list.add(file);
+                                        getUpimg(url,select.size()-1,handler);
                                     }
-
-                                    Log.d("xxx", "上传图片集合长度为:" + list.size() + "");
-
-                                    requsetBody = getRequsetBody(list);
-                                    new Thread(new Runnable() {
+                                    handler = new Handler() {
                                         @Override
-                                        public void run() {
-                                            NetUtils.getInstance().getApis()
-                                                    .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
-                                                    .subscribeOn(Schedulers.io())
-                                                    .observeOn(AndroidSchedulers.mainThread())
-                                                    .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
-                                                        @Override
-                                                        public void onSubscribe(Disposable d) {
+                                        public void handleMessage(Message msg) {
+                                            super.handleMessage(msg);
+                                            switch (msg.what) {
+                                                case 1:
+                                                    Bundle bundle = msg.getData();
+                                                    if(null != bundle){
+                                                        list = bundle.getStringArrayList("resultImagePath");
+                                                        Log.d("xxx",list.size()+"======"+list.toString());
+
+                                                        if(upimg_key_list.size()>2){
+                                                            for (int i =0;i<upimg_key_list.size();i++){
+                                                                imgAddress = upimg_key_list.get(i)+",";
+                                                            }
+                                                        }else{
+                                                            imgAddress = upimg_key_list.get(0);
                                                         }
 
-                                                        @Override
-                                                        public void onSuccess(SaveMsgSuccessBean s) {
-                                                            String imgAddress = s.getImgAddress();
-                                                            //调用发布动态接口
-
-                                                            doOkHttpCaogao(userid, "", imgAddress, longitude, latitude, whocansee, 2, 0, district);
-                                                        }
-
-                                                        @Override
-                                                        public void onError(Throwable e) {
-                                                            Log.d("xxx", "错误为" + e.getMessage().toString());
-                                                        }
-                                                    });
+                                                        //调用发布动态接口
+                                                        doOkHttpCaogao(userid, "", imgAddress, longitude, latitude, whocansee, 2, 0, district);
+                                                    }
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
                                         }
-                                    }).start();
+                                    };
+
+
 
                                 }
                                 if (content.length()==0 && select1.size() > 0) {
                                     //纯视频
                                     //类型为3
+                                    getUpimg(filePath,select1.size(),handler);
 
-
-                                    list = new ArrayList<>();
-                                    file = new File(filePath);
-                                    list.add(file);
-
-                                    requsetBody = getVideoRequsetBody(list);
-                                    new Thread(new Runnable() {
+                                    handler = new Handler() {
                                         @Override
-                                        public void run() {
-                                            NetUtils.getInstance().getApis()
-                                                    .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
-                                                    .subscribeOn(Schedulers.io())
-                                                    .observeOn(AndroidSchedulers.mainThread())
-                                                    .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
-                                                        @Override
-                                                        public void onSubscribe(Disposable d) {
+                                        public void handleMessage(Message msg) {
+                                            super.handleMessage(msg);
+                                            switch (msg.what) {
+                                                case 1:
+                                                    Bundle bundle = msg.getData();
+                                                    if(null != bundle){
+                                                        list = bundle.getStringArrayList("resultImagePath");
+                                                        Log.d("xxx",list.size()+"======"+list.toString());
+
+                                                        if(upimg_key_list.size()>2){
+                                                            for (int i =0;i<upimg_key_list.size();i++){
+                                                                imgAddress = upimg_key_list.get(i)+",";
+                                                            }
+                                                        }else{
+                                                            imgAddress = upimg_key_list.get(0);
                                                         }
 
-                                                        @Override
-                                                        public void onSuccess(SaveMsgSuccessBean s) {
-                                                            String imgAddress = s.getImgAddress();
-                                                            doOkHttpCaogao(userid, "", imgAddress, longitude, latitude, whocansee, 3, 0, district);
-                                                        }
-
-                                                        @Override
-                                                        public void onError(Throwable e) {
-                                                        }
-                                                    });
+                                                        //调用发布动态接口
+                                                        doOkHttpCaogao(userid, "", imgAddress, longitude, latitude, whocansee, 3, 0, district);
+                                                    }
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
                                         }
-                                    }).start();
+                                    };
+
 
                                 }
 
@@ -665,166 +729,153 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                 if (content.length() > 0 && select.size()==0 && select1.size()==0) {
                                     //仅文本
                                     //类型为 1
-
-
                                     doOkHttpCaogao(userid, content, "", null, null, whocansee, 1, 0, "");
-
                                 }
                                 if (content.length() > 0 && select.size() > 0) {
                                     //文本加图片
                                     //类型为 21
-                                    list = new ArrayList<>();
                                     for (int i = 0; i < select.size()-1; i++) {
                                         String url = select.get(i).path;
-                                        file = new File(url);
-                                        list.add(file);
+                                        getUpimg(url,select.size()-1,handler);
                                     }
-
-                                    Log.d("xxx", "上传图片集合长度为:" + list.size() + "");
-
-                                    requsetBody = getRequsetBody(list);
-                                    new Thread(new Runnable() {
+                                    handler = new Handler() {
                                         @Override
-                                        public void run() {
-                                            NetUtils.getInstance().getApis()
-                                                    .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
-                                                    .subscribeOn(Schedulers.io())
-                                                    .observeOn(AndroidSchedulers.mainThread())
-                                                    .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
-                                                        @Override
-                                                        public void onSubscribe(Disposable d) {
+                                        public void handleMessage(Message msg) {
+                                            super.handleMessage(msg);
+                                            switch (msg.what) {
+                                                case 1:
+                                                    Bundle bundle = msg.getData();
+                                                    if(null != bundle){
+                                                        list = bundle.getStringArrayList("resultImagePath");
+                                                        Log.d("xxx",list.size()+"======"+list.toString());
+
+                                                        if(upimg_key_list.size()>2){
+                                                            for (int i =0;i<upimg_key_list.size();i++){
+                                                                imgAddress = upimg_key_list.get(i)+",";
+                                                            }
+                                                        }else{
+                                                            imgAddress = upimg_key_list.get(0);
                                                         }
 
-                                                        @Override
-                                                        public void onSuccess(SaveMsgSuccessBean s) {
-                                                            String imgAddress = s.getImgAddress();
-                                                            doOkHttpCaogao(userid, content, imgAddress, null, null, whocansee, 21, 0, "");
-                                                        }
-
-                                                        @Override
-                                                        public void onError(Throwable e) {
-                                                            Log.d("xxx", "错误为" + e.getMessage().toString());
-                                                        }
-                                                    });
+                                                        doOkHttpCaogao(userid, content, imgAddress, null, null, whocansee, 21, 0, "");
+                                                    }
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
                                         }
-                                    }).start();
-
-
+                                    };
 
                                 }
                                 if (content.length() > 0 && select1.size()>0) {
                                     //文本加视频
                                     //类型为31
+                                    getUpimg(filePath,select1.size(),handler);
 
 
-                                    list = new ArrayList<>();
-                                    file = new File(filePath);
-                                    list.add(file);
-
-                                    requsetBody = getVideoRequsetBody(list);
-                                    new Thread(new Runnable() {
+                                    handler = new Handler() {
                                         @Override
-                                        public void run() {
-                                            NetUtils.getInstance().getApis()
-                                                    .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
-                                                    .subscribeOn(Schedulers.io())
-                                                    .observeOn(AndroidSchedulers.mainThread())
-                                                    .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
-                                                        @Override
-                                                        public void onSubscribe(Disposable d) {
+                                        public void handleMessage(Message msg) {
+                                            super.handleMessage(msg);
+                                            switch (msg.what) {
+                                                case 1:
+                                                    Bundle bundle = msg.getData();
+                                                    if(null != bundle){
+                                                        list = bundle.getStringArrayList("resultImagePath");
+                                                        Log.d("xxx",list.size()+"======"+list.toString());
+
+                                                        if(upimg_key_list.size()>2){
+                                                            for (int i =0;i<upimg_key_list.size();i++){
+                                                                imgAddress = upimg_key_list.get(i)+",";
+                                                            }
+                                                        }else{
+                                                            imgAddress = upimg_key_list.get(0);
                                                         }
-
-                                                        @Override
-                                                        public void onSuccess(SaveMsgSuccessBean s) {
-                                                            String imgAddress = s.getImgAddress();
-
-                                                            //调用发布动态接口
-                                                            doOkHttpCaogao(userid, content, imgAddress, null, null, whocansee, 31, 0, "");
-                                                        }
-
-                                                        @Override
-                                                        public void onError(Throwable e) {
-                                                        }
-                                                    });
-
+                                                        //调用发布动态接口
+                                                        doOkHttpCaogao(userid, content, imgAddress, null, null, whocansee, 31, 0, "");
+                                                    }
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
                                         }
-                                    }).start();
+                                    };
+
+
+
                                 }
                                 if (content.length() ==0 && select.size() > 0) {
                                     //纯图片
                                     //类型为2
 
-
-                                    list = new ArrayList<>();
                                     for (int i = 0; i < select.size()-1; i++) {
                                         String url = select.get(i).path;
-                                        file = new File(url);
-                                        list.add(file);
+                                        getUpimg(url,select.size()-1,handler);
                                     }
-
-                                    Log.d("xxx", "上传图片集合长度为:" + list.size() + "");
-
-                                    requsetBody = getRequsetBody(list);
-
-                                    new Thread(new Runnable() {
+                                    handler = new Handler() {
                                         @Override
-                                        public void run() {
-                                            NetUtils.getInstance().getApis()
-                                                    .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
-                                                    .subscribeOn(Schedulers.io())
-                                                    .observeOn(AndroidSchedulers.mainThread())
-                                                    .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
-                                                        @Override
-                                                        public void onSubscribe(Disposable d) {
+                                        public void handleMessage(Message msg) {
+                                            super.handleMessage(msg);
+                                            switch (msg.what) {
+                                                case 1:
+                                                    Bundle bundle = msg.getData();
+                                                    if(null != bundle){
+                                                        list = bundle.getStringArrayList("resultImagePath");
+                                                        Log.d("xxx",list.size()+"======"+list.toString());
+
+                                                        if(upimg_key_list.size()>2){
+                                                            for (int i =0;i<upimg_key_list.size();i++){
+                                                                imgAddress = upimg_key_list.get(i)+",";
+                                                            }
+                                                        }else{
+                                                            imgAddress = upimg_key_list.get(0);
                                                         }
 
-                                                        @Override
-                                                        public void onSuccess(SaveMsgSuccessBean s) {
-                                                            String imgAddress = s.getImgAddress();
-                                                            //调用发布动态接口
-                                                            doOkHttpCaogao(userid, "", imgAddress, null, null, whocansee, 2, 0, "");
-                                                        }
-                                                        @Override
-                                                        public void onError(Throwable e) {
-                                                            Log.d("xxx", "错误为" + e.getMessage().toString());
-                                                        }
-                                                    });
+                                                        doOkHttpCaogao(userid, "", imgAddress, null, null, whocansee, 2, 0, "");
+                                                    }
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
                                         }
-                                    }).start();
+                                    };
+
                                 }
                                 if (content.length()==0 && select1.size() > 0) {
                                     //纯视频
                                     //类型为3
 
-                                    list = new ArrayList<>();
-                                    file = new File(filePath);
-                                    list.add(file);
-                                    requsetBody = getVideoRequsetBody(list);
-                                    new Thread(new Runnable() {
+                                    getUpimg(filePath,select1.size(),handler);
+
+
+                                    handler = new Handler() {
                                         @Override
-                                        public void run() {
-                                            NetUtils.getInstance().getApis()
-                                                    .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
-                                                    .subscribeOn(Schedulers.io())
-                                                    .observeOn(AndroidSchedulers.mainThread())
-                                                    .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
-                                                        @Override
-                                                        public void onSubscribe(Disposable d) {
-                                                        }
+                                        public void handleMessage(Message msg) {
+                                            super.handleMessage(msg);
+                                            switch (msg.what) {
+                                                case 1:
+                                                    Bundle bundle = msg.getData();
+                                                    if(null != bundle){
+                                                        list = bundle.getStringArrayList("resultImagePath");
+                                                        Log.d("xxx",list.size()+"======"+list.toString());
 
-                                                        @Override
-                                                        public void onSuccess(SaveMsgSuccessBean s) {
-                                                            String imgAddress = s.getImgAddress();
-                                                            doOkHttpCaogao(userid, "", imgAddress, null, null, whocansee, 3, 0, "");
+                                                        if(upimg_key_list.size()>2){
+                                                            for (int i =0;i<upimg_key_list.size();i++){
+                                                                imgAddress = upimg_key_list.get(i)+",";
+                                                            }
+                                                        }else{
+                                                            imgAddress = upimg_key_list.get(0);
                                                         }
-
-                                                        @Override
-                                                        public void onError(Throwable e) {
-                                                            Log.d("xxx",e.getMessage().toString());
-                                                        }
-                                                    });
+                                                        //调用发布动态接口
+                                                        doOkHttpCaogao(userid, "", imgAddress, null, null, whocansee, 3, 0, "");
+                                                    }
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
                                         }
-                                    }).start();
+                                    };
+
                                 }
                             }
 
@@ -864,357 +915,322 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                         break;
                 }
                 String content = etContent.getText().toString();
-
                 if (isSelect) {
                     //传位置
                     //判断内容
                     if (content.length() > 0 && select.size()==0 && select1.size()==0) {
                         //仅文本
                         //类型为 1
-                        Toast.makeText(this, "仅文本带位置", Toast.LENGTH_SHORT).show();
                         doOkHttp(userid,content,"", longitude, latitude, whocansee, 1, 1, district);
                     }
                     if (content.length() > 0 && select.size() > 0) {
                         //文本加图片
                         //类型为 21
                         //先将图片传到七牛云生成路径 再调用发布动态的接口
-                        Toast.makeText(this, "文本加图片带位置", Toast.LENGTH_SHORT).show();
 
-                        list = new ArrayList<>();
                         for (int i = 0; i < select.size()-1; i++) {
                             String url = select.get(i).path;
-                            file = new File(url);
-                            list.add(file);
+                            getUpimg(url,select.size()-1,handler);
                         }
-
-                        Log.d("xxx", "上传图片集合长度为:" + list.size() + "");
-
-                        requsetBody = getRequsetBody(list);
-                        new Thread(new Runnable() {
+                        handler = new Handler() {
                             @Override
-                            public void run() {
-                                NetUtils.getInstance().getApis()
-                                        .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
-                                            @Override
-                                            public void onSubscribe(Disposable d) {
+                            public void handleMessage(Message msg) {
+                                super.handleMessage(msg);
+                                switch (msg.what) {
+                                    case 1:
+                                        Bundle bundle = msg.getData();
+                                        if(null != bundle){
+                                            list = bundle.getStringArrayList("resultImagePath");
+                                            Log.d("xxx",list.size()+"======"+list.toString());
+
+                                            if(upimg_key_list.size()>2){
+                                                for (int i =0;i<upimg_key_list.size();i++){
+                                                    imgAddress = upimg_key_list.get(i)+",";
+                                                }
+                                            }else{
+                                                imgAddress = upimg_key_list.get(0);
                                             }
 
-                                            @Override
-                                            public void onSuccess(SaveMsgSuccessBean s) {
-                                                String imgAddress = s.getImgAddress();
-                                                doOkHttp(userid, content, imgAddress, longitude, latitude, whocansee, 21, 1, district);
-                                            }
-
-                                            @Override
-                                            public void onError(Throwable e) {
-                                                Log.d("xxx", "错误为" + e.getMessage().toString());
-                                            }
-                                        });
-
+                                            doOkHttp(userid, content, imgAddress, longitude, latitude, whocansee, 21, 1, district);
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
-                        }).start();
+                        };
+
+
                     }
                     if (content.length() > 0 && select1.size() > 0) {
                         //文本加视频
                         //类型为31
 
+                        getUpimg(filePath,select1.size(),handler);
 
-                        Toast.makeText(this, "文本加视频带位置", Toast.LENGTH_SHORT).show();
-
-                        list = new ArrayList<>();
-                        file = new File(filePath);
-                        list.add(file);
-
-                        requsetBody = getVideoRequsetBody(list);
-                        new Thread(new Runnable() {
+                        handler = new Handler() {
                             @Override
-                            public void run() {
-                                NetUtils.getInstance().getApis()
-                                        .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
-                                            @Override
-                                            public void onSubscribe(Disposable d) {
+                            public void handleMessage(Message msg) {
+                                super.handleMessage(msg);
+                                switch (msg.what) {
+                                    case 1:
+                                        Bundle bundle = msg.getData();
+                                        if(null != bundle){
+                                            list = bundle.getStringArrayList("resultImagePath");
+                                            Log.d("xxx",list.size()+"======"+list.toString());
+
+                                            if(upimg_key_list.size()>2){
+                                                for (int i =0;i<upimg_key_list.size();i++){
+                                                    imgAddress = upimg_key_list.get(i)+",";
+                                                }
+                                            }else{
+                                                imgAddress = upimg_key_list.get(0);
                                             }
 
-                                            @Override
-                                            public void onSuccess(SaveMsgSuccessBean s) {
-                                                String imgAddress = s.getImgAddress();
-
-                                                //调用发布动态接口
-                                                doOkHttp(userid, content, imgAddress, longitude, latitude, whocansee, 31, 1, district);
-                                            }
-
-                                            @Override
-                                            public void onError(Throwable e) {
-                                            }
-                                        });
+                                            //调用发布动态接口
+                                            doOkHttp(userid, content, imgAddress, longitude, latitude, whocansee, 31, 1, district);
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
-                        }).start();
-
-
+                        };
                     }
                     if (content.length()==0 && select.size() > 0) {
                         //纯图片
                         //类型为2
                         //先将图片传到七牛云生成路径 再调用发布动态的接口
                         //将图片转换
-                        Toast.makeText(this, "纯图片带位置", Toast.LENGTH_SHORT).show();
-
-                        list = new ArrayList<>();
                         for (int i = 0; i < select.size()-1; i++) {
                             String url = select.get(i).path;
-                            file = new File(url);
-                            list.add(file);
+                            getUpimg(url,select.size()-1,handler);
                         }
-
-                        Log.d("xxx", "上传图片集合长度为:" + list.size() + "");
-
-                        requsetBody = getRequsetBody(list);
-                        new Thread(new Runnable() {
+                        handler = new Handler() {
                             @Override
-                            public void run() {
-                                NetUtils.getInstance().getApis()
-                                        .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
-                                            @Override
-                                            public void onSubscribe(Disposable d) {
-                                            }
+                            public void handleMessage(Message msg) {
+                                super.handleMessage(msg);
+                                switch (msg.what) {
+                                    case 1:
+                                        Bundle bundle = msg.getData();
+                                        if(null != bundle){
+                                            list = bundle.getStringArrayList("resultImagePath");
+                                            Log.d("xxx",list.size()+"======"+list.toString());
 
-                                            @Override
-                                            public void onSuccess(SaveMsgSuccessBean s) {
-                                                String imgAddress = s.getImgAddress();
-                                                //调用发布动态接口
-
-                                                doOkHttp(userid, "", imgAddress, longitude, latitude, whocansee, 2, 1, district);
+                                            if(upimg_key_list.size()>2){
+                                                for (int i =0;i<upimg_key_list.size();i++){
+                                                    imgAddress = upimg_key_list.get(i)+",";
+                                                }
+                                            }else{
+                                                imgAddress = upimg_key_list.get(0);
                                             }
-
-                                            @Override
-                                            public void onError(Throwable e) {
-                                                Log.d("xxx", "错误为" + e.getMessage().toString());
-                                            }
-                                        });
+                                            //调用发布动态接口
+                                            doOkHttp(userid, "", imgAddress, longitude, latitude, whocansee, 2, 1, district);
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
-                        }).start();
+                        };
+
 
                     }
                     if (content.length()==0 && select1.size() > 0) {
                         //纯视频
                         //类型为3
+                        getUpimg(filePath,select1.size(),handler);
 
-                        Toast.makeText(this, "纯视频带位置", Toast.LENGTH_SHORT).show();
-
-                        list = new ArrayList<>();
-                        file = new File(filePath);
-                        list.add(file);
-
-                        requsetBody = getVideoRequsetBody(list);
-                        new Thread(new Runnable() {
+                        handler = new Handler() {
                             @Override
-                            public void run() {
-                                NetUtils.getInstance().getApis()
-                                        .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
-                                            @Override
-                                            public void onSubscribe(Disposable d) {
+                            public void handleMessage(Message msg) {
+                                super.handleMessage(msg);
+                                switch (msg.what) {
+                                    case 1:
+                                        Bundle bundle = msg.getData();
+                                        if(null != bundle){
+                                            list = bundle.getStringArrayList("resultImagePath");
+                                            Log.d("xxx",list.size()+"======"+list.toString());
+
+                                            if(upimg_key_list.size()>2){
+                                                for (int i =0;i<upimg_key_list.size();i++){
+                                                    imgAddress = upimg_key_list.get(i)+",";
+                                                }
+                                            }else{
+                                                imgAddress = upimg_key_list.get(0);
                                             }
 
-                                            @Override
-                                            public void onSuccess(SaveMsgSuccessBean s) {
-                                                String imgAddress = s.getImgAddress();
-                                                doOkHttp(userid, "", imgAddress, longitude, latitude, whocansee, 3, 1, district);
-                                            }
-
-                                            @Override
-                                            public void onError(Throwable e) {
-                                            }
-                                        });
+                                            //调用发布动态接口
+                                            doOkHttp(userid, "", imgAddress, longitude, latitude, whocansee, 3, 1, district);
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
-                        }).start();
-
+                        };
                     }
-
                 } else {
                     //不传位置
                     //判断内容
                     if (content.length() > 0 && select.size()==0 && select1.size()==0) {
                         //仅文本
                         //类型为 1
-
-                        Toast.makeText(this, "仅文本不带位置", Toast.LENGTH_SHORT).show();
-
                         doOkHttp(userid, content, "", null, null, whocansee, 1, 1, "");
-
                     }
                     if (content.length() > 0 && select.size() > 0) {
                         //文本加图片
                         //类型为 21
-                        list = new ArrayList<>();
                         for (int i = 0; i < select.size()-1; i++) {
                             String url = select.get(i).path;
-                            file = new File(url);
-                            list.add(file);
+                            getUpimg(url,select.size()-1,handler);
                         }
-
-                        Log.d("xxx", "上传图片集合长度为:" + list.size() + "");
-
-                        requsetBody = getRequsetBody(list);
-                        new Thread(new Runnable() {
+                        handler = new Handler() {
                             @Override
-                            public void run() {
-                                NetUtils.getInstance().getApis()
-                                        .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
-                                            @Override
-                                            public void onSubscribe(Disposable d) {
+                            public void handleMessage(Message msg) {
+                                super.handleMessage(msg);
+                                switch (msg.what) {
+                                    case 1:
+                                        Bundle bundle = msg.getData();
+                                        if(null != bundle){
+                                            list = bundle.getStringArrayList("resultImagePath");
+                                            Log.d("xxx",list.size()+"======"+list.toString());
+
+                                            if(upimg_key_list.size()>2){
+                                                for (int i =0;i<upimg_key_list.size();i++){
+                                                    imgAddress = upimg_key_list.get(i)+",";
+                                                }
+                                            }else{
+                                                imgAddress = upimg_key_list.get(0);
                                             }
 
-                                            @Override
-                                            public void onSuccess(SaveMsgSuccessBean s) {
-                                                String imgAddress = s.getImgAddress();
-                                                doOkHttp(userid, content, imgAddress, null, null, whocansee, 21, 1, "");
-                                            }
-
-                                            @Override
-                                            public void onError(Throwable e) {
-                                                Log.d("xxx", "错误为" + e.getMessage().toString());
-                                            }
-                                        });
+                                            doOkHttp(userid, content, imgAddress, null, null, whocansee, 21, 1, "");
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
-                        }).start();
-
-
+                        };
 
                     }
                     if (content.length() > 0 && select1.size()>0) {
                         //文本加视频
                         //类型为31
+                        getUpimg(filePath,select1.size(),handler);
 
-                        Toast.makeText(this, "文本加视频不带位置", Toast.LENGTH_SHORT).show();
-
-                        list = new ArrayList<>();
-                        file = new File(filePath);
-                        list.add(file);
-
-                        requsetBody = getVideoRequsetBody(list);
-                        new Thread(new Runnable() {
+                        handler = new Handler() {
                             @Override
-                            public void run() {
-                                NetUtils.getInstance().getApis()
-                                        .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
-                                            @Override
-                                            public void onSubscribe(Disposable d) {
+                            public void handleMessage(Message msg) {
+                                super.handleMessage(msg);
+                                switch (msg.what) {
+                                    case 1:
+                                        Bundle bundle = msg.getData();
+                                        if(null != bundle){
+                                            list = bundle.getStringArrayList("resultImagePath");
+                                            Log.d("xxx",list.size()+"======"+list.toString());
+
+                                            if(upimg_key_list.size()>2){
+                                                for (int i =0;i<upimg_key_list.size();i++){
+                                                    imgAddress = upimg_key_list.get(i)+",";
+                                                }
+                                            }else{
+                                                imgAddress = upimg_key_list.get(0);
                                             }
 
-                                            @Override
-                                            public void onSuccess(SaveMsgSuccessBean s) {
-                                                String imgAddress = s.getImgAddress();
-
-                                                //调用发布动态接口
-                                                doOkHttp(userid, content, imgAddress, null, null, whocansee, 31, 1, "");
-                                            }
-
-                                            @Override
-                                            public void onError(Throwable e) {
-                                            }
-                                        });
-
+                                            //调用发布动态接口
+                                            doOkHttp(userid, content, imgAddress, null, null, whocansee, 31, 1, "");
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
-                        }).start();
+                        };
+
+
                     }
                     if (content.length() ==0 && select.size() > 0) {
                         //纯图片
                         //类型为2
 
-                        Toast.makeText(this, "纯图片不带位置", Toast.LENGTH_SHORT).show();
-
-                        list = new ArrayList<>();
+                        Log.d("xxx","选中图片长度为:"+select.size()+"");
                         for (int i = 0; i < select.size()-1; i++) {
                             String url = select.get(i).path;
-                            file = new File(url);
-                            list.add(file);
+                            getUpimg(url,select.size()-1,handler);
                         }
-
-                        Log.d("xxx", "上传图片集合长度为:" + list.size() + "");
-
-                        requsetBody = getRequsetBody(list);
-
-                        new Thread(new Runnable() {
+                        handler = new Handler() {
+                            @SuppressLint("HandlerLeak")
                             @Override
-                            public void run() {
-                                NetUtils.getInstance().getApis()
-                                        .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
-                                            @Override
-                                            public void onSubscribe(Disposable d) {
-                                            }
+                            public void handleMessage(Message msg) {
+                                super.handleMessage(msg);
+                                switch (msg.what) {
+                                    case 1:
+                                        Bundle bundle = msg.getData();
+                                        if(null != bundle){
+                                            list = bundle.getStringArrayList("resultImagePath");
+                                            Log.d("xxx","获取到的图片长度为"+list.size()+"======"+list.toString());
+                                            Log.d("xxx","走到这里了");
 
-                                            @Override
-                                            public void onSuccess(SaveMsgSuccessBean s) {
-                                                String imgAddress = s.getImgAddress();
-                                                //调用发布动态接口
+                                            if(list.size()>1){
+                                                for (int i =0;i<list.size();i++){
+                                                    imgAddress += list.get(i)+",";
+                                                }
+                                                String s = imgAddress.substring(0, imgAddress.length() - 1);
+                                                doOkHttp(userid, "", s, null, null, whocansee, 2, 1, "");
+                                            }
+                                            if(list.size()==1){
+                                                imgAddress = list.get(0);
+
                                                 doOkHttp(userid, "", imgAddress, null, null, whocansee, 2, 1, "");
                                             }
-                                            @Override
-                                            public void onError(Throwable e) {
-                                                Log.d("xxx", "错误为" + e.getMessage().toString());
-                                            }
-                                        });
+
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
-                        }).start();
+                        };
+
                     }
                     if (content.length()==0 && select1.size() > 0) {
                         //纯视频
                         //类型为3
+                        getUpimg(filePath,select1.size(),handler);
 
-                        Toast.makeText(this, "纯视频不带位置", Toast.LENGTH_SHORT).show();
-
-                        list = new ArrayList<>();
-                        file = new File(filePath);
-                        list.add(file);
-                        requsetBody = getVideoRequsetBody(list);
-                        new Thread(new Runnable() {
+                        handler = new Handler() {
                             @Override
-                            public void run() {
-                                NetUtils.getInstance().getApis()
-                                        .douploadRes("http://192.168.10.104:8089/hgfile/UploadServlet", requsetBody)
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(new SingleObserver<SaveMsgSuccessBean>() {
-                                            @Override
-                                            public void onSubscribe(Disposable d) {
+                            public void handleMessage(Message msg) {
+                                super.handleMessage(msg);
+                                switch (msg.what) {
+                                    case 1:
+                                        Bundle bundle = msg.getData();
+                                        if(null != bundle){
+                                            list = bundle.getStringArrayList("resultImagePath");
+                                            Log.d("xxx",list.size()+"======"+list.toString());
+
+                                            if(list.size()>2){
+                                                for (int i =0;i<list.size();i++){
+                                                    imgAddress = list.get(i)+",";
+                                                }
+                                            }else{
+                                                imgAddress = list.get(0);
                                             }
 
-                                            @Override
-                                            public void onSuccess(SaveMsgSuccessBean s) {
-                                                String imgAddress = s.getImgAddress();
-                                                doOkHttp(userid, "", imgAddress, null, null, whocansee, 3, 1, "");
-                                            }
-
-                                            @Override
-                                            public void onError(Throwable e) {
-                                                Log.d("xxx",e.getMessage().toString());
-                                            }
-                                        });
+                                            //调用发布动态接口
+                                            doOkHttp(userid, "", imgAddress, null, null, whocansee, 3, 1, "");
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
-                        }).start();
+                        };
+
                     }
                 }
+
                 break;
             //选择图片或视频
             case R.id.rl_selectedimg:
@@ -1425,7 +1441,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                 //装被选中的文件
                 Intent intent = new Intent(DevelopmentDynamicActivity.this, PickerActivity.class);
                 intent.putExtra(PickerConfig.SELECT_MODE, PickerConfig.PICKER_VIDEO);//设置选择类型，默认是图片和视频可一起选择(非必填参数)
-                long maxSize = 209715200L;//long long long long类型
+                long maxSize = 104857600;//long long long long类型
                 intent.putExtra(PickerConfig.MAX_SELECT_SIZE, maxSize);
                 intent.putExtra(PickerConfig.MAX_SELECT_COUNT, 1); //最大选择数量，默认40（非必填参数）
                 ArrayList<Media> defaultSelect = select1;//可以设置默认选中的视频，比如把select刚刚选择的list设置成默认的。
