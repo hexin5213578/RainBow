@@ -61,7 +61,9 @@ import com.YiDian.RainBow.dynamic.bean.WriteDevelopmentBean;
 import com.YiDian.RainBow.feedback.activity.PathUtil;
 import com.YiDian.RainBow.main.fragment.activity.SimplePlayerActivity;
 import com.YiDian.RainBow.remember.bean.RememberPwdBean;
+import com.YiDian.RainBow.utils.Base64;
 import com.YiDian.RainBow.utils.KeyBoardUtils;
+import com.YiDian.RainBow.utils.MD5Utils;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -97,6 +99,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -307,7 +310,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
         });
 
         //获取七牛云uploadToken
-        NetUtils.getInstance().getApis().getUpdateToken("http://192.168.10.101:8089/img/uploadToken")
+        NetUtils.getInstance().getApis().getUpdateToken()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SaveMsgSuccessBean>() {
@@ -494,11 +497,54 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
             public void run() {
                 // 图片上传到七牛 重用 uploadManager。一般地，只需要创建一个 uploadManager 对象
                 uploadManager = new UploadManager();
-
-               SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
                 // 设置名字
-                String key = serverPath+imagePath;
+                String s = MD5Utils.string2Md5_16(imagePath);
+                String key = serverPath+s+sdf.format(new Date())+".jpg";
+                uploadManager.put(imagePath, key, upToken,
+                        new UpCompletionHandler() {
+                            @Override
+                            public void complete(String key, ResponseInfo info,
+                                                 JSONObject res) {
+                                // res 包含hash、key等信息，具体字段取决于上传策略的设置。
+                                Log.i("xxx", key + ",\r\n " + info + ",\r\n "
+                                        + res);
+                                try {
+                                    // 七牛返回的文件名
+                                    String upimg = res.getString("key");
+                                    upimg_key_list.add(upimg);//将七牛返回图片的文件名添加到list集合中
 
+                                    if(upimg_key_list.size() == picSize){
+                                        Bundle bundle = new Bundle();
+                                        bundle.putStringArrayList("resultImagePath",upimg_key_list);
+                                        Message message = new Message();
+                                        message.what = 1;
+                                        message.setData(bundle);
+                                        handler.sendMessage(message);
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Log.d("xxx",e.getMessage());
+                                }
+                            }
+                        }, null);
+            }
+        }.start();
+    }
+
+
+    public void getUpVideo(String imagePath,int picSize,Handler mHandler){
+
+        Log.d("xxx","到这里了");
+        upimg_key_list = new ArrayList<String>();
+        new Thread() {
+            public void run() {
+                // 图片上传到七牛 重用 uploadManager。一般地，只需要创建一个 uploadManager 对象
+                uploadManager = new UploadManager();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+                // 设置名字
+                String s = MD5Utils.string2Md5_16(imagePath);
+                String key = serverPath+s+sdf.format(new Date())+".mp4";
                 uploadManager.put(imagePath, key, upToken,
                         new UpCompletionHandler() {
                             @Override
@@ -586,15 +632,10 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                                         list = bundle.getStringArrayList("resultImagePath");
                                                         Log.d("xxx",list.size()+"======"+list.toString());
 
-                                                        if(upimg_key_list.size()>2){
-                                                            for (int i =0;i<upimg_key_list.size();i++){
-                                                                imgAddress = upimg_key_list.get(i)+",";
-                                                            }
-                                                        }else{
-                                                            imgAddress = upimg_key_list.get(0);
-                                                        }
+                                                        String s = list.toString().substring(1, list.toString().length() - 1);
 
-                                                        doOkHttpCaogao(userid, content, imgAddress, longitude, latitude, whocansee, 21, 0, district);
+
+                                                        doOkHttpCaogao(userid, content, s, longitude, latitude, whocansee, 21, 0, district);
                                                     }
                                                     break;
                                                 default:
@@ -609,7 +650,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                     //文本加视频
                                     //类型为31
 
-                                    getUpimg(filePath,select1.size(),handler);
+                                    getUpVideo(filePath,select1.size(),handler);
 
                                     handler = new Handler() {
                                         @Override
@@ -622,16 +663,11 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                                         list = bundle.getStringArrayList("resultImagePath");
                                                         Log.d("xxx",list.size()+"======"+list.toString());
 
-                                                        if(upimg_key_list.size()>2){
-                                                            for (int i =0;i<upimg_key_list.size();i++){
-                                                                imgAddress = upimg_key_list.get(i)+",";
-                                                            }
-                                                        }else{
-                                                            imgAddress = upimg_key_list.get(0);
-                                                        }
+                                                        String s = list.toString().substring(1, list.toString().length() - 1);
+
 
                                                         //调用发布动态接口
-                                                        doOkHttpCaogao(userid, content, imgAddress, longitude, latitude, whocansee, 31, 0, district);
+                                                        doOkHttpCaogao(userid, content, s, longitude, latitude, whocansee, 31, 0, district);
                                                     }
                                                     break;
                                                 default:
@@ -639,10 +675,6 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                             }
                                         }
                                     };
-
-
-
-
                                 }
                                 if (content.length()==0 && select.size() > 0) {
                                     //纯图片
@@ -665,16 +697,10 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                                         list = bundle.getStringArrayList("resultImagePath");
                                                         Log.d("xxx",list.size()+"======"+list.toString());
 
-                                                        if(upimg_key_list.size()>2){
-                                                            for (int i =0;i<upimg_key_list.size();i++){
-                                                                imgAddress = upimg_key_list.get(i)+",";
-                                                            }
-                                                        }else{
-                                                            imgAddress = upimg_key_list.get(0);
-                                                        }
+                                                        String s = list.toString().substring(1, list.toString().length() - 1);
 
                                                         //调用发布动态接口
-                                                        doOkHttpCaogao(userid, "", imgAddress, longitude, latitude, whocansee, 2, 0, district);
+                                                        doOkHttpCaogao(userid, "", s, longitude, latitude, whocansee, 2, 0, district);
                                                     }
                                                     break;
                                                 default:
@@ -689,7 +715,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                 if (content.length()==0 && select1.size() > 0) {
                                     //纯视频
                                     //类型为3
-                                    getUpimg(filePath,select1.size(),handler);
+                                    getUpVideo(filePath,select1.size(),handler);
 
                                     handler = new Handler() {
                                         @Override
@@ -702,16 +728,11 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                                         list = bundle.getStringArrayList("resultImagePath");
                                                         Log.d("xxx",list.size()+"======"+list.toString());
 
-                                                        if(upimg_key_list.size()>2){
-                                                            for (int i =0;i<upimg_key_list.size();i++){
-                                                                imgAddress = upimg_key_list.get(i)+",";
-                                                            }
-                                                        }else{
-                                                            imgAddress = upimg_key_list.get(0);
-                                                        }
+                                                        String s = list.toString().substring(1, list.toString().length() - 1);
+
 
                                                         //调用发布动态接口
-                                                        doOkHttpCaogao(userid, "", imgAddress, longitude, latitude, whocansee, 3, 0, district);
+                                                        doOkHttpCaogao(userid, "", s, longitude, latitude, whocansee, 3, 0, district);
                                                     }
                                                     break;
                                                 default:
@@ -749,15 +770,9 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                                         list = bundle.getStringArrayList("resultImagePath");
                                                         Log.d("xxx",list.size()+"======"+list.toString());
 
-                                                        if(upimg_key_list.size()>2){
-                                                            for (int i =0;i<upimg_key_list.size();i++){
-                                                                imgAddress = upimg_key_list.get(i)+",";
-                                                            }
-                                                        }else{
-                                                            imgAddress = upimg_key_list.get(0);
-                                                        }
+                                                        String s = list.toString().substring(1, list.toString().length() - 1);
 
-                                                        doOkHttpCaogao(userid, content, imgAddress, null, null, whocansee, 21, 0, "");
+                                                        doOkHttpCaogao(userid, content, s, null, null, whocansee, 21, 0, "");
                                                     }
                                                     break;
                                                 default:
@@ -770,7 +785,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                 if (content.length() > 0 && select1.size()>0) {
                                     //文本加视频
                                     //类型为31
-                                    getUpimg(filePath,select1.size(),handler);
+                                    getUpVideo(filePath,select1.size(),handler);
 
 
                                     handler = new Handler() {
@@ -784,15 +799,10 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                                         list = bundle.getStringArrayList("resultImagePath");
                                                         Log.d("xxx",list.size()+"======"+list.toString());
 
-                                                        if(upimg_key_list.size()>2){
-                                                            for (int i =0;i<upimg_key_list.size();i++){
-                                                                imgAddress = upimg_key_list.get(i)+",";
-                                                            }
-                                                        }else{
-                                                            imgAddress = upimg_key_list.get(0);
-                                                        }
+                                                        String s = list.toString().substring(1, list.toString().length() - 1);
+
                                                         //调用发布动态接口
-                                                        doOkHttpCaogao(userid, content, imgAddress, null, null, whocansee, 31, 0, "");
+                                                        doOkHttpCaogao(userid, content, s, null, null, whocansee, 31, 0, "");
                                                     }
                                                     break;
                                                 default:
@@ -823,15 +833,10 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                                         list = bundle.getStringArrayList("resultImagePath");
                                                         Log.d("xxx",list.size()+"======"+list.toString());
 
-                                                        if(upimg_key_list.size()>2){
-                                                            for (int i =0;i<upimg_key_list.size();i++){
-                                                                imgAddress = upimg_key_list.get(i)+",";
-                                                            }
-                                                        }else{
-                                                            imgAddress = upimg_key_list.get(0);
-                                                        }
+                                                        String s = list.toString().substring(1, list.toString().length() - 1);
 
-                                                        doOkHttpCaogao(userid, "", imgAddress, null, null, whocansee, 2, 0, "");
+
+                                                        doOkHttpCaogao(userid, "", s, null, null, whocansee, 2, 0, "");
                                                     }
                                                     break;
                                                 default:
@@ -845,8 +850,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                     //纯视频
                                     //类型为3
 
-                                    getUpimg(filePath,select1.size(),handler);
-
+                                    getUpVideo(filePath,select1.size(),handler);
 
                                     handler = new Handler() {
                                         @Override
@@ -859,15 +863,10 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                                         list = bundle.getStringArrayList("resultImagePath");
                                                         Log.d("xxx",list.size()+"======"+list.toString());
 
-                                                        if(upimg_key_list.size()>2){
-                                                            for (int i =0;i<upimg_key_list.size();i++){
-                                                                imgAddress = upimg_key_list.get(i)+",";
-                                                            }
-                                                        }else{
-                                                            imgAddress = upimg_key_list.get(0);
-                                                        }
+                                                        String s = list.toString().substring(1, list.toString().length() - 1);
+
                                                         //调用发布动态接口
-                                                        doOkHttpCaogao(userid, "", imgAddress, null, null, whocansee, 3, 0, "");
+                                                        doOkHttpCaogao(userid, "", s, null, null, whocansee, 3, 0, "");
                                                     }
                                                     break;
                                                 default:
@@ -943,15 +942,10 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                             list = bundle.getStringArrayList("resultImagePath");
                                             Log.d("xxx",list.size()+"======"+list.toString());
 
-                                            if(upimg_key_list.size()>2){
-                                                for (int i =0;i<upimg_key_list.size();i++){
-                                                    imgAddress = upimg_key_list.get(i)+",";
-                                                }
-                                            }else{
-                                                imgAddress = upimg_key_list.get(0);
-                                            }
+                                            String s = list.toString().substring(1, list.toString().length() - 1);
 
-                                            doOkHttp(userid, content, imgAddress, longitude, latitude, whocansee, 21, 1, district);
+
+                                            doOkHttp(userid, content, s, longitude, latitude, whocansee, 21, 1, district);
                                         }
                                         break;
                                     default:
@@ -966,7 +960,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                         //文本加视频
                         //类型为31
 
-                        getUpimg(filePath,select1.size(),handler);
+                        getUpVideo(filePath,select1.size(),handler);
 
                         handler = new Handler() {
                             @Override
@@ -979,16 +973,10 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                             list = bundle.getStringArrayList("resultImagePath");
                                             Log.d("xxx",list.size()+"======"+list.toString());
 
-                                            if(upimg_key_list.size()>2){
-                                                for (int i =0;i<upimg_key_list.size();i++){
-                                                    imgAddress = upimg_key_list.get(i)+",";
-                                                }
-                                            }else{
-                                                imgAddress = upimg_key_list.get(0);
-                                            }
+                                            String s = list.toString().substring(1, list.toString().length() - 1);
 
                                             //调用发布动态接口
-                                            doOkHttp(userid, content, imgAddress, longitude, latitude, whocansee, 31, 1, district);
+                                            doOkHttp(userid, content, s, longitude, latitude, whocansee, 31, 1, district);
                                         }
                                         break;
                                     default:
@@ -1017,15 +1005,10 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                             list = bundle.getStringArrayList("resultImagePath");
                                             Log.d("xxx",list.size()+"======"+list.toString());
 
-                                            if(upimg_key_list.size()>2){
-                                                for (int i =0;i<upimg_key_list.size();i++){
-                                                    imgAddress = upimg_key_list.get(i)+",";
-                                                }
-                                            }else{
-                                                imgAddress = upimg_key_list.get(0);
-                                            }
+                                            String s = list.toString().substring(1, list.toString().length() - 1);
+
                                             //调用发布动态接口
-                                            doOkHttp(userid, "", imgAddress, longitude, latitude, whocansee, 2, 1, district);
+                                            doOkHttp(userid, "", s, longitude, latitude, whocansee, 2, 1, district);
                                         }
                                         break;
                                     default:
@@ -1039,7 +1022,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                     if (content.length()==0 && select1.size() > 0) {
                         //纯视频
                         //类型为3
-                        getUpimg(filePath,select1.size(),handler);
+                        getUpVideo(filePath,select1.size(),handler);
 
                         handler = new Handler() {
                             @Override
@@ -1052,16 +1035,10 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                             list = bundle.getStringArrayList("resultImagePath");
                                             Log.d("xxx",list.size()+"======"+list.toString());
 
-                                            if(upimg_key_list.size()>2){
-                                                for (int i =0;i<upimg_key_list.size();i++){
-                                                    imgAddress = upimg_key_list.get(i)+",";
-                                                }
-                                            }else{
-                                                imgAddress = upimg_key_list.get(0);
-                                            }
+                                            String s = list.toString().substring(1, list.toString().length() - 1);
 
                                             //调用发布动态接口
-                                            doOkHttp(userid, "", imgAddress, longitude, latitude, whocansee, 3, 1, district);
+                                            doOkHttp(userid, "", s, longitude, latitude, whocansee, 3, 1, district);
                                         }
                                         break;
                                     default:
@@ -1096,15 +1073,9 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                             list = bundle.getStringArrayList("resultImagePath");
                                             Log.d("xxx",list.size()+"======"+list.toString());
 
-                                            if(upimg_key_list.size()>2){
-                                                for (int i =0;i<upimg_key_list.size();i++){
-                                                    imgAddress = upimg_key_list.get(i)+",";
-                                                }
-                                            }else{
-                                                imgAddress = upimg_key_list.get(0);
-                                            }
+                                            String s = list.toString().substring(1, list.toString().length() - 1);
 
-                                            doOkHttp(userid, content, imgAddress, null, null, whocansee, 21, 1, "");
+                                            doOkHttp(userid, content, s, null, null, whocansee, 21, 1, "");
                                         }
                                         break;
                                     default:
@@ -1117,9 +1088,10 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                     if (content.length() > 0 && select1.size()>0) {
                         //文本加视频
                         //类型为31
-                        getUpimg(filePath,select1.size(),handler);
+                        getUpVideo(filePath,select1.size(),handler);
 
                         handler = new Handler() {
+                            @SuppressLint("HandlerLeak")
                             @Override
                             public void handleMessage(Message msg) {
                                 super.handleMessage(msg);
@@ -1130,17 +1102,12 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                             list = bundle.getStringArrayList("resultImagePath");
                                             Log.d("xxx",list.size()+"======"+list.toString());
 
-                                            if(upimg_key_list.size()>2){
-                                                for (int i =0;i<upimg_key_list.size();i++){
-                                                    imgAddress = upimg_key_list.get(i)+",";
-                                                }
-                                            }else{
-                                                imgAddress = upimg_key_list.get(0);
-                                            }
+                                            String s = list.toString().substring(1, list.toString().length() - 1);
 
-                                            //调用发布动态接口
-                                            doOkHttp(userid, content, imgAddress, null, null, whocansee, 31, 1, "");
+                                            doOkHttp(userid, content, s, null, null, whocansee, 31, 1, "");
+
                                         }
+
                                         break;
                                     default:
                                         break;
@@ -1172,19 +1139,9 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                             Log.d("xxx","获取到的图片长度为"+list.size()+"======"+list.toString());
                                             Log.d("xxx","走到这里了");
 
-                                            if(list.size()>1){
-                                                for (int i =0;i<list.size();i++){
-                                                    imgAddress += list.get(i)+",";
-                                                }
-                                                String s = imgAddress.substring(0, imgAddress.length() - 1);
-                                                doOkHttp(userid, "", s, null, null, whocansee, 2, 1, "");
-                                            }
-                                            if(list.size()==1){
-                                                imgAddress = list.get(0);
+                                            String s = list.toString().substring(1, list.toString().length() - 1);
 
-                                                doOkHttp(userid, "", imgAddress, null, null, whocansee, 2, 1, "");
-                                            }
-
+                                            doOkHttp(userid, "", s, null, null, whocansee, 2, 1, "");
                                         }
                                         break;
                                     default:
@@ -1197,7 +1154,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                     if (content.length()==0 && select1.size() > 0) {
                         //纯视频
                         //类型为3
-                        getUpimg(filePath,select1.size(),handler);
+                        getUpVideo(filePath,select1.size(),handler);
 
                         handler = new Handler() {
                             @Override
@@ -1210,16 +1167,10 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                             list = bundle.getStringArrayList("resultImagePath");
                                             Log.d("xxx",list.size()+"======"+list.toString());
 
-                                            if(list.size()>2){
-                                                for (int i =0;i<list.size();i++){
-                                                    imgAddress = list.get(i)+",";
-                                                }
-                                            }else{
-                                                imgAddress = list.get(0);
-                                            }
+                                            String s = list.toString().substring(1, list.toString().length() - 1);
 
                                             //调用发布动态接口
-                                            doOkHttp(userid, "", imgAddress, null, null, whocansee, 3, 1, "");
+                                            doOkHttp(userid, "", s, null, null, whocansee, 3, 1, "");
                                         }
                                         break;
                                     default:

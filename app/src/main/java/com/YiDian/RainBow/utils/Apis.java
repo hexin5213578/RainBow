@@ -57,8 +57,8 @@ public interface Apis {
     Observable<RememberPwdBean> doRemeberPwd(@Query("password")String pwd,@Query("phoneNum")String phone);
 
     //获取UpdateToken
-    @GET()
-    Observable<SaveMsgSuccessBean> getUpdateToken(@Url String url);
+    @GET("img/uploadToken")
+    Observable<SaveMsgSuccessBean> getUpdateToken();
 
     //发布动态
     @POST("content/writeContent")
