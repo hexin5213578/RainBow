@@ -41,6 +41,7 @@ public class DevelogmentImgAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     @NonNull
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == 1) {

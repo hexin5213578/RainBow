@@ -66,23 +66,23 @@ public class MyDraftsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         SelectAllDraftsBean.ObjectBean.ListBean listBean = list.get(position);
         int imgType = listBean.getImgType();
-
-
+        //纯文本
         if (imgType == 1) {
 
         }
-
+        //纯图片
         if (imgType == 2) {
 
         }
-
+        //文本加图片
         if (imgType == 21) {
 
         }
+        //纯视频
         if (imgType == 3) {
 
         }
-
+        //文本加视频
         if (imgType == 31) {
 
         }
@@ -96,7 +96,7 @@ public class MyDraftsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public int getItemViewType(int position) {
         int imgType = list.get(position).getImgType();
-
+        //返回获取到的动态类型
         return imgType;
     }
 

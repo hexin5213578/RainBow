@@ -85,6 +85,7 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
         StatusBarUtil.setGradientColor(this, toolbar);
         StatusBarUtil.setDarkMode(this);
 
+
         //申请开启内存卡权限
         if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) && (CompleteMsgActivity.this.checkSelfPermission
                 (Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {

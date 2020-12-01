@@ -106,7 +106,6 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
         //加载圆角图
         Glide.with(this).load(R.mipmap.headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
 
-
     }
 
     @Override

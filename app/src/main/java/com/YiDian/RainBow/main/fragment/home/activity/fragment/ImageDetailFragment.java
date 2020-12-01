@@ -31,4 +31,5 @@ public class ImageDetailFragment extends Fragment {
         int index = ((NewDynamicImage) activity).getIndex();
     }
 
+
 }

@@ -41,6 +41,7 @@ public class FeedBackImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return new ViewHolder(view);
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Glide.with(context).load(list.get(position)).into(((ViewHolder) holder).ivImage);

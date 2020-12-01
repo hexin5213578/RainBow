@@ -45,6 +45,7 @@ public class SelectWhoCanSeeActivity extends BaseAvtivity {
         return R.layout.activity_select_who_cansee;
     }
 
+
     @Override
     protected void getData() {
         //设置状态栏颜色 跟状态栏字体颜色

@@ -40,6 +40,7 @@ public class FriendAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return new ViewHolder(view);
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ((ViewHolder)holder).checkSelect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

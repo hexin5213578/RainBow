@@ -2,6 +2,7 @@ package com.YiDian.RainBow.main.fragment.mine.activity;
 
 import android.Manifest;
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -100,6 +101,8 @@ public class MyQrCodeActivity extends BaseAvtivity implements View.OnClickListen
         return R.layout.activity_myqrcode;
     }
 
+
+    @SuppressLint("NewApi")
     @Override
     protected void getData() {
         //设置状态栏字体颜色及背景

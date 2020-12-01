@@ -61,7 +61,7 @@ public class MydraftActivity extends BaseAvtivity implements View.OnClickListene
         StatusBarUtil.setDarkMode(this);
 
         ivBack.setOnClickListener(this);
-
+        getData(page,pagesize);
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {

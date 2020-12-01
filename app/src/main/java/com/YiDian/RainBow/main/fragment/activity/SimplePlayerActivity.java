@@ -43,6 +43,7 @@ public class SimplePlayerActivity extends BaseAvtivity {
         url = intent.getStringExtra("url");
 
 
+
         viewPlayer.setUp(url, true, "");
 
         //增加封面
