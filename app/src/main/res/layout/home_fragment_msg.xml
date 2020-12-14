@@ -57,7 +57,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:id="@+id/iv_notice"
-                        android:src="@mipmap/tv"
+                        android:src="@mipmap/xitongnotice"
                         android:layout_marginLeft="@dimen/dp_17"
                         android:layout_height="@dimen/dp_40">
                     </ImageView>
@@ -65,7 +65,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_marginLeft="@dimen/dp_35"
-                        android:src="@mipmap/tv"
+                        android:src="@mipmap/fensinotice"
                         android:id="@+id/iv_buddy"
                         android:layout_toRightOf="@id/iv_notice"
                         android:layout_height="@dimen/dp_40">
@@ -74,7 +74,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_marginLeft="@dimen/dp_35"
-                        android:src="@mipmap/tv"
+                        android:src="@mipmap/pinglunnotice"
                         android:id="@+id/iv_comment"
                         android:layout_toRightOf="@id/iv_buddy"
                         android:layout_height="@dimen/dp_40">
@@ -83,7 +83,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_marginLeft="@dimen/dp_35"
-                        android:src="@mipmap/tv"
+                        android:src="@mipmap/dianzannotice"
                         android:id="@+id/iv_like"
                         android:layout_toRightOf="@id/iv_comment"
                         android:layout_height="@dimen/dp_40">

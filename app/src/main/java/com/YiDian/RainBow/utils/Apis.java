@@ -5,6 +5,7 @@ import com.YiDian.RainBow.dynamic.bean.SaveMsgSuccessBean;
 import com.YiDian.RainBow.dynamic.bean.WriteDevelopmentBean;
 import com.YiDian.RainBow.login.bean.ComPleteMsgBean;
 import com.YiDian.RainBow.login.bean.LoginBean;
+import com.YiDian.RainBow.main.fragment.home.bean.DianzanBean;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.SelectAllDraftsBean;
 import com.YiDian.RainBow.regist.bean.RegistBean;
@@ -26,7 +27,7 @@ import retrofit2.http.Url;
 public interface Apis {
     //最新动态
     @GET("content/getContentByTime")
-    Observable<NewDynamicBean> getNewDynamic(@Query("page")int page,@Query("pageSize")int pagesize);
+    Observable<NewDynamicBean> getNewDynamic(@Query("userId")int userid,@Query("page")int page,@Query("pageSize")int pagesize);
 
     //发送验证码
     @GET("user/sendSms")
@@ -68,5 +69,15 @@ public interface Apis {
     @GET("content/selectAllDrafts")
     Observable<SelectAllDraftsBean> doGetAllDraftsBy(@Query("userId")int userid,@Query("page") int page,@Query("pageSize")int pagesize);
 
+    //点赞
+    @POST("click/insertClick")
+    Observable<DianzanBean> doDianzan(@Query("clickBy")int id,@Query("clickType")int type,@Query("typeId")int comentId);
 
+    //取消点赞
+    @POST("click/delClick")
+    Observable<DianzanBean> doCancleDianzan(@Query("clickType")int type,@Query("typeId")int comentId,@Query("userId") int id);
+
+    //关注用户
+    /*@POST("fans/insertFans")
+    Observable<>*/
 }

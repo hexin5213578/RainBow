@@ -41,10 +41,10 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
     TextView tvIsRealname;
     @BindView(R.id.rl_shiming)
     RelativeLayout rlShiming;
-    @BindView(R.id.rl_yinsi)
-    RelativeLayout rlYinsi;
-    @BindView(R.id.rl_kefu)
-    RelativeLayout rlKefu;
+    @BindView(R.id.rl_hei)
+    RelativeLayout rlHei;
+    @BindView(R.id.rl_fankui)
+    RelativeLayout rlFankui;
     @BindView(R.id.rl_guanyu)
     RelativeLayout rlGuanyu;
     @BindView(R.id.tv_Memory)
@@ -72,8 +72,8 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
         ivBack.setOnClickListener(this);
         rlSafe.setOnClickListener(this);
         rlShiming.setOnClickListener(this);
-        rlYinsi.setOnClickListener(this);
-        rlKefu.setOnClickListener(this);
+        rlHei.setOnClickListener(this);
+        rlFankui.setOnClickListener(this);
         rlGuanyu.setOnClickListener(this);
         rlClean.setOnClickListener(this);
         rlUpdate.setOnClickListener(this);
@@ -122,12 +122,12 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
             case R.id.rl_shiming:
 
                 break;
-                //隐私设置
-            case R.id.rl_yinsi:
+                //黑名单
+            case R.id.rl_hei:
 
                 break;
-                //客服中心
-            case R.id.rl_kefu:
+                //反馈
+            case R.id.rl_fankui:
 
                 break;
                 //关于我们

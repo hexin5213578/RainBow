@@ -1,34 +1,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/dp_160"
-    android:layout_height="@dimen/dp_100"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:layout_centerInParent="true"
     android:layout_gravity="center"
-    android:background="@drawable/shape_dialog_bg"
     android:orientation="vertical">
 
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:id="@+id/rl1"
         android:layout_height="wrap_content">
         <ProgressBar
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dp_20"
             android:id="@+id/pb_load"
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
             android:indeterminateDrawable="@drawable/progressbar" />
-
-        <TextView
-            android:id="@+id/tv_load_dialog"
-            android:layout_width="wrap_content"
-            android:layout_below="@id/pb_load"
-            android:layout_centerHorizontal="true"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_5"
-            android:layout_gravity="center_horizontal"
-            android:text="正在处理..."
-            android:textColor="@color/white"
-            android:textSize="12sp" />
     </RelativeLayout>
 
 

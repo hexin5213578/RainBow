@@ -35,7 +35,7 @@
             android:layout_height="@dimen/dp_15">
             <ImageView
                 android:layout_width="@dimen/dp_11"
-                android:src="@mipmap/fire"
+                android:src="@mipmap/balance"
                 android:layout_marginLeft="@dimen/dp_5"
                 android:layout_gravity="center"
                 android:layout_height="@dimen/dp_11">
@@ -64,7 +64,7 @@
             android:layout_height="@dimen/dp_15">
             <ImageView
                 android:layout_width="@dimen/dp_11"
-                android:src="@mipmap/fire"
+                android:src="@mipmap/tequanrenzheng"
                 android:layout_gravity="center"
                 android:layout_height="@dimen/dp_11">
             </ImageView>
@@ -331,7 +331,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:background="@drawable/mine_down_all_bg"
-        android:layout_marginTop="@dimen/dp_221"
+        android:layout_marginTop="@dimen/dp_215"
         android:layout_height="match_parent">
         <TextView
             android:layout_width="match_parent"
@@ -443,7 +443,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_marginTop="@dimen/dp_13"
-                    android:text="邀请好友"
+                    android:text="好友列表"
                     android:textSize="@dimen/sp_12"
                     android:textColor="#666666"
                     android:layout_height="wrap_content">
@@ -554,6 +554,5 @@
                 </TextView>
             </LinearLayout>
         </LinearLayout>
-
     </RelativeLayout>
 </RelativeLayout>

@@ -1,7 +1,7 @@
 /*
  * This program(except FFT and Bessel function part) is distributed under
  * LGPL. See LGPL.txt for details. But, if you make a new program with derived
- * code from this program,I strongly wish that my name and derived code are
+ * code from this program,I strongly wish that my_location name and derived code are
  * indicated explicitly.
  */
 

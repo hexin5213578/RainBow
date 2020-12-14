@@ -96,15 +96,4 @@ public class NewDynamicImage extends FragmentActivity {
         });
 
     }
-
-
-    //宿主activity中的getTitles()方法
-    public List<String> getUrl() {
-        return urls;
-    }
-    //宿主activity中的getTitles()方法
-    public int getIndex() {
-        return index;
-    }
-
 }

@@ -122,12 +122,12 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:id="@+id/rl_yinsi"
+            android:id="@+id/rl_hei"
             android:layout_below="@id/v2"
             android:layout_height="@dimen/dp_38">
             <TextView
                 android:layout_width="wrap_content"
-                android:text="隐私设置"
+                android:text="黑名单"
                 android:textSize="@dimen/sp_15"
                 android:textColor="@color/color_333333"
                 android:layout_centerVertical="true"
@@ -148,19 +148,19 @@
             android:layout_width="match_parent"
             android:background="#f2f2f2"
             android:id="@+id/v3"
-            android:layout_below="@id/rl_yinsi"
+            android:layout_below="@id/rl_hei"
             android:layout_height="@dimen/dp_1">
         </View>
 
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:id="@+id/rl_kefu"
+            android:id="@+id/rl_fankui"
             android:layout_below="@id/v3"
             android:layout_height="@dimen/dp_38">
             <TextView
                 android:layout_width="wrap_content"
-                android:text="客服中心"
+                android:text="意见反馈"
                 android:textSize="@dimen/sp_15"
                 android:textColor="@color/color_333333"
                 android:layout_centerVertical="true"
@@ -181,7 +181,7 @@
             android:layout_width="match_parent"
             android:background="#f2f2f2"
             android:id="@+id/v4"
-            android:layout_below="@id/rl_kefu"
+            android:layout_below="@id/rl_fankui"
             android:layout_height="@dimen/dp_1">
         </View>
 

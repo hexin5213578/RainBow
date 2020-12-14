@@ -14,7 +14,7 @@ import androidx.viewpager.widget.ViewPager;
  * ViewGroups which make use of onInterceptTouchEvent throw a lot of
  * IllegalArgumentException: pointerIndex out of range.
  * <p/>
- * There's not much I can do in my code for now, but we can mask the result by
+ * There's not much I can do in my_location code for now, but we can mask the result by
  * just catching the problem and ignoring it.
  *
  * @author Chris Banes

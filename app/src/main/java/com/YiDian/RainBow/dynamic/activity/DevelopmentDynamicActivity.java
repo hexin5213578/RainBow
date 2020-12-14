@@ -186,9 +186,8 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
     private UploadManager uploadManager;
     private String upToken;
     private ArrayList<String> upimg_key_list;
-    private String imgAddress;
     private Handler handler;
-    private static final String serverPath = "http://qjvorl4f2.hn-bkt.clouddn.com/";
+    private static final String serverPath = "http://img.rianbow.cn/";
     @Override
     protected int getResId() {
         return R.layout.activity_development_dynamic;
@@ -500,7 +499,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
                 // 设置名字
                 String s = MD5Utils.string2Md5_16(imagePath);
-                String key = serverPath+s+sdf.format(new Date())+".jpg";
+                String key = s+sdf.format(new Date())+".jpg";
                 uploadManager.put(imagePath, key, upToken,
                         new UpCompletionHandler() {
                             @Override
@@ -512,7 +511,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                 try {
                                     // 七牛返回的文件名
                                     String upimg = res.getString("key");
-                                    upimg_key_list.add(upimg);//将七牛返回图片的文件名添加到list集合中
+                                    upimg_key_list.add(serverPath+upimg);//将七牛返回图片的文件名添加到list集合中
 
                                     if(upimg_key_list.size() == picSize){
                                         Bundle bundle = new Bundle();
@@ -544,7 +543,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
                 // 设置名字
                 String s = MD5Utils.string2Md5_16(imagePath);
-                String key = serverPath+s+sdf.format(new Date())+".mp4";
+                String key = s+sdf.format(new Date())+".mp4";
                 uploadManager.put(imagePath, key, upToken,
                         new UpCompletionHandler() {
                             @Override
@@ -556,7 +555,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                 try {
                                     // 七牛返回的文件名
                                     String upimg = res.getString("key");
-                                    upimg_key_list.add(upimg);//将七牛返回图片的文件名添加到list集合中
+                                    upimg_key_list.add(serverPath+upimg);//将七牛返回图片的文件名添加到list集合中
 
                                     if(upimg_key_list.size() == picSize){
                                         Bundle bundle = new Bundle();

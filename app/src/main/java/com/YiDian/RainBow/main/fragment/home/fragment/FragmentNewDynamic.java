@@ -3,6 +3,8 @@ package com.YiDian.RainBow.main.fragment.home.fragment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,29 +13,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
-import com.YiDian.RainBow.custom.image.NineGridLayout;
-import com.YiDian.RainBow.custom.image.NineGridTestLayout;
 import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.utils.NetUtils;
-import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.container.AliHeader;
-import com.liaoinstan.springview.container.DefaultFooter;
-import com.liaoinstan.springview.container.DefaultHeader;
-import com.liaoinstan.springview.container.MeituanFooter;
-import com.liaoinstan.springview.container.MeituanHeader;
 import com.liaoinstan.springview.widget.SpringView;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
 import butterknife.BindView;
 import io.reactivex.Observer;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -45,9 +35,17 @@ public class FragmentNewDynamic extends BaseFragment {
     RecyclerView rcNewDynamic;
     @BindView(R.id.sv)
     SpringView sv;
-    int count = 10;
+    int page = 1;
+    int count = 15;
+    @BindView(R.id.no_data)
+    RelativeLayout noData;
+    @BindView(R.id.bt_reload)
+    Button btReload;
+    @BindView(R.id.rl_nonet)
+    RelativeLayout rlNonet;
     private NewDynamicAdapter newDynamicAdapter;
     private LinearLayoutManager linearLayoutManager;
+    int id = 1030;
 
     @Override
     protected void getid(View view) {
@@ -66,10 +64,7 @@ public class FragmentNewDynamic extends BaseFragment {
 
     @Override
     protected void getData() {
-        getNew(1, 10);
-
-
-
+        getNew(page, count);
         //下拉刷新下拉加载
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
@@ -77,9 +72,9 @@ public class FragmentNewDynamic extends BaseFragment {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        page = 1;
                         sv.onFinishFreshAndLoad();
-                        getNew(1, 10);
-                        count = 10;
+                        getNew(page, count);
                         GSYVideoManager.releaseAllVideos();
                     }
                 }, 1000);
@@ -90,9 +85,9 @@ public class FragmentNewDynamic extends BaseFragment {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        page++;
                         sv.onFinishFreshAndLoad();
-                        count += 10;
-                        getNew(1, count);
+                        getNew(page, count);
                     }
                 }, 1000);
             }
@@ -101,7 +96,7 @@ public class FragmentNewDynamic extends BaseFragment {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if(newState==RecyclerView.SCROLL_STATE_IDLE){
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
 
                 }
             }
@@ -112,11 +107,27 @@ public class FragmentNewDynamic extends BaseFragment {
                 GSYVideoManager.releaseAllVideos();
             }
         });
+        //判断是否有网 有网加载数据 无网展示缺省页
+        if(NetWork(getContext())){
+            sv.setVisibility(View.VISIBLE);
+            rlNonet.setVisibility(View.GONE);
+        }else{
+            rlNonet.setVisibility(View.VISIBLE);
+            sv.setVisibility(View.GONE);
+        }
+        btReload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //重新执行加载方法
+                getData();
+            }
+        });
     }
 
     public void getNew(int page, int count) {
+        showDialog();
         //获取最新动态
-        NetUtils.getInstance().getApis().getNewDynamic(page, count)
+        NetUtils.getInstance().getApis().getNewDynamic(id, page, count)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<NewDynamicBean>() {
@@ -129,20 +140,27 @@ public class FragmentNewDynamic extends BaseFragment {
 
                     @Override
                     public void onNext(NewDynamicBean newDynamicBean) {
+                        hideDialog();
                         NewDynamicBean.ObjectBean object = newDynamicBean.getObject();
                         List<NewDynamicBean.ObjectBean.ListBean> list = object.getList();
-                        if(list.size()>0 && list!=null){
+                        if (list.size() > 0 && list != null) {
+
+                            sv.setVisibility(View.VISIBLE);
+                            noData.setVisibility(View.GONE);
+
                             sv.setHeader(new AliHeader(getContext()));
                             //创建最新动态适配器
                             linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
                             rcNewDynamic.setLayoutManager(linearLayoutManager);
-                            newDynamicAdapter = new NewDynamicAdapter(getContext(), list);
-                            //rcNewDynamic.setAdapter(newDynamicAdapter);
+                            newDynamicAdapter = new NewDynamicAdapter(getActivity(), list);
+                            rcNewDynamic.setAdapter(newDynamicAdapter);
+                        } else {
+                            sv.setVisibility(View.GONE);
+                            noData.setVisibility(View.VISIBLE);
                         }
 
-                        if(list.size()>10){
+                        if (list.size() > 14) {
                             sv.setHeader(new AliHeader(getContext()));
-
                         }
 
                     }
@@ -158,6 +176,7 @@ public class FragmentNewDynamic extends BaseFragment {
                     }
                 });
     }
+
     @Override
     public void onPause() {
         super.onPause();

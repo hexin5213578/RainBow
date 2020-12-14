@@ -2,6 +2,8 @@ package com.YiDian.RainBow.base;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.YiDian.RainBow.R;
+import com.YiDian.RainBow.custom.progress.Loading_view;
 import com.bumptech.glide.Glide;
 
 import androidx.annotation.NonNull;
@@ -27,7 +30,7 @@ import butterknife.Unbinder;
 public abstract class BaseFragment<P extends BasePresenter> extends Fragment implements BaseView {
     private P presenter;
     private Unbinder bind;
-    Dialog mLoadingDialog;
+    private Loading_view loading_view;
     public boolean mViewInflateFinished;
     private View view;
 
@@ -46,24 +49,17 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
         super.onViewCreated(view, savedInstanceState);
         getData();
     }
+    // 展示loading圈
     public void showDialog() {
-        if (mLoadingDialog == null) {
-            mLoadingDialog = new Dialog(getActivity());
-            mLoadingDialog.setCancelable(false);
-            View v = View.inflate(getContext(), R.layout.dialog_loading, null);
-            ImageView iv = v.findViewById(R.id.iv_loading);
-            Glide.with(App.getContext()).asGif().load(R.mipmap.ic_launcher).into(iv);
-
-            mLoadingDialog.addContentView(v,
-                    new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT));
+        if(loading_view==null){
+            loading_view = new Loading_view(getContext(), R.style.CustomDialog);
         }
-        mLoadingDialog.show();
-
+        loading_view.show();
     }
+    //  隐藏loading圈
     public void hideDialog() {
-        if (mLoadingDialog != null && mLoadingDialog.isShowing()) {
-            mLoadingDialog.dismiss();
+        if (loading_view != null && loading_view.isShowing()) {
+            loading_view.dismiss();
         }
     }
 
@@ -103,5 +99,14 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
         if (getUserVisibleHint()) {
             getData();
         }
+    }
+    //判断网络状态
+    public boolean NetWork(Context context){
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
+        if(activeNetworkInfo!=null){
+            return true;
+        }
+        return false;
     }
 }

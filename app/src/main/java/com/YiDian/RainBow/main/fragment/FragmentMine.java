@@ -122,11 +122,8 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void getData() {
-
-
         //设置状态栏颜色与字体颜色
         StatusBarUtil.setDarkMode(getActivity());
-
 
         llMyMoney.setOnClickListener(this);
         ivQrCode.setOnClickListener(this);

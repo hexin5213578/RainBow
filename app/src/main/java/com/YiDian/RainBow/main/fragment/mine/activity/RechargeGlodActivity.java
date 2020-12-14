@@ -21,6 +21,7 @@ import com.leaf.library.StatusBarUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+//充值金币
 public class RechargeGlodActivity extends BaseAvtivity implements View.OnClickListener {
     @BindView(R.id.toolbar)
     Toolbar toolbar;

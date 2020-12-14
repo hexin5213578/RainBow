@@ -33,7 +33,7 @@
                 android:layout_height="@dimen/dp_70">
                 <ImageView
                     android:layout_width="@dimen/dp_45"
-                    android:src="@mipmap/headimg"
+                    android:src="@mipmap/haoyou"
                     android:layout_height="@dimen/dp_45">
                 </ImageView>
                 <TextView
@@ -55,7 +55,7 @@
                 android:layout_height="@dimen/dp_70">
                 <ImageView
                     android:layout_width="@dimen/dp_45"
-                    android:src="@mipmap/headimg"
+                    android:src="@mipmap/shareqq"
                     android:layout_gravity="center"
                     android:layout_height="@dimen/dp_45">
                 </ImageView>
@@ -78,7 +78,7 @@
                 <ImageView
                     android:layout_width="@dimen/dp_45"
                     android:layout_gravity="right"
-                    android:src="@mipmap/headimg"
+                    android:src="@mipmap/qqzone"
                     android:layout_height="@dimen/dp_45">
                 </ImageView>
                 <TextView
@@ -111,7 +111,7 @@
                 android:layout_height="@dimen/dp_70">
                 <ImageView
                     android:layout_width="@dimen/dp_45"
-                    android:src="@mipmap/headimg"
+                    android:src="@mipmap/sharewechat"
                     android:layout_height="@dimen/dp_45">
                 </ImageView>
                 <TextView
@@ -133,7 +133,7 @@
                 android:layout_height="@dimen/dp_70">
                 <ImageView
                     android:layout_width="@dimen/dp_45"
-                    android:src="@mipmap/headimg"
+                    android:src="@mipmap/pengyouquan"
                     android:layout_gravity="center"
                     android:layout_height="@dimen/dp_45">
                 </ImageView>

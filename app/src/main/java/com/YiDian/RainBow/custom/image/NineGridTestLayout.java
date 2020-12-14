@@ -112,7 +112,5 @@ public class NineGridTestLayout extends NineGridLayout {
         intent.putExtra("index",i);
         intent.putStringArrayListExtra("img", (ArrayList<String>) urlList);
         App.getContext().startActivity(intent);
-
-
     }
 }

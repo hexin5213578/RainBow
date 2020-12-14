@@ -96,7 +96,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
             //给每个RadioButton加入drawable限制边距控制显示大小
             Drawable[] drawables = rb.getCompoundDrawables();
             //获取drawables
-            Rect rt = new Rect(0, 0, 70, 70);
+            Rect rt = new Rect(0, 0, 100, 70);
             //定义一个Rect边界
             drawables[1].setBounds(rt);
 
