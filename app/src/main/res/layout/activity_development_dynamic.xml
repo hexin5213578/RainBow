@@ -171,9 +171,9 @@
                 <ImageView
                     android:layout_width="@dimen/dp_8"
                     android:src="@mipmap/my_location"
-                    android:layout_marginTop="@dimen/dp_5"
+                    android:layout_centerVertical="true"
                     android:id="@+id/iv_tion"
-                    android:layout_marginLeft="@dimen/dp_5"
+                    android:layout_marginLeft="@dimen/dp_10"
                     android:layout_height="@dimen/dp_10">
                 </ImageView>
                 <TextView

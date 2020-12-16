@@ -159,10 +159,10 @@ dependencies {
 
     implementation 'com.shuyu:gsyVideoPlayer-java:7.1.6'
 
-//是否需要ExoPlayer模式
+    //是否需要ExoPlayer模式
     implementation 'com.shuyu:GSYVideoPlayer-exo2:7.1.6'
 
-//根据你的需求ijk模式的so
+    //根据你的需求ijk模式的so
     implementation 'com.shuyu:gsyVideoPlayer-armv5:7.1.6'
     implementation 'com.shuyu:gsyVideoPlayer-armv7a:7.1.6'
     implementation 'com.shuyu:gsyVideoPlayer-arm64:7.1.6'

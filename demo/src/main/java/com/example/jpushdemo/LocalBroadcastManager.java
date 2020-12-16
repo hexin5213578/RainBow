@@ -136,7 +136,7 @@ public final class LocalBroadcastManager {
                 for (i = 0; i < entries.size(); ++i) {
                     ReceiverRecord receiver = (ReceiverRecord) entries.get(i);
                     if (debug) {
-                        Logger.v("LocalBroadcastManager", "Matching against filter " + receiver.filter);
+                        Logger.v("LocalBroadcastManager", "Matching against buddy " + receiver.filter);
                     }
 
                     if (receiver.broadcasting) {
@@ -254,7 +254,7 @@ public final class LocalBroadcastManager {
             StringBuilder builder = new StringBuilder(128);
             builder.append("Receiver{");
             builder.append(this.receiver);
-            builder.append(" filter=");
+            builder.append(" buddy=");
             builder.append(this.filter);
             builder.append("}");
             return builder.toString();

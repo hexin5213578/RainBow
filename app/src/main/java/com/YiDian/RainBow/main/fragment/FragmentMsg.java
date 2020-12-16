@@ -3,6 +3,7 @@ package com.YiDian.RainBow.main.fragment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
@@ -34,7 +35,7 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.iv_my_buddy)
-    ImageView ivMyBuddy;
+    RelativeLayout ivMyBuddy;
     @BindView(R.id.iv_notice)
     ImageView ivNotice;
     @BindView(R.id.iv_buddy)
@@ -79,9 +80,6 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
 
         //测试聊天记录
         List<String> list = new ArrayList<>();
-        list.add("何梦洋");
-        list.add("何梦洋");
-        list.add("何梦洋");
         list.add("何梦洋");
         list.add("何梦洋");
         list.add("何梦洋");

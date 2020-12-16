@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,13 +14,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
+import com.YiDian.RainBow.utils.KeyBoardUtils;
 import com.YiDian.RainBow.utils.NetUtils;
+import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.container.AliHeader;
 import com.liaoinstan.springview.widget.SpringView;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -36,7 +45,7 @@ public class FragmentNewDynamic extends BaseFragment {
     @BindView(R.id.sv)
     SpringView sv;
     int page = 1;
-    int count = 15;
+    int count = 5;
     @BindView(R.id.no_data)
     RelativeLayout noData;
     @BindView(R.id.bt_reload)
@@ -45,7 +54,8 @@ public class FragmentNewDynamic extends BaseFragment {
     RelativeLayout rlNonet;
     private NewDynamicAdapter newDynamicAdapter;
     private LinearLayoutManager linearLayoutManager;
-    int id = 1030;
+    int id;
+    private List<NewDynamicBean.ObjectBean.ListBean> alllist;
 
     @Override
     protected void getid(View view) {
@@ -64,6 +74,14 @@ public class FragmentNewDynamic extends BaseFragment {
 
     @Override
     protected void getData() {
+        alllist = new ArrayList<>();
+        id = Integer.valueOf(Common.getUserId());
+
+        KeyBoardUtils.closeKeyboard(getActivity());
+
+        sv.setVisibility(View.GONE);
+        noData.setVisibility(View.VISIBLE);
+
         getNew(page, count);
         //下拉刷新下拉加载
         sv.setListener(new SpringView.OnFreshListener() {
@@ -72,6 +90,7 @@ public class FragmentNewDynamic extends BaseFragment {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        alllist.clear();
                         page = 1;
                         sv.onFinishFreshAndLoad();
                         getNew(page, count);
@@ -140,11 +159,11 @@ public class FragmentNewDynamic extends BaseFragment {
 
                     @Override
                     public void onNext(NewDynamicBean newDynamicBean) {
-                        hideDialog();
                         NewDynamicBean.ObjectBean object = newDynamicBean.getObject();
                         List<NewDynamicBean.ObjectBean.ListBean> list = object.getList();
                         if (list.size() > 0 && list != null) {
 
+                            alllist.addAll(list);
                             sv.setVisibility(View.VISIBLE);
                             noData.setVisibility(View.GONE);
 
@@ -152,15 +171,27 @@ public class FragmentNewDynamic extends BaseFragment {
                             //创建最新动态适配器
                             linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
                             rcNewDynamic.setLayoutManager(linearLayoutManager);
-                            newDynamicAdapter = new NewDynamicAdapter(getActivity(), list);
+                            newDynamicAdapter = new NewDynamicAdapter(getActivity(), alllist);
                             rcNewDynamic.setAdapter(newDynamicAdapter);
+                            newDynamicAdapter.notifyDataSetChanged();
+                            hideDialog();
                         } else {
-                            sv.setVisibility(View.GONE);
-                            noData.setVisibility(View.VISIBLE);
-                        }
+                            if(alllist.size()>0 && alllist!=null){
+                                //创建最新动态适配器
+                                linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+                                rcNewDynamic.setLayoutManager(linearLayoutManager);
+                                newDynamicAdapter = new NewDynamicAdapter(getActivity(), alllist);
+                                rcNewDynamic.setAdapter(newDynamicAdapter);
 
-                        if (list.size() > 14) {
-                            sv.setHeader(new AliHeader(getContext()));
+                                hideDialog();
+                            }else{
+                                hideDialog();
+                                sv.setVisibility(View.GONE);
+                                noData.setVisibility(View.VISIBLE);
+                            }
+                        }
+                        if (list.size() > 4) {
+                            sv.setFooter(new AliFooter(getContext()));
                         }
 
                     }
@@ -168,6 +199,9 @@ public class FragmentNewDynamic extends BaseFragment {
                     @Override
                     public void onError(Throwable e) {
                         Log.d("hmy", e.getMessage() + "");
+
+                        Toast.makeText(getContext(), "请求失败", Toast.LENGTH_SHORT).show();
+                        hideDialog();
                     }
 
                     @Override
@@ -188,14 +222,37 @@ public class FragmentNewDynamic extends BaseFragment {
     public void onDestroy() {
         super.onDestroy();
         GSYVideoManager.releaseAllVideos();
+        if (EventBus.getDefault().isRegistered(this)) {
+
+            EventBus.getDefault().unregister(this);
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
         GSYVideoManager.onResume();
+        //关闭输入框
+        KeyBoardUtils.closeKeyboard(getActivity());
+        Log.d("xxx","onResume");
+
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+    }
+    //获取传过来的信息 刷新界面
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getStr(String str){
+        if(str.equals("刷新界面")){
+            alllist.clear();
+            getNew(1,count);
+        }
+    }
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);

@@ -51,7 +51,6 @@ import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.custom.customDialog.CustomDialog;
 import com.YiDian.RainBow.dynamic.adapter.DevelogmentImgAdapter;
-import com.YiDian.RainBow.dynamic.adapter.DevelogmentImgAdapter$ViewHolder_ViewBinding;
 import com.YiDian.RainBow.dynamic.adapter.HotHuatiAdapter;
 import com.YiDian.RainBow.dynamic.bean.SaveAiteBean;
 import com.YiDian.RainBow.dynamic.bean.SaveHotHuatiBean;
@@ -365,13 +364,18 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getAiteFriend(SaveAiteBean bean) {
         substring = bean.getString();
-
+        String[] split = substring.split(",");
         //获取当前光标所在位置
         int index = etContent.getSelectionStart();
         Editable editable = etContent.getEditableText();
-        //插入到光标所在位置
-        editable.insert(index, " @" + substring + " ");
-        int end = index + substring.length() + 1;//获取文本长度
+
+        if(split.length>0 && split!=null){
+            for (int i =0;i<split.length;i++){
+                //插入到光标所在位置
+                editable.insert(index, "@"+split[i]+" ");
+            }
+        }
+        int end = index + substring.length()+split.length;//获取文本长度
 
         editable.setSpan(new ForegroundColorSpan(Color.BLUE), index, end,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);//关键字变色
@@ -412,8 +416,10 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
-        //停止定位
-        mlocationClient.stopLocation();
+        if(mlocationClient!=null){
+            //停止定位
+            mlocationClient.stopLocation();
+        }
         if (videoView != null) {
             if (videoView.isPlaying()) {
                 videoView.stopPlayback();
@@ -445,6 +451,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                         Toast.makeText(DevelopmentDynamicActivity.this, "动态发表成功", Toast.LENGTH_SHORT).show();
                         //发表成功退出界面
                         finish();
+                        EventBus.getDefault().post("刷新界面");
                     }
 
                     @Override
@@ -475,6 +482,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                         Toast.makeText(DevelopmentDynamicActivity.this, "草稿发布成功", Toast.LENGTH_SHORT).show();
                         //发表成功退出界面
                         finish();
+                        EventBus.getDefault().post("刷新界面");
                     }
 
                     @Override

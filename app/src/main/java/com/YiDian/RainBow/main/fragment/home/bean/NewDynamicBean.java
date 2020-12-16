@@ -7,7 +7,7 @@ public class NewDynamicBean {
     /**
      * msg : getContentsByTime
      * type : OK
-     * object : {"total":3,"list":[{"id":185,"userId":1031,"contentInfo":"","contentImg":"http://img.rianbow.cn/26f1fb1f20201214101225.jpg, http://img.rianbow.cn/80aaadcf20201214101225.jpg, http://img.rianbow.cn/496b81be20201214101225.jpg, http://img.rianbow.cn/9c6b630420201214101225.jpg, http://img.rianbow.cn/a677503e20201214101225.jpg, http://img.rianbow.cn/3e07843620201214101225.jpg, http://img.rianbow.cn/093e523320201214101225.jpg, http://img.rianbow.cn/ccff07ca20201214101225.jpg, http://img.rianbow.cn/020a256620201214101225.jpg","lng":null,"lat":null,"createTime":"2020-12-14 10:12:27","status":1,"viewNum":null,"isOpen":1,"imgType":2,"isAttention":false,"isCollect":false,"isClick":false,"clickNum":0,"topics":[],"userInfo":{"id":1031,"phoneNum":null,"nickName":"李四","headImg":"http://img.rianbow.cn/202012091309325288188.jpg","age":null,"explains":null,"birthday":null,"userType":null,"userRole":"T","isSingle":null,"lng":115.54894616,"lat":116.151641641,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"commentCount":0,"distance":null},{"id":184,"userId":1031,"contentInfo":"我还没额头哦星眸","contentImg":"http://img.rianbow.cn/26f1fb1f20201214100307.jpg, http://img.rianbow.cn/80aaadcf20201214100307.jpg, http://img.rianbow.cn/3e07843620201214100307.jpg, http://img.rianbow.cn/ccff07ca20201214100307.jpg, http://img.rianbow.cn/3aeca1ff20201214100307.jpg","lng":null,"lat":null,"createTime":"2020-12-14 10:03:05","status":1,"viewNum":null,"isOpen":1,"imgType":21,"isAttention":false,"isCollect":false,"isClick":false,"clickNum":0,"topics":[],"userInfo":{"id":1031,"phoneNum":null,"nickName":"李四","headImg":"http://img.rianbow.cn/202012091309325288188.jpg","age":null,"explains":null,"birthday":null,"userType":null,"userRole":"T","isSingle":null,"lng":115.54894616,"lat":116.151641641,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"commentCount":0,"distance":null},{"id":182,"userId":1030,"contentInfo":"爱上一个不服老司机良好","contentImg":"http://img.rianbow.cn/202012140954477472859.jpg,http://img.rianbow.cn/202012140954477473803.jpg,http://img.rianbow.cn/202012140954477479967.jpg","lng":123,"lat":123,"createTime":"2020-12-14 09:54:52","status":1,"viewNum":null,"isOpen":1,"imgType":21,"isAttention":false,"isCollect":false,"isClick":false,"clickNum":0,"topics":[],"userInfo":{"id":1030,"phoneNum":null,"nickName":"何梦阳","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","age":null,"explains":null,"birthday":null,"userType":null,"userRole":"保密","isSingle":null,"lng":115.298833,"lat":34.097004,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"commentCount":0,"distance":9859639.71113922}],"pageNum":1,"pageSize":3,"size":3,"startRow":0,"endRow":2,"pages":1,"prePage":0,"nextPage":0,"isFirstPage":true,"isLastPage":true,"hasPreviousPage":false,"hasNextPage":false,"navigatePages":8,"navigatepageNums":[1],"navigateFirstPage":1,"navigateLastPage":1}
+     * object : {"total":5,"list":[{"id":200,"userId":1031,"contentInfo":"慕容复鞥嘻嘻心#热门话题3#民工哦公司#热门话题4#异性我也中破#热门话题1#匿名消息凶你#热门话题3#你命运我去我婆婆哦","contentImg":"http://img.rianbow.cn/26f1fb1f20201215143603.jpg, http://img.rianbow.cn/3aeca1ff20201215143603.jpg, http://img.rianbow.cn/ccff07ca20201215143603.jpg","lng":null,"lat":null,"createTime":"2020-12-15 14:36:00","status":1,"viewNum":null,"isOpen":1,"imgType":21,"isAttention":false,"isCollect":false,"isClick":false,"clickNum":0,"topics":[{"id":32,"topicTitle":"热门话题3","topicNum":3,"topicQuality":null,"topicViewNum":0},{"id":44,"topicTitle":"热门话题4","topicNum":2,"topicQuality":null,"topicViewNum":0},{"id":31,"topicTitle":"热门话题1","topicNum":2,"topicQuality":null,"topicViewNum":0}],"userInfo":{"id":1031,"phoneNum":null,"nickName":"李四","headImg":"http://img.rianbow.cn/202012091309325288188.jpg","age":null,"explains":null,"birthday":null,"userType":null,"userRole":"T","isSingle":null,"lng":115.54894616,"lat":116.151641641,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"commentCount":0,"distance":null},{"id":199,"userId":1030,"contentInfo":"#热门话题2##热门话题2##热门话题2##热门话题3##热门话题3##热门话题3##热门话题3##热门话题4##热门话题4##热门话题4#","contentImg":"","lng":null,"lat":null,"createTime":"2020-12-15 14:08:04","status":1,"viewNum":null,"isOpen":1,"imgType":1,"isAttention":true,"isCollect":false,"isClick":false,"clickNum":0,"topics":[],"userInfo":{"id":1030,"phoneNum":null,"nickName":"何梦阳","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","age":null,"explains":null,"birthday":null,"userType":null,"userRole":"保密","isSingle":null,"lng":115.298833,"lat":34.097004,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"commentCount":0,"distance":null},{"id":198,"userId":1031,"contentInfo":"#热门话题2##热门话题2##热门话题2##热门话题3##热门话题3##热门话题3##热门话题3##热门话题4##热门话题4##热门话题4#","contentImg":"","lng":null,"lat":null,"createTime":"2020-12-15 14:06:13","status":1,"viewNum":null,"isOpen":1,"imgType":1,"isAttention":false,"isCollect":false,"isClick":false,"clickNum":0,"topics":[{"id":44,"topicTitle":"热门话题4","topicNum":1,"topicQuality":null,"topicViewNum":0}],"userInfo":{"id":1031,"phoneNum":null,"nickName":"李四","headImg":"http://img.rianbow.cn/202012091309325288188.jpg","age":null,"explains":null,"birthday":null,"userType":null,"userRole":"T","isSingle":null,"lng":115.54894616,"lat":116.151641641,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"commentCount":0,"distance":null},{"id":197,"userId":1039,"contentInfo":"#qqq#阿萨德#adadad#，阿斯顿#qwer#","contentImg":"http://img.rianbow.cn/26f1fb1f20201215110127.jpg, http://img.rianbow.cn/80aaadcf20201215110127.jpg, http://img.rianbow.cn/a677503e20201215110127.jpg, http://img.rianbow.cn/ccff07ca20201215110127.jpg, http://img.rianbow.cn/9c6b630420201215110127.jpg, http://img.rianbow.cn/3aeca1ff20201215110127.jpg, http://img.rianbow.cn/3e07843620201215110127.jpg, http://img.rianbow.cn/496b81be20201215110127.jpg, http://img.rianbow.cn/2830ed8420201215110127.jpg","lng":123,"lat":123,"createTime":"2020-12-15 13:59:30","status":1,"viewNum":null,"isOpen":1,"imgType":2,"isAttention":false,"isCollect":false,"isClick":false,"clickNum":0,"topics":[{"id":41,"topicTitle":"qqq","topicNum":1,"topicQuality":null,"topicViewNum":null},{"id":42,"topicTitle":"adadad","topicNum":1,"topicQuality":null,"topicViewNum":null},{"id":43,"topicTitle":"qwer","topicNum":1,"topicQuality":null,"topicViewNum":null}],"userInfo":{"id":1039,"phoneNum":null,"nickName":"东方人工","headImg":"http://img.rianbow.cn/20201209131203454171.jpg","age":null,"explains":null,"birthday":null,"userType":null,"userRole":"保密","isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"commentCount":0,"distance":9859639.71113922},{"id":196,"userId":1031,"contentInfo":"#热门话题2##热门话题2##热门话题2##热门话题想我了摸摸2##热门话题3# @何梦洋3,何梦洋4, 天我就快我弄我墨子","contentImg":"","lng":null,"lat":null,"createTime":"2020-12-15 11:52:07","status":1,"viewNum":null,"isOpen":1,"imgType":1,"isAttention":false,"isCollect":false,"isClick":false,"clickNum":0,"topics":[{"id":40,"topicTitle":"热门话题想我了摸摸2","topicNum":1,"topicQuality":null,"topicViewNum":0}],"userInfo":{"id":1031,"phoneNum":null,"nickName":"李四","headImg":"http://img.rianbow.cn/202012091309325288188.jpg","age":null,"explains":null,"birthday":null,"userType":null,"userRole":"T","isSingle":null,"lng":115.54894616,"lat":116.151641641,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"commentCount":0,"distance":null}],"pageNum":1,"pageSize":5,"size":5,"startRow":0,"endRow":4,"pages":1,"prePage":0,"nextPage":0,"isFirstPage":true,"isLastPage":true,"hasPreviousPage":false,"hasNextPage":false,"navigatePages":8,"navigatepageNums":[1],"navigateFirstPage":1,"navigateLastPage":1}
      */
 
     private String msg;
@@ -40,13 +40,13 @@ public class NewDynamicBean {
 
     public static class ObjectBean {
         /**
-         * total : 3
-         * list : [{"id":185,"userId":1031,"contentInfo":"","contentImg":"http://img.rianbow.cn/26f1fb1f20201214101225.jpg, http://img.rianbow.cn/80aaadcf20201214101225.jpg, http://img.rianbow.cn/496b81be20201214101225.jpg, http://img.rianbow.cn/9c6b630420201214101225.jpg, http://img.rianbow.cn/a677503e20201214101225.jpg, http://img.rianbow.cn/3e07843620201214101225.jpg, http://img.rianbow.cn/093e523320201214101225.jpg, http://img.rianbow.cn/ccff07ca20201214101225.jpg, http://img.rianbow.cn/020a256620201214101225.jpg","lng":null,"lat":null,"createTime":"2020-12-14 10:12:27","status":1,"viewNum":null,"isOpen":1,"imgType":2,"isAttention":false,"isCollect":false,"isClick":false,"clickNum":0,"topics":[],"userInfo":{"id":1031,"phoneNum":null,"nickName":"李四","headImg":"http://img.rianbow.cn/202012091309325288188.jpg","age":null,"explains":null,"birthday":null,"userType":null,"userRole":"T","isSingle":null,"lng":115.54894616,"lat":116.151641641,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"commentCount":0,"distance":null},{"id":184,"userId":1031,"contentInfo":"我还没额头哦星眸","contentImg":"http://img.rianbow.cn/26f1fb1f20201214100307.jpg, http://img.rianbow.cn/80aaadcf20201214100307.jpg, http://img.rianbow.cn/3e07843620201214100307.jpg, http://img.rianbow.cn/ccff07ca20201214100307.jpg, http://img.rianbow.cn/3aeca1ff20201214100307.jpg","lng":null,"lat":null,"createTime":"2020-12-14 10:03:05","status":1,"viewNum":null,"isOpen":1,"imgType":21,"isAttention":false,"isCollect":false,"isClick":false,"clickNum":0,"topics":[],"userInfo":{"id":1031,"phoneNum":null,"nickName":"李四","headImg":"http://img.rianbow.cn/202012091309325288188.jpg","age":null,"explains":null,"birthday":null,"userType":null,"userRole":"T","isSingle":null,"lng":115.54894616,"lat":116.151641641,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"commentCount":0,"distance":null},{"id":182,"userId":1030,"contentInfo":"爱上一个不服老司机良好","contentImg":"http://img.rianbow.cn/202012140954477472859.jpg,http://img.rianbow.cn/202012140954477473803.jpg,http://img.rianbow.cn/202012140954477479967.jpg","lng":123,"lat":123,"createTime":"2020-12-14 09:54:52","status":1,"viewNum":null,"isOpen":1,"imgType":21,"isAttention":false,"isCollect":false,"isClick":false,"clickNum":0,"topics":[],"userInfo":{"id":1030,"phoneNum":null,"nickName":"何梦阳","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","age":null,"explains":null,"birthday":null,"userType":null,"userRole":"保密","isSingle":null,"lng":115.298833,"lat":34.097004,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"commentCount":0,"distance":9859639.71113922}]
+         * total : 5
+         * list : [{"id":200,"userId":1031,"contentInfo":"慕容复鞥嘻嘻心#热门话题3#民工哦公司#热门话题4#异性我也中破#热门话题1#匿名消息凶你#热门话题3#你命运我去我婆婆哦","contentImg":"http://img.rianbow.cn/26f1fb1f20201215143603.jpg, http://img.rianbow.cn/3aeca1ff20201215143603.jpg, http://img.rianbow.cn/ccff07ca20201215143603.jpg","lng":null,"lat":null,"createTime":"2020-12-15 14:36:00","status":1,"viewNum":null,"isOpen":1,"imgType":21,"isAttention":false,"isCollect":false,"isClick":false,"clickNum":0,"topics":[{"id":32,"topicTitle":"热门话题3","topicNum":3,"topicQuality":null,"topicViewNum":0},{"id":44,"topicTitle":"热门话题4","topicNum":2,"topicQuality":null,"topicViewNum":0},{"id":31,"topicTitle":"热门话题1","topicNum":2,"topicQuality":null,"topicViewNum":0}],"userInfo":{"id":1031,"phoneNum":null,"nickName":"李四","headImg":"http://img.rianbow.cn/202012091309325288188.jpg","age":null,"explains":null,"birthday":null,"userType":null,"userRole":"T","isSingle":null,"lng":115.54894616,"lat":116.151641641,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"commentCount":0,"distance":null},{"id":199,"userId":1030,"contentInfo":"#热门话题2##热门话题2##热门话题2##热门话题3##热门话题3##热门话题3##热门话题3##热门话题4##热门话题4##热门话题4#","contentImg":"","lng":null,"lat":null,"createTime":"2020-12-15 14:08:04","status":1,"viewNum":null,"isOpen":1,"imgType":1,"isAttention":true,"isCollect":false,"isClick":false,"clickNum":0,"topics":[],"userInfo":{"id":1030,"phoneNum":null,"nickName":"何梦阳","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","age":null,"explains":null,"birthday":null,"userType":null,"userRole":"保密","isSingle":null,"lng":115.298833,"lat":34.097004,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"commentCount":0,"distance":null},{"id":198,"userId":1031,"contentInfo":"#热门话题2##热门话题2##热门话题2##热门话题3##热门话题3##热门话题3##热门话题3##热门话题4##热门话题4##热门话题4#","contentImg":"","lng":null,"lat":null,"createTime":"2020-12-15 14:06:13","status":1,"viewNum":null,"isOpen":1,"imgType":1,"isAttention":false,"isCollect":false,"isClick":false,"clickNum":0,"topics":[{"id":44,"topicTitle":"热门话题4","topicNum":1,"topicQuality":null,"topicViewNum":0}],"userInfo":{"id":1031,"phoneNum":null,"nickName":"李四","headImg":"http://img.rianbow.cn/202012091309325288188.jpg","age":null,"explains":null,"birthday":null,"userType":null,"userRole":"T","isSingle":null,"lng":115.54894616,"lat":116.151641641,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"commentCount":0,"distance":null},{"id":197,"userId":1039,"contentInfo":"#qqq#阿萨德#adadad#，阿斯顿#qwer#","contentImg":"http://img.rianbow.cn/26f1fb1f20201215110127.jpg, http://img.rianbow.cn/80aaadcf20201215110127.jpg, http://img.rianbow.cn/a677503e20201215110127.jpg, http://img.rianbow.cn/ccff07ca20201215110127.jpg, http://img.rianbow.cn/9c6b630420201215110127.jpg, http://img.rianbow.cn/3aeca1ff20201215110127.jpg, http://img.rianbow.cn/3e07843620201215110127.jpg, http://img.rianbow.cn/496b81be20201215110127.jpg, http://img.rianbow.cn/2830ed8420201215110127.jpg","lng":123,"lat":123,"createTime":"2020-12-15 13:59:30","status":1,"viewNum":null,"isOpen":1,"imgType":2,"isAttention":false,"isCollect":false,"isClick":false,"clickNum":0,"topics":[{"id":41,"topicTitle":"qqq","topicNum":1,"topicQuality":null,"topicViewNum":null},{"id":42,"topicTitle":"adadad","topicNum":1,"topicQuality":null,"topicViewNum":null},{"id":43,"topicTitle":"qwer","topicNum":1,"topicQuality":null,"topicViewNum":null}],"userInfo":{"id":1039,"phoneNum":null,"nickName":"东方人工","headImg":"http://img.rianbow.cn/20201209131203454171.jpg","age":null,"explains":null,"birthday":null,"userType":null,"userRole":"保密","isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"commentCount":0,"distance":9859639.71113922},{"id":196,"userId":1031,"contentInfo":"#热门话题2##热门话题2##热门话题2##热门话题想我了摸摸2##热门话题3# @何梦洋3,何梦洋4, 天我就快我弄我墨子","contentImg":"","lng":null,"lat":null,"createTime":"2020-12-15 11:52:07","status":1,"viewNum":null,"isOpen":1,"imgType":1,"isAttention":false,"isCollect":false,"isClick":false,"clickNum":0,"topics":[{"id":40,"topicTitle":"热门话题想我了摸摸2","topicNum":1,"topicQuality":null,"topicViewNum":0}],"userInfo":{"id":1031,"phoneNum":null,"nickName":"李四","headImg":"http://img.rianbow.cn/202012091309325288188.jpg","age":null,"explains":null,"birthday":null,"userType":null,"userRole":"T","isSingle":null,"lng":115.54894616,"lat":116.151641641,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"commentCount":0,"distance":null}]
          * pageNum : 1
-         * pageSize : 3
-         * size : 3
+         * pageSize : 5
+         * size : 5
          * startRow : 0
-         * endRow : 2
+         * endRow : 4
          * pages : 1
          * prePage : 0
          * nextPage : 0
@@ -225,22 +225,22 @@ public class NewDynamicBean {
 
         public static class ListBean {
             /**
-             * id : 185
+             * id : 200
              * userId : 1031
-             * contentInfo :
-             * contentImg : http://img.rianbow.cn/26f1fb1f20201214101225.jpg, http://img.rianbow.cn/80aaadcf20201214101225.jpg, http://img.rianbow.cn/496b81be20201214101225.jpg, http://img.rianbow.cn/9c6b630420201214101225.jpg, http://img.rianbow.cn/a677503e20201214101225.jpg, http://img.rianbow.cn/3e07843620201214101225.jpg, http://img.rianbow.cn/093e523320201214101225.jpg, http://img.rianbow.cn/ccff07ca20201214101225.jpg, http://img.rianbow.cn/020a256620201214101225.jpg
+             * contentInfo : 慕容复鞥嘻嘻心#热门话题3#民工哦公司#热门话题4#异性我也中破#热门话题1#匿名消息凶你#热门话题3#你命运我去我婆婆哦
+             * contentImg : http://img.rianbow.cn/26f1fb1f20201215143603.jpg, http://img.rianbow.cn/3aeca1ff20201215143603.jpg, http://img.rianbow.cn/ccff07ca20201215143603.jpg
              * lng : null
              * lat : null
-             * createTime : 2020-12-14 10:12:27
+             * createTime : 2020-12-15 14:36:00
              * status : 1
              * viewNum : null
              * isOpen : 1
-             * imgType : 2
+             * imgType : 21
              * isAttention : false
              * isCollect : false
              * isClick : false
              * clickNum : 0
-             * topics : []
+             * topics : [{"id":32,"topicTitle":"热门话题3","topicNum":3,"topicQuality":null,"topicViewNum":0},{"id":44,"topicTitle":"热门话题4","topicNum":2,"topicQuality":null,"topicViewNum":0},{"id":31,"topicTitle":"热门话题1","topicNum":2,"topicQuality":null,"topicViewNum":0}]
              * userInfo : {"id":1031,"phoneNum":null,"nickName":"李四","headImg":"http://img.rianbow.cn/202012091309325288188.jpg","age":null,"explains":null,"birthday":null,"userType":null,"userRole":"T","isSingle":null,"lng":115.54894616,"lat":116.151641641,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null}
              * commentCount : 0
              * distance : null
@@ -264,7 +264,7 @@ public class NewDynamicBean {
             private UserInfoBean userInfo;
             private int commentCount;
             private String distance;
-            private List<?> topics;
+            private List<TopicsBean> topics;
 
             public int getId() {
                 return id;
@@ -410,11 +410,11 @@ public class NewDynamicBean {
                 this.distance = distance;
             }
 
-            public List<?> getTopics() {
+            public List<TopicsBean> getTopics() {
                 return topics;
             }
 
-            public void setTopics(List<?> topics) {
+            public void setTopics(List<TopicsBean> topics) {
                 this.topics = topics;
             }
 
@@ -611,6 +611,62 @@ public class NewDynamicBean {
 
                 public void setInvitationCode(Object invitationCode) {
                     this.invitationCode = invitationCode;
+                }
+            }
+
+            public static class TopicsBean {
+                /**
+                 * id : 32
+                 * topicTitle : 热门话题3
+                 * topicNum : 3
+                 * topicQuality : null
+                 * topicViewNum : 0
+                 */
+
+                private int id;
+                private String topicTitle;
+                private int topicNum;
+                private Object topicQuality;
+                private int topicViewNum;
+
+                public int getId() {
+                    return id;
+                }
+
+                public void setId(int id) {
+                    this.id = id;
+                }
+
+                public String getTopicTitle() {
+                    return topicTitle;
+                }
+
+                public void setTopicTitle(String topicTitle) {
+                    this.topicTitle = topicTitle;
+                }
+
+                public int getTopicNum() {
+                    return topicNum;
+                }
+
+                public void setTopicNum(int topicNum) {
+                    this.topicNum = topicNum;
+                }
+
+                public Object getTopicQuality() {
+                    return topicQuality;
+                }
+
+                public void setTopicQuality(Object topicQuality) {
+                    this.topicQuality = topicQuality;
+                }
+
+                public int getTopicViewNum() {
+                    return topicViewNum;
+                }
+
+                public void setTopicViewNum(int topicViewNum) {
+                    this.topicViewNum = topicViewNum;
                 }
             }
         }

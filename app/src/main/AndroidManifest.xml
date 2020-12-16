@@ -193,6 +193,12 @@
             >
 
         </activity>
+
+        <!-- 动态详情 -->
+        <activity android:name=".main.fragment.home.activity.DynamicDetailsActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
         <!-- 直接播放 -->
         <activity
             android:name=".main.fragment.activity.SimplePlayerActivity"
@@ -289,7 +295,6 @@
         <!-- 发布新动态 -->
         <activity android:name=".dynamic.activity.DevelopmentDynamicActivity"
             android:screenOrientation="portrait">
-
         </activity>
 
         <!-- 选择@好友 -->
@@ -304,6 +309,16 @@
 
         <!-- 我的草稿箱 -->
         <activity android:name=".main.fragment.mine.activity.MydraftActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <!-- 用户主页 -->
+        <activity android:name=".user.PersonHomeActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <!-- 话题详情页 -->
+        <activity android:name=".topic.TopicDetailsActivity"
             android:screenOrientation="portrait">
         </activity>
     </application>

@@ -467,9 +467,9 @@ public class SSRC {
 
 //        System.err.println("upsample");
 
-        filter2len = FFTFIRLEN; // stage 2 filter length
+        filter2len = FFTFIRLEN; // stage 2 buddy length
 
-        // Make stage 1 filter
+        // Make stage 1 buddy
 
         {
             double aa = AA; // stop band attenuation(dB)
@@ -539,7 +539,7 @@ public class SSRC {
             }
         }
 
-        // Make stage 2 filter
+        // Make stage 2 buddy
 
         {
             double aa = AA; // stop band attenuation(dB)
@@ -605,7 +605,7 @@ public class SSRC {
             int nsmplwrt1;
             // ?t@Cinbuf?lvZ stage2 filternTv?
             int nsmplwrt2 = 0;
-            // stage1 filter?oTv?n1y*osf]
+            // stage1 buddy?oTv?n1y*osf]
             int s1p;
             boolean init;
             boolean ending;
@@ -713,7 +713,7 @@ public class SSRC {
 //              if (nsmplwrt1 > n2b2) { nsmplwrt1 = n2b2; }
                 nsmplwrt1 = n2b2;
 
-                // apply stage 1 filter
+                // apply stage 1 buddy
 
                 ip = ((sfrq * (rp - 1) + fs1) / fs1) * nch; // inbuf
 
@@ -801,7 +801,7 @@ public class SSRC {
 
                     osc = osc_backup;
 
-                    // apply stage 2 filter
+                    // apply stage 2 buddy
 
                     for (p = nsmplwrt1; p < n2b; p++) {
                         buf2[ch][p] = 0;
@@ -1051,9 +1051,9 @@ public class SSRC {
 
 //        System.err.println("downsample");
 
-        filter1len = FFTFIRLEN; // stage 1 filter length
+        filter1len = FFTFIRLEN; // stage 1 buddy length
 
-        // Make stage 1 filter
+        // Make stage 1 buddy
 
         {
             double aa = AA; // stop band attenuation(dB)
@@ -1132,7 +1132,7 @@ public class SSRC {
 //}
         }
 
-        // Make stage 2 filter
+        // Make stage 2 buddy
 
         if (osf == 1) {
             fs2 = sfrq / frqgcd * dfrq;
@@ -1213,7 +1213,7 @@ public class SSRC {
 //          int nsmplwrt1;
             // ?t@Cinbuf?lvZ stage2 filternTv?
             int nsmplwrt2 = 0;
-            int s2p; // stage1 filter?oTv?n1y*osf]
+            int s2p; // stage1 buddy?oTv?n1y*osf]
             boolean init, ending;
 //          int osc;
             int bp; // rp2vZ?Dbuf2Tvu
@@ -1229,9 +1229,9 @@ public class SSRC {
             //
             // inbufBosf{TvORs?[
             // CNA
-            // BCstage 1 filter
+            // BCstage 1 buddy
             // DB
-            // ADstage 2 filter
+            // ADstage 2 buddy
             // DA
             // CDRs?[
 

@@ -70,7 +70,7 @@ import static com.tencent.connect.share.QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEX
 
 public class MyQrCodeActivity extends BaseAvtivity implements View.OnClickListener {
     @BindView(R.id.iv_back)
-    ImageView ivBack;
+    LinearLayout ivBack;
     @BindView(R.id.rl_top)
     RelativeLayout rlTop;
     @BindView(R.id.iv_Qrcode)

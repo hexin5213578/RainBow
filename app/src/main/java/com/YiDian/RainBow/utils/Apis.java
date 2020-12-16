@@ -6,6 +6,9 @@ import com.YiDian.RainBow.dynamic.bean.WriteDevelopmentBean;
 import com.YiDian.RainBow.login.bean.ComPleteMsgBean;
 import com.YiDian.RainBow.login.bean.LoginBean;
 import com.YiDian.RainBow.main.fragment.home.bean.DianzanBean;
+import com.YiDian.RainBow.main.fragment.home.bean.DynamicDetailsBean;
+import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
+import com.YiDian.RainBow.main.fragment.home.bean.MyFollowBean;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.SelectAllDraftsBean;
 import com.YiDian.RainBow.regist.bean.RegistBean;
@@ -78,6 +81,18 @@ public interface Apis {
     Observable<DianzanBean> doCancleDianzan(@Query("clickType")int type,@Query("typeId")int comentId,@Query("userId") int id);
 
     //关注用户
-    /*@POST("fans/insertFans")
-    Observable<>*/
+    @POST("fans/insertFans")
+    Observable<FollowBean> doFollow(@Query("fansId")int followid,@Query("userId")int byfollowid);
+
+    //取消关注用户
+    @POST("fans/deleteByUserIdAndFansId")
+    Observable<FollowBean> doCancleFollow(@Query("fansId")int followid,@Query("userId")int byfollowid);
+
+    //我的关注
+    @GET("fans/selectFansByFansId")
+    Observable<MyFollowBean> doGetMyFollow(@Query("fansId")int userid,@Query("page")int page,@Query("pageSize")int pagesize);
+
+    //动态详情
+    @GET("content/getContentInfoById")
+    Observable<DynamicDetailsBean> dogetDynamicDetails(@Query("contentId")int contentid,@Query("userId")int userid);
 }

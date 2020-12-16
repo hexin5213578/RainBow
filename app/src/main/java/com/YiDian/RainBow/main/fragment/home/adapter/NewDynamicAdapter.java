@@ -1,14 +1,23 @@
 package com.YiDian.RainBow.main.fragment.home.adapter;
 
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaMetadataRetriever;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,30 +30,32 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
-import com.YiDian.RainBow.base.App;
+import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.custom.customDialog.CustomDialogCancleFollow;
 import com.YiDian.RainBow.custom.image.NineGridTestLayout;
 import com.YiDian.RainBow.custom.videoplayer.SampleCoverVideo;
+import com.YiDian.RainBow.main.fragment.home.activity.DynamicDetailsActivity;
 import com.YiDian.RainBow.main.fragment.home.bean.DianzanBean;
+import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
-import com.YiDian.RainBow.main.fragment.mine.activity.MyQrCodeActivity;
+import com.YiDian.RainBow.topic.SaveIntentMsgBean;
+import com.YiDian.RainBow.topic.TopicDetailsActivity;
+import com.YiDian.RainBow.user.PersonHomeActivity;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.YiDian.RainBow.utils.StringUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
-import com.tencent.connect.share.QQShare;
-import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
-import com.tencent.mm.opensdk.modelmsg.WXImageObject;
-import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
-import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
-import com.tencent.tauth.UiError;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -53,6 +64,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,9 +79,10 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private final List<NewDynamicBean.ObjectBean.ListBean> list;
 
     public static final String TAG = "ListNormalAdapter22";
+
     private PopupWindow mPopupWindow;
     private Tencent mTencent;
-    int userid = 1030;
+    int userid;
 
     public NewDynamicAdapter(Activity context, List<NewDynamicBean.ObjectBean.ListBean> list) {
         this.context = context;
@@ -106,14 +120,30 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return null;
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         //腾讯AppId(替换你自己App Id)、上下文
         mTencent = Tencent.createInstance("101906973", context);
+        userid = Integer.valueOf(Common.getUserId());
 
 
         NewDynamicBean.ObjectBean.ListBean listBean = list.get(position);
         int id = listBean.getId();
+        int usId = listBean.getUserId();
+
+
+
+        //跳转到动态详情页
+        ((ViewHolder) holder).rlItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, DynamicDetailsActivity.class);
+                intent.putExtra("id", id);
+                context.startActivity(intent);
+            }
+        });
+
 
         NewDynamicBean.ObjectBean.ListBean.UserInfoBean userInfo = list.get(position).getUserInfo();
         //设置用户名
@@ -124,33 +154,33 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         ((ViewHolder) holder).tvAge.setText(userInfo.getUserRole());
         //是否认证
         if (userInfo.getAttestation() == 1) {
-            ((ViewHolder)holder).isattaction.setVisibility(View.VISIBLE);
+            ((ViewHolder) holder).isattaction.setVisibility(View.VISIBLE);
         } else {
-            ((ViewHolder)holder).isattaction.setVisibility(View.GONE);
+            ((ViewHolder) holder).isattaction.setVisibility(View.GONE);
         }
         //判断性别是否保密
         String userRole = userInfo.getUserRole();
-        if(userRole.equals("保密")){
-            ((ViewHolder)holder).tvAge.setVisibility(View.GONE);
+        if (userRole.equals("保密")) {
+            ((ViewHolder) holder).tvAge.setVisibility(View.GONE);
         }
 
         //判断是否点赞
-        if(listBean.isIsClick()){
-            ((ViewHolder)holder).ivDianzan.setImageResource(R.mipmap.dianzan);
-        }else{
-            ((ViewHolder)holder).ivDianzan.setImageResource(R.mipmap.weidianzan);
+        if (listBean.isIsClick()) {
+            ((ViewHolder) holder).ivDianzan.setImageResource(R.mipmap.dianzan);
+        } else {
+            ((ViewHolder) holder).ivDianzan.setImageResource(R.mipmap.weidianzan);
         }
 
         //点赞的单击事件
-        ((ViewHolder)holder).rlDianzan.setOnClickListener(new View.OnClickListener() {
+        ((ViewHolder) holder).rlDianzan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(listBean.isIsClick()){
+                if (listBean.isIsClick()) {
                     //取消点赞
                     //开始执行设置不可点击 防止多次点击发生冲突
-                    ((ViewHolder)holder).rlDianzan.setEnabled(false);
+                    ((ViewHolder) holder).rlDianzan.setEnabled(false);
                     NetUtils.getInstance().getApis()
-                            .doCancleDianzan(1,id,userid)
+                            .doCancleDianzan(1, id, userid)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Observer<DianzanBean>() {
@@ -162,11 +192,11 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                 @Override
                                 public void onNext(DianzanBean dianzanBean) {
                                     //处理结束后恢复点击
-                                    ((ViewHolder)holder).rlDianzan.setEnabled(true);
+                                    ((ViewHolder) holder).rlDianzan.setEnabled(true);
 
 
                                     //取消点赞成功
-                                    ((ViewHolder)holder).ivDianzan.setImageResource(R.mipmap.weidianzan);
+                                    ((ViewHolder) holder).ivDianzan.setImageResource(R.mipmap.weidianzan);
                                     listBean.setIsClick(false);
 
 
@@ -174,10 +204,13 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                     String s = ((ViewHolder) holder).tvDianzanCount.getText().toString();
                                     Integer integer = Integer.valueOf(s);
 
-                                    integer-=1;
+                                    integer -= 1;
 
-                                    ((ViewHolder)holder).tvDianzanCount.setText(integer+"");
+                                    ((ViewHolder) holder).tvDianzanCount.setText(integer + "");
+
+
                                 }
+
                                 @Override
                                 public void onError(Throwable e) {
 
@@ -188,10 +221,10 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                                 }
                             });
-                }else{
+                } else {
                     //点赞
                     NetUtils.getInstance().getApis()
-                            .doDianzan(userid,1,id)
+                            .doDianzan(userid, 1, id)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Observer<DianzanBean>() {
@@ -203,20 +236,22 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                 @Override
                                 public void onNext(DianzanBean dianzanBean) {
                                     //处理结束后恢复点击
-                                    ((ViewHolder)holder).rlDianzan.setEnabled(true);
+                                    ((ViewHolder) holder).rlDianzan.setEnabled(true);
 
-                                    if(dianzanBean.getObject().equals("插入成功")){
+                                    if (dianzanBean.getObject().equals("插入成功")) {
                                         //点赞成功
-                                        ((ViewHolder)holder).ivDianzan.setImageResource(R.mipmap.dianzan);
+                                        ((ViewHolder) holder).ivDianzan.setImageResource(R.mipmap.dianzan);
                                         listBean.setIsClick(true);
 
                                         //点赞成功数量加一
                                         String s = ((ViewHolder) holder).tvDianzanCount.getText().toString();
                                         Integer integer = Integer.valueOf(s);
 
-                                        integer+=1;
+                                        integer += 1;
 
-                                        ((ViewHolder)holder).tvDianzanCount.setText(integer+"");
+                                        ((ViewHolder) holder).tvDianzanCount.setText(integer + "");
+
+
                                     }
                                 }
 
@@ -236,36 +271,122 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         });
 
         //设置点赞数
-        ((ViewHolder)holder).tvDianzanCount.setText(listBean.getClickNum()+"");
+        ((ViewHolder) holder).tvDianzanCount.setText(listBean.getClickNum() + "");
         //设置评论数
-        ((ViewHolder)holder).tvPinglunCount.setText(listBean.getCommentCount()+"");
+        ((ViewHolder) holder).tvPinglunCount.setText(listBean.getCommentCount() + "");
 
         //判断是否关注
-        if(listBean.isIsAttention()){
-            ((ViewHolder)holder).tvGuanzhu.setBackground(context.getResources().getDrawable(R.drawable.newdynamic_yiguanzhu));
-            ((ViewHolder)holder).tvGuanzhu.setText("已关注");
-        }else{
-            ((ViewHolder)holder).tvGuanzhu.setBackground(context.getResources().getDrawable(R.drawable.newdynamic_weiguanzhu));
-            ((ViewHolder)holder).tvGuanzhu.setText("未关注");
+        if (listBean.isIsAttention()) {
+            ((ViewHolder) holder).tvGuanzhu.setBackground(context.getResources().getDrawable(R.drawable.newdynamic_yiguanzhu));
+            ((ViewHolder) holder).tvGuanzhu.setText("已关注");
+            ((ViewHolder) holder).tvGuanzhu.setTextColor(R.color.color_999999);
+        } else {
+            ((ViewHolder) holder).tvGuanzhu.setBackground(context.getResources().getDrawable(R.drawable.newdynamic_weiguanzhu));
+            ((ViewHolder) holder).tvGuanzhu.setText("关注");
+            ((ViewHolder) holder).tvGuanzhu.setTextColor(R.color.color_3C025A);
         }
 
-        ((ViewHolder)holder).tvGuanzhu.setOnClickListener(new View.OnClickListener() {
+        ((ViewHolder) holder).tvGuanzhu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(listBean.isIsAttention()){
-                    //取消关注
+                if (listBean.isIsAttention()) {
+                    CustomDialogCancleFollow.Builder builder = new CustomDialogCancleFollow.Builder(context);
+                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            //开始执行设置不可点击 防止多次点击发生冲突
+                            ((ViewHolder) holder).tvGuanzhu.setEnabled(false);
+                            NetUtils.getInstance().getApis()
+                                    .doCancleFollow(userid, usId)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Observer<FollowBean>() {
+                                        @Override
+                                        public void onSubscribe(Disposable d) {
 
+                                        }
 
-                }else{
+                                        @Override
+                                        public void onNext(FollowBean followBean) {
+                                            //处理结束后恢复点击
+                                            ((ViewHolder) holder).tvGuanzhu.setEnabled(true);
+                                            if (followBean.getMsg().equals("取消关注成功")) {
+
+                                                EventBus.getDefault().post("刷新界面");
+                                                listBean.setIsAttention(false);
+
+                                                // TODO: 2020/12/15 0015 发送通知
+
+                                                dialog.dismiss();
+
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onError(Throwable e) {
+
+                                        }
+
+                                        @Override
+                                        public void onComplete() {
+
+                                        }
+                                    });
+
+                        }
+                    });
+                    builder.setNegativeButton("取消",
+                            new android.content.DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    builder.create().show();
+                } else {
+                    //开始执行设置不可点击 防止多次点击发生冲突
+                    ((ViewHolder) holder).tvGuanzhu.setEnabled(false);
+
                     //关注
+                    NetUtils.getInstance().getApis()
+                            .doFollow(userid, usId)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Observer<FollowBean>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
 
+                                }
 
+                                @Override
+                                public void onNext(FollowBean followBean) {
+                                    //处理结束后恢复点击
+                                    ((ViewHolder) holder).tvGuanzhu.setEnabled(true);
+                                    if (followBean.getMsg().equals("关注成功")) {
+
+                                        EventBus.getDefault().post("刷新界面");
+
+                                        listBean.setIsAttention(true);
+
+                                        // TODO: 2020/12/15 0015 推送通知
+
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+
+                                }
+                            });
                 }
             }
         });
 
         //转发点击事件
-        ((ViewHolder)holder).rlZhuanfa.setOnClickListener(new View.OnClickListener() {
+        ((ViewHolder) holder).rlZhuanfa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showSelect();
@@ -274,12 +395,12 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         //获取发布时位置距离当前的距离
         String distance = listBean.getDistance();
-        if(distance!=null){
-            ((ViewHolder)holder).tvDistance.setVisibility(View.VISIBLE);
+        if (distance != null) {
+            ((ViewHolder) holder).tvDistance.setVisibility(View.VISIBLE);
             String round = StringUtil.round(distance);
-            ((ViewHolder)holder).tvDistance.setText(round+"km");
-        }else{
-            ((ViewHolder)holder).tvDistance.setVisibility(View.GONE);
+            ((ViewHolder) holder).tvDistance.setText(round + "km");
+        } else {
+            ((ViewHolder) holder).tvDistance.setVisibility(View.GONE);
         }
 
         //获取发布时间
@@ -295,33 +416,39 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             long l = System.currentTimeMillis();
             //获取发布过的时长
             long difference = l - time;
-            Log.d("xxx",difference+"");
-            if(difference>1800000){
-                ((ViewHolder)holder).tvTime.setText(createTime);
+
+            //时长大于12小时 显示日期
+            if (difference > 43200000) {
+                ((ViewHolder) holder).tvTime.setText(createTime);
             }
-            if(difference>1200000 && difference<1800000){
-                ((ViewHolder)holder).tvTime.setText("半小时前发布");
+            //时长小于12小时 展示时间
+            if (difference > 1800000 && difference < 43200000) {
+                String[] s = createTime.split(" ");
+                ((ViewHolder) holder).tvTime.setText(s[1]);
             }
-            if(difference>600000 && difference<1200000){
-                ((ViewHolder)holder).tvTime.setText("20分钟前发布");
+            if (difference > 1200000 && difference < 1800000) {
+                ((ViewHolder) holder).tvTime.setText("半小时前发布");
             }
-            if(difference>300000 && difference<600000){
-                ((ViewHolder)holder).tvTime.setText("10分钟前发布");
+            if (difference > 600000 && difference < 1200000) {
+                ((ViewHolder) holder).tvTime.setText("20分钟前发布");
             }
-            if(difference>240000 && difference<300000){
-                ((ViewHolder)holder).tvTime.setText("5分钟前发布");
+            if (difference > 300000 && difference < 600000) {
+                ((ViewHolder) holder).tvTime.setText("10分钟前发布");
             }
-            if(difference>180000 && difference<240000){
-                ((ViewHolder)holder).tvTime.setText("4分钟前发布");
+            if (difference > 240000 && difference < 300000) {
+                ((ViewHolder) holder).tvTime.setText("5分钟前发布");
             }
-            if(difference>120000 && difference<180000){
-                ((ViewHolder)holder).tvTime.setText("3分钟前发布");
+            if (difference > 180000 && difference < 240000) {
+                ((ViewHolder) holder).tvTime.setText("4分钟前发布");
             }
-            if(difference>60000 && difference<120000){
-                ((ViewHolder)holder).tvTime.setText("2分钟前发布");
+            if (difference > 120000 && difference < 180000) {
+                ((ViewHolder) holder).tvTime.setText("3分钟前发布");
             }
-            if(difference<60000){
-                ((ViewHolder)holder).tvTime.setText("1分钟前发布");
+            if (difference > 60000 && difference < 120000) {
+                ((ViewHolder) holder).tvTime.setText("2分钟前发布");
+            }
+            if (difference < 60000) {
+                ((ViewHolder) holder).tvTime.setText("1分钟前发布");
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -330,14 +457,22 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         int imgType = list.get(position).getImgType();
         //纯文本
         if (imgType == 1) {
-            ((ViewHolder) holder).tvDynamicText.setText(list.get(position).getContentInfo());
+            //获取文本内容
+            String contentInfo = listBean.getContentInfo();
+
+            //设置@ ## 颜色及点击
+            if(!contentInfo.equals("") && contentInfo.contains("@") || contentInfo.contains("#")){
+                getWeiBoContent(context,contentInfo,((ViewHolder)holder).tvDynamicText);
+            }else{
+                ((ViewHolder)holder).tvDynamicText.setText(contentInfo);
+            }
         }
         //纯图片
         if (imgType == 2) {
             String contentImg = list.get(position).getContentImg();
             String[] split = contentImg.split(",");
 
-            Log.d("xxx",split.length+"");
+            Log.d("xxx", split.length + "");
             List<String> imglist = new ArrayList<>();
 
             for (int i = 0; i < split.length; i++) {
@@ -350,8 +485,15 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
         //文本加图片
         if (imgType == 21) {
-            //设置文本
-            ((ViewHolder) holder).tvDynamicText.setText(list.get(position).getContentInfo());
+            //获取文本内容
+            String contentInfo = listBean.getContentInfo();
+
+            //设置@ ## 颜色及点击
+            if(!contentInfo.equals("") && contentInfo.contains("@") || contentInfo.contains("#")){
+                getWeiBoContent(context,contentInfo,((ViewHolder)holder).tvDynamicText);
+            }else{
+                ((ViewHolder)holder).tvDynamicText.setText(contentInfo);
+            }
             //设置图片
             String contentImg = list.get(position).getContentImg();
             String[] split = contentImg.split(",");
@@ -370,7 +512,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             Bitmap netVideoBitmap = getNetVideoBitmap(contentImg);
             //设置封面
-            ((ViewHolder)holder).videoPlayer.loadCoverImage(contentImg,netVideoBitmap);
+            ((ViewHolder) holder).videoPlayer.loadCoverImage(contentImg, netVideoBitmap);
 
             ((ViewHolder) holder).videoPlayer.setUpLazy(contentImg, true, null, null, "");
 
@@ -391,14 +533,22 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         //视频加文本
         if (imgType == 31) {
             //设置文本
-            ((ViewHolder) holder).tvDynamicText.setText(list.get(position).getContentInfo());
+            //获取文本内容
+            String contentInfo = listBean.getContentInfo();
+
+            //设置@ ## 颜色及点击
+            if(!contentInfo.equals("") && contentInfo.contains("@") || contentInfo.contains("#")){
+                getWeiBoContent(context,contentInfo,((ViewHolder)holder).tvDynamicText);
+            }else{
+                ((ViewHolder)holder).tvDynamicText.setText(contentInfo);
+            }
 
             //设置播放视频
             String contentImg = list.get(position).getContentImg();
 
             Bitmap netVideoBitmap = getNetVideoBitmap(contentImg);
             //设置封面
-            ((ViewHolder)holder).videoPlayer.loadCoverImage(contentImg,netVideoBitmap);
+            ((ViewHolder) holder).videoPlayer.loadCoverImage(contentImg, netVideoBitmap);
 
             //设置播放路径
             ((ViewHolder) holder).videoPlayer.setUpLazy(contentImg, true, null, null, "");
@@ -471,12 +621,15 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         SampleCoverVideo videoPlayer;
         @BindView(R.id.isattaction)
         ImageView isattaction;
+        @BindView(R.id.rl_item)
+        RelativeLayout rlItem;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
     }
+
     public void showSelect() {
         //添加成功后处理
         mPopupWindow = new PopupWindow();
@@ -537,6 +690,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         });
         show(view);
     }
+
     public static Bitmap getNetVideoBitmap(String videoUrl) {
         Bitmap bitmap = null;
 
@@ -553,6 +707,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
         return bitmap;
     }
+
     //分享到QQ信息
     private void onClickShare() {
         /*Bundle params = new Bundle();
@@ -642,7 +797,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     //设置透明度
     public void setWindowAlpa(boolean isopen) {
-        if (android.os.Build.VERSION.SDK_INT < 11) {
+        if (Build.VERSION.SDK_INT < 11) {
             return;
         }
         final Window window = context.getWindow();
@@ -687,4 +842,104 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             mPopupWindow.dismiss();
         }
     }
+    @SuppressLint("ResourceAsColor")
+    public static Spannable getWeiBoContent(final Context context, String source,TextView tv) {
+
+        SpannableStringBuilder spannable = new SpannableStringBuilder(source);
+        // 定义正则表达式
+        String AT = "@[\\u4e00-\\u9fa5\\w\\-]+";// @人
+        String TOPIC = "#([^\\#|.]+)#";// ##话题
+        //设置正则
+        Pattern pattern = Pattern.compile("("+AT+")|"+"("+TOPIC+")");
+        Matcher matcher = pattern.matcher(spannable);
+
+        Log.d("xxx",matcher.groupCount()+"");
+
+        while (matcher.find()) {
+            // 根据group的括号索引，可得出具体匹配哪个正则(0代表全部，1代表第一个括号)
+            final String at = matcher.group(1);
+            final String topic = matcher.group(2);
+            // 处理@符号
+            if (at != null) {
+                //获取匹配位置
+                int start = matcher.start(1);
+                int end = start + at.length();
+
+                tv.setMovementMethod(LinkMovementMethod.getInstance());
+                spannable.setSpan(new MyClickableSpanAt(){
+                    @Override
+                    public void onClick(View widget) {
+                        //这里需要做跳转用户的实现，先用一个Toast代替
+                        String substring = at.substring(1);
+
+                        Intent intent = new Intent(context, PersonHomeActivity.class);
+                        SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
+                        saveIntentMsgBean.setMsg(substring);
+                        //2标记传入姓名  1标记传入id
+                        saveIntentMsgBean.setFlag(2);
+                        intent.putExtra("msg",saveIntentMsgBean);
+                        context.startActivity(intent);
+                    }
+                }, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            }
+
+            // 处理话题##符号
+            if (topic != null) {
+                int start = matcher.start(2);
+                int end = start + topic.length();
+
+                tv.setMovementMethod(LinkMovementMethod.getInstance());
+                spannable.setSpan(new MyClickableSpanTopic(){
+                    @Override
+                    public void onClick(@NonNull View widget) {
+                        String substring = topic.substring(1, topic.length() - 1);
+
+                        Intent intent = new Intent(context, TopicDetailsActivity.class);
+                        SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
+                        saveIntentMsgBean.setMsg(substring);
+                        //2标记传入话题名  1标记传入id
+                        saveIntentMsgBean.setFlag(2);
+                        intent.putExtra("msg",saveIntentMsgBean);
+                        context.startActivity(intent);
+
+                    }
+                }, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            }
+        }
+        tv.setText(spannable);
+
+        return spannable;
+    }
+    public static class MyClickableSpanTopic extends ClickableSpan {
+        @Override
+        public void onClick(@NonNull View widget) {
+
+        }
+        @SuppressLint("ResourceAsColor")
+        @Override
+        public void updateDrawState(@NonNull TextPaint ds) {
+            super.updateDrawState(ds);
+
+            ds.setColor(R.color.start);
+            ds.setUnderlineText(false);
+        }
+    }
+    public static class MyClickableSpanAt extends ClickableSpan {
+        @Override
+        public void onClick(@NonNull View widget) {
+
+        }
+        @SuppressLint("ResourceAsColor")
+        @Override
+        public void updateDrawState(@NonNull TextPaint ds) {
+            super.updateDrawState(ds);
+
+            ds.setColor(Color.BLUE);
+            ds.setUnderlineText(false);
+        }
+    }
+
 }
+

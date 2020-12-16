@@ -42,15 +42,20 @@
                 android:layout_gravity="center"
                 android:text="附近" />
         </RadioGroup>
-        <ImageView
-            android:layout_width="@dimen/dp_17"
-            android:src="@mipmap/filter"
+        <RelativeLayout
+            android:layout_width="@dimen/dp_50"
             android:id="@+id/iv_filter"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/dp_15"
-            android:layout_height="@dimen/dp_17">
-        </ImageView>
+            android:layout_height="match_parent">
+            <ImageView
+                android:layout_width="@dimen/dp_17"
+                android:src="@mipmap/filter"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="@dimen/dp_15"
+                android:layout_height="@dimen/dp_17">
+            </ImageView>
+        </RelativeLayout>
+
     </RelativeLayout>
     <FrameLayout
         android:id="@+id/flContent"

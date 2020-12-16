@@ -126,7 +126,6 @@ public class SelectFriendActivity extends BaseAvtivity implements View.OnClickLi
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void calculationCountAndPrice(String i) {
         str = "";
-
         for (SaveTestBean.ResultBean bean : list) {
             if (bean.isIscheck()){
                 str+=bean.getName()+",";

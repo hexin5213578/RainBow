@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,7 +56,7 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
     @BindView(R.id.rgTab)
     RadioGroup rgTab;
     @BindView(R.id.iv_filter)
-    ImageView ivFilter;
+    RelativeLayout ivFilter;
     @BindView(R.id.flContent)
     FrameLayout flContent;
     @BindView(R.id.toolbar)
