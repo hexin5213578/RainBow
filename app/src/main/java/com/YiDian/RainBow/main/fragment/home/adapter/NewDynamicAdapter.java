@@ -144,6 +144,21 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
         });
 
+        //跳转到用户信息页
+        ((ViewHolder)holder).ivHeadimg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //这里需要做跳转用户的实现，先用一个Toast代替
+
+                Intent intent = new Intent(context, PersonHomeActivity.class);
+                SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
+                saveIntentMsgBean.setId(usId);
+                //2标记传入姓名  1标记传入id
+                saveIntentMsgBean.setFlag(1);
+                intent.putExtra("msg",saveIntentMsgBean);
+                context.startActivity(intent);
+            }
+        });
 
         NewDynamicBean.ObjectBean.ListBean.UserInfoBean userInfo = list.get(position).getUserInfo();
         //设置用户名
@@ -194,7 +209,6 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                     //处理结束后恢复点击
                                     ((ViewHolder) holder).rlDianzan.setEnabled(true);
 
-
                                     //取消点赞成功
                                     ((ViewHolder) holder).ivDianzan.setImageResource(R.mipmap.weidianzan);
                                     listBean.setIsClick(false);
@@ -223,6 +237,8 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             });
                 } else {
                     //点赞
+                    ((ViewHolder) holder).rlDianzan.setEnabled(false);
+
                     NetUtils.getInstance().getApis()
                             .doDianzan(userid, 1, id)
                             .subscribeOn(Schedulers.io())
@@ -235,6 +251,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                                 @Override
                                 public void onNext(DianzanBean dianzanBean) {
+
                                     //处理结束后恢复点击
                                     ((ViewHolder) holder).rlDianzan.setEnabled(true);
 
@@ -405,55 +422,55 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         //获取发布时间
         String createTime = listBean.getCreateTime();
+        if(createTime!=null){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-dd HH:mm:ss", Locale.SIMPLIFIED_CHINESE);
+            try {
+                Date parse = sdf.parse(createTime);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-dd HH:mm:ss", Locale.SIMPLIFIED_CHINESE);
-        try {
-            Date parse = sdf.parse(createTime);
+                long time = parse.getTime();
 
-            long time = parse.getTime();
+                //获取当前时间
+                long l = System.currentTimeMillis();
+                //获取发布过的时长
+                long difference = l - time;
 
-            //获取当前时间
-            long l = System.currentTimeMillis();
-            //获取发布过的时长
-            long difference = l - time;
-
-            //时长大于12小时 显示日期
-            if (difference > 43200000) {
-                ((ViewHolder) holder).tvTime.setText(createTime);
+                //时长大于12小时 显示日期
+                if (difference > 43200000) {
+                    ((ViewHolder) holder).tvTime.setText(createTime);
+                }
+                //时长小于12小时 展示时间
+                if (difference > 1800000 && difference < 43200000) {
+                    String[] s = createTime.split(" ");
+                    ((ViewHolder) holder).tvTime.setText(s[1]);
+                }
+                if (difference > 1200000 && difference < 1800000) {
+                    ((ViewHolder) holder).tvTime.setText("半小时前发布");
+                }
+                if (difference > 600000 && difference < 1200000) {
+                    ((ViewHolder) holder).tvTime.setText("20分钟前发布");
+                }
+                if (difference > 300000 && difference < 600000) {
+                    ((ViewHolder) holder).tvTime.setText("10分钟前发布");
+                }
+                if (difference > 240000 && difference < 300000) {
+                    ((ViewHolder) holder).tvTime.setText("5分钟前发布");
+                }
+                if (difference > 180000 && difference < 240000) {
+                    ((ViewHolder) holder).tvTime.setText("4分钟前发布");
+                }
+                if (difference > 120000 && difference < 180000) {
+                    ((ViewHolder) holder).tvTime.setText("3分钟前发布");
+                }
+                if (difference > 60000 && difference < 120000) {
+                    ((ViewHolder) holder).tvTime.setText("2分钟前发布");
+                }
+                if (difference < 60000) {
+                    ((ViewHolder) holder).tvTime.setText("1分钟前发布");
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
-            //时长小于12小时 展示时间
-            if (difference > 1800000 && difference < 43200000) {
-                String[] s = createTime.split(" ");
-                ((ViewHolder) holder).tvTime.setText(s[1]);
-            }
-            if (difference > 1200000 && difference < 1800000) {
-                ((ViewHolder) holder).tvTime.setText("半小时前发布");
-            }
-            if (difference > 600000 && difference < 1200000) {
-                ((ViewHolder) holder).tvTime.setText("20分钟前发布");
-            }
-            if (difference > 300000 && difference < 600000) {
-                ((ViewHolder) holder).tvTime.setText("10分钟前发布");
-            }
-            if (difference > 240000 && difference < 300000) {
-                ((ViewHolder) holder).tvTime.setText("5分钟前发布");
-            }
-            if (difference > 180000 && difference < 240000) {
-                ((ViewHolder) holder).tvTime.setText("4分钟前发布");
-            }
-            if (difference > 120000 && difference < 180000) {
-                ((ViewHolder) holder).tvTime.setText("3分钟前发布");
-            }
-            if (difference > 60000 && difference < 120000) {
-                ((ViewHolder) holder).tvTime.setText("2分钟前发布");
-            }
-            if (difference < 60000) {
-                ((ViewHolder) holder).tvTime.setText("1分钟前发布");
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
         }
-
         int imgType = list.get(position).getImgType();
         //纯文本
         if (imgType == 1) {

@@ -5,6 +5,7 @@ import com.YiDian.RainBow.dynamic.bean.SaveMsgSuccessBean;
 import com.YiDian.RainBow.dynamic.bean.WriteDevelopmentBean;
 import com.YiDian.RainBow.login.bean.ComPleteMsgBean;
 import com.YiDian.RainBow.login.bean.LoginBean;
+import com.YiDian.RainBow.main.fragment.home.bean.CollectDynamicBean;
 import com.YiDian.RainBow.main.fragment.home.bean.DianzanBean;
 import com.YiDian.RainBow.main.fragment.home.bean.DynamicDetailsBean;
 import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
@@ -95,4 +96,12 @@ public interface Apis {
     //动态详情
     @GET("content/getContentInfoById")
     Observable<DynamicDetailsBean> dogetDynamicDetails(@Query("contentId")int contentid,@Query("userId")int userid);
+
+    //收藏动态
+    @POST("collect/addCollect")
+    Observable<CollectDynamicBean> doCollectDynamic(@Query("userId")int userid,@Query("contentId")int contentid);
+
+    //取消收藏动态
+    @POST("collect/delCollect")
+    Observable<CollectDynamicBean> doCancleCollectDynamic(@Query("userId")int userid,@Query("contentId")int contentid);
 }

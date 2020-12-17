@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_item"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <TextView
+        android:layout_width="@dimen/dp_69"
+        android:text="#交友聊天你觉得呢"
+        android:textColor="#20B5FC"
+        android:id="@+id/tv_text"
+        android:layout_marginTop="@dimen/dp_13"
+        android:background="@drawable/topic_item_bg"
+        android:maxLines="1"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:ellipsize="end"
+        android:textSize="@dimen/sp_12"
+        android:gravity="center"
+        android:layout_height="@dimen/dp_20">
+    </TextView>
+</RelativeLayout>

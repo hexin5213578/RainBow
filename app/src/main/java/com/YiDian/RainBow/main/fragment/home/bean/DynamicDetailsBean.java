@@ -78,7 +78,7 @@ public class DynamicDetailsBean {
         private int clickNum;
         private UserInfoBean userInfo;
         private int commentCount;
-        private double distance;
+        private String distance;
         private List<TopicsBean> topics;
 
         public int getId() {
@@ -217,11 +217,11 @@ public class DynamicDetailsBean {
             this.commentCount = commentCount;
         }
 
-        public double getDistance() {
+        public String getDistance() {
             return distance;
         }
 
-        public void setDistance(double distance) {
+        public void setDistance(String distance) {
             this.distance = distance;
         }
 

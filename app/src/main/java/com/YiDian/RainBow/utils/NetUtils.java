@@ -52,7 +52,7 @@ public class NetUtils {
                 .build();
 
         Retrofit.Builder builder = new Retrofit.Builder();
-        Retrofit retrofit = builder.client(build).baseUrl("http://192.168.10.106:8088/")
+        Retrofit retrofit = builder.client(build).baseUrl("http://192.168.10.105:8088/")
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -92,7 +92,6 @@ public class NetUtils {
 
 
         builder.addFormDataPart("doorPrint",files.get(0).getName(),RequestBody.create(MediaType.parse("image/jepg"),files.get(0)));
-        builder.addFormDataPart("licensePrint",files.get(1).getName(),RequestBody.create(MediaType.parse("image/jepg"),files.get(1)));
 
         return builder.build();
     }
