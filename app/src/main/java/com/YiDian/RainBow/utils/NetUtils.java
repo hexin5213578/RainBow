@@ -52,7 +52,7 @@ public class NetUtils {
                 .build();
 
         Retrofit.Builder builder = new Retrofit.Builder();
-        Retrofit retrofit = builder.client(build).baseUrl("http://192.168.10.105:8088/")
+        Retrofit retrofit = builder.client(build).baseUrl("http://81.71.121.177:8088/")
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

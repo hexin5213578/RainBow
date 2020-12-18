@@ -1,6 +1,7 @@
 package com.YiDian.RainBow.utils;
 
 
+import com.YiDian.RainBow.main.fragment.home.bean.FirstCommentBean;
 import com.YiDian.RainBow.dynamic.bean.SaveMsgSuccessBean;
 import com.YiDian.RainBow.dynamic.bean.WriteDevelopmentBean;
 import com.YiDian.RainBow.login.bean.ComPleteMsgBean;
@@ -16,17 +17,10 @@ import com.YiDian.RainBow.regist.bean.RegistBean;
 import com.YiDian.RainBow.remember.bean.RememberPwdBean;
 import com.YiDian.RainBow.setpwd.bean.GetPhoneCodeBean;
 
-import java.net.URL;
-
 import io.reactivex.Observable;
-import io.reactivex.Single;
-import io.reactivex.SingleObserver;
-import okhttp3.RequestBody;
-import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
-import retrofit2.http.Url;
 
 public interface Apis {
     //最新动态
@@ -96,6 +90,10 @@ public interface Apis {
     //动态详情
     @GET("content/getContentInfoById")
     Observable<DynamicDetailsBean> dogetDynamicDetails(@Query("contentId")int contentid,@Query("userId")int userid);
+
+    //获取动态下 所有一级评论
+    @GET("comment/getCommentsByContentId")
+    Observable<FirstCommentBean> doGetFirstComment(@Query("contentId")int contentid,@Query("page")int page,@Query("pageSize")int pagesize);
 
     //收藏动态
     @POST("collect/addCollect")

@@ -4,12 +4,6 @@ import java.util.List;
 
 public class FirstCommentBean {
 
-    /**
-     * msg : getCommentsByContentId
-     * type : OK
-     * object : [{"id":1,"userid":1030,"commentinfo":"sd发顺丰","lng":null,"lat":null,"commenttype":0,"fatherid":214,"createtime":null,"clickNum":0,"children":null,"userInfo":{"id":1030,"phoneNum":null,"nickName":"何梦阳","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","explains":null,"birthday":null,"userType":null,"userRole":"保密","isSingle":null,"lng":115.298833,"lat":34.097004,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"age":null,"invitationCode":null}},{"id":2,"userid":1031,"commentinfo":"咋说的刚发的","lng":null,"lat":null,"commenttype":0,"fatherid":214,"createtime":null,"clickNum":0,"children":null,"userInfo":{"id":1031,"phoneNum":null,"nickName":"李四","headImg":"http://img.rianbow.cn/202012091309325288188.jpg","explains":null,"birthday":null,"userType":null,"userRole":"T","isSingle":null,"lng":115.54894616,"lat":116.151641641,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"age":null,"invitationCode":null}}]
-     */
-
     private String msg;
     private String type;
     private List<ObjectBean> object;
@@ -50,7 +44,7 @@ public class FirstCommentBean {
          * createtime : null
          * clickNum : 0
          * children : null
-         * userInfo : {"id":1030,"phoneNum":null,"nickName":"何梦阳","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","explains":null,"birthday":null,"userType":null,"userRole":"保密","isSingle":null,"lng":115.298833,"lat":34.097004,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"age":null,"invitationCode":null}
+         * userInfo : {"id":1030,"phoneNum":null,"nickName":"何梦阳","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":null,"birthday":null,"userType":null,"userRole":"保密","isSingle":null,"lng":115.298833,"lat":34.097004,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"age":null,"invitationCode":null}
          */
 
         private int id;
@@ -159,6 +153,7 @@ public class FirstCommentBean {
              * phoneNum : null
              * nickName : 何梦阳
              * headImg : http://img.rianbow.cn/202012091309129337159.jpg
+             * backImg : null
              * explains : null
              * birthday : null
              * userType : null
@@ -180,6 +175,7 @@ public class FirstCommentBean {
             private Object phoneNum;
             private String nickName;
             private String headImg;
+            private Object backImg;
             private Object explains;
             private Object birthday;
             private Object userType;
@@ -226,6 +222,14 @@ public class FirstCommentBean {
 
             public void setHeadImg(String headImg) {
                 this.headImg = headImg;
+            }
+
+            public Object getBackImg() {
+                return backImg;
+            }
+
+            public void setBackImg(Object backImg) {
+                this.backImg = backImg;
             }
 
             public Object getExplains() {

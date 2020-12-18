@@ -8,7 +8,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaMetadataRetriever;
 import android.os.Build;
@@ -37,6 +39,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
+import com.YiDian.RainBow.base.App;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.customDialog.CustomDialogCancleFollow;
 import com.YiDian.RainBow.custom.image.NineGridTestLayout;
@@ -53,10 +56,20 @@ import com.YiDian.RainBow.utils.StringUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.tencent.connect.share.QQShare;
+import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.opensdk.modelmsg.WXVideoObject;
+import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
+import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
+import com.tencent.tauth.UiError;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -79,10 +92,13 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private final List<NewDynamicBean.ObjectBean.ListBean> list;
 
     public static final String TAG = "ListNormalAdapter22";
+    String wechatUrl = "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973";
 
     private PopupWindow mPopupWindow;
     private Tencent mTencent;
     int userid;
+    private NewDynamicBean.ObjectBean.ListBean listBean;
+    private NewDynamicBean.ObjectBean.ListBean.UserInfoBean userInfo;
 
     public NewDynamicAdapter(Activity context, List<NewDynamicBean.ObjectBean.ListBean> list) {
         this.context = context;
@@ -128,11 +144,9 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         userid = Integer.valueOf(Common.getUserId());
 
 
-        NewDynamicBean.ObjectBean.ListBean listBean = list.get(position);
+        listBean = list.get(position);
         int id = listBean.getId();
         int usId = listBean.getUserId();
-
-
 
         //跳转到动态详情页
         ((ViewHolder) holder).rlItem.setOnClickListener(new View.OnClickListener() {
@@ -148,7 +162,6 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         ((ViewHolder)holder).ivHeadimg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //这里需要做跳转用户的实现，先用一个Toast代替
 
                 Intent intent = new Intent(context, PersonHomeActivity.class);
                 SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
@@ -160,7 +173,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
         });
 
-        NewDynamicBean.ObjectBean.ListBean.UserInfoBean userInfo = list.get(position).getUserInfo();
+        userInfo = list.get(position).getUserInfo();
         //设置用户名
         ((ViewHolder) holder).tvUsername.setText(userInfo.getNickName());
         //加载头像
@@ -489,7 +502,6 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             String contentImg = list.get(position).getContentImg();
             String[] split = contentImg.split(",");
 
-            Log.d("xxx", split.length + "");
             List<String> imglist = new ArrayList<>();
 
             for (int i = 0; i < split.length; i++) {
@@ -727,11 +739,49 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     //分享到QQ信息
     private void onClickShare() {
-        /*Bundle params = new Bundle();
+        int imgType = listBean.getImgType();
+        Bundle params = new Bundle();
 
-        params.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, file.toString());
-        params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_IMAGE);
-        params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_ITEM_HIDE);
+        if(imgType==1){
+            params.putString(QQShare.SHARE_TO_QQ_SUMMARY, listBean.getContentInfo());
+            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName()+"的动态");
+            params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973");
+            params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
+            params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_ITEM_HIDE);
+        }
+        if(imgType==21){
+            String[] split = listBean.getContentImg().split(",");
+
+            params.putString(QQShare.SHARE_TO_QQ_SUMMARY, listBean.getContentInfo());
+            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName()+"的动态");
+            params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973");
+            params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, split[0]);
+            params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
+            params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_ITEM_HIDE);
+        }
+        if(imgType==2){
+            String[] split = listBean.getContentImg().split(",");
+            params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, split[0]);
+            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName()+"的动态");
+            params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973");
+            params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare. SHARE_TO_QQ_TYPE_IMAGE);
+            params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_ITEM_HIDE);
+        }
+        if(imgType==3){
+            params.putString(QQShare.SHARE_TO_QQ_AUDIO_URL, listBean.getContentImg());
+            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName()+"的动态");
+            params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973");
+            params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare. SHARE_TO_QQ_TYPE_AUDIO);
+            params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_ITEM_HIDE);
+        }
+        if(imgType==31){
+            params.putString(QQShare.SHARE_TO_QQ_SUMMARY, listBean.getContentInfo());
+            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName()+"的动态");
+            params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973");
+            params.putString(QQShare.SHARE_TO_QQ_AUDIO_URL, listBean.getContentImg());
+            params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
+            params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_ITEM_HIDE);
+        }
         mTencent.shareToQQ(context, params, new IUiListener() {
             @Override
             public void onComplete(Object o) {
@@ -748,21 +798,62 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 Log.e(TAG, "取消分享");
 
             }
-        });*/
+        });
+
     }
 
     //分享到QQ空间
     private void onClickShareQzone() {
-    /*    Bundle params = new Bundle();
+        int imgType = listBean.getImgType();
+        Bundle params = new Bundle();
 
-        params.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, file.toString());
-        params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_IMAGE);
-        params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_AUTO_OPEN);
+        if(imgType==1){
+            params.putString(QQShare.SHARE_TO_QQ_SUMMARY, listBean.getContentInfo());
+            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName()+"的动态");
+            params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973");
+            params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
+            params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_AUTO_OPEN);
+        }
+        if(imgType==21){
+            String[] split = listBean.getContentImg().split(",");
+            params.putString(QQShare.SHARE_TO_QQ_SUMMARY, listBean.getContentInfo());
+            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName()+"的动态");
+            params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973");
+            params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, split[0]);
+            params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
+            params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_AUTO_OPEN);
+        }
+        if(imgType==2){
+            String[] split = listBean.getContentImg().split(",");
+            params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, split[0]);
+            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName()+"的动态");
+            params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973");
+            params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare. SHARE_TO_QQ_TYPE_IMAGE);
+            params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_AUTO_OPEN);
+
+        }
+        if(imgType==3){
+            params.putString(QQShare.SHARE_TO_QQ_AUDIO_URL, listBean.getContentImg());
+            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName()+"的动态");
+            params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973");
+            params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare. SHARE_TO_QQ_TYPE_AUDIO);
+            params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_AUTO_OPEN);
+
+        }
+        if(imgType==31){
+            params.putString(QQShare.SHARE_TO_QQ_SUMMARY, listBean.getContentInfo());
+            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName()+"的动态");
+            params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973");
+            params.putString(QQShare.SHARE_TO_QQ_AUDIO_URL, listBean.getContentImg());
+            params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
+            params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_AUTO_OPEN);
+
+        }
         mTencent.shareToQQ(context, params, new IUiListener() {
             @Override
             public void onComplete(Object o) {
+                Log.e(TAG, "分享成功: " + o.toString());
             }
-
             @Override
             public void onError(UiError uiError) {
 
@@ -772,44 +863,258 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             public void onCancel() {
 
             }
-        });*/
+        });
     }
 
     //分享到微信好友
     private void onclickShareWechatFriend() {
-/*        //初始化 WXImageObject 和 WXMediaMessage 对象
-        WXImageObject imgObj = new WXImageObject(bitmap1);
-        WXMediaMessage msg = new WXMediaMessage();
-        msg.mediaObject = imgObj;
+        int imgType = listBean.getImgType();
+        if (!App.getWXApi().isWXAppInstalled()){
+            Toast.makeText(context, "您未安装微信", Toast.LENGTH_SHORT).show();
+            return;
+        }else{
+            if(imgType==1){
+                // TODO: 2020/12/18 0018 要跳转的链接
 
-        //构造一个Req
-        SendMessageToWX.Req req = new SendMessageToWX.Req();
-        req.transaction = buildTransaction("img");
-        req.message = msg;
-        req.scene = SendMessageToWX.Req.WXSceneSession;
-        //调用api接口，发送数据到微信
-        App.getWXApi().sendReq(req);*/
+                //初始化 WXImageObject 和 WXMediaMessage 对象
+                WXWebpageObject localWXWebpageObject = new WXWebpageObject();
+                localWXWebpageObject.webpageUrl = wechatUrl;
 
-    }
+                WXMediaMessage msg = new WXMediaMessage(localWXWebpageObject);
+                msg.description = listBean.getContentInfo();
 
-    private String buildTransaction(final String type) {
-        return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
+                msg.title = userInfo.getNickName()+"的动态";
+                //构造一个Req
+                SendMessageToWX.Req req = new SendMessageToWX.Req();
+                req.transaction = String.valueOf(System.currentTimeMillis());
+                req.message = msg;
+                req.scene = SendMessageToWX.Req.WXSceneSession;
+                //调用api接口，发送数据到微信
+                App.getWXApi().sendReq(req);
+            }
+            if(imgType==2){
+                String[] split = listBean.getContentImg().split(",");
+
+                Glide.with(context).asBitmap().load(split[0])
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                WXWebpageObject localWXWebpageObject = new WXWebpageObject();
+                                localWXWebpageObject.webpageUrl = wechatUrl;
+                                WXMediaMessage localWXMediaMessage = new WXMediaMessage(
+                                        localWXWebpageObject);
+                                localWXMediaMessage.title = userInfo.getNickName()+"的动态";//不能太长，否则微信会提示出错。不过博主没验证过具体能输入多长。
+                                localWXMediaMessage.description = "";
+                                localWXMediaMessage.thumbData = getBitmapBytes(resource, false);
+
+                                //构造一个Req
+                                SendMessageToWX.Req req = new SendMessageToWX.Req();
+                                req.transaction = String.valueOf(System.currentTimeMillis());
+                                req.message = localWXMediaMessage;
+                                req.scene = SendMessageToWX.Req.WXSceneSession;
+                                //调用api接口，发送数据到微信
+                                App.getWXApi().sendReq(req);
+                            }
+                        });
+            }
+            if(imgType==21){
+                String[] split = listBean.getContentImg().split(",");
+
+                Glide.with(context).asBitmap().load(split[0])
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                WXWebpageObject localWXWebpageObject = new WXWebpageObject();
+                                localWXWebpageObject.webpageUrl = wechatUrl;
+                                WXMediaMessage localWXMediaMessage = new WXMediaMessage(
+                                        localWXWebpageObject);
+                                localWXMediaMessage.title = userInfo.getNickName()+"的动态";//不能太长，否则微信会提示出错。不过博主没验证过具体能输入多长。
+                                localWXMediaMessage.description = listBean.getContentInfo();
+                                localWXMediaMessage.thumbData = getBitmapBytes(resource, false);
+
+                                //构造一个Req
+                                SendMessageToWX.Req req = new SendMessageToWX.Req();
+                                req.transaction = String.valueOf(System.currentTimeMillis());
+                                req.message = localWXMediaMessage;
+                                req.scene = SendMessageToWX.Req.WXSceneSession;
+                                //调用api接口，发送数据到微信
+                                App.getWXApi().sendReq(req);
+                            }
+                        });
+            }
+            if(imgType==3){
+                //初始化一个WXVideoObject，填写url
+                WXVideoObject video = new WXVideoObject();
+                video.videoUrl =listBean.getContentImg();
+
+                //用 WXVideoObject 对象初始化一个 WXMediaMessage 对象
+                WXMediaMessage msg = new WXMediaMessage(video);
+                msg.title =userInfo.getNickName()+"的动态";
+
+                Bitmap netVideoBitmap = getNetVideoBitmap(listBean.getContentImg());
+                //设置封面
+                msg.thumbData =getBitmapBytes(netVideoBitmap, false);
+
+                //构造一个Req
+                SendMessageToWX.Req req = new SendMessageToWX.Req();
+                req.transaction = String.valueOf(System.currentTimeMillis());
+                req.message =msg;
+                req.scene = SendMessageToWX.Req.WXSceneSession;
+
+                //调用api接口，发送数据到微信
+                App.getWXApi().sendReq(req);
+            }
+            if(imgType==31){
+                //初始化一个WXVideoObject，填写url
+                WXVideoObject video = new WXVideoObject();
+                video.videoUrl =listBean.getContentImg();
+
+                //用 WXVideoObject 对象初始化一个 WXMediaMessage 对象
+                WXMediaMessage msg = new WXMediaMessage(video);
+                msg.title =userInfo.getNickName()+"的动态";
+                msg.description= listBean.getContentInfo();
+                Bitmap netVideoBitmap = getNetVideoBitmap(listBean.getContentImg());
+                //设置封面
+                msg.thumbData =getBitmapBytes(netVideoBitmap, false);
+
+                //构造一个Req
+                SendMessageToWX.Req req = new SendMessageToWX.Req();
+                req.transaction = String.valueOf(System.currentTimeMillis());
+                req.message =msg;
+                req.scene = SendMessageToWX.Req.WXSceneSession;
+
+                //调用api接口，发送数据到微信
+                App.getWXApi().sendReq(req);
+
+            }
+        }
+
+
+
     }
 
     //分享到微信朋友圈
     private void onclickShareWechatmoments() {
-        /*//初始化 WXImageObject 和 WXMediaMessage 对象
-        WXImageObject imgObj = new WXImageObject(bitmap1);
-        WXMediaMessage msg = new WXMediaMessage();
-        msg.mediaObject = imgObj;
+        int imgType = listBean.getImgType();
+        if (!App.getWXApi().isWXAppInstalled()){
+            Toast.makeText(context, "您未安装微信", Toast.LENGTH_SHORT).show();
+            return;
+        }else{
+            if(imgType==1){
+                // TODO: 2020/12/18 0018 要跳转的链接
 
-        //构造一个Req
-        SendMessageToWX.Req req = new SendMessageToWX.Req();
-        req.transaction = buildTransaction("img");
-        req.message = msg;
-        req.scene = SendMessageToWX.Req.WXSceneTimeline;
-        //调用api接口，发送数据到微信
-        App.getWXApi().sendReq(req);*/
+                //初始化 WXImageObject 和 WXMediaMessage 对象
+                WXWebpageObject localWXWebpageObject = new WXWebpageObject();
+                localWXWebpageObject.webpageUrl = wechatUrl;
+
+                WXMediaMessage msg = new WXMediaMessage(localWXWebpageObject);
+                msg.description = listBean.getContentInfo();
+
+                msg.title = userInfo.getNickName()+"的动态";
+                //构造一个Req
+                SendMessageToWX.Req req = new SendMessageToWX.Req();
+                req.transaction = String.valueOf(System.currentTimeMillis());
+                req.message = msg;
+                req.scene = SendMessageToWX.Req.WXSceneTimeline;
+                //调用api接口，发送数据到微信
+                App.getWXApi().sendReq(req);
+            }
+            if(imgType==2){
+                String[] split = listBean.getContentImg().split(",");
+
+                Glide.with(context).asBitmap().load(split[0])
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                WXWebpageObject localWXWebpageObject = new WXWebpageObject();
+                                localWXWebpageObject.webpageUrl = wechatUrl;
+                                WXMediaMessage localWXMediaMessage = new WXMediaMessage(
+                                        localWXWebpageObject);
+                                localWXMediaMessage.title = userInfo.getNickName()+"的动态";//不能太长，否则微信会提示出错。不过博主没验证过具体能输入多长。
+                                localWXMediaMessage.description = "";
+                                localWXMediaMessage.thumbData = getBitmapBytes(resource, false);
+
+                                //构造一个Req
+                                SendMessageToWX.Req req = new SendMessageToWX.Req();
+                                req.transaction = String.valueOf(System.currentTimeMillis());
+                                req.message = localWXMediaMessage;
+                                req.scene = SendMessageToWX.Req.WXSceneTimeline;
+                                //调用api接口，发送数据到微信
+                                App.getWXApi().sendReq(req);
+                            }
+                        });
+            }
+            if(imgType==21){
+                String[] split = listBean.getContentImg().split(",");
+
+                Glide.with(context).asBitmap().load(split[0])
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                WXWebpageObject localWXWebpageObject = new WXWebpageObject();
+                                localWXWebpageObject.webpageUrl = wechatUrl;
+                                WXMediaMessage localWXMediaMessage = new WXMediaMessage(
+                                        localWXWebpageObject);
+                                localWXMediaMessage.title = userInfo.getNickName()+"的动态";//不能太长，否则微信会提示出错。不过博主没验证过具体能输入多长。
+                                localWXMediaMessage.description = listBean.getContentInfo();
+                                localWXMediaMessage.thumbData = getBitmapBytes(resource, false);
+
+                                //构造一个Req
+                                SendMessageToWX.Req req = new SendMessageToWX.Req();
+                                req.transaction = String.valueOf(System.currentTimeMillis());
+                                req.message = localWXMediaMessage;
+                                req.scene = SendMessageToWX.Req.WXSceneTimeline;
+                                //调用api接口，发送数据到微信
+                                App.getWXApi().sendReq(req);
+                            }
+                        });
+            }
+            if(imgType==3){
+                //初始化一个WXVideoObject，填写url
+                WXVideoObject video = new WXVideoObject();
+                video.videoUrl =listBean.getContentImg();
+
+                //用 WXVideoObject 对象初始化一个 WXMediaMessage 对象
+                WXMediaMessage msg = new WXMediaMessage(video);
+                msg.title =userInfo.getNickName()+"的动态";
+
+                Bitmap netVideoBitmap = getNetVideoBitmap(listBean.getContentImg());
+                //设置封面
+                msg.thumbData =getBitmapBytes(netVideoBitmap, false);
+
+                //构造一个Req
+                SendMessageToWX.Req req = new SendMessageToWX.Req();
+                req.transaction = String.valueOf(System.currentTimeMillis());
+                req.message =msg;
+                req.scene = SendMessageToWX.Req.WXSceneTimeline;
+
+                //调用api接口，发送数据到微信
+                App.getWXApi().sendReq(req);
+            }
+            if(imgType==31){
+                //初始化一个WXVideoObject，填写url
+                WXVideoObject video = new WXVideoObject();
+                video.videoUrl =listBean.getContentImg();
+
+                //用 WXVideoObject 对象初始化一个 WXMediaMessage 对象
+                WXMediaMessage msg = new WXMediaMessage(video);
+                msg.title =userInfo.getNickName()+"的动态";
+                msg.description= listBean.getContentInfo();
+                Bitmap netVideoBitmap = getNetVideoBitmap(listBean.getContentImg());
+                //设置封面
+                msg.thumbData =getBitmapBytes(netVideoBitmap, false);
+
+                //构造一个Req
+                SendMessageToWX.Req req = new SendMessageToWX.Req();
+                req.transaction = String.valueOf(System.currentTimeMillis());
+                req.message =msg;
+                req.scene = SendMessageToWX.Req.WXSceneTimeline;
+
+                //调用api接口，发送数据到微信
+                App.getWXApi().sendReq(req);
+
+            }
+        }
     }
 
     //设置透明度
@@ -957,6 +1262,38 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             ds.setUnderlineText(false);
         }
     }
-
+    // 需要对图片进行处理，否则微信会在log中输出thumbData检查错误
+    private static byte[] getBitmapBytes(Bitmap bitmap, boolean paramBoolean) {
+        Bitmap localBitmap = Bitmap.createBitmap(80, 80, Bitmap.Config.RGB_565);
+        Canvas localCanvas = new Canvas(localBitmap);
+        int i;
+        int j;
+        if (bitmap.getHeight() > bitmap.getWidth()) {
+            i = bitmap.getWidth();
+            j = bitmap.getWidth();
+        } else {
+            i = bitmap.getHeight();
+            j = bitmap.getHeight();
+        }
+        while (true) {
+            localCanvas.drawBitmap(bitmap, new Rect(0, 0, i, j), new Rect(0, 0,80
+                    , 80), null);
+            if (paramBoolean)
+                bitmap.recycle();
+            ByteArrayOutputStream localByteArrayOutputStream = new ByteArrayOutputStream();
+            localBitmap.compress(Bitmap.CompressFormat.JPEG, 100,
+                    localByteArrayOutputStream);
+            localBitmap.recycle();
+            byte[] arrayOfByte = localByteArrayOutputStream.toByteArray();
+            try {
+                localByteArrayOutputStream.close();
+                return arrayOfByte;
+            } catch (Exception e) {
+                Log.d("xxx",e.getMessage());
+            }
+            i = bitmap.getHeight();
+            j = bitmap.getHeight();
+        }
+    }
 }
 

@@ -49,6 +49,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.customDialog.CustomDialog;
 import com.YiDian.RainBow.dynamic.adapter.DevelogmentImgAdapter;
 import com.YiDian.RainBow.dynamic.adapter.HotHuatiAdapter;
@@ -181,7 +182,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
     private String district;
     private ArrayList<String> list;
     int whocansee = 1;
-    int userid = 1031;
+    int userid ;
     private UploadManager uploadManager;
     private String upToken;
     private ArrayList<String> upimg_key_list;
@@ -207,7 +208,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
         progressDialog.setMessage("正在压缩视频，请耐心等待..");
 
         CL.setLogEnable(true);
-
+        userid = Integer.parseInt(Common.getUserId());
         //申请开启内存卡权限
         if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) && (DevelopmentDynamicActivity.this.checkSelfPermission
                 (Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
@@ -588,6 +589,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
         switch (v.getId()) {
             //返回
             case R.id.iv_back:
+
                 // TODO: 2020/11/21 0021 判断是否有内容可以保存到草稿箱 有内容保存 无内容直接退出\
                 if(etContent.getText().toString().length()>0 || select.size()>0 || select1.size()>0){
                     CustomDialog.Builder builder = new CustomDialog.Builder(this);
@@ -1054,7 +1056,8 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                             }
                         };
                     }
-                } else {
+                }
+                else {
                     //不传位置
                     //判断内容
                     if (content.length() > 0 && select.size()==0 && select1.size()==0) {

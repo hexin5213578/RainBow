@@ -54,10 +54,7 @@ public class WXEntryActivity extends AppCompatActivity implements IWXAPIEventHan
                 switch (baseResp.getType()){
                         //微信分享回调
                     case ConstantsAPI.COMMAND_SENDMESSAGE_TO_WX:
-
-                        Toast.makeText(this, "分享成功", Toast.LENGTH_SHORT).show();
                         finish();
-
                         break;
                         //微信登录回调
                     case ConstantsAPI.COMMAND_SENDAUTH:

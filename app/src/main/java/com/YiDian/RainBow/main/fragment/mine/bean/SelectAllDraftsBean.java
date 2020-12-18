@@ -7,7 +7,7 @@ public class SelectAllDraftsBean {
     /**
      * msg : selectAllDrafts
      * type : OK
-     * object : {"total":6,"list":[{"id":99,"userId":1031,"contentInfo":"摸哪具体问#热门话题3# @何梦洋0,何梦洋1, ","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/20201125162104979119_1603545284104.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/20201125162108269846_2020-10-27-20-44-21-10.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011251621091764843_2020-10-25-22-44-58-52.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011251621108604691.jpg","lng":null,"lat":null,"createTime":"2020-11-25 16:23:03","status":0,"viewNum":null,"isOpen":1,"imgType":21,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null},{"id":100,"userId":1031,"contentInfo":"","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/20201125162142222612_1603545284104.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/2020112516214582175.jpg","lng":null,"lat":null,"createTime":"2020-11-25 16:23:38","status":0,"viewNum":null,"isOpen":1,"imgType":2,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null},{"id":101,"userId":1031,"contentInfo":"","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/202011251622099574366.mp4","lng":null,"lat":null,"createTime":"2020-11-25 16:24:01","status":0,"viewNum":null,"isOpen":1,"imgType":3,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null},{"id":102,"userId":1031,"contentInfo":"","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/202011271415022549942_2020-10-27-20-48-11-74.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271415046419571_2020-10-27-21-29-09-90.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271415066236481_2020-10-27-20-44-21-10.jpg","lng":null,"lat":null,"createTime":"2020-11-27 14:16:57","status":0,"viewNum":null,"isOpen":1,"imgType":2,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null},{"id":104,"userId":1031,"contentInfo":"","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/202011271419376915828_2020-10-27-21-29-09-90.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419397187954_2020-10-27-20-48-11-74.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419419278357_2020-10-25-22-44-58-52.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419449157517_2020-10-25-20-55-09-45.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419517555401_1603545284104.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419546757391_2020-10-27-20-44-21-10.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419558741109.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271420024118978.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271420077535555.jpg","lng":null,"lat":null,"createTime":"2020-11-27 14:21:57","status":0,"viewNum":null,"isOpen":1,"imgType":2,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null},{"id":105,"userId":1031,"contentInfo":"匿名糯米米怄气明目同","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/20201127142206223272.mp4","lng":null,"lat":null,"createTime":"2020-11-27 14:24:24","status":0,"viewNum":null,"isOpen":1,"imgType":31,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null}],"pageNum":1,"pageSize":6,"size":6,"startRow":0,"endRow":5,"pages":1,"prePage":0,"nextPage":0,"isFirstPage":true,"isLastPage":true,"hasPreviousPage":false,"hasNextPage":false,"navigatePages":8,"navigatepageNums":[1],"navigateFirstPage":1,"navigateLastPage":1}
+     * object : {"total":5,"list":[{"id":224,"userId":1030,"contentInfo":"","contentImg":"http://img.rianbow.cn/26f1fb1f20201218160338.jpg, http://img.rianbow.cn/496b81be20201218160338.jpg, http://img.rianbow.cn/9c6b630420201218160338.jpg, http://img.rianbow.cn/a677503e20201218160338.jpg, http://img.rianbow.cn/3aeca1ff20201218160338.jpg, http://img.rianbow.cn/3e07843620201218160338.jpg, http://img.rianbow.cn/ccff07ca20201218160338.jpg","lng":null,"lat":null,"createTime":"2020-12-18 16:03:40","status":0,"viewNum":null,"isOpen":1,"imgType":2,"isAttention":null,"isCollect":null,"isClick":null,"clickNum":0,"topics":null,"userInfo":{"id":1030,"phoneNum":null,"nickName":"何梦阳","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":null,"birthday":null,"userType":null,"userRole":"保密","isSingle":null,"lng":115.298833,"lat":34.097004,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"age":null,"invitationCode":null},"commentCount":null,"distance":null},{"id":225,"userId":1030,"contentInfo":"和你相遇我给您","contentImg":"","lng":null,"lat":null,"createTime":"2020-12-18 16:30:29","status":0,"viewNum":null,"isOpen":1,"imgType":1,"isAttention":null,"isCollect":null,"isClick":null,"clickNum":0,"topics":null,"userInfo":{"id":1030,"phoneNum":null,"nickName":"何梦阳","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":null,"birthday":null,"userType":null,"userRole":"保密","isSingle":null,"lng":115.298833,"lat":34.097004,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"age":null,"invitationCode":null},"commentCount":null,"distance":null},{"id":226,"userId":1030,"contentInfo":"您米诺最您","contentImg":"http://img.rianbow.cn/3aeca1ff20201218163039.jpg, http://img.rianbow.cn/496b81be20201218163039.jpg, http://img.rianbow.cn/ccff07ca20201218163039.jpg","lng":null,"lat":null,"createTime":"2020-12-18 16:30:40","status":0,"viewNum":null,"isOpen":1,"imgType":21,"isAttention":null,"isCollect":null,"isClick":null,"clickNum":0,"topics":null,"userInfo":{"id":1030,"phoneNum":null,"nickName":"何梦阳","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":null,"birthday":null,"userType":null,"userRole":"保密","isSingle":null,"lng":115.298833,"lat":34.097004,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"age":null,"invitationCode":null},"commentCount":null,"distance":null},{"id":227,"userId":1030,"contentInfo":"倪敏嘻嘻嘻明敏","contentImg":"http://img.rianbow.cn/d085963820201218163055.mp4","lng":null,"lat":null,"createTime":"2020-12-18 16:30:56","status":0,"viewNum":null,"isOpen":1,"imgType":31,"isAttention":null,"isCollect":null,"isClick":null,"clickNum":0,"topics":null,"userInfo":{"id":1030,"phoneNum":null,"nickName":"何梦阳","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":null,"birthday":null,"userType":null,"userRole":"保密","isSingle":null,"lng":115.298833,"lat":34.097004,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"age":null,"invitationCode":null},"commentCount":null,"distance":null},{"id":229,"userId":1030,"contentInfo":"","contentImg":"http://img.rianbow.cn/001341ae20201218163252.mp4","lng":null,"lat":null,"createTime":"2020-12-18 16:32:53","status":0,"viewNum":null,"isOpen":1,"imgType":3,"isAttention":null,"isCollect":null,"isClick":null,"clickNum":0,"topics":null,"userInfo":{"id":1030,"phoneNum":null,"nickName":"何梦阳","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":null,"birthday":null,"userType":null,"userRole":"保密","isSingle":null,"lng":115.298833,"lat":34.097004,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"age":null,"invitationCode":null},"commentCount":null,"distance":null}],"pageNum":1,"pageSize":5,"size":5,"startRow":0,"endRow":4,"pages":1,"prePage":0,"nextPage":0,"isFirstPage":true,"isLastPage":true,"hasPreviousPage":false,"hasNextPage":false,"navigatePages":8,"navigatepageNums":[1],"navigateFirstPage":1,"navigateLastPage":1}
      */
 
     private String msg;
@@ -40,13 +40,13 @@ public class SelectAllDraftsBean {
 
     public static class ObjectBean {
         /**
-         * total : 6
-         * list : [{"id":99,"userId":1031,"contentInfo":"摸哪具体问#热门话题3# @何梦洋0,何梦洋1, ","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/20201125162104979119_1603545284104.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/20201125162108269846_2020-10-27-20-44-21-10.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011251621091764843_2020-10-25-22-44-58-52.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011251621108604691.jpg","lng":null,"lat":null,"createTime":"2020-11-25 16:23:03","status":0,"viewNum":null,"isOpen":1,"imgType":21,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null},{"id":100,"userId":1031,"contentInfo":"","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/20201125162142222612_1603545284104.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/2020112516214582175.jpg","lng":null,"lat":null,"createTime":"2020-11-25 16:23:38","status":0,"viewNum":null,"isOpen":1,"imgType":2,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null},{"id":101,"userId":1031,"contentInfo":"","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/202011251622099574366.mp4","lng":null,"lat":null,"createTime":"2020-11-25 16:24:01","status":0,"viewNum":null,"isOpen":1,"imgType":3,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null},{"id":102,"userId":1031,"contentInfo":"","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/202011271415022549942_2020-10-27-20-48-11-74.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271415046419571_2020-10-27-21-29-09-90.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271415066236481_2020-10-27-20-44-21-10.jpg","lng":null,"lat":null,"createTime":"2020-11-27 14:16:57","status":0,"viewNum":null,"isOpen":1,"imgType":2,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null},{"id":104,"userId":1031,"contentInfo":"","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/202011271419376915828_2020-10-27-21-29-09-90.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419397187954_2020-10-27-20-48-11-74.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419419278357_2020-10-25-22-44-58-52.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419449157517_2020-10-25-20-55-09-45.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419517555401_1603545284104.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419546757391_2020-10-27-20-44-21-10.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271419558741109.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271420024118978.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011271420077535555.jpg","lng":null,"lat":null,"createTime":"2020-11-27 14:21:57","status":0,"viewNum":null,"isOpen":1,"imgType":2,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null},{"id":105,"userId":1031,"contentInfo":"匿名糯米米怄气明目同","contentImg":"http://qjvorl4f2.hn-bkt.clouddn.com/20201127142206223272.mp4","lng":null,"lat":null,"createTime":"2020-11-27 14:24:24","status":0,"viewNum":null,"isOpen":1,"imgType":31,"isCollect":null,"isClick":null,"clickNum":null,"topics":null,"userInfo":{"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null},"distance":null}]
+         * total : 5
+         * list : [{"id":224,"userId":1030,"contentInfo":"","contentImg":"http://img.rianbow.cn/26f1fb1f20201218160338.jpg, http://img.rianbow.cn/496b81be20201218160338.jpg, http://img.rianbow.cn/9c6b630420201218160338.jpg, http://img.rianbow.cn/a677503e20201218160338.jpg, http://img.rianbow.cn/3aeca1ff20201218160338.jpg, http://img.rianbow.cn/3e07843620201218160338.jpg, http://img.rianbow.cn/ccff07ca20201218160338.jpg","lng":null,"lat":null,"createTime":"2020-12-18 16:03:40","status":0,"viewNum":null,"isOpen":1,"imgType":2,"isAttention":null,"isCollect":null,"isClick":null,"clickNum":0,"topics":null,"userInfo":{"id":1030,"phoneNum":null,"nickName":"何梦阳","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":null,"birthday":null,"userType":null,"userRole":"保密","isSingle":null,"lng":115.298833,"lat":34.097004,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"age":null,"invitationCode":null},"commentCount":null,"distance":null},{"id":225,"userId":1030,"contentInfo":"和你相遇我给您","contentImg":"","lng":null,"lat":null,"createTime":"2020-12-18 16:30:29","status":0,"viewNum":null,"isOpen":1,"imgType":1,"isAttention":null,"isCollect":null,"isClick":null,"clickNum":0,"topics":null,"userInfo":{"id":1030,"phoneNum":null,"nickName":"何梦阳","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":null,"birthday":null,"userType":null,"userRole":"保密","isSingle":null,"lng":115.298833,"lat":34.097004,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"age":null,"invitationCode":null},"commentCount":null,"distance":null},{"id":226,"userId":1030,"contentInfo":"您米诺最您","contentImg":"http://img.rianbow.cn/3aeca1ff20201218163039.jpg, http://img.rianbow.cn/496b81be20201218163039.jpg, http://img.rianbow.cn/ccff07ca20201218163039.jpg","lng":null,"lat":null,"createTime":"2020-12-18 16:30:40","status":0,"viewNum":null,"isOpen":1,"imgType":21,"isAttention":null,"isCollect":null,"isClick":null,"clickNum":0,"topics":null,"userInfo":{"id":1030,"phoneNum":null,"nickName":"何梦阳","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":null,"birthday":null,"userType":null,"userRole":"保密","isSingle":null,"lng":115.298833,"lat":34.097004,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"age":null,"invitationCode":null},"commentCount":null,"distance":null},{"id":227,"userId":1030,"contentInfo":"倪敏嘻嘻嘻明敏","contentImg":"http://img.rianbow.cn/d085963820201218163055.mp4","lng":null,"lat":null,"createTime":"2020-12-18 16:30:56","status":0,"viewNum":null,"isOpen":1,"imgType":31,"isAttention":null,"isCollect":null,"isClick":null,"clickNum":0,"topics":null,"userInfo":{"id":1030,"phoneNum":null,"nickName":"何梦阳","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":null,"birthday":null,"userType":null,"userRole":"保密","isSingle":null,"lng":115.298833,"lat":34.097004,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"age":null,"invitationCode":null},"commentCount":null,"distance":null},{"id":229,"userId":1030,"contentInfo":"","contentImg":"http://img.rianbow.cn/001341ae20201218163252.mp4","lng":null,"lat":null,"createTime":"2020-12-18 16:32:53","status":0,"viewNum":null,"isOpen":1,"imgType":3,"isAttention":null,"isCollect":null,"isClick":null,"clickNum":0,"topics":null,"userInfo":{"id":1030,"phoneNum":null,"nickName":"何梦阳","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":null,"birthday":null,"userType":null,"userRole":"保密","isSingle":null,"lng":115.298833,"lat":34.097004,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"age":null,"invitationCode":null},"commentCount":null,"distance":null}]
          * pageNum : 1
-         * pageSize : 6
-         * size : 6
+         * pageSize : 5
+         * size : 5
          * startRow : 0
-         * endRow : 5
+         * endRow : 4
          * pages : 1
          * prePage : 0
          * nextPage : 0
@@ -225,22 +225,24 @@ public class SelectAllDraftsBean {
 
         public static class ListBean {
             /**
-             * id : 99
-             * userId : 1031
-             * contentInfo : 摸哪具体问#热门话题3# @何梦洋0,何梦洋1,
-             * contentImg : http://qjvorl4f2.hn-bkt.clouddn.com/20201125162104979119_1603545284104.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/20201125162108269846_2020-10-27-20-44-21-10.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011251621091764843_2020-10-25-22-44-58-52.jpg,http://qjvorl4f2.hn-bkt.clouddn.com/202011251621108604691.jpg
+             * id : 224
+             * userId : 1030
+             * contentInfo :
+             * contentImg : http://img.rianbow.cn/26f1fb1f20201218160338.jpg, http://img.rianbow.cn/496b81be20201218160338.jpg, http://img.rianbow.cn/9c6b630420201218160338.jpg, http://img.rianbow.cn/a677503e20201218160338.jpg, http://img.rianbow.cn/3aeca1ff20201218160338.jpg, http://img.rianbow.cn/3e07843620201218160338.jpg, http://img.rianbow.cn/ccff07ca20201218160338.jpg
              * lng : null
              * lat : null
-             * createTime : 2020-11-25 16:23:03
+             * createTime : 2020-12-18 16:03:40
              * status : 0
              * viewNum : null
              * isOpen : 1
-             * imgType : 21
+             * imgType : 2
+             * isAttention : null
              * isCollect : null
              * isClick : null
-             * clickNum : null
+             * clickNum : 0
              * topics : null
-             * userInfo : {"id":null,"phoneNum":null,"nickName":"李四","headImg":"头像","age":null,"explains":null,"birthday":null,"userType":null,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"attestation":null,"createTime":null,"countNum":null,"distance":null,"distancing":null,"invitationCode":null}
+             * userInfo : {"id":1030,"phoneNum":null,"nickName":"何梦阳","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":null,"birthday":null,"userType":null,"userRole":"保密","isSingle":null,"lng":115.298833,"lat":34.097004,"ratio":null,"attestation":1,"createTime":null,"countNum":null,"distance":null,"distancing":null,"age":null,"invitationCode":null}
+             * commentCount : null
              * distance : null
              */
 
@@ -255,11 +257,13 @@ public class SelectAllDraftsBean {
             private Object viewNum;
             private int isOpen;
             private int imgType;
+            private Object isAttention;
             private Object isCollect;
             private Object isClick;
-            private Object clickNum;
+            private int clickNum;
             private Object topics;
             private UserInfoBean userInfo;
+            private Object commentCount;
             private Object distance;
 
             public int getId() {
@@ -350,6 +354,14 @@ public class SelectAllDraftsBean {
                 this.imgType = imgType;
             }
 
+            public Object getIsAttention() {
+                return isAttention;
+            }
+
+            public void setIsAttention(Object isAttention) {
+                this.isAttention = isAttention;
+            }
+
             public Object getIsCollect() {
                 return isCollect;
             }
@@ -366,11 +378,11 @@ public class SelectAllDraftsBean {
                 this.isClick = isClick;
             }
 
-            public Object getClickNum() {
+            public int getClickNum() {
                 return clickNum;
             }
 
-            public void setClickNum(Object clickNum) {
+            public void setClickNum(int clickNum) {
                 this.clickNum = clickNum;
             }
 
@@ -390,6 +402,14 @@ public class SelectAllDraftsBean {
                 this.userInfo = userInfo;
             }
 
+            public Object getCommentCount() {
+                return commentCount;
+            }
+
+            public void setCommentCount(Object commentCount) {
+                this.commentCount = commentCount;
+            }
+
             public Object getDistance() {
                 return distance;
             }
@@ -400,52 +420,54 @@ public class SelectAllDraftsBean {
 
             public static class UserInfoBean {
                 /**
-                 * id : null
+                 * id : 1030
                  * phoneNum : null
-                 * nickName : 李四
-                 * headImg : 头像
-                 * age : null
+                 * nickName : 何梦阳
+                 * headImg : http://img.rianbow.cn/202012091309129337159.jpg
+                 * backImg : null
                  * explains : null
                  * birthday : null
                  * userType : null
-                 * userRole : null
+                 * userRole : 保密
                  * isSingle : null
-                 * lng : null
-                 * lat : null
+                 * lng : 115.298833
+                 * lat : 34.097004
                  * ratio : null
-                 * attestation : null
+                 * attestation : 1
                  * createTime : null
                  * countNum : null
                  * distance : null
                  * distancing : null
+                 * age : null
                  * invitationCode : null
                  */
 
-                private Object id;
+                private int id;
                 private Object phoneNum;
                 private String nickName;
                 private String headImg;
-                private Object age;
+                private Object backImg;
                 private Object explains;
                 private Object birthday;
                 private Object userType;
-                private Object userRole;
+                private String userRole;
                 private Object isSingle;
-                private Object lng;
-                private Object lat;
+                private double lng;
+                private double lat;
                 private Object ratio;
-                private Object attestation;
+                private int attestation;
                 private Object createTime;
                 private Object countNum;
                 private Object distance;
                 private Object distancing;
+                private Object age;
                 private Object invitationCode;
 
-                public Object getId() {
+                public int getId() {
                     return id;
                 }
 
-                public void setId(Object id) {
+                public void setId(int id) {
                     this.id = id;
                 }
 
@@ -473,12 +495,12 @@ public class SelectAllDraftsBean {
                     this.headImg = headImg;
                 }
 
-                public Object getAge() {
-                    return age;
+                public Object getBackImg() {
+                    return backImg;
                 }
 
-                public void setAge(Object age) {
-                    this.age = age;
+                public void setBackImg(Object backImg) {
+                    this.backImg = backImg;
                 }
 
                 public Object getExplains() {
@@ -505,11 +527,11 @@ public class SelectAllDraftsBean {
                     this.userType = userType;
                 }
 
-                public Object getUserRole() {
+                public String getUserRole() {
                     return userRole;
                 }
 
-                public void setUserRole(Object userRole) {
+                public void setUserRole(String userRole) {
                     this.userRole = userRole;
                 }
 
@@ -521,19 +543,19 @@ public class SelectAllDraftsBean {
                     this.isSingle = isSingle;
                 }
 
-                public Object getLng() {
+                public double getLng() {
                     return lng;
                 }
 
-                public void setLng(Object lng) {
+                public void setLng(double lng) {
                     this.lng = lng;
                 }
 
-                public Object getLat() {
+                public double getLat() {
                     return lat;
                 }
 
-                public void setLat(Object lat) {
+                public void setLat(double lat) {
                     this.lat = lat;
                 }
 
@@ -545,11 +567,11 @@ public class SelectAllDraftsBean {
                     this.ratio = ratio;
                 }
 
-                public Object getAttestation() {
+                public int getAttestation() {
                     return attestation;
                 }
 
-                public void setAttestation(Object attestation) {
+                public void setAttestation(int attestation) {
                     this.attestation = attestation;
                 }
 
@@ -583,6 +605,14 @@ public class SelectAllDraftsBean {
 
                 public void setDistancing(Object distancing) {
                     this.distancing = distancing;
+                }
+
+                public Object getAge() {
+                    return age;
+                }
+
+                public void setAge(Object age) {
+                    this.age = age;
                 }
 
                 public Object getInvitationCode() {
