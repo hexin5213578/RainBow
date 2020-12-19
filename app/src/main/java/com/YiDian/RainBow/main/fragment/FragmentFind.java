@@ -24,6 +24,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -95,6 +96,7 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
         return null;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void getData() {
         //设置状态栏颜色与字体颜色
@@ -125,6 +127,7 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {

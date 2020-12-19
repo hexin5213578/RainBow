@@ -1,5 +1,6 @@
 package com.YiDian.RainBow.main.fragment.mine.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class SelectAllDraftsBean {
@@ -223,7 +224,7 @@ public class SelectAllDraftsBean {
             this.navigatepageNums = navigatepageNums;
         }
 
-        public static class ListBean {
+        public static class ListBean implements Serializable {
             /**
              * id : 224
              * userId : 1030

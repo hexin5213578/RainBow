@@ -3,7 +3,10 @@ package com.YiDian.RainBow.utils;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -16,9 +19,16 @@ import org.json.JSONObject;
 import org.json.JSONStringer;
 import org.json.JSONTokener;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,6 +50,8 @@ public class SPUtil {
     public static final String USER_NAME = "username";
     public static final String USER_ID = "user_id";
 
+    public static final String JSON_Dynamic = "dynamic";
+    public static final String JSOn_drafts = "drafts";
 
 
     private SPUtil() {

@@ -63,10 +63,6 @@ public interface Apis {
     @POST("content/writeContent")
     Observable<WriteDevelopmentBean> doWriteDevelopment(@Query("userId")int userid,@Query("contentInfo")String contentinfo,@Query("contentImg")String contentImg,@Query("lng")Double lng,@Query("lat")Double lat,@Query("IsOpen")int isopen,@Query("ImgType")int ImgType,@Query("status")int status,@Query("area")String area);
 
-    //查询我的草稿箱
-    @GET("content/selectAllDrafts")
-    Observable<SelectAllDraftsBean> doGetAllDraftsBy(@Query("userId")int userid,@Query("page") int page,@Query("pageSize")int pagesize);
-
     //点赞
     @POST("click/insertClick")
     Observable<DianzanBean> doDianzan(@Query("clickBy")int id,@Query("clickType")int type,@Query("typeId")int comentId);
@@ -102,4 +98,22 @@ public interface Apis {
     //取消收藏动态
     @POST("collect/delCollect")
     Observable<CollectDynamicBean> doCancleCollectDynamic(@Query("userId")int userid,@Query("contentId")int contentid);
+
+
+    //查询我的草稿箱
+    @GET("content/selectAllDrafts")
+    Observable<SelectAllDraftsBean> doGetAllDraftsBy(@Query("userId")int userid,@Query("page") int page,@Query("pageSize")int pagesize);
+
+    //直接发表草稿
+    @POST("/content/updateDraft")
+    Observable<CollectDynamicBean> doUpdateDraft(@Query("id")int draftid,@Query("status")int status);
+
+    //删除草稿
+    @POST("content/deleteDraft")
+    Observable<CollectDynamicBean> doDeleteDraft(@Query("draftId")int draftid,@Query("userId")int userid);
+
+    //删除用户下动态
+    @POST("content/delContent")
+    Observable<CollectDynamicBean> doDeleteDynamic(@Query("contentId")int contentid,@Query("userId")int userid);
+
 }

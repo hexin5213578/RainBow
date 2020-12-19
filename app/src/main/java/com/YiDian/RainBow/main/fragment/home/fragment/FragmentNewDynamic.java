@@ -19,6 +19,8 @@ import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.utils.KeyBoardUtils;
 import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.SPUtil;
+import com.google.gson.Gson;
 import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.container.AliHeader;
 import com.liaoinstan.springview.widget.SpringView;
@@ -27,11 +29,15 @@ import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONObject;
 
+import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import cn.jpush.android.cache.Sp;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -56,7 +62,8 @@ public class FragmentNewDynamic extends BaseFragment {
     private LinearLayoutManager linearLayoutManager;
     int id;
     private List<NewDynamicBean.ObjectBean.ListBean> alllist;
-
+    File f = new File(
+            "/data/data/com.YiDian.RainBow/shared_prefs/dynamic.xml");
     @Override
     protected void getid(View view) {
 
@@ -79,8 +86,28 @@ public class FragmentNewDynamic extends BaseFragment {
 
         KeyBoardUtils.closeKeyboard(getActivity());
 
-        sv.setVisibility(View.GONE);
-        noData.setVisibility(View.VISIBLE);
+            Gson gson = new Gson();
+            List<NewDynamicBean.ObjectBean.ListBean> SpList = new ArrayList<>();
+
+            for (int i = 1; i < 6; i++) {
+                String json = SPUtil.getInstance().getData(getContext(), SPUtil.JSON_Dynamic, "json" + i);
+                NewDynamicBean.ObjectBean.ListBean listBean = gson.fromJson(json, NewDynamicBean.ObjectBean.ListBean.class);
+
+                SpList.add(listBean);
+            }
+            if(f.exists()){
+                if(SpList.size()>0 && SpList!=null){
+                    sv.setVisibility(View.VISIBLE);
+                    noData.setVisibility(View.GONE);
+
+                    sv.setHeader(new AliHeader(getContext()));
+                    //创建最新动态适配器
+                    linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+                    rcNewDynamic.setLayoutManager(linearLayoutManager);
+                    newDynamicAdapter = new NewDynamicAdapter(getActivity(), SpList);
+                    rcNewDynamic.setAdapter(newDynamicAdapter);
+                }
+            }
 
         getNew(page, count);
         //下拉刷新下拉加载
@@ -127,10 +154,10 @@ public class FragmentNewDynamic extends BaseFragment {
             }
         });
         //判断是否有网 有网加载数据 无网展示缺省页
-        if(NetWork(getContext())){
+        if (NetWork(getContext())) {
             sv.setVisibility(View.VISIBLE);
             rlNonet.setVisibility(View.GONE);
-        }else{
+        } else {
             rlNonet.setVisibility(View.VISIBLE);
             sv.setVisibility(View.GONE);
         }
@@ -163,6 +190,14 @@ public class FragmentNewDynamic extends BaseFragment {
                         List<NewDynamicBean.ObjectBean.ListBean> list = object.getList();
                         if (list.size() > 0 && list != null) {
 
+                            //存五条数据
+                            for (int i = 1; i <= list.size(); i++) {
+                                NewDynamicBean.ObjectBean.ListBean listBean = list.get(i-1);
+                                Gson gson = new Gson();
+                                String json1 = gson.toJson(listBean);
+                                SPUtil.getInstance().saveData(getContext(), SPUtil.JSON_Dynamic, "json"+i, json1);
+                            }
+
                             alllist.addAll(list);
                             sv.setVisibility(View.VISIBLE);
                             noData.setVisibility(View.GONE);
@@ -173,10 +208,9 @@ public class FragmentNewDynamic extends BaseFragment {
                             rcNewDynamic.setLayoutManager(linearLayoutManager);
                             newDynamicAdapter = new NewDynamicAdapter(getActivity(), alllist);
                             rcNewDynamic.setAdapter(newDynamicAdapter);
-                            newDynamicAdapter.notifyDataSetChanged();
                             hideDialog();
                         } else {
-                            if(alllist.size()>0 && alllist!=null){
+                            if (alllist.size() > 0 && alllist != null) {
                                 //创建最新动态适配器
                                 linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
                                 rcNewDynamic.setLayoutManager(linearLayoutManager);
@@ -184,7 +218,7 @@ public class FragmentNewDynamic extends BaseFragment {
                                 rcNewDynamic.setAdapter(newDynamicAdapter);
 
                                 hideDialog();
-                            }else{
+                            } else {
                                 hideDialog();
                                 sv.setVisibility(View.GONE);
                                 noData.setVisibility(View.VISIBLE);
@@ -234,7 +268,7 @@ public class FragmentNewDynamic extends BaseFragment {
         GSYVideoManager.onResume();
         //关闭输入框
         KeyBoardUtils.closeKeyboard(getActivity());
-        Log.d("xxx","onResume");
+        Log.d("xxx", "onResume");
 
     }
 
@@ -245,14 +279,16 @@ public class FragmentNewDynamic extends BaseFragment {
             EventBus.getDefault().register(this);
         }
     }
+
     //获取传过来的信息 刷新界面
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getStr(String str){
-        if(str.equals("刷新界面")){
+    public void getStr(String str) {
+        if (str.equals("刷新界面")) {
             alllist.clear();
-            getNew(1,count);
+            getNew(1, count);
         }
     }
+
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);

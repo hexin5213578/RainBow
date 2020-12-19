@@ -1,19 +1,31 @@
 package com.YiDian.RainBow.main.fragment.mine.adapter;
 
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaMetadataRetriever;
+import android.os.Build;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,14 +35,19 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.image.NineGridTestLayout;
 import com.YiDian.RainBow.custom.videoplayer.SampleCoverVideo;
+import com.YiDian.RainBow.dynamic.activity.DevelopmentDynamicActivity;
 import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
+import com.YiDian.RainBow.main.fragment.home.bean.CollectDynamicBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.SelectAllDraftsBean;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.topic.TopicDetailsActivity;
 import com.YiDian.RainBow.user.PersonHomeActivity;
+import com.YiDian.RainBow.utils.NetUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,16 +61,22 @@ import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter.TAG;
 
 public class MyDraftsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private final Context context;
+    private final Activity context;
     private final List<SelectAllDraftsBean.ObjectBean.ListBean> list;
+    private PopupWindow mPopupWindow;
+    private SelectAllDraftsBean.ObjectBean.ListBean listBean;
+    private SelectAllDraftsBean.ObjectBean.ListBean.UserInfoBean userInfo;
 
 
-
-    public MyDraftsAdapter(Context context, List<SelectAllDraftsBean.ObjectBean.ListBean> list) {
+    public MyDraftsAdapter(Activity context, List<SelectAllDraftsBean.ObjectBean.ListBean> list) {
 
         this.context = context;
         this.list = list;
@@ -92,8 +115,8 @@ public class MyDraftsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        SelectAllDraftsBean.ObjectBean.ListBean listBean = list.get(position);
-        SelectAllDraftsBean.ObjectBean.ListBean.UserInfoBean userInfo = listBean.getUserInfo();
+        listBean = list.get(position);
+        userInfo = listBean.getUserInfo();
 
         int imgType = listBean.getImgType();
         userInfo = list.get(position).getUserInfo();
@@ -274,6 +297,12 @@ public class MyDraftsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             //小屏时不触摸滑动
             ((ViewHolder) holder).videoPlayer.setIsTouchWiget(false);
         }
+        ((ViewHolder)holder).rlXiala.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSelect();
+            }
+        });
     }
 
     @Override
@@ -287,7 +316,148 @@ public class MyDraftsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         //返回获取到的动态类型
         return imgType;
     }
+    public void showSelect() {
+        //添加成功后处理
+        mPopupWindow = new PopupWindow();
+        mPopupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        mPopupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_drafts, null);
 
+        TextView tv_development = view.findViewById(R.id.tv_development);
+        TextView tv_delete = view.findViewById(R.id.tv_delete);
+
+        //直接发布 将草稿转为动态
+        tv_development.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+                NetUtils.getInstance().getApis()
+                        .doUpdateDraft(listBean.getId(),1)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<CollectDynamicBean>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(CollectDynamicBean collectDynamicBean) {
+                                if(collectDynamicBean.getObject().equals("更新成功")){
+                                    EventBus.getDefault().post("刷新界面");
+                                    Toast.makeText(context, "发布成功", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
+            }
+        });
+
+        //删除草稿
+        tv_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+                NetUtils.getInstance().getApis()
+                        .doDeleteDraft(listBean.getId(),listBean.getUserId())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<CollectDynamicBean>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(CollectDynamicBean collectDynamicBean) {
+                                if(collectDynamicBean.getObject().equals("删除成功")){
+                                    EventBus.getDefault().post("刷新界面");
+                                    Toast.makeText(context, "删除成功", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
+            }
+        });
+        //popwindow设置属性
+        mPopupWindow.setAnimationStyle(R.style.popwindow_anim_style);
+        mPopupWindow.setContentView(view);
+        mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
+        mPopupWindow.setFocusable(true);
+        mPopupWindow.setOutsideTouchable(true);
+        mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                setWindowAlpa(false);
+            }
+        });
+        show(view);
+    }
+    //设置透明度
+    public void setWindowAlpa(boolean isopen) {
+        if (Build.VERSION.SDK_INT < 11) {
+            return;
+        }
+        final Window window = context.getWindow();
+        final WindowManager.LayoutParams lp = window.getAttributes();
+        window.setFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND, WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        ValueAnimator animator;
+        if (isopen) {
+            animator = ValueAnimator.ofFloat(1.0f, 0.5f);
+        } else {
+            animator = ValueAnimator.ofFloat(0.5f, 1.0f);
+        }
+        animator.setDuration(400);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float alpha = (float) animation.getAnimatedValue();
+                lp.alpha = alpha;
+                window.setAttributes(lp);
+            }
+        });
+        animator.start();
+    }
+
+    /**
+     * 显示PopupWindow
+     */
+
+    private void show(View v) {
+        if (mPopupWindow != null && !mPopupWindow.isShowing()) {
+            mPopupWindow.showAtLocation(v, Gravity.CENTER_VERTICAL, 0, 0);
+        }
+        setWindowAlpa(true);
+    }
+
+    /**
+     * 消失PopupWindow
+     */
+    public void dismiss() {
+        if (mPopupWindow != null && mPopupWindow.isShowing()) {
+            mPopupWindow.dismiss();
+        }
+    }
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.iv_headimg)
         ImageView ivHeadimg;

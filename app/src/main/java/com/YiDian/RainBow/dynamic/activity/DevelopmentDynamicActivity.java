@@ -480,10 +480,8 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                     @Override
                     public void onNext(WriteDevelopmentBean writeDevelopmentBean) {
                         hideDialog();
-                        Toast.makeText(DevelopmentDynamicActivity.this, "草稿发布成功", Toast.LENGTH_SHORT).show();
                         //发表成功退出界面
                         finish();
-                        EventBus.getDefault().post("刷新界面");
                     }
 
                     @Override
