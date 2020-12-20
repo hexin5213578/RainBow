@@ -15,6 +15,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaMetadataRetriever;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
@@ -228,15 +229,15 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                         ((ViewHolder) holder).ivDianzan.setImageResource(R.mipmap.weidianzan);
                                         listBean.setIsClick(false);
 
-
                                         //取消点赞成功数量加一
                                         String s = ((ViewHolder) holder).tvDianzanCount.getText().toString();
-                                        Integer integer = Integer.valueOf(s);
+                                        if(!s.contains("w")){
+                                            Integer integer = Integer.valueOf(s);
 
-                                        integer -= 1;
+                                            integer -= 1;
 
-                                        ((ViewHolder) holder).tvDianzanCount.setText(integer + "");
-
+                                            ((ViewHolder) holder).tvDianzanCount.setText(integer + "");
+                                        }
                                     }else{
                                         NetUtils.getInstance().getApis()
                                                 .doDianzan(userid, 1, id)
@@ -260,12 +261,17 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                                             listBean.setIsClick(true);
 
                                                             //点赞成功数量加一
+                                                            //点赞成功数量加一
                                                             String s = ((ViewHolder) holder).tvDianzanCount.getText().toString();
-                                                            Integer integer = Integer.valueOf(s);
 
-                                                            integer += 1;
+                                                            if(!s.contains("w")){
+                                                                Integer integer = Integer.valueOf(s);
 
-                                                            ((ViewHolder) holder).tvDianzanCount.setText(integer + "");
+                                                                integer += 1;
+
+                                                                ((ViewHolder) holder).tvDianzanCount.setText(integer + "");
+                                                            }
+
 
 
                                                         }
@@ -321,13 +327,60 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                                         //点赞成功数量加一
                                         String s = ((ViewHolder) holder).tvDianzanCount.getText().toString();
-                                        Integer integer = Integer.valueOf(s);
 
-                                        integer += 1;
+                                        if(!s.contains("w")){
+                                            Integer integer = Integer.valueOf(s);
 
-                                        ((ViewHolder) holder).tvDianzanCount.setText(integer + "");
+                                            integer += 1;
+
+                                            ((ViewHolder) holder).tvDianzanCount.setText(integer + "");
+                                        }
 
 
+                                    }else{
+                                        NetUtils.getInstance().getApis()
+                                                .doCancleDianzan(1, id, userid)
+                                                .subscribeOn(Schedulers.io())
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .subscribe(new Observer<DianzanBean>() {
+                                                    @Override
+                                                    public void onSubscribe(Disposable d) {
+
+                                                    }
+
+                                                    @Override
+                                                    public void onNext(DianzanBean dianzanBean) {
+                                                        //处理结束后恢复点击
+                                                        ((ViewHolder) holder).rlDianzan.setEnabled(true);
+
+
+                                                        if(dianzanBean.getObject().equals("删除成功")){
+                                                            //取消点赞成功
+                                                            ((ViewHolder) holder).ivDianzan.setImageResource(R.mipmap.weidianzan);
+                                                            listBean.setIsClick(false);
+
+                                                            //取消点赞成功数量加一
+                                                            String s = ((ViewHolder) holder).tvDianzanCount.getText().toString();
+                                                            if(!s.contains("w")){
+                                                                Integer integer = Integer.valueOf(s);
+
+                                                                integer -= 1;
+
+                                                                ((ViewHolder) holder).tvDianzanCount.setText(integer + "");
+                                                            }
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onError(Throwable e) {
+
+                                                    }
+
+                                                    @Override
+                                                    public void onComplete() {
+
+                                                    }
+                                                });
                                     }
                                 }
 
@@ -346,8 +399,16 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
         });
 
-        //设置点赞数
-        ((ViewHolder) holder).tvDianzanCount.setText(listBean.getClickNum() + "");
+        //点赞数设置
+        int clickNum = listBean.getClickNum();
+        if(clickNum<10000){
+            ((ViewHolder)holder).tvDianzanCount.setText(clickNum+"");
+        }else{
+            String s = StringUtil.rawIntStr2IntStr(String.valueOf(clickNum));
+
+            ((ViewHolder)holder).tvDianzanCount.setText(s);
+        }
+
         //设置评论数
         ((ViewHolder) holder).tvPinglunCount.setText(listBean.getCommentCount() + "");
 

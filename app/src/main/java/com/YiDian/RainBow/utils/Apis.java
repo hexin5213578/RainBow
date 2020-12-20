@@ -1,6 +1,7 @@
 package com.YiDian.RainBow.utils;
 
 
+import com.YiDian.RainBow.main.fragment.home.bean.CommentBean;
 import com.YiDian.RainBow.main.fragment.home.bean.FirstCommentBean;
 import com.YiDian.RainBow.dynamic.bean.SaveMsgSuccessBean;
 import com.YiDian.RainBow.dynamic.bean.WriteDevelopmentBean;
@@ -87,9 +88,13 @@ public interface Apis {
     @GET("content/getContentInfoById")
     Observable<DynamicDetailsBean> dogetDynamicDetails(@Query("contentId")int contentid,@Query("userId")int userid);
 
-    //获取动态下 所有一级评论
-    @GET("comment/getCommentsByContentId")
-    Observable<FirstCommentBean> doGetFirstComment(@Query("contentId")int contentid,@Query("page")int page,@Query("pageSize")int pagesize);
+    //写评论
+    @POST("comment/writeComment")
+    Observable<CollectDynamicBean> doWriteComment(@Query("userId")int userid,@Query("beCommentUserId")int beuserid,@Query("commentInfo")String info,@Query("commentType")int type,@Query("fatherId")int fatherid);
+
+    //查评论
+    @GET("comment/getComment")
+    Observable<CommentBean> doGetComment(@Query("fatherId")int fatherid,@Query("commentType")int type,@Query("userId")int userid,@Query("page")int page,@Query("pageSize")int size);
 
     //收藏动态
     @POST("collect/addCollect")

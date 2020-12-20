@@ -15,8 +15,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
@@ -49,7 +52,9 @@ import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.customDialog.CustomDialogCancleFollow;
 import com.YiDian.RainBow.custom.image.NineGridTestLayout;
 import com.YiDian.RainBow.custom.videoplayer.SampleCoverVideo;
+import com.YiDian.RainBow.main.fragment.home.adapter.CommentAdapter;
 import com.YiDian.RainBow.main.fragment.home.bean.CollectDynamicBean;
+import com.YiDian.RainBow.main.fragment.home.bean.CommentBean;
 import com.YiDian.RainBow.main.fragment.home.bean.FirstCommentBean;
 import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
 import com.YiDian.RainBow.main.fragment.home.adapter.TopicsAdapter;
@@ -198,7 +203,7 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
     private PopupWindow mPopupWindow;
     private Tencent mTencent;
     String wechatUrl = "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973";
-
+    private List<CommentBean.ObjectBean> AllList = new ArrayList<>();
     @Override
     protected int getResId() {
         return R.layout.activity_dynamicdetails;
@@ -206,6 +211,7 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
 
     @Override
     protected void getData() {
+
         Intent intent =
                 getIntent();
         id = intent.getIntExtra("id", 0);
@@ -229,6 +235,9 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
 
         mTencent = Tencent.createInstance("101906973", this);
 
+        sv.setHeader(new AliHeader(DynamicDetailsActivity.this));
+
+
         //获取动态
         getDetails();
         //获取评论
@@ -239,8 +248,10 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        AllList.clear();
                         page = 1;
                         getComment(page, count);
+                        getDetails();
                         sv.onFinishFreshAndLoad();
                     }
                 },1000);
@@ -256,6 +267,28 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                         sv.onFinishFreshAndLoad();
                     }
                 },1000);
+            }
+        });
+        etContent.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(!TextUtils.isEmpty(s) && s.length()>0){
+                    btConfirm.setBackground(getResources().getDrawable(R.drawable.content_bt_bg));
+                    btConfirm.setEnabled(true);
+                }else {
+                    btConfirm.setBackground(getResources().getDrawable(R.drawable.content_bt_nodata_bg));
+                    btConfirm.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
     }
@@ -559,20 +592,43 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                 break;
             //发送评论
             case R.id.bt_confirm:
+                String s = etContent.getText().toString();
+                NetUtils.getInstance().getApis()
+                        .doWriteComment(userId,bean.getUserId(),s,0,bean.getId())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<CollectDynamicBean>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
 
+                            }
+
+                            @Override
+                            public void onNext(CollectDynamicBean collectDynamicBean) {
+                                if(collectDynamicBean.getObject().equals("写评论成功")){
+                                    //再次请求评论
+                                    AllList.clear();
+                                    getComment(1,15);
+                                    etContent.setText("");
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
                 break;
             //去评论
             case R.id.rl_pinglun:
                 KeyBoardUtils.openKeyBoard(etContent);
                 break;
         }
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
     }
 
     @SuppressLint("ResourceAsColor")
@@ -646,36 +702,47 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
         return spannable;
     }
     public void getComment(int page,int pagesize){
-        NetUtils.getInstance().getApis().doGetFirstComment(id,page,pagesize)
+        NetUtils.getInstance().getApis()
+                .doGetComment(id,0,userId,page,pagesize)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<FirstCommentBean>() {
+                .subscribe(new Observer<CommentBean>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(FirstCommentBean firstCommentBean) {
-                        List<FirstCommentBean.ObjectBean> list = firstCommentBean.getObject();
+                    public void onNext(CommentBean commentBean) {
+                        List<CommentBean.ObjectBean> list = commentBean.getObject();
                         if(list.size()>0 && list!=null){
-                            //展示刷新
-                            sv.setHeader(new AliHeader(DynamicDetailsActivity.this));
-
                             rlNotdata.setVisibility(View.GONE);
-                            sv.setVisibility(View.VISIBLE);
+                            rcComment.setVisibility(View.VISIBLE);
+
+                            AllList.addAll(list);
+
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(DynamicDetailsActivity.this, RecyclerView.VERTICAL, false);
                             rcComment.setLayoutManager(linearLayoutManager);
-                            //创建一级评论的适配器
-
-                            // TODO: 2020/12/18 0018 评论未完成
+                            //创建适配器
+                            CommentAdapter commentAdapter = new CommentAdapter(DynamicDetailsActivity.this, AllList);
+                            rcComment.setAdapter(commentAdapter);
 
                         }else{
-                            rlNotdata.setVisibility(View.VISIBLE);
-                            sv.setVisibility(View.GONE);
+                            if(AllList.size()>0){
+
+                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(DynamicDetailsActivity.this, RecyclerView.VERTICAL, false);
+                                rcComment.setLayoutManager(linearLayoutManager);
+                                //创建适配器
+                                CommentAdapter commentAdapter = new CommentAdapter(DynamicDetailsActivity.this, AllList);
+                                rcComment.setAdapter(commentAdapter);
+
+                            }else{
+
+                                rlNotdata.setVisibility(View.VISIBLE);
+                                rcComment.setVisibility(View.GONE);
+                            }
                         }
                         if(list.size()>14){
-                            //展示加载
                             sv.setFooter(new AliFooter(DynamicDetailsActivity.this));
                         }
                     }

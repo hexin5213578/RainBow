@@ -86,32 +86,10 @@ public class StringUtil {
             //超过万不超过亿
             char c = str.charAt(str.length() - 4);
             if (Integer.valueOf(c + "") > 0) {
-                str = str.substring(0, str.length() - 4) + "." + c + "00万元";
+                str = str.substring(0, str.length() - 4) + "." + c + "0w";
             } else {
-                str = str.substring(0, str.length() - 4) + ".00万元";
+                str = str.substring(0, str.length() - 4) + ".0w";
             }
-        } else if (str.length() > 8) {
-           /* //超过亿
-            boolean flag = false;
-            StringBuffer buffer = new StringBuffer();
-            for (int i = 4; i < 9; i++) {
-                char c = str.charAt(str.length() - i);
-                if (flag) {
-                    buffer.insert(0, c);
-                } else if (Integer.valueOf(c + "") > 0) {
-                    flag = true;
-                    buffer.append(c);
-                }
-            }
-            //开始拼装
-            if (buffer.toString().length() != 0) {
-                str = str.substring(0, str.length() - 8) + "." + buffer.toString() + "亿";
-            } else {
-                str = str.substring(0, str.length() - 8) + "亿";
-            }*/
-        } else {
-            //不超过万的情况，现实小数点后两位.00
-            str += ".00";
         }
         return str;
     }
