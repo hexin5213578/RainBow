@@ -100,6 +100,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     int userid;
     private NewDynamicBean.ObjectBean.ListBean listBean;
     private NewDynamicBean.ObjectBean.ListBean.UserInfoBean userInfo;
+    private int id;
 
     public NewDynamicAdapter(Activity context, List<NewDynamicBean.ObjectBean.ListBean> list) {
         this.context = context;
@@ -146,13 +147,14 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
 
         listBean = list.get(position);
-        int id = listBean.getId();
-        int usId = listBean.getUserId();
 
         //跳转到动态详情页
         ((ViewHolder) holder).rlItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                listBean = list.get(position);
+                id = listBean.getId();
+
                 Intent intent = new Intent(context, DynamicDetailsActivity.class);
                 intent.putExtra("id", id);
                 context.startActivity(intent);
@@ -163,10 +165,11 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         ((ViewHolder)holder).ivHeadimg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                listBean = list.get(position);
 
                 Intent intent = new Intent(context, PersonHomeActivity.class);
                 SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
-                saveIntentMsgBean.setId(usId);
+                saveIntentMsgBean.setId(listBean.getUserId());
                 //2标记传入姓名  1标记传入id
                 saveIntentMsgBean.setFlag(1);
                 intent.putExtra("msg",saveIntentMsgBean);
@@ -204,6 +207,9 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         ((ViewHolder) holder).rlDianzan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                listBean = list.get(position);
+                id = listBean.getId();
+
                 if (listBean.isIsClick()==true) {
                     //取消点赞
                     //开始执行设置不可点击 防止多次点击发生冲突
@@ -426,6 +432,8 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         ((ViewHolder) holder).tvGuanzhu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                listBean = list.get(position);
+
                 if (listBean.isIsAttention()) {
                     CustomDialogCancleFollow.Builder builder = new CustomDialogCancleFollow.Builder(context);
                     builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -433,7 +441,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             //开始执行设置不可点击 防止多次点击发生冲突
                             ((ViewHolder) holder).tvGuanzhu.setEnabled(false);
                             NetUtils.getInstance().getApis()
-                                    .doCancleFollow(userid, usId)
+                                    .doCancleFollow(userid, listBean.getUserId())
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(new Observer<FollowBean>() {
@@ -484,7 +492,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                     //关注
                     NetUtils.getInstance().getApis()
-                            .doFollow(userid, usId)
+                            .doFollow(userid, listBean.getUserId())
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Observer<FollowBean>() {
@@ -1282,7 +1290,6 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         Pattern pattern = Pattern.compile("("+AT+")|"+"("+TOPIC+")");
         Matcher matcher = pattern.matcher(spannable);
 
-        Log.d("xxx",matcher.groupCount()+"");
 
         while (matcher.find()) {
             // 根据group的括号索引，可得出具体匹配哪个正则(0代表全部，1代表第一个括号)

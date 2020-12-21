@@ -1,6 +1,7 @@
 package com.YiDian.RainBow.user;
 
 import android.content.Intent;
+import android.util.Log;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
@@ -9,6 +10,7 @@ import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 
 import java.io.Serializable;
 
+//用户主页
 public class PersonHomeActivity extends BaseAvtivity {
     @Override
     protected int getResId() {
@@ -25,11 +27,12 @@ public class PersonHomeActivity extends BaseAvtivity {
         if(flag==2){
             String name = msg.getMsg();
 
+            Log.d("xxx","传过来的姓名为"+name);
 
         }else{
             int id = msg.getId();
 
-
+            Log.d("xxx","传过来的id为"+id);
         }
     }
 

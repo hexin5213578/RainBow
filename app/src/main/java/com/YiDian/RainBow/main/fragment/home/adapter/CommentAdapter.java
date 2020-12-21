@@ -26,6 +26,8 @@ import com.YiDian.RainBow.main.fragment.home.activity.CommentDetailsActivity;
 import com.YiDian.RainBow.main.fragment.home.activity.DynamicDetailsActivity;
 import com.YiDian.RainBow.main.fragment.home.bean.CommentBean;
 import com.YiDian.RainBow.main.fragment.home.bean.DianzanBean;
+import com.YiDian.RainBow.topic.SaveIntentMsgBean;
+import com.YiDian.RainBow.user.PersonHomeActivity;
 import com.YiDian.RainBow.utils.KeyBoardUtils;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.YiDian.RainBow.utils.StringUtil;
@@ -54,6 +56,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final List<CommentBean.ObjectBean> list;
     private int userId;
     private int id;
+    private CommentBean.ObjectBean listBean;
 
     public CommentAdapter(Context context, List<CommentBean.ObjectBean> list) {
 
@@ -70,17 +73,32 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        CommentBean.ObjectBean listBean = list.get(position);
+        listBean = list.get(position);
         CommentBean.ObjectBean.UserInfoBean userInfo = list.get(position).getUserInfo();
         //设置用户名
         ((ViewHolder) holder).tvName.setText(userInfo.getNickName());
         //加载头像
         Glide.with(context).load(userInfo.getHeadImg()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder) holder).ivHeadimg);
 
+        //跳转到用户信息页
+        ((ViewHolder)holder).ivHeadimg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listBean = list.get(position);
+
+                Intent intent = new Intent(context, PersonHomeActivity.class);
+                SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
+                saveIntentMsgBean.setId(listBean.getUserId());
+                //2标记传入姓名  1标记传入id
+                saveIntentMsgBean.setFlag(1);
+                intent.putExtra("msg",saveIntentMsgBean);
+                context.startActivity(intent);
+            }
+        });
+
         //用户ID
         userId = Integer.parseInt(Common.getUserId());
         //评论ID
-        id = listBean.getId();
         //获取发布时间
         String createTime = listBean.getCreateTime();
         if (createTime != null) {
@@ -136,7 +154,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ((ViewHolder)holder).tvContent.setText(listBean.getCommentInfo());
 
         //判断是否点赞
-        if (listBean.isIsClick()) {
+        if (listBean.isClick()) {
             ((ViewHolder) holder).ivDianzan.setImageResource(R.mipmap.dianzan);
         } else {
             ((ViewHolder) holder).ivDianzan.setImageResource(R.mipmap.weidianzan);
@@ -153,7 +171,10 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ((ViewHolder)holder).rlDianzan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listBean.isIsClick()==true) {
+                listBean = list.get(position);
+                id = listBean.getId();
+
+                if (listBean.isClick()==true) {
                     //取消点赞
                     //开始执行设置不可点击 防止多次点击发生冲突
                     ((ViewHolder) holder).rlDianzan.setEnabled(false);
@@ -175,16 +196,16 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                     if(dianzanBean.getObject().equals("删除成功")){
                                         //取消点赞成功
                                         ((ViewHolder) holder).ivDianzan.setImageResource(R.mipmap.weidianzan);
-                                        listBean.setIsClick(false);
+                                        listBean.setClick(false);
 
                                         //取消点赞成功数量加一
-                                        String s = ((NewDynamicAdapter.ViewHolder) holder).tvDianzanCount.getText().toString();
+                                        String s = ((ViewHolder) holder).tvDianzanCount.getText().toString();
                                         if(!s.contains("w")){
                                             Integer integer = Integer.valueOf(s);
 
                                             integer -= 1;
 
-                                            ((NewDynamicAdapter.ViewHolder) holder).tvDianzanCount.setText(integer + "");
+                                            ((ViewHolder) holder).tvDianzanCount.setText(integer + "");
                                         }
 
                                     }
@@ -200,7 +221,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                                 }
                             });
-                } else if(listBean.isIsClick()==false){
+                } else if(listBean.isClick()==false){
                     //点赞
                     ((ViewHolder) holder).rlDianzan.setEnabled(false);
 
@@ -223,7 +244,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                     if (dianzanBean.getObject().equals("插入成功")) {
                                         //点赞成功
                                         ((ViewHolder) holder).ivDianzan.setImageResource(R.mipmap.dianzan);
-                                        listBean.setIsClick(true);
+                                        listBean.setClick(true);
 
 
                                         //点赞成功数量加一
@@ -256,16 +277,16 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                                         if(dianzanBean.getObject().equals("删除成功")){
                                                             //取消点赞成功
                                                             ((ViewHolder) holder).ivDianzan.setImageResource(R.mipmap.weidianzan);
-                                                            listBean.setIsClick(false);
+                                                            listBean.setClick(false);
 
                                                             //取消点赞成功数量加一
-                                                            String s = ((NewDynamicAdapter.ViewHolder) holder).tvDianzanCount.getText().toString();
+                                                            String s = ((ViewHolder) holder).tvDianzanCount.getText().toString();
                                                             if(!s.contains("w")){
                                                                 Integer integer = Integer.valueOf(s);
 
                                                                 integer -= 1;
 
-                                                                ((NewDynamicAdapter.ViewHolder) holder).tvDianzanCount.setText(integer + "");
+                                                                ((ViewHolder) holder).tvDianzanCount.setText(integer + "");
                                                             }
 
                                                         }
@@ -310,16 +331,22 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ((ViewHolder)holder).llReply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                listBean = list.get(position);
+                id = listBean.getId();
                 Intent intent = new Intent(context, CommentDetailsActivity.class);
-                intent.putExtra("id",id);
+                intent.putExtra("id", CommentAdapter.this.id);
                 context.startActivity(intent);
             }
         });
         ((ViewHolder)holder).rlItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                listBean = list.get(position);
+                id = listBean.getId();
+
                 Intent intent = new Intent(context, CommentDetailsActivity.class);
                 intent.putExtra("id",id);
+
                 context.startActivity(intent);
             }
         });

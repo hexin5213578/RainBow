@@ -91,6 +91,8 @@ import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -594,7 +596,7 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
             case R.id.bt_confirm:
                 String s = etContent.getText().toString();
                 NetUtils.getInstance().getApis()
-                        .doWriteComment(userId,bean.getUserId(),s,0,bean.getId())
+                        .doWriteComment(userId,bean.getUserId(),s,0,bean.getId(),0)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Observer<CollectDynamicBean>() {
@@ -609,6 +611,8 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                                     //再次请求评论
                                     AllList.clear();
                                     getComment(1,15);
+                                    getDetails();
+                                    KeyBoardUtils.closeKeyboard(etContent);
                                     etContent.setText("");
                                 }
                             }

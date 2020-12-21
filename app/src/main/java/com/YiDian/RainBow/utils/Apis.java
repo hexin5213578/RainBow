@@ -13,6 +13,7 @@ import com.YiDian.RainBow.main.fragment.home.bean.DynamicDetailsBean;
 import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
 import com.YiDian.RainBow.main.fragment.home.bean.MyFollowBean;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
+import com.YiDian.RainBow.main.fragment.home.bean.OneCommentBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.SelectAllDraftsBean;
 import com.YiDian.RainBow.regist.bean.RegistBean;
 import com.YiDian.RainBow.remember.bean.RememberPwdBean;
@@ -90,11 +91,16 @@ public interface Apis {
 
     //写评论
     @POST("comment/writeComment")
-    Observable<CollectDynamicBean> doWriteComment(@Query("userId")int userid,@Query("beCommentUserId")int beuserid,@Query("commentInfo")String info,@Query("commentType")int type,@Query("fatherId")int fatherid);
+    Observable<CollectDynamicBean> doWriteComment(@Query("userId")int userid,@Query("beCommentUserId")int beuserid,@Query("commentInfo")String info,@Query("commentType")int type,@Query("fatherId")int fatherid,@Query("replyType")int replyid);
 
     //查评论
     @GET("comment/getComment")
     Observable<CommentBean> doGetComment(@Query("fatherId")int fatherid,@Query("commentType")int type,@Query("userId")int userid,@Query("page")int page,@Query("pageSize")int size);
+
+    //查询一条评论
+    @GET("comment/getCommentByIdAndUserId")
+    Observable<OneCommentBean> doGetCommentbyId(@Query("id")int commentid,@Query("userId")int userid);
+
 
     //收藏动态
     @POST("collect/addCollect")

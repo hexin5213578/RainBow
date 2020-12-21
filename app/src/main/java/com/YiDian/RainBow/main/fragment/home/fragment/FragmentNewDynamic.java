@@ -269,7 +269,8 @@ public class FragmentNewDynamic extends BaseFragment {
         //关闭输入框
         KeyBoardUtils.closeKeyboard(getActivity());
         Log.d("xxx", "onResume");
-
+        alllist.clear();
+        getNew(1, count);
     }
 
     @Override
@@ -279,7 +280,6 @@ public class FragmentNewDynamic extends BaseFragment {
             EventBus.getDefault().register(this);
         }
     }
-
     //获取传过来的信息 刷新界面
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getStr(String str) {
