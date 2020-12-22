@@ -1,18 +1,46 @@
 package com.YiDian.RainBow.main.fragment.home.fragment;
 
+import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
+import com.YiDian.RainBow.main.fragment.home.bean.MyFollowBean;
+import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
+import com.YiDian.RainBow.utils.KeyBoardUtils;
+import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.SPUtil;
+import com.google.gson.Gson;
+import com.liaoinstan.springview.container.AliFooter;
+import com.liaoinstan.springview.container.AliHeader;
+import com.liaoinstan.springview.widget.SpringView;
+import com.shuyu.gsyvideoplayer.GSYVideoManager;
+import com.tencent.tauth.Tencent;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 //关注动态
 public class FragmentAttDynamic extends BaseFragment {
@@ -24,7 +52,25 @@ public class FragmentAttDynamic extends BaseFragment {
     RelativeLayout rlNoAtt;
     @BindView(R.id.bt_go_att)
     Button btGoAtt;
-
+    @BindView(R.id.no_data)
+    RelativeLayout noData;
+    @BindView(R.id.bt_reload)
+    Button btReload;
+    @BindView(R.id.rl_nonet)
+    RelativeLayout rlNonet;
+    @BindView(R.id.rc_newDynamic)
+    RecyclerView rcNewDynamic;
+    @BindView(R.id.sv)
+    SpringView sv;
+    private int userid;
+    private NewDynamicAdapter newDynamicAdapter;
+    private LinearLayoutManager linearLayoutManager;
+    private List<NewDynamicBean.ObjectBean.ListBean> alllist;
+    private int page = 1;
+    private int size = 15;
+    private Tencent mTencent;
+    File f = new File(
+            "/data/data/com.YiDian.RainBow/shared_prefs/Attdynamic.xml");
     @Override
     protected void getid(View view) {
 
@@ -42,11 +88,252 @@ public class FragmentAttDynamic extends BaseFragment {
 
     @Override
     protected void getData() {
+
+        alllist = new ArrayList<>();
+
+        //腾讯AppId(替换你自己App Id)、上下文
+        mTencent = Tencent.createInstance("101906973", getContext());
+        Gson gson = new Gson();
+        List<NewDynamicBean.ObjectBean.ListBean> SpList = new ArrayList<>();
+
+        for (int i = 1; i < 10; i++) {
+            String json = SPUtil.getInstance().getData(getContext(), SPUtil.JSON_AttDynamic, "json" + i);
+            NewDynamicBean.ObjectBean.ListBean listBean = gson.fromJson(json, NewDynamicBean.ObjectBean.ListBean.class);
+            if(listBean!=null){
+                SpList.add(listBean);
+            }
+        }
+        if(f.exists()){
+            if(SpList.size()>0 && SpList!=null){
+                sv.setVisibility(View.VISIBLE);
+                noData.setVisibility(View.GONE);
+
+                sv.setHeader(new AliHeader(getContext()));
+                //创建最新动态适配器
+                linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+                rcNewDynamic.setLayoutManager(linearLayoutManager);
+                newDynamicAdapter = new NewDynamicAdapter(getActivity(), SpList,mTencent);
+                rcNewDynamic.setAdapter(newDynamicAdapter);
+            }
+        }
+
+        //下拉刷新下拉加载
+        sv.setListener(new SpringView.OnFreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        alllist.clear();
+                        page = 1;
+                        sv.onFinishFreshAndLoad();
+                        getDynamic(page, size);
+                        GSYVideoManager.releaseAllVideos();
+                    }
+                }, 1000);
+            }
+
+            @Override
+            public void onLoadmore() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        page++;
+                        sv.onFinishFreshAndLoad();
+                        getDynamic(page, size);
+                    }
+                }, 1000);
+            }
+        });
+
+        userid = Integer.parseInt(Common.getUserId());
+        //判断是否有网 有网加载数据 无网展示缺省页
+        if (NetWork(getContext())) {
+            sv.setVisibility(View.VISIBLE);
+            rlNonet.setVisibility(View.GONE);
+        } else {
+            rlNonet.setVisibility(View.VISIBLE);
+            sv.setVisibility(View.GONE);
+        }
+        btReload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //重新执行加载方法
+                getData();
+            }
+        });
+
+        //获取关注用户
+        getAttUser();
         btGoAtt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 EventBus.getDefault().post("跳转到匹配页");
             }
         });
+    }
+
+    //获取数据
+    public void getDynamic(int page,int size){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                NetUtils.getInstance().getApis()
+                        .getAttDynamic(userid,page,size)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<NewDynamicBean>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(NewDynamicBean newDynamicBean) {
+                                NewDynamicBean.ObjectBean object = newDynamicBean.getObject();
+                                List<NewDynamicBean.ObjectBean.ListBean> list = object.getList();
+                                if (list.size() > 0 && list != null) {
+
+                                    //本地缓存
+                                    for (int i = 1; i <= list.size(); i++) {
+                                        NewDynamicBean.ObjectBean.ListBean listBean = list.get(i-1);
+                                        Gson gson = new Gson();
+                                        String json1 = gson.toJson(listBean);
+                                        SPUtil.getInstance().saveData(getContext(), SPUtil.JSON_AttDynamic, "json"+i, json1);
+                                    }
+
+                                    alllist.addAll(list);
+                                    sv.setVisibility(View.VISIBLE);
+                                    noData.setVisibility(View.GONE);
+
+                                    sv.setHeader(new AliHeader(getContext()));
+                                    //创建最新动态适配器
+                                    linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+                                    rcNewDynamic.setLayoutManager(linearLayoutManager);
+                                    newDynamicAdapter = new NewDynamicAdapter(getActivity(), alllist,mTencent);
+                                    rcNewDynamic.setAdapter(newDynamicAdapter);
+                                } else {
+                                    if (alllist.size() > 0 && alllist != null) {
+                                        //创建最新动态适配器
+                                        linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+                                        rcNewDynamic.setLayoutManager(linearLayoutManager);
+                                        newDynamicAdapter = new NewDynamicAdapter(getActivity(), alllist,mTencent);
+                                        rcNewDynamic.setAdapter(newDynamicAdapter);
+
+                                    } else {
+                                        sv.setVisibility(View.GONE);
+                                        noData.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
+            }
+        }).start();
+
+    }
+    public void getAttUser(){
+        //判断有无关注用户
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                NetUtils.getInstance().getApis()
+                        .doGetMyFollow(userid,1,15)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<MyFollowBean>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(MyFollowBean myFollowBean) {
+                                List<MyFollowBean.ObjectBean.ListBean> list =
+                                        myFollowBean.getObject().getList();
+                                //没有关注的用户去关注
+                                if(list.size()==0){
+                                    rlNoAtt.setVisibility(View.VISIBLE);
+                                    sv.setVisibility(View.GONE);
+                                    rlNonet.setVisibility(View.GONE);
+                                }else{
+                                    //有关注的用户获取关注人的动态
+                                    rlNoAtt.setVisibility(View.GONE);
+                                    getDynamic(page,size);
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
+            }
+        }).start();
+
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        GSYVideoManager.onPause();
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        GSYVideoManager.releaseAllVideos();
+        if (EventBus.getDefault().isRegistered(this)) {
+
+            EventBus.getDefault().unregister(this);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        GSYVideoManager.onResume();
+        //关闭输入框
+        KeyBoardUtils.closeKeyboard(getActivity());
+        Log.d("xxx", "onResume");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+    }
+    //获取传过来的信息 刷新界面
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getStr(String str) {
+        if (str.equals("刷新界面")) {
+            alllist.clear();
+            getDynamic(1, size);
+        }
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        GSYVideoManager.releaseAllVideos();
+        //更新关注用户信息
+        getAttUser();
     }
 }

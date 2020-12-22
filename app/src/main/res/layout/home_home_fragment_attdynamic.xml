@@ -1,47 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/white" android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:id="@+id/rl_no_att"
-        android:layout_height="match_parent">
-        <ImageView
-            android:layout_width="167dp"
-            android:layout_height="117dp"
-            android:scaleType="centerCrop"
-            android:id="@+id/no_att_img"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dp_146"
-            android:src="@mipmap/noatt"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_below="@id/no_att_img"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="您还未关注人哦!"
-            android:id="@+id/weiguanzhu"
-            android:layout_marginTop="@dimen/dp_25"
-            android:textColor="#ff999999"
-            android:textSize="@dimen/sp_12"
-            />
-        <Button
-            android:layout_width="@dimen/dp_100"
-            android:text="去关注"
-            android:textSize="@dimen/sp_14"
-            android:layout_below="@id/weiguanzhu"
-            android:id="@+id/bt_go_att"
-            android:layout_centerHorizontal="true"
-            android:textColor="#A76FE0"
-            android:background="@drawable/home_noatt_bt_bg"
-            android:layout_marginTop="@dimen/dp_25"
-            android:layout_height="@dimen/dp_40">
-        </Button>
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="match_parent"
 
+    <include layout="@layout/layout_noatt"></include>
+    <include layout="@layout/layout_nodata"></include>
+    <include layout="@layout/layout_nonet"></include>
+
+    <com.liaoinstan.springview.widget.SpringView
+        android:layout_width="match_parent"
+        android:id="@+id/sv"
         android:layout_height="match_parent">
-    </RelativeLayout>
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:id="@+id/rc_newDynamic"
+                android:layout_height="match_parent">
+            </androidx.recyclerview.widget.RecyclerView>
+        </androidx.core.widget.NestedScrollView>
+    </com.liaoinstan.springview.widget.SpringView>
 </RelativeLayout>

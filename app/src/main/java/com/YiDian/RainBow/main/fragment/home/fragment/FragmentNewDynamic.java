@@ -25,6 +25,7 @@ import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.container.AliHeader;
 import com.liaoinstan.springview.widget.SpringView;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
+import com.tencent.tauth.Tencent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -51,7 +52,7 @@ public class FragmentNewDynamic extends BaseFragment {
     @BindView(R.id.sv)
     SpringView sv;
     int page = 1;
-    int count = 5;
+    int count = 10;
     @BindView(R.id.no_data)
     RelativeLayout noData;
     @BindView(R.id.bt_reload)
@@ -64,6 +65,8 @@ public class FragmentNewDynamic extends BaseFragment {
     private List<NewDynamicBean.ObjectBean.ListBean> alllist;
     File f = new File(
             "/data/data/com.YiDian.RainBow/shared_prefs/dynamic.xml");
+    private Tencent mTencent;
+
     @Override
     protected void getid(View view) {
 
@@ -84,16 +87,19 @@ public class FragmentNewDynamic extends BaseFragment {
         alllist = new ArrayList<>();
         id = Integer.valueOf(Common.getUserId());
 
+        //腾讯AppId(替换你自己App Id)、上下文
+        mTencent = Tencent.createInstance("101906973", getContext());
         KeyBoardUtils.closeKeyboard(getActivity());
 
             Gson gson = new Gson();
             List<NewDynamicBean.ObjectBean.ListBean> SpList = new ArrayList<>();
 
-            for (int i = 1; i < 6; i++) {
+            for (int i = 1; i < 10; i++) {
                 String json = SPUtil.getInstance().getData(getContext(), SPUtil.JSON_Dynamic, "json" + i);
                 NewDynamicBean.ObjectBean.ListBean listBean = gson.fromJson(json, NewDynamicBean.ObjectBean.ListBean.class);
-
-                SpList.add(listBean);
+                if(listBean!=null){
+                    SpList.add(listBean);
+                }
             }
             if(f.exists()){
                 if(SpList.size()>0 && SpList!=null){
@@ -104,7 +110,7 @@ public class FragmentNewDynamic extends BaseFragment {
                     //创建最新动态适配器
                     linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
                     rcNewDynamic.setLayoutManager(linearLayoutManager);
-                    newDynamicAdapter = new NewDynamicAdapter(getActivity(), SpList);
+                    newDynamicAdapter = new NewDynamicAdapter(getActivity(), SpList,mTencent);
                     rcNewDynamic.setAdapter(newDynamicAdapter);
                 }
             }
@@ -171,78 +177,78 @@ public class FragmentNewDynamic extends BaseFragment {
     }
 
     public void getNew(int page, int count) {
-        showDialog();
-        //获取最新动态
-        NetUtils.getInstance().getApis().getNewDynamic(id, page, count)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<NewDynamicBean>() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //获取最新动态
+                NetUtils.getInstance().getApis().getNewDynamic(id, page, count)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<NewDynamicBean>() {
 
 
-                    @Override
-                    public void onSubscribe(Disposable d) {
+                            @Override
+                            public void onSubscribe(Disposable d) {
 
-                    }
-
-                    @Override
-                    public void onNext(NewDynamicBean newDynamicBean) {
-                        NewDynamicBean.ObjectBean object = newDynamicBean.getObject();
-                        List<NewDynamicBean.ObjectBean.ListBean> list = object.getList();
-                        if (list.size() > 0 && list != null) {
-
-                            //存五条数据
-                            for (int i = 1; i <= list.size(); i++) {
-                                NewDynamicBean.ObjectBean.ListBean listBean = list.get(i-1);
-                                Gson gson = new Gson();
-                                String json1 = gson.toJson(listBean);
-                                SPUtil.getInstance().saveData(getContext(), SPUtil.JSON_Dynamic, "json"+i, json1);
                             }
 
-                            alllist.addAll(list);
-                            sv.setVisibility(View.VISIBLE);
-                            noData.setVisibility(View.GONE);
+                            @Override
+                            public void onNext(NewDynamicBean newDynamicBean) {
+                                NewDynamicBean.ObjectBean object = newDynamicBean.getObject();
+                                List<NewDynamicBean.ObjectBean.ListBean> list = object.getList();
+                                if (list.size() > 0 && list != null) {
 
-                            sv.setHeader(new AliHeader(getContext()));
-                            //创建最新动态适配器
-                            linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                            rcNewDynamic.setLayoutManager(linearLayoutManager);
-                            newDynamicAdapter = new NewDynamicAdapter(getActivity(), alllist);
-                            rcNewDynamic.setAdapter(newDynamicAdapter);
-                            hideDialog();
-                        } else {
-                            if (alllist.size() > 0 && alllist != null) {
-                                //创建最新动态适配器
-                                linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                                rcNewDynamic.setLayoutManager(linearLayoutManager);
-                                newDynamicAdapter = new NewDynamicAdapter(getActivity(), alllist);
-                                rcNewDynamic.setAdapter(newDynamicAdapter);
+                                    //存五条数据
+                                    for (int i = 1; i <= list.size(); i++) {
+                                        NewDynamicBean.ObjectBean.ListBean listBean = list.get(i-1);
+                                        Gson gson = new Gson();
+                                        String json1 = gson.toJson(listBean);
+                                        SPUtil.getInstance().saveData(getContext(), SPUtil.JSON_Dynamic, "json"+i, json1);
+                                    }
 
-                                hideDialog();
-                            } else {
-                                hideDialog();
-                                sv.setVisibility(View.GONE);
-                                noData.setVisibility(View.VISIBLE);
+                                    alllist.addAll(list);
+                                    sv.setVisibility(View.VISIBLE);
+                                    noData.setVisibility(View.GONE);
+
+                                    sv.setHeader(new AliHeader(getContext()));
+                                    //创建最新动态适配器
+                                    linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+                                    rcNewDynamic.setLayoutManager(linearLayoutManager);
+                                    newDynamicAdapter = new NewDynamicAdapter(getActivity(), alllist,mTencent);
+                                    rcNewDynamic.setAdapter(newDynamicAdapter);
+                                } else {
+                                    if (alllist.size() > 0 && alllist != null) {
+                                        //创建最新动态适配器
+                                        linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+                                        rcNewDynamic.setLayoutManager(linearLayoutManager);
+                                        newDynamicAdapter = new NewDynamicAdapter(getActivity(), alllist,mTencent);
+                                        rcNewDynamic.setAdapter(newDynamicAdapter);
+
+                                    } else {
+                                        sv.setVisibility(View.GONE);
+                                        noData.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                                if (list.size() > 4) {
+                                    sv.setFooter(new AliFooter(getContext()));
+                                }
+
                             }
-                        }
-                        if (list.size() > 4) {
-                            sv.setFooter(new AliFooter(getContext()));
-                        }
 
-                    }
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.d("hmy", e.getMessage() + "");
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d("hmy", e.getMessage() + "");
+                                Toast.makeText(getContext(), "请求失败", Toast.LENGTH_SHORT).show();
+                            }
 
-                        Toast.makeText(getContext(), "请求失败", Toast.LENGTH_SHORT).show();
-                        hideDialog();
-                    }
+                            @Override
+                            public void onComplete() {
 
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+                            }
+                        });
+            }
+        }).start();
     }
 
     @Override
@@ -269,8 +275,6 @@ public class FragmentNewDynamic extends BaseFragment {
         //关闭输入框
         KeyBoardUtils.closeKeyboard(getActivity());
         Log.d("xxx", "onResume");
-        alllist.clear();
-        getNew(1, count);
     }
 
     @Override

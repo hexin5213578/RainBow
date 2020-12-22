@@ -91,20 +91,21 @@ import io.reactivex.schedulers.Schedulers;
 public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final Activity context;
     private final List<NewDynamicBean.ObjectBean.ListBean> list;
+    private Tencent mTencent;
 
     public static final String TAG = "ListNormalAdapter22";
     String wechatUrl = "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973";
 
     private PopupWindow mPopupWindow;
-    private Tencent mTencent;
     int userid;
     private NewDynamicBean.ObjectBean.ListBean listBean;
     private NewDynamicBean.ObjectBean.ListBean.UserInfoBean userInfo;
     private int id;
 
-    public NewDynamicAdapter(Activity context, List<NewDynamicBean.ObjectBean.ListBean> list) {
+    public NewDynamicAdapter(Activity context, List<NewDynamicBean.ObjectBean.ListBean> list,Tencent mTencent) {
         this.context = context;
         this.list = list;
+        this.mTencent = mTencent;
     }
 
     @NonNull
@@ -141,11 +142,9 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        //腾讯AppId(替换你自己App Id)、上下文
-        mTencent = Tencent.createInstance("101906973", context);
+
+
         userid = Integer.valueOf(Common.getUserId());
-
-
         listBean = list.get(position);
 
         //跳转到动态详情页
@@ -202,7 +201,10 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         } else {
             ((ViewHolder) holder).ivDianzan.setImageResource(R.mipmap.weidianzan);
         }
-
+        //判断当前用户与动态发布者 是一人 隐藏关注按钮
+        if(userid==userInfo.getId()){
+            ((ViewHolder)holder).tvGuanzhu.setVisibility(View.GONE);
+        }
         //点赞的单击事件
         ((ViewHolder) holder).rlDianzan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,8 +231,6 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                     //处理结束后恢复点击
                                     ((ViewHolder) holder).rlDianzan.setEnabled(true);
 
-
-                                    if(dianzanBean.getObject().equals("删除成功")){
                                         //取消点赞成功
                                         ((ViewHolder) holder).ivDianzan.setImageResource(R.mipmap.weidianzan);
                                         listBean.setIsClick(false);
@@ -244,56 +244,6 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                                             ((ViewHolder) holder).tvDianzanCount.setText(integer + "");
                                         }
-                                    }else{
-                                        NetUtils.getInstance().getApis()
-                                                .doDianzan(userid, 1, id)
-                                                .subscribeOn(Schedulers.io())
-                                                .observeOn(AndroidSchedulers.mainThread())
-                                                .subscribe(new Observer<DianzanBean>() {
-                                                    @Override
-                                                    public void onSubscribe(Disposable d) {
-
-                                                    }
-
-                                                    @Override
-                                                    public void onNext(DianzanBean dianzanBean) {
-
-                                                        //处理结束后恢复点击
-                                                        ((ViewHolder) holder).rlDianzan.setEnabled(true);
-
-                                                        if (dianzanBean.getObject().equals("插入成功")) {
-                                                            //点赞成功
-                                                            ((ViewHolder) holder).ivDianzan.setImageResource(R.mipmap.dianzan);
-                                                            listBean.setIsClick(true);
-
-                                                            //点赞成功数量加一
-                                                            //点赞成功数量加一
-                                                            String s = ((ViewHolder) holder).tvDianzanCount.getText().toString();
-
-                                                            if(!s.contains("w")){
-                                                                Integer integer = Integer.valueOf(s);
-
-                                                                integer += 1;
-
-                                                                ((ViewHolder) holder).tvDianzanCount.setText(integer + "");
-                                                            }
-
-
-
-                                                        }
-                                                    }
-
-                                                    @Override
-                                                    public void onError(Throwable e) {
-
-                                                    }
-
-                                                    @Override
-                                                    public void onComplete() {
-
-                                                    }
-                                                });
-                                    }
                                 }
 
                                 @Override
@@ -326,7 +276,6 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                     //处理结束后恢复点击
                                     ((ViewHolder) holder).rlDianzan.setEnabled(true);
 
-                                    if (dianzanBean.getObject().equals("插入成功")) {
                                         //点赞成功
                                         ((ViewHolder) holder).ivDianzan.setImageResource(R.mipmap.dianzan);
                                         listBean.setIsClick(true);
@@ -341,53 +290,6 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                                             ((ViewHolder) holder).tvDianzanCount.setText(integer + "");
                                         }
-
-
-                                    }else{
-                                        NetUtils.getInstance().getApis()
-                                                .doCancleDianzan(1, id, userid)
-                                                .subscribeOn(Schedulers.io())
-                                                .observeOn(AndroidSchedulers.mainThread())
-                                                .subscribe(new Observer<DianzanBean>() {
-                                                    @Override
-                                                    public void onSubscribe(Disposable d) {
-
-                                                    }
-
-                                                    @Override
-                                                    public void onNext(DianzanBean dianzanBean) {
-                                                        //处理结束后恢复点击
-                                                        ((ViewHolder) holder).rlDianzan.setEnabled(true);
-
-
-                                                        if(dianzanBean.getObject().equals("删除成功")){
-                                                            //取消点赞成功
-                                                            ((ViewHolder) holder).ivDianzan.setImageResource(R.mipmap.weidianzan);
-                                                            listBean.setIsClick(false);
-
-                                                            //取消点赞成功数量加一
-                                                            String s = ((ViewHolder) holder).tvDianzanCount.getText().toString();
-                                                            if(!s.contains("w")){
-                                                                Integer integer = Integer.valueOf(s);
-
-                                                                integer -= 1;
-
-                                                                ((ViewHolder) holder).tvDianzanCount.setText(integer + "");
-                                                            }
-                                                        }
-                                                    }
-
-                                                    @Override
-                                                    public void onError(Throwable e) {
-
-                                                    }
-
-                                                    @Override
-                                                    public void onComplete() {
-
-                                                    }
-                                                });
-                                    }
                                 }
 
                                 @Override

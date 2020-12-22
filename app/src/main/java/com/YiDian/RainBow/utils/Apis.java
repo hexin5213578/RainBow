@@ -29,6 +29,18 @@ public interface Apis {
     @GET("content/getContentByTime")
     Observable<NewDynamicBean> getNewDynamic(@Query("userId")int userid,@Query("page")int page,@Query("pageSize")int pagesize);
 
+    //附近动态
+    @GET("content/getNearbyContents")
+    Observable<NewDynamicBean> getNearDynamic(@Query("userId")int userid,@Query("lat") double lat,@Query("lng")double lng,@Query("page")int page,@Query("pageSize")int pagesize);
+
+    //关注动态
+    @GET("content/getAttentionUserContents")
+    Observable<NewDynamicBean> getAttDynamic(@Query("userId")int userid,@Query("page")int page,@Query("pageSize")int size);
+
+    //获取热门动态
+    @GET("content/getHotContent")
+    Observable<NewDynamicBean> getHotDynamic(@Query("userId")int userid,@Query("page")int page,@Query("pageSize")int size);
+
     //发送验证码
     @GET("user/sendSms")
     Observable<GetPhoneCodeBean> getPhoneCode(@Query("phoneNum")String phone);

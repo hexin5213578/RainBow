@@ -71,7 +71,6 @@
         android:layout_alignParentRight="true"
         android:layout_marginTop="@dimen/dp_14"
         android:layout_marginRight="@dimen/dp_15"
-        android:background="@drawable/newdynamic_weiguanzhu"
         android:gravity="center"
         android:text="关注"
         android:textColor="#3C025A"
@@ -94,6 +93,9 @@
         android:layout_width="@dimen/dp_100"
         android:layout_height="@dimen/dp_19"
         android:layout_below="@id/tv_dynamic_text"
+        android:gravity="center"
+        android:paddingLeft="@dimen/dp_2"
+        android:paddingRight="@dimen/dp_2"
         android:layout_marginLeft="@dimen/dp_15"
         android:layout_marginTop="@dimen/dp_13"
         android:background="@drawable/newdynamic_ll_bg">
@@ -102,7 +104,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/dp_6"
             android:text="#交友聊天"
             android:textColor="#21B6FD"
             android:textSize="@dimen/sp_12"></TextView>
@@ -111,7 +112,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/dp_5"
             android:text="HOT!"
             android:textColor="#3C025A"
             android:textSize="@dimen/sp_12"

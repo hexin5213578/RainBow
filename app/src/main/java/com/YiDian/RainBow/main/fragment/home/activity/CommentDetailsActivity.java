@@ -23,17 +23,22 @@ import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.main.fragment.home.adapter.CommentDetailsAdapter;
+import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
 import com.YiDian.RainBow.main.fragment.home.bean.CollectDynamicBean;
 import com.YiDian.RainBow.main.fragment.home.bean.CommentBean;
+import com.YiDian.RainBow.main.fragment.home.bean.DianzanBean;
+import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.main.fragment.home.bean.OneCommentBean;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.user.PersonHomeActivity;
 import com.YiDian.RainBow.utils.KeyBoardUtils;
 import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.SPUtil;
 import com.YiDian.RainBow.utils.StringUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.gson.Gson;
 import com.leaf.library.StatusBarUtil;
 import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.container.AliHeader;
@@ -43,6 +48,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -89,12 +95,23 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
     SpringView sv;
     @BindView(R.id.rl_send)
     RelativeLayout rlSend;
+    @BindView(R.id.et_reply)
+    EditText etReply;
+    @BindView(R.id.bt_reply)
+    Button btReply;
+    @BindView(R.id.rl_send_reply)
+    RelativeLayout rlSendReply;
+    @BindView(R.id.rl_middle)
+    RelativeLayout rlMiddle;
     private int commentId;
     private int userId;
     int page = 1;
     int size = 15;
     private int commentUserid;
     List<CommentBean.ObjectBean> AllList = new ArrayList<>();
+    private OneCommentBean.ObjectBean bean;
+    File f = new File(
+            "/data/data/com.YiDian.RainBow/shared_prefs/comment.xml");
     @Override
     protected int getResId() {
         return R.layout.activity_comment_details;
@@ -114,7 +131,7 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
         commentId = intent.getIntExtra("id", 0);
         userId = Integer.valueOf(Common.getUserId());
 
-        sv.setHeader(new AliHeader(this));
+
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {
@@ -124,10 +141,10 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
                         AllList.clear();
                         int page = 1;
                         InitData();
-                        getSecondComment(page,size);
+                        getSecondComment(page, size);
                         sv.onFinishFreshAndLoad();
                     }
-                },1000);
+                }, 1000);
             }
 
             @Override
@@ -136,10 +153,10 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
                     @Override
                     public void run() {
                         page++;
-                        getSecondComment(page,size);
+                        getSecondComment(page, size);
                         sv.onFinishFreshAndLoad();
                     }
-                },1000);
+                }, 1000);
             }
         });
         InitData();
@@ -169,6 +186,36 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
 
             }
         });
+        etReply.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!TextUtils.isEmpty(s) && s.length() > 0) {
+                    btReply.setBackground(getResources().getDrawable(R.drawable.content_bt_bg));
+                    btReply.setEnabled(true);
+                } else {
+                    btReply.setBackground(getResources().getDrawable(R.drawable.content_bt_nodata_bg));
+                    btReply.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        rlMiddle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rlSendReply.setVisibility(View.GONE);
+
+                KeyBoardUtils.openKeyBoard(etContent);
+            }
+        });
     }
 
     @Override
@@ -181,7 +228,73 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
         switch (v.getId()) {
             //点赞
             case R.id.rl_dianzan:
+                if (bean.isClick()) {
+                    rlDianzan.setEnabled(false);
+                    //取消点赞
+                    NetUtils.getInstance().getApis().doCancleDianzan(2, bean.getId(), userId)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Observer<DianzanBean>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
 
+                                }
+
+                                @Override
+                                public void onNext(DianzanBean dianzanBean) {
+                                    rlDianzan.setEnabled(true);
+
+                                    bean.setClick(false);
+                                    ivDianzan.setImageResource(R.mipmap.weidianzan);
+                                    InitData();
+
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+
+                                }
+                            });
+                } else {
+                    //点赞
+                    rlDianzan.setEnabled(false);
+                    NetUtils.getInstance().getApis()
+                            .doDianzan(userId, 2, bean.getId())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Observer<DianzanBean>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
+
+                                }
+
+                                @Override
+                                public void onNext(DianzanBean dianzanBean) {
+                                    rlDianzan.setEnabled(true);
+
+                                    bean.setClick(true);
+
+                                    ivDianzan.setImageResource(R.mipmap.dianzan);
+
+                                    InitData();
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+
+                                }
+                            });
+                }
                 break;
             //退出当前页
             case R.id.iv_back:
@@ -208,7 +321,7 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
                             public void onNext(CollectDynamicBean collectDynamicBean) {
                                 AllList.clear();
                                 InitData();
-                                getSecondComment(1,15);
+                                getSecondComment(1, 15);
                                 KeyBoardUtils.closeKeyboard(etContent);
                                 etContent.setText("");
                             }
@@ -230,7 +343,7 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
     @Override
     protected void onResume() {
         super.onResume();
-        if(!EventBus.getDefault().isRegistered(this)){
+        if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
     }
@@ -238,18 +351,19 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(EventBus.getDefault().isRegistered(this)){
+        if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
     }
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getStr(String str){
-        if(str.equals("刷新界面")){
-            AllList.clear();
 
-            getSecondComment(1,15);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getStr(String str) {
+        if (str.equals("刷新界面")) {
+            AllList.clear();
+            getSecondComment(1, 15);
         }
     }
+
     public void getSecondComment(int page, int size) {
         //获取所有二级评论
         NetUtils.getInstance().getApis()
@@ -266,20 +380,26 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
                     public void onNext(CommentBean commentBean) {
                         List<CommentBean.ObjectBean> list = commentBean.getObject();
                         //将数据添加到大集合中
-                        AllList.addAll(list);
-                        //创建适配器
-                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(CommentDetailsActivity.this, RecyclerView.VERTICAL, false);
-                        rcComment.setLayoutManager(linearLayoutManager);
-                        CommentDetailsAdapter commentDetailsAdapter = new CommentDetailsAdapter(CommentDetailsActivity.this, AllList);
-                        rcComment.setAdapter(commentDetailsAdapter);
+                        if (list.size() > 0 && list != null) {
+                            sv.setHeader(new AliHeader(CommentDetailsActivity.this));
 
-                        if(list.size()>14){
+                            AllList.addAll(list);
+                            //创建适配器
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(CommentDetailsActivity.this, RecyclerView.VERTICAL, false);
+                            rcComment.setLayoutManager(linearLayoutManager);
+                            CommentDetailsAdapter commentDetailsAdapter = new CommentDetailsAdapter(CommentDetailsActivity.this, AllList);
+                            rcComment.setAdapter(commentDetailsAdapter);
+
+                        }
+
+                        if (list.size() > 14) {
                             sv.setFooter(new AliFooter(CommentDetailsActivity.this));
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        hideDialog();
 
                     }
 
@@ -289,6 +409,7 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
                     }
                 });
     }
+
     public void InitData() {
         NetUtils.getInstance().getApis()
                 .doGetCommentbyId(commentId, userId)
@@ -304,10 +425,12 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
                     public void onNext(OneCommentBean oneCommentBean) {
 
 
-                        OneCommentBean.ObjectBean bean = oneCommentBean.getObject();
+                        bean = oneCommentBean.getObject();
                         commentUserid = bean.getId();
                         //获取用户信息
                         OneCommentBean.ObjectBean.UserInfoBean userInfo = bean.getUserInfo();
+
+
 
                         //设置用户名
                         tvName.setText(userInfo.getNickName());
@@ -407,7 +530,52 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
                 });
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getBean(CommentBean.ObjectBean bean) {
+        if (bean != null) {
+            rlSendReply.setVisibility(View.VISIBLE);
+            KeyBoardUtils.openKeyBoard(etReply);
 
+            etReply.setHint("回复:" + bean.getUserInfo().getNickName());
+            btReply.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String str = etReply.getText().toString();
+                    NetUtils.getInstance().getApis()
+                            .doWriteComment(userId, bean.getUserId(), str, 1, commentId, 2)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Observer<CollectDynamicBean>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
+
+                                }
+
+                                @Override
+                                public void onNext(CollectDynamicBean collectDynamicBean) {
+                                    //执行完毕隐藏
+                                    rlSendReply.setVisibility(View.GONE);
+                                    etReply.setText("");
+                                    KeyBoardUtils.closeKeyboard(etReply);
+                                    //刷新界面
+                                    AllList.clear();
+                                    getSecondComment(1, 15);
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+
+                                }
+                            });
+                }
+            });
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

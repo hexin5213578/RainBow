@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/no_data"
+        android:visibility="gone"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_width="@dimen/dp_187"
+            android:src="@mipmap/noperson"
+            android:id="@+id/iv"
+            android:layout_centerInParent="true"
+            android:layout_height="@dimen/dp_169">
+        </ImageView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="暂无数据"
+            android:layout_below="@id/iv"
+            android:textSize="@dimen/sp_18"
+            android:textColor="#999999"
+            android:layout_marginTop="@dimen/dp_35"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content">
+        </TextView>
+    </RelativeLayout>
+</RelativeLayout>

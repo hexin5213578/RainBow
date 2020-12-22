@@ -1226,12 +1226,13 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                 //插入到光标所在位置
                 int end = index + 2;//获取文本长度
 
-                editable.setSpan(new ForegroundColorSpan(R.color.start), index, end,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);//关键字变色
                 //设置光标到##中间
                 String s = etContent.getText().toString();
+                etContent.setSelection(s.length()-1);
 
-                etContent.setSelection(s.length() - 1);
+                editable.setSpan(new ForegroundColorSpan(R.color.start), index, end,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);//关键字变色
+
                 //打开键盘
                 KeyBoardUtils.openKeyBoard(etContent);
 

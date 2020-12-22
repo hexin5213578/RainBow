@@ -794,6 +794,10 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                         if (userRole.equals("保密")) {
                             tvAge.setVisibility(View.GONE);
                         }
+                        //判断当前用户与动态发布者 是一人 隐藏关注按钮
+                        if(userId==userInfo.getId()){
+                            tvGuanzhu.setVisibility(View.GONE);
+                        }
                         //判断是否认证
                         if (userInfo.getAttestation() == 1) {
                             isattaction.setVisibility(View.VISIBLE);
@@ -838,55 +842,55 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                         }
                         //获取发布时间
                         String createTime = bean.getCreateTime();
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-dd HH:mm:ss", Locale.SIMPLIFIED_CHINESE);
-                        try {
-                            Date parse = sdf.parse(createTime);
+                        if(createTime!=null){
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-dd HH:mm:ss", Locale.SIMPLIFIED_CHINESE);
+                            try {
+                                Date parse = sdf.parse(createTime);
 
-                            long time = parse.getTime();
+                                long time = parse.getTime();
 
-                            //获取当前时间
-                            long l = System.currentTimeMillis();
-                            //获取发布过的时长
-                            long difference = l - time;
+                                //获取当前时间
+                                long l = System.currentTimeMillis();
+                                //获取发布过的时长
+                                long difference = l - time;
 
-                            //时长大于12小时 显示日期
-                            if (difference > 43200000) {
-                                tvTime.setText(createTime);
+                                //时长大于12小时 显示日期
+                                if (difference > 43200000) {
+                                    tvTime.setText(createTime);
+                                }
+                                //时长小于12小时 展示时间
+                                if (difference > 1800000 && difference < 43200000) {
+                                    String[] s = createTime.split(" ");
+                                    tvTime.setText(s[1]);
+                                }
+                                if (difference > 1200000 && difference < 1800000) {
+                                    tvTime.setText("半小时前发布");
+                                }
+                                if (difference > 600000 && difference < 1200000) {
+                                    tvTime.setText("20分钟前发布");
+                                }
+                                if (difference > 300000 && difference < 600000) {
+                                    tvTime.setText("10分钟前发布");
+                                }
+                                if (difference > 240000 && difference < 300000) {
+                                    tvTime.setText("5分钟前发布");
+                                }
+                                if (difference > 180000 && difference < 240000) {
+                                    tvTime.setText("4分钟前发布");
+                                }
+                                if (difference > 120000 && difference < 180000) {
+                                    tvTime.setText("3分钟前发布");
+                                }
+                                if (difference > 60000 && difference < 120000) {
+                                    tvTime.setText("2分钟前发布");
+                                }
+                                if (difference < 60000) {
+                                    tvTime.setText("1分钟前发布");
+                                }
+                            } catch (ParseException e) {
+                                e.printStackTrace();
                             }
-                            //时长小于12小时 展示时间
-                            if (difference > 1800000 && difference < 43200000) {
-                                String[] s = createTime.split(" ");
-                                tvTime.setText(s[1]);
-                            }
-                            if (difference > 1200000 && difference < 1800000) {
-                                tvTime.setText("半小时前发布");
-                            }
-                            if (difference > 600000 && difference < 1200000) {
-                                tvTime.setText("20分钟前发布");
-                            }
-                            if (difference > 300000 && difference < 600000) {
-                                tvTime.setText("10分钟前发布");
-                            }
-                            if (difference > 240000 && difference < 300000) {
-                                tvTime.setText("5分钟前发布");
-                            }
-                            if (difference > 180000 && difference < 240000) {
-                                tvTime.setText("4分钟前发布");
-                            }
-                            if (difference > 120000 && difference < 180000) {
-                                tvTime.setText("3分钟前发布");
-                            }
-                            if (difference > 60000 && difference < 120000) {
-                                tvTime.setText("2分钟前发布");
-                            }
-                            if (difference < 60000) {
-                                tvTime.setText("1分钟前发布");
-                            }
-                        } catch (ParseException e) {
-                            e.printStackTrace();
                         }
-
-
                         //判断动态类型
                         int imgType = bean.getImgType();
                         if (imgType == 1) {

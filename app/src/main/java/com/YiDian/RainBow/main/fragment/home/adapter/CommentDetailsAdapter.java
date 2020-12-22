@@ -148,13 +148,9 @@ public class CommentDetailsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         ((ViewHolder)holder).rlItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*int id = listbean.getId();
-                //回复回复
-                NetUtils.getInstance().getApis()
-                        .doWriteComment(userId,id,)
-                // TODO: 2020/12/21 0021 回复成功刷新界面
+               listbean =  list.get(position);
 
-                EventBus.getDefault().post("刷新界面");*/
+               EventBus.getDefault().post(listbean);
             }
         });
 
