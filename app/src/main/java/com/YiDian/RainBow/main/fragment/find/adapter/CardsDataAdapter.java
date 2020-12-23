@@ -26,12 +26,14 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.custom.HalfType;
 import com.YiDian.RainBow.custom.drawable.ShadowDrawable;
 import com.YiDian.RainBow.custom.image.CustomRoundAngleImageView;
+import com.YiDian.RainBow.main.fragment.find.bean.AllUserInfoBean;
 import com.YiDian.RainBow.main.fragment.im.adapter.ChatRoomAdapter;
+import com.YiDian.RainBow.utils.StringUtil;
 import com.bumptech.glide.Glide;
 
 import static com.YiDian.RainBow.base.Common.getRoundCornerImage;
 
-public class CardsDataAdapter extends ArrayAdapter<String> {
+public class CardsDataAdapter extends ArrayAdapter<AllUserInfoBean.ObjectBean.ListBean> {
 
     @NonNull
     private final Context context;
@@ -48,20 +50,32 @@ public class CardsDataAdapter extends ArrayAdapter<String> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = View.inflate(context, R.layout.card_layout,null);
 
-        RelativeLayout rlAllCard = view.findViewById(R.id.rl_allcard);
-        RelativeLayout rlCardBottom = view.findViewById(R.id.rl_card_bottom);
+        AllUserInfoBean.ObjectBean.ListBean bean = getItem(position);
+
+
         CustomRoundAngleImageView ivImg = view.findViewById(R.id.iv_img);
         TextView tvdistance = view.findViewById(R.id.tv_distance);
         TextView username = view.findViewById(R.id.tv_username);
         TextView xingbie = view.findViewById(R.id.tv_xingbie);
-        RecyclerView rcHobby = view.findViewById(R.id.rc_hobby);
         TextView tv_qianming = view.findViewById(R.id.tv_qianming);
 
+        Glide.with(context).load(bean.getHeadImg()).into(ivImg);
+        //设置距离
+        int distance = bean.getDistance();
+        if(distance<1000){
+            tvdistance.setText(distance+"m");
+        }else{
+            String dis = String.valueOf(distance/1000);
+            tvdistance.setText(dis+"Km");
+        }
 
-        Glide.with(context).load(R.mipmap.headimg).into(ivImg);
-        username.setText(getItem(position));
-
-
+        username.setText(bean.getNickName());
+        if(bean.getUserRole().equals("保密")){
+            xingbie.setText("密");
+        }else{
+            xingbie.setText(bean.getUserRole());
+        }
+        tv_qianming.setText(bean.getExplains());
         return view;
 
     }

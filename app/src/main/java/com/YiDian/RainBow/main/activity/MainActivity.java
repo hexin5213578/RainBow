@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,13 +27,17 @@ import androidx.fragment.app.FragmentTransaction;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.zbar.CaptureActivity;
+import com.YiDian.RainBow.login.activity.CompleteMsgActivity;
+import com.YiDian.RainBow.login.activity.LoginActivity;
 import com.YiDian.RainBow.main.fragment.FragmentFind;
 import com.YiDian.RainBow.main.fragment.FragmentHome;
 import com.YiDian.RainBow.main.fragment.FragmentIM;
 import com.YiDian.RainBow.main.fragment.FragmentMine;
 import com.YiDian.RainBow.main.fragment.FragmentMsg;
 import com.YiDian.RainBow.utils.PhotoLoader;
+import com.YiDian.RainBow.utils.SPUtil;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -40,9 +45,14 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.TagAliasCallback;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.api.BasicCallback;
 import indi.liyi.viewer.ImageViewer;
 
 public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedChangeListener {
@@ -86,12 +96,30 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     protected int getResId() {
         return R.layout.activity_main;
     }
-
+    private final Handler mHandler = new Handler() {
+        @SuppressLint("HandlerLeak")
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 100) {
+                //设置别名
+                setAlias();
+            }
+        }
+    };
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void getData() {
 
+        JMessageClient.login("1038", "1038", new BasicCallback() {
+            @Override
+            public void gotResult(int i, String s) {
+                Log.d("xxx", "极光登录状态为" + i + "原因为" + s);
 
+            }
+        });
+        //设置别名
+        setAlias();
         //申请开启内存卡权限
         if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) && (this.checkSelfPermission
                 (Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
@@ -141,7 +169,22 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     protected BasePresenter initPresenter() {
         return null;
     }
-
+    public void setAlias(){
+        JPushInterface.setAlias(MainActivity.this, "1000", new TagAliasCallback() {
+            @Override
+            public void gotResult(int i, String s, Set<String> set) {
+                Log.d("xxx","回调是"+i);
+                if(i==0){
+                    Log.d("xxx","设置别名成功");
+                }
+                if(i==6002){
+                    Message obtain = Message.obtain();
+                    obtain.what = 100;
+                    mHandler.sendMessageDelayed(obtain, 1000 * 60);//60秒后重新验证
+                }
+            }
+        });
+    }
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {

@@ -12,4 +12,29 @@
         android:clipChildren="false"
         android:clipToPadding="false">
     </com.wenchao.cardstack.CardStack>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/rl_nodata"
+        android:visibility="gone"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_width="@dimen/dp_221"
+            android:src="@mipmap/nouser"
+            android:id="@+id/iv"
+            android:layout_centerInParent="true"
+            android:layout_height="@dimen/dp_155">
+        </ImageView>
+        <TextView
+            android:layout_width="@dimen/dp_207"
+            android:text="附近没有更多的人了,更改筛选条件查找 更多用户配对。"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_12"
+            android:layout_marginTop="@dimen/dp_29"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:lineHeight="@dimen/dp_18"
+            android:layout_below="@id/iv"
+            android:layout_height="wrap_content">
+        </TextView>
+    </RelativeLayout>
 </RelativeLayout>

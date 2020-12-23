@@ -1,6 +1,8 @@
 package com.YiDian.RainBow.utils;
 
 
+import com.YiDian.RainBow.main.fragment.find.bean.AllUserInfoBean;
+import com.YiDian.RainBow.main.fragment.find.bean.LikeUserBean;
 import com.YiDian.RainBow.main.fragment.home.bean.CommentBean;
 import com.YiDian.RainBow.main.fragment.home.bean.FirstCommentBean;
 import com.YiDian.RainBow.dynamic.bean.SaveMsgSuccessBean;
@@ -139,4 +141,16 @@ public interface Apis {
     @POST("content/delContent")
     Observable<CollectDynamicBean> doDeleteDynamic(@Query("contentId")int contentid,@Query("userId")int userid);
 
+
+    //匹配 查询所有用户信息
+    @GET("user/selectUser")
+    Observable<AllUserInfoBean> doGetAllUserInfo(@Query("id")int userid,@Query("lng") double lng,@Query("lat")double lat,@Query("page")int page,@Query("pageSize")int size);
+
+    //匹配 查询筛选的用户信息
+    @GET("user/selectUserOf")
+    Observable<AllUserInfoBean> doGetFilterUser(@Query("id")int userid,@Query("age")String age,@Query("distancing")int distance,@Query("isSingle")int issingle,@Query("userRole")String role,@Query("lng")double lng,@Query("lat")double lat,@Query("page")int page,@Query("pageSize")int size);
+
+    //左滑右滑
+    @POST("favorite/insertUser")
+    Observable<LikeUserBean> doLikeUser(@Query("userId")int userid,@Query("bUserId")int buserid,@Query("likeType")int type);
 }
