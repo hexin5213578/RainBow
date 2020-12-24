@@ -69,8 +69,7 @@ public class FragmentAttDynamic extends BaseFragment {
     private int page = 1;
     private int size = 15;
     private Tencent mTencent;
-    File f = new File(
-            "/data/data/com.YiDian.RainBow/shared_prefs/Attdynamic.xml");
+
     @Override
     protected void getid(View view) {
 
@@ -96,26 +95,6 @@ public class FragmentAttDynamic extends BaseFragment {
         Gson gson = new Gson();
         List<NewDynamicBean.ObjectBean.ListBean> SpList = new ArrayList<>();
 
-        for (int i = 1; i < 10; i++) {
-            String json = SPUtil.getInstance().getData(getContext(), SPUtil.JSON_AttDynamic, "json" + i);
-            NewDynamicBean.ObjectBean.ListBean listBean = gson.fromJson(json, NewDynamicBean.ObjectBean.ListBean.class);
-            if(listBean!=null){
-                SpList.add(listBean);
-            }
-        }
-        if(f.exists()){
-            if(SpList.size()>0 && SpList!=null){
-                sv.setVisibility(View.VISIBLE);
-                noData.setVisibility(View.GONE);
-
-                sv.setHeader(new AliHeader(getContext()));
-                //创建最新动态适配器
-                linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                rcNewDynamic.setLayoutManager(linearLayoutManager);
-                newDynamicAdapter = new NewDynamicAdapter(getActivity(), SpList,mTencent);
-                rcNewDynamic.setAdapter(newDynamicAdapter);
-            }
-        }
 
         //下拉刷新下拉加载
         sv.setListener(new SpringView.OnFreshListener() {
@@ -193,14 +172,6 @@ public class FragmentAttDynamic extends BaseFragment {
                                 NewDynamicBean.ObjectBean object = newDynamicBean.getObject();
                                 List<NewDynamicBean.ObjectBean.ListBean> list = object.getList();
                                 if (list.size() > 0 && list != null) {
-
-                                    //本地缓存
-                                    for (int i = 1; i <= list.size(); i++) {
-                                        NewDynamicBean.ObjectBean.ListBean listBean = list.get(i-1);
-                                        Gson gson = new Gson();
-                                        String json1 = gson.toJson(listBean);
-                                        SPUtil.getInstance().saveData(getContext(), SPUtil.JSON_AttDynamic, "json"+i, json1);
-                                    }
 
                                     alllist.addAll(list);
                                     sv.setVisibility(View.VISIBLE);
@@ -333,7 +304,5 @@ public class FragmentAttDynamic extends BaseFragment {
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         GSYVideoManager.releaseAllVideos();
-        //更新关注用户信息
-        getAttUser();
     }
 }

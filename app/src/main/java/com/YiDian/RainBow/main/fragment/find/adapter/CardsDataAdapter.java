@@ -59,6 +59,7 @@ public class CardsDataAdapter extends ArrayAdapter<AllUserInfoBean.ObjectBean.Li
         TextView xingbie = view.findViewById(R.id.tv_xingbie);
         TextView tv_qianming = view.findViewById(R.id.tv_qianming);
 
+        //加载头像
         Glide.with(context).load(bean.getHeadImg()).into(ivImg);
         //设置距离
         int distance = bean.getDistance();
@@ -68,13 +69,15 @@ public class CardsDataAdapter extends ArrayAdapter<AllUserInfoBean.ObjectBean.Li
             String dis = String.valueOf(distance/1000);
             tvdistance.setText(dis+"Km");
         }
-
+        //设置用户名
         username.setText(bean.getNickName());
+        //设置角色
         if(bean.getUserRole().equals("保密")){
             xingbie.setText("密");
         }else{
             xingbie.setText(bean.getUserRole());
         }
+        //设置个性签名
         tv_qianming.setText(bean.getExplains());
         return view;
 

@@ -775,7 +775,7 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
 
                     }
 
-                    @SuppressLint("ResourceAsColor")
+                    @SuppressLint({"ResourceAsColor", "SetTextI18n"})
                     @Override
                     public void onNext(DynamicDetailsBean dynamicDetailsBean) {
                         hideDialog();
@@ -835,8 +835,15 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                         String distance = bean.getDistance();
                         if (distance != null) {
                             tvDistance.setVisibility(View.VISIBLE);
-                            String round = StringUtil.round(distance);
-                            tvDistance.setText(round + "km");
+
+                            double a = Double.valueOf(distance);
+                            long round = Math.round(a);
+                            if(round<1000){
+                                tvDistance.setText(round + "m");
+                            }else{
+                                tvDistance.setText(round/1000 + "km");
+                            }
+
                         } else {
                             tvDistance.setVisibility(View.GONE);
                         }

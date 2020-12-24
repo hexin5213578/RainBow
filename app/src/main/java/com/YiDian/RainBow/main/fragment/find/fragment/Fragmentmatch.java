@@ -1,5 +1,6 @@
 package com.YiDian.RainBow.main.fragment.find.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -84,8 +85,8 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
     @Override
     protected void getData() {
         Alllist = new ArrayList<>();
-        //开启定位
-        doLocation();
+
+
         userid = Integer.valueOf(Common.getUserId());
 
         container.setStackMargin(20);
@@ -271,16 +272,20 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
             @Override
             public void topCardTapped() {
                 if (id == 0) {
-                    Toast.makeText(getContext(), "点击了" + Alllist.get(0).getId(), Toast.LENGTH_SHORT).show();
-
+                    // TODO: 2020/10/12 0012 传入需要使用的用户信息
+                    Intent intent = new Intent(getContext(), UserDetailsActivity.class);
+                    AllUserInfoBean.ObjectBean.ListBean listBean = Alllist.get(0);
+                    intent.putExtra("bean",listBean);
+                    startActivity(intent);
                 } else {
-                    Toast.makeText(getContext(), "点击了" + Alllist.get(index).getId(), Toast.LENGTH_SHORT).show();
+                    // TODO: 2020/10/12 0012 传入需要使用的用户信息
+                    Intent intent = new Intent(getContext(), UserDetailsActivity.class);
+                    AllUserInfoBean.ObjectBean.ListBean listBean = Alllist.get(index);
+                    intent.putExtra("bean",listBean);
+                    startActivity(intent);
 
                 }
-                // TODO: 2020/10/12 0012 传入需要使用的用户信息
-                Intent intent = new Intent(getContext(), UserDetailsActivity.class);
 
-                startActivity(intent);
             }
         });
     }
@@ -433,6 +438,9 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
     public void onResume() {
         super.onResume();
         Log.d("hmy", "onResume");
+        if(!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
     }
 
     @Override
@@ -462,6 +470,9 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
         Log.d("hmy", "onDestroy");
         //停止定位
         mlocationClient.stopLocation();
+        if(EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
     }
 
     @Override
@@ -469,7 +480,12 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
         super.onDestroyView();
         Log.d("hmy", "onDestroyView");
     }
-
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getStr(String str){
+        if(str.equals("重新请求数据")){
+            doLocation();
+        }
+    }
     //获取用户信息
     public void getUserData() {
         DataType = true;
@@ -517,5 +533,12 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
 
                     }
                 });
+    }
+
+    @Override
+    public void onAttach(@NonNull Activity activity) {
+        super.onAttach(activity);
+        Log.d("hmy", "onAttach");
+        doLocation();
     }
 }

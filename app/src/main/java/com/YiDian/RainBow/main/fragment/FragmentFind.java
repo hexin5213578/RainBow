@@ -361,6 +361,12 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
 
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        EventBus.getDefault().post("重新请求数据");
+    }
+
     /**
      * 消失PopupWindow
      */

@@ -2,10 +2,7 @@ package com.YiDian.RainBow.main.fragment.find.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.LinearGradient;
-import android.graphics.Shader;
-import android.graphics.SweepGradient;
 import android.text.TextPaint;
 import android.util.TypedValue;
 import android.view.View;
@@ -22,8 +19,8 @@ import androidx.viewpager.widget.ViewPager;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
-import com.YiDian.RainBow.main.fragment.find.fragment.meetfragment.IseenFragment;
-import com.YiDian.RainBow.main.fragment.find.fragment.meetfragment.IseenMineFragment;
+import com.YiDian.RainBow.main.fragment.find.fragment.meetfragment.MyLikeFragment;
+import com.YiDian.RainBow.main.fragment.find.fragment.meetfragment.LikeMineFragment;
 import com.YiDian.RainBow.main.fragment.find.fragment.meetfragment.MatchedFragment;
 import com.google.android.material.tabs.TabLayout;
 
@@ -60,15 +57,15 @@ public class Fragmentmeet extends BaseFragment {
 
     @Override
     protected void getData() {
-        tabs.add("我看过的");
-        tabs.add("看过我的");
+        tabs.add("我喜欢的");
+        tabs.add("喜欢我的");
         tabs.add("匹配过的");
         tab.addTab(tab.newTab().setText(tabs.get(0)));
         tab.addTab(tab.newTab().setText(tabs.get(1)));
         tab.addTab(tab.newTab().setText(tabs.get(2)));
 
-        IseenFragment iseenFragment = new IseenFragment();
-        IseenMineFragment iseenMineFragment = new IseenMineFragment();
+        MyLikeFragment iseenFragment = new MyLikeFragment();
+        LikeMineFragment iseenMineFragment = new LikeMineFragment();
         MatchedFragment matchedFragment = new MatchedFragment();
 
         fragments.add(iseenFragment);

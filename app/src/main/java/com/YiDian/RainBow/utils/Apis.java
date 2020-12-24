@@ -3,6 +3,7 @@ package com.YiDian.RainBow.utils;
 
 import com.YiDian.RainBow.main.fragment.find.bean.AllUserInfoBean;
 import com.YiDian.RainBow.main.fragment.find.bean.LikeUserBean;
+import com.YiDian.RainBow.main.fragment.find.bean.UserMySeeBean;
 import com.YiDian.RainBow.main.fragment.home.bean.CommentBean;
 import com.YiDian.RainBow.main.fragment.home.bean.FirstCommentBean;
 import com.YiDian.RainBow.dynamic.bean.SaveMsgSuccessBean;
@@ -153,4 +154,17 @@ public interface Apis {
     //左滑右滑
     @POST("favorite/insertUser")
     Observable<LikeUserBean> doLikeUser(@Query("userId")int userid,@Query("bUserId")int buserid,@Query("likeType")int type);
+
+    //获取某用户发布的动态
+    @GET("content/getContentByUserId")
+    Observable<NewDynamicBean> doGetDynamicByUserid(@Query("userId")int byId,@Query("currUserId")int userid,@Query("page")int page,@Query("pageSize")int size);
+
+    //我喜欢的
+    @GET("favorite/selectUserIdS")
+    Observable<UserMySeeBean> doGetMyLike(@Query("userId")int userid,@Query("page")int page,@Query("pageSize")int size);
+
+    //喜欢我的
+    @GET("favorite/selectbUserId")
+    Observable<UserMySeeBean> dogetLikeMine(@Query("userId")int userid,@Query("page")int page,@Query("pageSize")int size);
+
 }

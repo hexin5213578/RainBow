@@ -18,4 +18,27 @@
             </androidx.recyclerview.widget.RecyclerView>
         </androidx.core.widget.NestedScrollView>
     </com.liaoinstan.springview.widget.SpringView>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/rl_nodata"
+        android:visibility="gone"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_width="@dimen/dp_221"
+            android:src="@mipmap/nouser"
+            android:id="@+id/iv"
+            android:layout_centerInParent="true"
+            android:layout_height="@dimen/dp_155">
+        </ImageView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="暂无浏览记录的～"
+            android:layout_below="@id/iv"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_29"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/color_666666"
+            android:layout_height="wrap_content">
+        </TextView>
+    </RelativeLayout>
 </RelativeLayout>

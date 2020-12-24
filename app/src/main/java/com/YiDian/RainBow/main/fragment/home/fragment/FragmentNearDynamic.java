@@ -68,8 +68,6 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
     private List<NewDynamicBean.ObjectBean.ListBean> alllist;
     int page =1;
     int size = 15;
-    File f = new File(
-            "/data/data/com.YiDian.RainBow/shared_prefs/neardynamic.xml");
     private Tencent mTencent;
 
     @Override
@@ -98,29 +96,8 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
 
 
         alllist = new ArrayList<>();
-        Gson gson = new Gson();
-        List<NewDynamicBean.ObjectBean.ListBean> SpList = new ArrayList<>();
 
-        for (int i = 1; i < 10; i++) {
-            String json = SPUtil.getInstance().getData(getContext(), SPUtil.JSON_NearDynamic, "json" + i);
-            NewDynamicBean.ObjectBean.ListBean listBean = gson.fromJson(json, NewDynamicBean.ObjectBean.ListBean.class);
-            if(listBean!=null){
-                SpList.add(listBean);
-            }
-        }
-        if(f.exists()){
-            if(SpList.size()>0 && SpList!=null){
-                sv.setVisibility(View.VISIBLE);
-                noData.setVisibility(View.GONE);
 
-                sv.setHeader(new AliHeader(getContext()));
-                //创建最新动态适配器
-                linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                rcNewDynamic.setLayoutManager(linearLayoutManager);
-                newDynamicAdapter = new NewDynamicAdapter(getActivity(), SpList,mTencent);
-                rcNewDynamic.setAdapter(newDynamicAdapter);
-            }
-        }
         sv.setFooter(new AliFooter(getContext()));
 
         //获取数据
@@ -190,14 +167,6 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
                                 NewDynamicBean.ObjectBean object = newDynamicBean.getObject();
                                 List<NewDynamicBean.ObjectBean.ListBean> list = object.getList();
                                 if (list.size() > 0 && list != null) {
-
-                                    //本地缓存
-                                    for (int i = 1; i <= list.size(); i++) {
-                                        NewDynamicBean.ObjectBean.ListBean listBean = list.get(i-1);
-                                        Gson gson = new Gson();
-                                        String json1 = gson.toJson(listBean);
-                                        SPUtil.getInstance().saveData(getContext(), SPUtil.JSON_NearDynamic, "json"+i, json1);
-                                    }
 
                                     alllist.addAll(list);
                                     sv.setVisibility(View.VISIBLE);

@@ -258,7 +258,7 @@ public class NewDynamicBean {
             private Object viewNum;
             private int isOpen;
             private int imgType;
-            private boolean isAttention;
+            private Boolean isAttention;
             private boolean isCollect;
             private boolean isClick;
             private int clickNum;
@@ -355,11 +355,11 @@ public class NewDynamicBean {
                 this.imgType = imgType;
             }
 
-            public boolean isIsAttention() {
+            public Boolean isIsAttention() {
                 return isAttention;
             }
 
-            public void setIsAttention(boolean isAttention) {
+            public void setIsAttention(Boolean isAttention) {
                 this.isAttention = isAttention;
             }
 

@@ -18,7 +18,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:id="@+id/iv_bg"
-                    android:background="@color/black"
+                    android:scaleType="centerCrop"
                     android:layout_height="@dimen/dp_303">
                 </ImageView>
                 <LinearLayout
@@ -29,7 +29,7 @@
                     android:layout_height="@dimen/dp_50">
                     <ImageView
                         android:layout_width="@dimen/dp_15"
-                        android:src="@mipmap/back"
+                        android:src="@mipmap/back_white"
                         android:scaleType="centerCrop"
                         android:layout_height="@dimen/dp_15">
                     </ImageView>
@@ -43,8 +43,7 @@
                     android:layout_height="@dimen/dp_50">
                     <ImageView
                         android:layout_width="@dimen/dp_15"
-                        android:src="@mipmap/sandian"
-                        android:scaleType="centerCrop"
+                        android:src="@mipmap/sandianwhite"
                         android:layout_height="@dimen/dp_15">
                     </ImageView>
                 </LinearLayout>
@@ -66,31 +65,18 @@
                     android:layout_height="wrap_content">
                 </TextView>
                 <TextView
-                    android:layout_width="@dimen/dp_54"
-                    android:text="关注"
-                    android:textColor="@color/white"
-                    android:background="@drawable/user_details_bt_bg"
-                    android:paddingLeft="@dimen/dp_12"
-                    android:id="@+id/tv_guanzhu"
-                    android:paddingRight="@dimen/dp_12"
-                    android:layout_marginTop="@dimen/dp_12"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="@dimen/dp_15"
-                    android:gravity="center"
-                    android:textSize="@dimen/sp_10"
-                    android:layout_height="@dimen/dp_18">
-                </TextView>
-                <TextView
-                    android:layout_width="@dimen/dp_40"
+                    android:layout_width="wrap_content"
                     android:text="H 22"
                     android:background="@drawable/user_details_hobby_bg"
                     android:layout_marginTop="@dimen/dp_10"
                     android:gravity="center"
+                    android:paddingLeft="@dimen/dp_10"
+                    android:paddingRight="@dimen/dp_10"
                     android:id="@+id/tv_age"
                     android:textColor="@color/white"
                     android:layout_marginLeft="@dimen/dp_15"
                     android:layout_below="@id/tv_username"
-                    android:layout_height="@dimen/dp_18">
+                    android:layout_height="wrap_content">
                 </TextView>
                 <TextView
                     android:layout_width="wrap_content"

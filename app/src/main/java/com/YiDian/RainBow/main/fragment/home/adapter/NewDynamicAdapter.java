@@ -205,6 +205,10 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         if(userid==userInfo.getId()){
             ((ViewHolder)holder).tvGuanzhu.setVisibility(View.GONE);
         }
+        //是否关注为空时隐藏关注按钮
+        if(listBean.isIsAttention()==null){
+            ((ViewHolder)holder).tvGuanzhu.setVisibility(View.GONE);
+        }
         //点赞的单击事件
         ((ViewHolder) holder).rlDianzan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -444,8 +448,15 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         String distance = listBean.getDistance();
         if (distance != null) {
             ((ViewHolder) holder).tvDistance.setVisibility(View.VISIBLE);
-            String round = StringUtil.round(distance);
-            ((ViewHolder) holder).tvDistance.setText(round + "km");
+
+            double a = Double.valueOf(distance);
+            long round = Math.round(a);
+            if(round<1000){
+                ((ViewHolder) holder).tvDistance.setText(round + "m");
+            }else{
+                ((ViewHolder) holder).tvDistance.setText(round/1000 + "km");
+            }
+
         } else {
             ((ViewHolder) holder).tvDistance.setVisibility(View.GONE);
         }

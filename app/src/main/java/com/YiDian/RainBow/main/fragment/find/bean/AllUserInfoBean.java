@@ -1,5 +1,6 @@
 package com.YiDian.RainBow.main.fragment.find.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class AllUserInfoBean {
@@ -223,7 +224,7 @@ public class AllUserInfoBean {
             this.navigatepageNums = navigatepageNums;
         }
 
-        public static class ListBean {
+        public static class ListBean implements Serializable {
             /**
              * id : 2
              * phoneNum : 11111333321
