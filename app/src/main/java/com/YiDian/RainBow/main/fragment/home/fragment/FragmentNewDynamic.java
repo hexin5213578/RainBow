@@ -52,7 +52,7 @@ public class FragmentNewDynamic extends BaseFragment {
     @BindView(R.id.sv)
     SpringView sv;
     int page = 1;
-    int count = 10;
+    int count = 5;
     @BindView(R.id.no_data)
     RelativeLayout noData;
     @BindView(R.id.bt_reload)

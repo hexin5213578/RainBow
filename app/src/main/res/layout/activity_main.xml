@@ -6,12 +6,12 @@
     android:layout_height="match_parent"
     android:id="@+id/rl_main"
     tools:context=".main.activity.MainActivity">
-    <FrameLayout
-        android:id="@+id/flContent"
-        android:layout_above="@id/rgMenu"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+   <com.YiDian.RainBow.custom.viewpager.NoScrollViewPager
+       android:layout_width="match_parent"
+       android:layout_above="@id/rgMenu"
+       android:id="@+id/vp"
+       android:layout_height="match_parent">
+   </com.YiDian.RainBow.custom.viewpager.NoScrollViewPager>
     <RadioGroup
         android:layout_alignParentBottom="true"
         android:id="@+id/rgMenu"

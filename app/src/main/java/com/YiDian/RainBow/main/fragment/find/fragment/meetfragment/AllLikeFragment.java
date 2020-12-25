@@ -11,8 +11,9 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
-import com.YiDian.RainBow.main.fragment.find.adapter.LikeMineAdapter;
+import com.YiDian.RainBow.main.fragment.find.adapter.AllLikeAdapter;
 import com.YiDian.RainBow.main.fragment.find.adapter.MyLikeAdapter;
+import com.YiDian.RainBow.main.fragment.find.bean.AllLikeBean;
 import com.YiDian.RainBow.main.fragment.find.bean.UserMySeeBean;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.liaoinstan.springview.container.AliFooter;
@@ -32,20 +33,20 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-//喜欢我的
-public class LikeMineFragment extends BaseFragment {
-    @BindView(R.id.rc_likeMine)
-    RecyclerView rclikeMine;
+public class AllLikeFragment extends BaseFragment {
+    @BindView(R.id.rc_alllike)
+    RecyclerView rcallLike;
     @BindView(R.id.sv)
     SpringView sv;
     @BindView(R.id.rl_nodata)
     RelativeLayout rlNodata;
     int page = 1;
     int size = 15;
-    private int userid;
-    private List<UserMySeeBean.ObjectBean> allList;
+    private List<AllLikeBean.ObjectBean.ListBean> allList;
     private LinearLayoutManager linearLayoutManager;
-    private LikeMineAdapter likeMineAdapter;
+    private AllLikeAdapter allLikeAdapter;
+    private int userid;
+
     @Override
     protected void getid(View view) {
 
@@ -53,7 +54,7 @@ public class LikeMineFragment extends BaseFragment {
 
     @Override
     protected int getResId() {
-        return R.layout.home_find_meet_likeminefragment;
+        return R.layout.home_find_meet_alllike_fragment;
     }
 
     @Override
@@ -66,8 +67,8 @@ public class LikeMineFragment extends BaseFragment {
         allList = new ArrayList<>();
         userid = Integer.valueOf(Common.getUserId());
 
-        getStr(page,size);
 
+        getStr(page,size);
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {
@@ -90,30 +91,33 @@ public class LikeMineFragment extends BaseFragment {
                     @Override
                     public void run() {
                         page++;
+
                         getStr(page,size);
+
                         sv.onFinishFreshAndLoad();
                     }
                 },1000);
             }
         });
     }
+
     public void getStr(int page, int size) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 NetUtils.getInstance().getApis()
-                        .dogetLikeMine(userid, page, size)
+                        .doGetAllLike(userid, page, size)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<UserMySeeBean>() {
+                        .subscribe(new Observer<AllLikeBean>() {
                             @Override
                             public void onSubscribe(Disposable d) {
 
                             }
 
                             @Override
-                            public void onNext(UserMySeeBean userMySeeBean) {
-                                List<UserMySeeBean.ObjectBean> list = userMySeeBean.getObject();
+                            public void onNext(AllLikeBean bean) {
+                                List<AllLikeBean.ObjectBean.ListBean> list = bean.getObject().getList();
                                 if (list.size() > 0 && list != null) {
                                     sv.setVisibility(View.VISIBLE);
                                     rlNodata.setVisibility(View.GONE);
@@ -121,15 +125,19 @@ public class LikeMineFragment extends BaseFragment {
                                     sv.setHeader(new AliHeader(getContext()));
                                     allList.addAll(list);
                                     linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                                    rclikeMine.setLayoutManager(linearLayoutManager);
-                                    likeMineAdapter = new LikeMineAdapter(getContext(), allList);
-                                    rclikeMine.setAdapter(likeMineAdapter);
+                                    rcallLike.setLayoutManager(linearLayoutManager);
+
+                                    allLikeAdapter = new AllLikeAdapter(getContext(), allList);
+
+                                    rcallLike.setAdapter(allLikeAdapter);
                                 }else{
                                     if(allList.size()>0 && allList!=null){
                                         linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                                        rclikeMine.setLayoutManager(linearLayoutManager);
-                                        likeMineAdapter = new LikeMineAdapter(getContext(), allList);
-                                        rclikeMine.setAdapter(likeMineAdapter);
+                                        rcallLike.setLayoutManager(linearLayoutManager);
+                                        allLikeAdapter = new AllLikeAdapter(getContext(), allList);
+
+                                        rcallLike.setAdapter(allLikeAdapter);
+
                                     }else{
                                         rlNodata.setVisibility(View.VISIBLE);
                                         sv.setVisibility(View.GONE);
@@ -156,7 +164,7 @@ public class LikeMineFragment extends BaseFragment {
     //接收关注成功 取消关注成功后的处理
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getStr(String str){
-        if(str.equals("喜欢我的刷新界面")){
+        if(str.equals("匹配过的刷新界面")){
             allList.clear();
             getStr(1,15);
         }

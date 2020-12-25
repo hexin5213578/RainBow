@@ -48,7 +48,7 @@ public class FragmentHotDynamic extends BaseFragment {
     @BindView(R.id.sv)
     SpringView sv;
     int page = 1;
-    int size = 10;
+    int size = 5;
     private int userid;
     private Tencent mTencent;
     private List<NewDynamicBean.ObjectBean.ListBean> alllist;

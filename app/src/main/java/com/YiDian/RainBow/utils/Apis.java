@@ -1,6 +1,7 @@
 package com.YiDian.RainBow.utils;
 
 
+import com.YiDian.RainBow.main.fragment.find.bean.AllLikeBean;
 import com.YiDian.RainBow.main.fragment.find.bean.AllUserInfoBean;
 import com.YiDian.RainBow.main.fragment.find.bean.LikeUserBean;
 import com.YiDian.RainBow.main.fragment.find.bean.UserMySeeBean;
@@ -165,6 +166,10 @@ public interface Apis {
 
     //喜欢我的
     @GET("favorite/selectbUserId")
-    Observable<UserMySeeBean> dogetLikeMine(@Query("userId")int userid,@Query("page")int page,@Query("pageSize")int size);
+    Observable<UserMySeeBean> dogetLikeMine(@Query("bUserId")int userid,@Query("page")int page,@Query("pageSize")int size);
+
+    //匹配过的
+    @GET("favorite/selectbUser")
+    Observable<AllLikeBean> doGetAllLike(@Query("userId")int userid,@Query("page")int page,@Query("pageSize")int size);
 
 }

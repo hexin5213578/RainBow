@@ -10,7 +10,7 @@ import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 
 import java.io.Serializable;
 
-//用户主页
+//用户主页  头像点击进入
 public class PersonHomeActivity extends BaseAvtivity {
     @Override
     protected int getResId() {

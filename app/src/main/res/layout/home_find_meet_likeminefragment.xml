@@ -13,7 +13,7 @@
             android:layout_height="match_parent">
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
-                android:id="@+id/rc_iseenMine"
+                android:id="@+id/rc_likeMine"
                 android:layout_height="match_parent">
             </androidx.recyclerview.widget.RecyclerView>
         </androidx.core.widget.NestedScrollView>
@@ -32,7 +32,7 @@
         </ImageView>
         <TextView
             android:layout_width="wrap_content"
-            android:text="暂无浏览记录的～"
+            android:text="暂无喜欢你的人哦～"
             android:layout_below="@id/iv"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_29"

@@ -11,9 +11,10 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
-import com.YiDian.RainBow.main.fragment.find.adapter.ISeenPersonAdapter;
+import com.YiDian.RainBow.main.fragment.find.adapter.MyLikeAdapter;
 import com.YiDian.RainBow.main.fragment.find.bean.UserMySeeBean;
 import com.YiDian.RainBow.utils.NetUtils;
+import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.container.AliHeader;
 import com.liaoinstan.springview.widget.SpringView;
 
@@ -32,8 +33,8 @@ import io.reactivex.schedulers.Schedulers;
 
 //  发现 - 遇见 -我喜欢的
 public class MyLikeFragment extends BaseFragment {
-    @BindView(R.id.rc_iseen)
-    RecyclerView rcIseen;
+    @BindView(R.id.rc_mylike)
+    RecyclerView rcMylike;
     @BindView(R.id.sv)
     SpringView sv;
     @BindView(R.id.rl_nodata)
@@ -43,7 +44,7 @@ public class MyLikeFragment extends BaseFragment {
     int size = 15;
     private List<UserMySeeBean.ObjectBean> allList;
     private LinearLayoutManager linearLayoutManager;
-    private ISeenPersonAdapter iSeenPersonAdapter;
+    private MyLikeAdapter myLikeAdapter;
 
     @Override
     protected void getid(View view) {
@@ -74,9 +75,7 @@ public class MyLikeFragment extends BaseFragment {
                     @Override
                     public void run() {
                         page = 1;
-
                         allList.clear();
-
                         getStr(page,size);
                         sv.onFinishFreshAndLoad();
                     }
@@ -89,9 +88,7 @@ public class MyLikeFragment extends BaseFragment {
                     @Override
                     public void run() {
                         page++;
-
                         getStr(page,size);
-
                         sv.onFinishFreshAndLoad();
                     }
                 },1000);
@@ -123,19 +120,26 @@ public class MyLikeFragment extends BaseFragment {
                                     sv.setHeader(new AliHeader(getContext()));
                                     allList.addAll(list);
                                     linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                                    rcIseen.setLayoutManager(linearLayoutManager);
-                                    iSeenPersonAdapter = new ISeenPersonAdapter(getContext(), allList);
-                                    rcIseen.setAdapter(iSeenPersonAdapter);
+                                    rcMylike.setLayoutManager(linearLayoutManager);
+
+                                    myLikeAdapter = new MyLikeAdapter(getContext(), allList);
+
+                                    rcMylike.setAdapter(myLikeAdapter);
                                 }else{
                                     if(allList.size()>0 && allList!=null){
                                         linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                                        rcIseen.setLayoutManager(linearLayoutManager);
-                                        iSeenPersonAdapter = new ISeenPersonAdapter(getContext(), allList);
-                                        rcIseen.setAdapter(iSeenPersonAdapter);
+                                        rcMylike.setLayoutManager(linearLayoutManager);
+
+                                        myLikeAdapter = new MyLikeAdapter(getContext(), allList);
+
+                                        rcMylike.setAdapter(myLikeAdapter);
                                     }else{
                                         rlNodata.setVisibility(View.VISIBLE);
                                         sv.setVisibility(View.GONE);
                                     }
+                                }
+                                if(list.size()>14){
+                                    sv.setFooter(new AliFooter(getContext()));
                                 }
                             }
 
@@ -155,7 +159,7 @@ public class MyLikeFragment extends BaseFragment {
     //接收关注成功 取消关注成功后的处理
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getStr(String str){
-        if(str.equals("刷新界面")){
+        if(str.equals("我喜欢的刷新界面")){
             allList.clear();
             getStr(1,15);
         }

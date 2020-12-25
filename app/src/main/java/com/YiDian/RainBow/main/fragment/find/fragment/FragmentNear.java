@@ -1,6 +1,7 @@
 package com.YiDian.RainBow.main.fragment.find.fragment;
 
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,6 +24,8 @@ public class FragmentNear extends BaseFragment {
     RecyclerView rcNearPerson;
     @BindView(R.id.sv)
     SpringView sv;
+    @BindView(R.id.rl_nodata)
+    RelativeLayout rlNodata;
 
     @Override
     protected void getid(View view) {

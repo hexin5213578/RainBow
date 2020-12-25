@@ -86,8 +86,8 @@
         android:layout_marginTop="@dimen/dp_5"
         android:layout_height="@dimen/dp_3">
     </View>
-    <FrameLayout
-        android:id="@+id/flContent"
+    <com.YiDian.RainBow.custom.viewpager.NoScrollViewPager
+        android:id="@+id/vp"
         android:layout_below="@id/v1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -1,5 +1,6 @@
 package com.YiDian.RainBow.search;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -8,10 +9,14 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.ViewPager;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
@@ -20,6 +25,9 @@ import com.YiDian.RainBow.search.fragment.FragmentHotTopic;
 import com.YiDian.RainBow.search.fragment.FragmentSearchPreson;
 import com.YiDian.RainBow.search.fragment.FragmentSearchRoom;
 import com.leaf.library.StatusBarUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,16 +44,8 @@ public class SearchActivity extends BaseAvtivity implements RadioGroup.OnChecked
     @BindView(R.id.rgTab)
     RadioGroup rgTab;
     RadioButton[] rbs = new RadioButton[3];
-    @BindView(R.id.flContent)
-    FrameLayout flContent;
-    @BindView(R.id.rbSearchRoom)
-    RadioButton rbSearchRoom;
-    private FragmentManager fmManager;
-
-    /**
-     * 当前展示的Fragment
-     */
-    private Fragment currentFragment;
+    @BindView(R.id.vp)
+    ViewPager vp;
 
     /**
      * 创建Fragment实例
@@ -53,26 +53,36 @@ public class SearchActivity extends BaseAvtivity implements RadioGroup.OnChecked
     private FragmentHotTopic fragmentHotTopic;
     private FragmentSearchPreson fragmentSearchPreson;
     private FragmentSearchRoom fragmentSearchRoom;
+    private List<Fragment> list;
+
     @Override
     protected int getResId() {
         return R.layout.activity_search;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void getData() {
         //设置状态栏颜色 字体颜色
         StatusBarUtil.setGradientColor(this, toolbar);
         StatusBarUtil.setDarkMode(this);
+        list = new ArrayList<>();
 
         rbs[0] = rbSearchHuati;
         rbs[1] = rbSearchPerson;
-        rbs[2] = rbSearchRoom;
-        fmManager = getSupportFragmentManager();
         rgTab.setOnCheckedChangeListener(this);
         //创建fragment实例
         fragmentHotTopic = new FragmentHotTopic();
         fragmentSearchPreson = new FragmentSearchPreson();
-        fragmentSearchRoom = new FragmentSearchRoom();
+        //fragmentSearchRoom = new FragmentSearchRoom();
+
+
+        list.add(fragmentHotTopic);
+        list.add(fragmentSearchPreson);
+
+        MyAdapter myAdapter = new MyAdapter(getSupportFragmentManager());
+        vp.setAdapter(myAdapter);
+
         /**
          * 首次进入加载第一个界面
          */
@@ -88,13 +98,30 @@ public class SearchActivity extends BaseAvtivity implements RadioGroup.OnChecked
             }
         });
     }
+    public class MyAdapter extends FragmentPagerAdapter{
 
+        public MyAdapter(@NonNull FragmentManager fm) {
+            super(fm);
+        }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            return list.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+    }
     @Override
     protected BasePresenter initPresenter() {
         return null;
     }
 
     //单选框选中状态监听
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {
@@ -104,33 +131,19 @@ public class SearchActivity extends BaseAvtivity implements RadioGroup.OnChecked
             //设置切换页面及选中字体大小
             case R.id.rbSearchHuati:
                 //调用切换界面方法
-                replace(fragmentHotTopic);
+                vp.setCurrentItem(0);
                 rbSearchHuati.setTextSize(18);
                 rbSearchHuati.setTextAppearance(R.style.txt_bold);
 
                 rbSearchPerson.setTextSize(16);
                 rbSearchPerson.setTextAppearance(R.style.txt_nomal);
 
-                rbSearchRoom.setTextSize(16);
-                rbSearchRoom.setTextAppearance(R.style.txt_nomal);
                 break;
             case R.id.rbSearchPerson:
-                replace(fragmentSearchPreson);
+                vp.setCurrentItem(1);
+
                 rbSearchPerson.setTextSize(18);
                 rbSearchPerson.setTextAppearance(R.style.txt_bold);
-
-                rbSearchHuati.setTextSize(16);
-                rbSearchHuati.setTextAppearance(R.style.txt_nomal);
-
-                rbSearchRoom.setTextSize(16);
-                rbSearchRoom.setTextAppearance(R.style.txt_nomal);
-                break;
-            case R.id.rbSearchRoom:
-                rbSearchRoom.setTextSize(18);
-                rbSearchRoom.setTextAppearance(R.style.txt_bold);
-
-                rbSearchPerson.setTextSize(16);
-                rbSearchPerson.setTextAppearance(R.style.txt_nomal);
 
                 rbSearchHuati.setTextSize(16);
                 rbSearchHuati.setTextAppearance(R.style.txt_nomal);
@@ -140,39 +153,4 @@ public class SearchActivity extends BaseAvtivity implements RadioGroup.OnChecked
         }
     }
 
-    /**
-     * 切换页面显示fragment
-     *
-     * @param to 跳转到的fragment
-     */
-    private void replace(Fragment to) {
-        if (to == null || to == currentFragment) {
-            // 如果跳转的fragment为空或者跳转的fragment为当前fragment则不做操作
-            return;
-        }
-        if (currentFragment == null) {
-            // 如果当前fragment为空,即为第一次添加fragment
-            fmManager.beginTransaction()
-                    .add(R.id.flContent, to)
-                    .commitAllowingStateLoss();
-            currentFragment = to;
-            return;
-        }
-        // 切换fragment
-        FragmentTransaction transaction = fmManager.beginTransaction().hide(currentFragment);
-        if (!to.isAdded()) {
-            transaction.add(R.id.flContent, to);
-        } else {
-            transaction.show(to);
-        }
-        transaction.commitAllowingStateLoss();
-        currentFragment = to;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
 }

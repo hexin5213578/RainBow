@@ -3,16 +3,18 @@ package com.YiDian.RainBow.main.fragment;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.ViewPager;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
@@ -25,6 +27,9 @@ import com.YiDian.RainBow.main.fragment.home.fragment.FragmentNewDynamic;
 import com.YiDian.RainBow.search.SearchActivity;
 import com.leaf.library.StatusBarUtil;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -43,20 +48,13 @@ public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedCh
     RadioButton rbHotDynamic;
     @BindView(R.id.rgTab)
     RadioGroup rgTab;
-    @BindView(R.id.flContent)
-    FrameLayout flContent;
+
 
     RadioButton[] rbs = new RadioButton[4];
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-
-    private FragmentManager fmManager;
-
-
-    /**
-     * 当前展示的Fragment
-     */
-    private Fragment currentFragment;
+    @BindView(R.id.vp)
+    ViewPager vp;
 
     /**
      * 创建Fragment实例
@@ -65,6 +63,7 @@ public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedCh
     private FragmentNearDynamic fragmentNearDynamic;
     private FragmentAttDynamic fragmentAttDynamic;
     private FragmentHotDynamic fragmentHotDynamic;
+    private List<Fragment> list;
 
     @Override
     protected void getid(View view) {
@@ -87,6 +86,8 @@ public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedCh
         StatusBarUtil.setGradientColor(getActivity(), toolbar);
         StatusBarUtil.setDarkMode(getActivity());
 
+        list = new ArrayList<>();
+
         llSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,115 +108,114 @@ public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedCh
         rbs[2] = rbAttDynamic;
         rbs[3] = rbHotDynamic;
 
-        fmManager = getChildFragmentManager();
         rgTab.setOnCheckedChangeListener(this);
         //创建fragment实例
         fragmentNewDynamic = new FragmentNewDynamic();
         fragmentNearDynamic = new FragmentNearDynamic();
         fragmentAttDynamic = new FragmentAttDynamic();
         fragmentHotDynamic = new FragmentHotDynamic();
+
+        list.add(fragmentNewDynamic);
+        list.add(fragmentNearDynamic);
+        list.add(fragmentAttDynamic);
+        list.add(fragmentHotDynamic);
+
+        MyAdapter myAdapter = new MyAdapter(getChildFragmentManager());
+        vp.setAdapter(myAdapter);
+
         /**
          * 首次进入加载第一个界面
          */
         rbNewDynamic.setChecked(true);
+        vp.setCurrentItem(0);
         rbNewDynamic.setTextSize(18);
-        rbNewDynamic.setTextAppearance(getContext(),R.style.txt_bold);
-
+        rbNewDynamic.setTextAppearance(getContext(), R.style.txt_bold);
 
     }
+    public class MyAdapter extends FragmentPagerAdapter{
 
+        public MyAdapter(@NonNull FragmentManager fm) {
+            super(fm);
+        }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            return list.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+    }
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {
             //设置切换页面及选中字体大小
             case R.id.rbNewDynamic:
-                replace(fragmentNewDynamic);
+                vp.setCurrentItem(0);
                 rbNewDynamic.setTextSize(18);
-                rbNewDynamic.setTextAppearance(getContext(),R.style.txt_bold);
+                rbNewDynamic.setTextAppearance(getContext(), R.style.txt_bold);
 
                 rbNearDynamic.setTextSize(16);
-                rbNearDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
+                rbNearDynamic.setTextAppearance(getContext(), R.style.txt_nomal);
 
                 rbAttDynamic.setTextSize(16);
-                rbAttDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
+                rbAttDynamic.setTextAppearance(getContext(), R.style.txt_nomal);
 
                 rbHotDynamic.setTextSize(16);
-                rbHotDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
+                rbHotDynamic.setTextAppearance(getContext(), R.style.txt_nomal);
                 break;
             case R.id.rbNearDynamic:
-                replace(fragmentNearDynamic);
+
+                vp.setCurrentItem(1);
+
                 rbNearDynamic.setTextSize(18);
-                rbNearDynamic.setTextAppearance(getContext(),R.style.txt_bold);
+                rbNearDynamic.setTextAppearance(getContext(), R.style.txt_bold);
 
                 rbNewDynamic.setTextSize(16);
-                rbNewDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
+                rbNewDynamic.setTextAppearance(getContext(), R.style.txt_nomal);
 
                 rbAttDynamic.setTextSize(16);
-                rbAttDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
+                rbAttDynamic.setTextAppearance(getContext(), R.style.txt_nomal);
 
                 rbHotDynamic.setTextSize(16);
-                rbHotDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
+                rbHotDynamic.setTextAppearance(getContext(), R.style.txt_nomal);
                 break;
             case R.id.rbAttDynamic:
-                replace(fragmentAttDynamic);
+                vp.setCurrentItem(2);
+
                 rbAttDynamic.setTextSize(18);
-                rbAttDynamic.setTextAppearance(getContext(),R.style.txt_bold);
+                rbAttDynamic.setTextAppearance(getContext(), R.style.txt_bold);
 
                 rbNewDynamic.setTextSize(16);
-                rbNewDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
+                rbNewDynamic.setTextAppearance(getContext(), R.style.txt_nomal);
 
                 rbNearDynamic.setTextSize(16);
-                rbNearDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
+                rbNearDynamic.setTextAppearance(getContext(), R.style.txt_nomal);
 
                 rbHotDynamic.setTextSize(16);
-                rbHotDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
+                rbHotDynamic.setTextAppearance(getContext(), R.style.txt_nomal);
                 break;
             case R.id.rbHotDynamic:
-                replace(fragmentHotDynamic);
+                vp.setCurrentItem(3);
+
                 rbHotDynamic.setTextSize(18);
-                rbHotDynamic.setTextAppearance(getContext(),R.style.txt_bold);
+                rbHotDynamic.setTextAppearance(getContext(), R.style.txt_bold);
 
                 rbNewDynamic.setTextSize(16);
-                rbNewDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
+                rbNewDynamic.setTextAppearance(getContext(), R.style.txt_nomal);
 
                 rbNearDynamic.setTextSize(16);
-                rbNearDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
+                rbNearDynamic.setTextAppearance(getContext(), R.style.txt_nomal);
 
                 rbAttDynamic.setTextSize(16);
-                rbAttDynamic.setTextAppearance(getContext(),R.style.txt_nomal);
+                rbAttDynamic.setTextAppearance(getContext(), R.style.txt_nomal);
                 break;
             default:
                 break;
         }
-    }
-
-    /**
-     * 切换页面显示fragment
-     *
-     * @param to 跳转到的fragment
-     */
-    private void replace(Fragment to) {
-        if (to == null || to == currentFragment) {
-            // 如果跳转的fragment为空或者跳转的fragment为当前fragment则不做操作
-            return;
-        }
-        if (currentFragment == null) {
-            // 如果当前fragment为空,即为第一次添加fragment
-            fmManager.beginTransaction()
-                    .add(R.id.flContent, to)
-                    .commitAllowingStateLoss();
-            currentFragment = to;
-            return;
-        }
-        // 切换fragment
-        FragmentTransaction transaction = fmManager.beginTransaction().hide(currentFragment);
-        if (!to.isAdded()) {
-            transaction.add(R.id.flContent, to);
-        } else {
-            transaction.show(to);
-        }
-        transaction.commitAllowingStateLoss();
-        currentFragment = to;
     }
 
     @Override

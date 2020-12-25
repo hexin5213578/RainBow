@@ -31,23 +31,45 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
     private P presenter;
     private Unbinder bind;
     private Loading_view loading_view;
-    public boolean mViewInflateFinished;
-    private View view;
+    //加载的试图
+    private View mContentView;
+    //三个核心变量
+    private boolean isUserHint;//用户是否可见
+    private boolean isViewInit;//view视图是否加载过
+    private boolean isDataLoad;//耗时操作是否加载过
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = View.inflate(getContext(),getResId(),null);
+        if (mContentView == null) {
+            mContentView = createView(inflater, container);
+        }
         presenter  = initPresenter();
-        bind = ButterKnife.bind(this, view);
-        getid(view);
-        mViewInflateFinished = true;
+
+        bind = ButterKnife.bind(this, mContentView);
+
+        return mContentView;
+    }
+
+    public View createView(LayoutInflater inflater, ViewGroup container) {
+        View view = null;
+        if (getResId() != 0) {
+            view = inflater.inflate(getResId(), container, false);
+        } else {
+            throw new IllegalStateException("this layout id is null");
+        }
         return view;
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getData();
+        Log.i("baseF","onViewCreated");
+
+        if (!isViewInit) {
+            getid(mContentView);
+        }
+        isViewInit = true;
+        loadData();
     }
     // 展示loading圈
     public void showDialog() {
@@ -66,8 +88,6 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
     public P getPresenter() {
         return presenter;
     }
-
-
     protected abstract void getid(View view);
     protected abstract int getResId();
     protected abstract P initPresenter();
@@ -81,23 +101,21 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
         }
         bind.unbind();
     }
-    /**
-     * fragment 提供的回调，回调当天fragment是否对用用户可见
-     * 他是在当这个 fragment 是否对用户的可见发生变化的时候
-     * @param isVisibleToUser false对用户不可见， true对用户可见
-     */
+
+    //这个方法优先级很高
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
+    public void setUserVisibleHint(boolean isVisibleToUser) {//用户可见就为true 不可见就是false
         super.setUserVisibleHint(isVisibleToUser);
-        // 如果还没有加载过数据 && 用户切换到了这个fragment
-        // 那就开始加载数据
-        if (mViewInflateFinished && isVisibleToUser) {
-            getData();
-        }
+        this.isUserHint = isVisibleToUser;
+        loadData();
+        Log.i("baseF","setUserVisibleHint");
     }
-    private void doNetWork() {
-        if (getUserVisibleHint()) {
+
+    void loadData() {
+        //进行优化懒加载的方法
+        if (isUserHint && isViewInit && !isDataLoad) {
             getData();
+            isDataLoad = true;
         }
     }
     //判断网络状态

@@ -46,16 +46,10 @@
                 android:background="@null"
                 android:layout_marginLeft="@dimen/dp_20"
                 android:text="搜用户" />
-            <RadioButton
-                android:id="@+id/rbSearchRoom"
-                style="@style/SearchTab"
-                android:background="@null"
-                android:layout_marginLeft="@dimen/dp_20"
-                android:text="搜房间" />
         </RadioGroup>
     </RelativeLayout>
-    <FrameLayout
-        android:id="@+id/flContent"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/vp"
         android:layout_below="@id/rl1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

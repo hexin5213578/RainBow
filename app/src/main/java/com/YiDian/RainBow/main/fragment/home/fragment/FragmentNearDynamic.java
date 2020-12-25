@@ -67,7 +67,7 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
     private NewDynamicAdapter newDynamicAdapter;
     private List<NewDynamicBean.ObjectBean.ListBean> alllist;
     int page =1;
-    int size = 15;
+    int size = 5;
     private Tencent mTencent;
 
     @Override

@@ -6,38 +6,36 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.widget.FrameLayout;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
-import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.zbar.CaptureActivity;
-import com.YiDian.RainBow.login.activity.CompleteMsgActivity;
-import com.YiDian.RainBow.login.activity.LoginActivity;
 import com.YiDian.RainBow.main.fragment.FragmentFind;
 import com.YiDian.RainBow.main.fragment.FragmentHome;
-import com.YiDian.RainBow.main.fragment.FragmentIM;
 import com.YiDian.RainBow.main.fragment.FragmentMine;
 import com.YiDian.RainBow.main.fragment.FragmentMsg;
-import com.YiDian.RainBow.utils.PhotoLoader;
-import com.YiDian.RainBow.utils.SPUtil;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -45,6 +43,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import butterknife.BindView;
@@ -53,12 +52,9 @@ import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.api.BasicCallback;
-import indi.liyi.viewer.ImageViewer;
 
 public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedChangeListener {
 
-    @BindView(R.id.flContent)
-    FrameLayout flContent;
     @BindView(R.id.rbHome)
     RadioButton rbHome;
     @BindView(R.id.rbFind)
@@ -72,16 +68,8 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     RadioButton[] rbs = new RadioButton[4];
     @BindView(R.id.rl_main)
     RelativeLayout rlMain;
-    private FragmentManager fmManager;
-
-    /**
-     * 当前展示的Fragment
-     */
-    private Fragment currentFragment;
-    /**
-     * 上次点击返回按钮的时间戳
-     */
-    private long firstPressedTime;
+    @BindView(R.id.vp)
+    ViewPager vp;
 
     /**
      * 创建Fragment实例
@@ -91,15 +79,17 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     private FragmentFind fragmentfind;
     private FragmentMsg fragmentMsg;
     private FragmentMine fragmentmine;
+    private List<Fragment> list;
 
     @Override
     protected int getResId() {
         return R.layout.activity_main;
     }
+
     private final Handler mHandler = new Handler() {
         @SuppressLint("HandlerLeak")
         @Override
-        public void handleMessage(android.os.Message msg) {
+        public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == 100) {
                 //设置别名
@@ -107,6 +97,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
             }
         }
     };
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void getData() {
@@ -129,7 +120,6 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
                     Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
 
-
         rbs[0] = rbHome;
         //rbs[1] = rbIM;
         rbs[1] = rbFind;
@@ -148,7 +138,8 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
             rb.setCompoundDrawables(null, drawables[1], null, null);
         }
 
-        fmManager = getSupportFragmentManager();
+        list = new ArrayList<>();
+
         rgMenu.setOnCheckedChangeListener(this);
         //创建fragment实例
         fragmentHome = new FragmentHome();
@@ -160,8 +151,15 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
          * 首次进入加载第一个界面
          */
         rbHome.setChecked(true);
-        //设置状态栏颜色
+        vp.setCurrentItem(0);
 
+        list.add(fragmentHome);
+        list.add(fragmentfind);
+        list.add(fragmentMsg);
+        list.add(fragmentmine);
+
+        MyAdapter myAdapter = new MyAdapter(getSupportFragmentManager());
+        vp.setAdapter(myAdapter);
     }
 
 
@@ -169,15 +167,16 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     protected BasePresenter initPresenter() {
         return null;
     }
-    public void setAlias(){
+
+    public void setAlias() {
         JPushInterface.setAlias(MainActivity.this, "1000", new TagAliasCallback() {
             @Override
             public void gotResult(int i, String s, Set<String> set) {
-                Log.d("xxx","回调是"+i);
-                if(i==0){
-                    Log.d("xxx","设置别名成功");
+                Log.d("xxx", "回调是" + i);
+                if (i == 0) {
+                    Log.d("xxx", "设置别名成功");
                 }
-                if(i==6002){
+                if (i == 6002) {
                     Message obtain = Message.obtain();
                     obtain.what = 100;
                     mHandler.sendMessageDelayed(obtain, 1000 * 60);//60秒后重新验证
@@ -185,66 +184,58 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
             }
         });
     }
+
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {
             case R.id.rbHome:
-                replace(fragmentHome);
+                vp.setCurrentItem(0);
                 break;
             /*case R.id.rbIM:
                 replace(fragmentIM);
                 break;*/
             case R.id.rbFind:
-                replace(fragmentfind);
+                vp.setCurrentItem(1);
                 break;
             case R.id.rbMsg:
-                replace(fragmentMsg);
+                vp.setCurrentItem(2);
                 break;
             case R.id.rbMine:
-                replace(fragmentmine);
+                vp.setCurrentItem(3);
                 break;
             default:
                 break;
         }
     }
 
+
     //跳转到匹配页
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getId(String str){
-        if (str.equals("跳转到匹配页")){
-            replace(fragmentfind);
+    public void getId(String str) {
+        if (str.equals("跳转到匹配页")) {
+            vp.setCurrentItem(1);
             rbFind.setChecked(true);
         }
     }
-    /**
-     * 切换页面显示fragment
-     *
-     * @param to 跳转到的fragment
-     */
-    private void replace(Fragment to) {
-        if (to == null || to == currentFragment) {
-            // 如果跳转的fragment为空或者跳转的fragment为当前fragment则不做操作
-            return;
-        }
-        if (currentFragment == null) {
-            // 如果当前fragment为空,即为第一次添加fragment
-            fmManager.beginTransaction()
-                    .add(R.id.flContent, to)
-                    .commitAllowingStateLoss();
-            currentFragment = to;
-            return;
-        }
-        // 切换fragment
-        FragmentTransaction transaction = fmManager.beginTransaction().hide(currentFragment);
-        if (!to.isAdded()) {
-            transaction.add(R.id.flContent, to);
-        } else {
-            transaction.show(to);
-        }
-        transaction.commitAllowingStateLoss();
-        currentFragment = to;
-    }
 
+
+    public class MyAdapter extends FragmentPagerAdapter {
+        public MyAdapter(@NonNull FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            return list.get(position);
+        }
+
+    }
     //定义一个变量，来标识是否退出
     private static int isExit = 0;
 
@@ -296,7 +287,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     protected void onResume() {
         super.onResume();
         GSYVideoManager.onResume(false);
-        if(!EventBus.getDefault().isRegistered(this)){
+        if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
     }
@@ -305,7 +296,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     protected void onDestroy() {
         super.onDestroy();
         GSYVideoManager.releaseAllVideos();
-          if(EventBus.getDefault().isRegistered(this)){
+        if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
     }
@@ -316,21 +307,23 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
         // TODO: add setContentView(...) invocation
         ButterKnife.bind(this);
     }
+
+    // TODO: 2020/12/25 0025 二维码识别回调
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.e("xxx",+requestCode+"   "+resultCode);
-                Log.e("xxx","识别成功");
-                // 扫描二维码回传
-                if (resultCode == RESULT_OK) {
-                    if (data != null) {
-                        //获取扫描结果
-                        Bundle bundle = data.getExtras();
-                        String result = bundle.getString(CaptureActivity.EXTRA_STRING);
+        Log.e("xxx", +requestCode + "   " + resultCode);
+        Log.e("xxx", "识别成功");
+        // 扫描二维码回传
+        if (resultCode == RESULT_OK) {
+            if (data != null) {
+                //获取扫描结果
+                Bundle bundle = data.getExtras();
+                String result = bundle.getString(CaptureActivity.EXTRA_STRING);
 
-                        //判断信息是否属于彩虹 属于彩虹+id格式 跳转到扫描成功页 通过ID查询用户信息
-                        Log.e("xxx", result);
-                    }
-                }
+                //判断信息是否属于彩虹 属于彩虹+id格式 跳转到扫描成功页 通过ID查询用户信息
+                Log.e("xxx", result);
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.YiDian.RainBow.main.fragment.find.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.custom.customDialog.CustomDialogCancleFollow;
+import com.YiDian.RainBow.main.fragment.find.bean.AllLikeBean;
 import com.YiDian.RainBow.main.fragment.find.bean.UserMySeeBean;
 import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
 import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
@@ -34,13 +37,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class ISeenPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class MyLikeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Context context;
     private final List<UserMySeeBean.ObjectBean> list;
     private UserMySeeBean.ObjectBean bean;
 
-    public ISeenPersonAdapter(Context context, List<UserMySeeBean.ObjectBean> list) {
+    public MyLikeAdapter(Context context, List<UserMySeeBean.ObjectBean> list) {
 
         this.context = context;
         this.list = list;
@@ -81,7 +84,6 @@ public class ISeenPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
         });
 
-
         //判断是否关注
         if (bean.getIsFans()==0){
             //设置成未关注
@@ -115,7 +117,7 @@ public class ISeenPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                                     ((ViewHolder)holder).btGuanzhu.setText("已关注");
                                     bean.setIsFans(1);
 
-                                    EventBus.getDefault().post("刷新界面");
+                                    EventBus.getDefault().post("我喜欢的刷新界面");
                                 }
 
                                 @Override
@@ -129,37 +131,53 @@ public class ISeenPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                                 }
                             });
                 }else if(bean.getIsFans()==1){
-                    //已关注 取消关注
                     ((ViewHolder)holder).btGuanzhu.setEnabled(false);
-                    NetUtils.getInstance().getApis()
-                            .doCancleFollow(bean.getUserId(), bean.getBuserId())
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Observer<FollowBean>() {
-                                @Override
-                                public void onSubscribe(Disposable d) {
 
-                                }
+                    CustomDialogCancleFollow.Builder builder = new CustomDialogCancleFollow.Builder(context);
+                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            //已关注 取消关注
+                            ((ViewHolder)holder).btGuanzhu.setEnabled(false);
+                            dialog.dismiss();
 
-                                @Override
-                                public void onNext(FollowBean followBean) {
-                                    ((ViewHolder)holder).btGuanzhu.setEnabled(true);
-                                    ((ViewHolder)holder).btGuanzhu.setText("关注");
-                                    bean.setIsFans(0);
+                            NetUtils.getInstance().getApis()
+                                    .doCancleFollow(bean.getUserId(), bean.getBuserId())
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Observer<FollowBean>() {
+                                        @Override
+                                        public void onSubscribe(Disposable d) {
 
-                                    EventBus.getDefault().post("刷新界面");
-                                }
+                                        }
 
-                                @Override
-                                public void onError(Throwable e) {
+                                        @Override
+                                        public void onNext(FollowBean followBean) {
+                                            ((ViewHolder)holder).btGuanzhu.setEnabled(true);
+                                            ((ViewHolder)holder).btGuanzhu.setText("关注");
+                                            bean.setIsFans(0);
 
-                                }
+                                            EventBus.getDefault().post("我喜欢的刷新界面");
+                                        }
 
-                                @Override
-                                public void onComplete() {
+                                        @Override
+                                        public void onError(Throwable e) {
 
+                                        }
+
+                                        @Override
+                                        public void onComplete() {
+
+                                        }
+                                    });
+                        }
+                    });
+                    builder.setNegativeButton("取消",
+                            new android.content.DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
                                 }
                             });
+                    builder.create().show();
                 }
             }
         });

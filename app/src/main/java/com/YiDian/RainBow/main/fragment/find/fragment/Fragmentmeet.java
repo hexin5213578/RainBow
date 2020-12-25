@@ -21,7 +21,7 @@ import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.main.fragment.find.fragment.meetfragment.MyLikeFragment;
 import com.YiDian.RainBow.main.fragment.find.fragment.meetfragment.LikeMineFragment;
-import com.YiDian.RainBow.main.fragment.find.fragment.meetfragment.MatchedFragment;
+import com.YiDian.RainBow.main.fragment.find.fragment.meetfragment.AllLikeFragment;
 import com.google.android.material.tabs.TabLayout;
 
 import java.lang.reflect.Field;
@@ -66,7 +66,7 @@ public class Fragmentmeet extends BaseFragment {
 
         MyLikeFragment iseenFragment = new MyLikeFragment();
         LikeMineFragment iseenMineFragment = new LikeMineFragment();
-        MatchedFragment matchedFragment = new MatchedFragment();
+        AllLikeFragment matchedFragment = new AllLikeFragment();
 
         fragments.add(iseenFragment);
         fragments.add(iseenMineFragment);

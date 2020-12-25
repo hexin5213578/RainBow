@@ -24,11 +24,14 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.ViewPager;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
@@ -41,6 +44,9 @@ import com.YiDian.RainBow.main.fragment.find.fragment.Fragmentmeet;
 import com.leaf.library.StatusBarUtil;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,20 +64,14 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
     RadioGroup rgTab;
     @BindView(R.id.iv_filter)
     RelativeLayout ivFilter;
-    @BindView(R.id.flContent)
-    FrameLayout flContent;
+    @BindView(R.id.vp)
+    ViewPager vp;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
     String Person = "";
     String IsSingle = "";
     RadioButton[] rbs = new RadioButton[3];
-    private FragmentManager fmManager;
-
-    /**
-     * 当前展示的Fragment
-     */
-    private Fragment currentFragment;
 
     /**
      * 创建Fragment实例
@@ -80,6 +80,7 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
     private Fragmentmeet fragmentmeet;
     private FragmentNear fragmentNear;
     private PopupWindow mPopupWindow;
+    private List<Fragment> list;
 
     @Override
     protected void getid(View view) {
@@ -103,15 +104,24 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
         StatusBarUtil.setGradientColor(getActivity(), toolbar);
         StatusBarUtil.setDarkMode(getActivity());
 
+        list = new ArrayList<>();
+
         rbs[0] = rbMatch;
         rbs[1] = rbMeet;
         rbs[2] = rbNear;
-        fmManager = getChildFragmentManager();
         rgTab.setOnCheckedChangeListener(this);
         //创建fragment实例
         fragmentmatch = new Fragmentmatch();
         fragmentmeet = new Fragmentmeet();
         fragmentNear = new FragmentNear();
+
+        list.add(fragmentmatch);
+        list.add(fragmentmeet);
+        list.add(fragmentNear);
+
+
+        MyAdapter myAdapter = new MyAdapter(getChildFragmentManager());
+        vp.setAdapter(myAdapter);
         /**
          * 首次进入加载第一个界面
          */
@@ -126,14 +136,30 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
             }
         });
     }
+    public class MyAdapter extends FragmentPagerAdapter{
 
+        public MyAdapter(@NonNull FragmentManager fm) {
+            super(fm);
+        }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            return list.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+    }
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {
             //设置切换页面及选中字体大小
             case R.id.rbMatch:
-                replace(fragmentmatch);
+                vp.setCurrentItem(0);
                 ivFilter.setVisibility(View.VISIBLE);
 
                 rbMatch.setTextSize(18);
@@ -147,7 +173,8 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
 
                 break;
             case R.id.rbMeet:
-                replace(fragmentmeet);
+                vp.setCurrentItem(1);
+
 
                 ivFilter.setVisibility(View.GONE);
 
@@ -160,8 +187,7 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
                 rbNear.setTextAppearance(R.style.txt_nomal);
                 break;
             case R.id.rbNear:
-                replace(fragmentNear);
-
+                vp.setCurrentItem(2);
                 //附近关闭筛选按钮
                 ivFilter.setVisibility(View.GONE);
 
@@ -177,35 +203,6 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
             default:
                 break;
         }
-    }
-
-    /**
-     * 切换页面显示fragment
-     *
-     * @param to 跳转到的fragment
-     */
-    private void replace(Fragment to) {
-        if (to == null || to == currentFragment) {
-            // 如果跳转的fragment为空或者跳转的fragment为当前fragment则不做操作
-            return;
-        }
-        if (currentFragment == null) {
-            // 如果当前fragment为空,即为第一次添加fragment
-            fmManager.beginTransaction()
-                    .add(R.id.flContent, to)
-                    .commitAllowingStateLoss();
-            currentFragment = to;
-            return;
-        }
-        // 切换fragment
-        FragmentTransaction transaction = fmManager.beginTransaction().hide(currentFragment);
-        if (!to.isAdded()) {
-            transaction.add(R.id.flContent, to);
-        } else {
-            transaction.show(to);
-        }
-        transaction.commitAllowingStateLoss();
-        currentFragment = to;
     }
 
     //弹出选择规格
@@ -364,7 +361,9 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        EventBus.getDefault().post("重新请求数据");
+        if(hidden){
+            EventBus.getDefault().post("重新请求数据");
+        }
     }
 
     /**

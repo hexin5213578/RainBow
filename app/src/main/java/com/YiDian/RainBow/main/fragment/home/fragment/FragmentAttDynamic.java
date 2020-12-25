@@ -67,7 +67,7 @@ public class FragmentAttDynamic extends BaseFragment {
     private LinearLayoutManager linearLayoutManager;
     private List<NewDynamicBean.ObjectBean.ListBean> alllist;
     private int page = 1;
-    private int size = 15;
+    private int size = 5;
     private Tencent mTencent;
 
     @Override
