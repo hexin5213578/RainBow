@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,6 +36,8 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+
+import static com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter.TAG;
 
 public class FragmentHotDynamic extends BaseFragment {
     @BindView(R.id.no_data)
@@ -124,6 +127,36 @@ public class FragmentHotDynamic extends BaseFragment {
             public void onClick(View v) {
                 //重新执行加载方法
                 getData();
+            }
+        });
+        rcNewDynamic.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            int firstVisibleItem, lastVisibleItem;
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                firstVisibleItem   = linearLayoutManager.findFirstVisibleItemPosition();
+                lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+                //大于0说明有播放
+                if (GSYVideoManager.instance().getPlayPosition() >= 0) {
+                    //当前播放的位置
+                    int position = GSYVideoManager.instance().getPlayPosition();
+                    //对应的播放列表TAG
+                    if (GSYVideoManager.instance().getPlayTag().equals(TAG)
+                            && (position < firstVisibleItem || position > lastVisibleItem)) {
+
+                        //如果滑出去了上面和下面就是否，和今日头条一样
+                        //是否全屏
+                        if(!GSYVideoManager.isFullState(getActivity())) {
+                            GSYVideoManager.releaseAllVideos();
+                            newDynamicAdapter.notifyItemChanged(position);
+                        }
+                    }
+                }
             }
         });
     }

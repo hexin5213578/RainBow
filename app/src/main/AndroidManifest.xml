@@ -329,6 +329,11 @@
         <activity android:name=".topic.TopicDetailsActivity"
             android:screenOrientation="portrait">
         </activity>
+
+        <!-- 我的好友页 -->
+        <activity android:name=".friend.FriendsActivity"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

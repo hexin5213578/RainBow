@@ -1,5 +1,6 @@
 package com.YiDian.RainBow.main.fragment;
 
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.friend.FriendsActivity;
 import com.YiDian.RainBow.main.activity.MainActivity;
 import com.YiDian.RainBow.main.fragment.msg.adapter.MsgRecordingAdapter;
 import com.leaf.library.StatusBarUtil;
@@ -138,7 +140,9 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
         switch (v.getId()){
             //我的好友
             case R.id.iv_my_buddy:
-
+                //跳转到我的好友页
+                Intent intent = new Intent(getContext(), FriendsActivity.class);
+                startActivity(intent);
                 break;
                 //系统通知
             case R.id.iv_notice:

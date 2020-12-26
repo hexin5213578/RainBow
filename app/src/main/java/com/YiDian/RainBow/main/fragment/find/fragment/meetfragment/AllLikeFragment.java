@@ -3,6 +3,7 @@ package com.YiDian.RainBow.main.fragment.find.fragment.meetfragment;
 import android.os.Handler;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -102,6 +103,8 @@ public class AllLikeFragment extends BaseFragment {
     }
 
     public void getStr(int page, int size) {
+        showDialog();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -117,6 +120,7 @@ public class AllLikeFragment extends BaseFragment {
 
                             @Override
                             public void onNext(AllLikeBean bean) {
+                                hideDialog();
                                 List<AllLikeBean.ObjectBean.ListBean> list = bean.getObject().getList();
                                 if (list.size() > 0 && list != null) {
                                     sv.setVisibility(View.VISIBLE);
@@ -150,7 +154,8 @@ public class AllLikeFragment extends BaseFragment {
 
                             @Override
                             public void onError(Throwable e) {
-
+                                hideDialog();
+                                Toast.makeText(getContext(), "请求失败", Toast.LENGTH_SHORT).show();
                             }
 
                             @Override

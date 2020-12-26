@@ -359,9 +359,9 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
     }
 
     @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if(hidden){
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser){
             EventBus.getDefault().post("重新请求数据");
         }
     }

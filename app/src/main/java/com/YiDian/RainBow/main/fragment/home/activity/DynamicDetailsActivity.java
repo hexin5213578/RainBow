@@ -177,8 +177,6 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
     ImageView ivCollection;
     @BindView(R.id.rl_collection)
     RelativeLayout rlCollection;
-    @BindView(R.id.iv_close)
-    ImageView ivClose;
     @BindView(R.id.rl_tips)
     RelativeLayout rlTips;
     @BindView(R.id.rc_comment)
@@ -228,7 +226,6 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
         ivMore.setOnClickListener(this);
         ivHeadimg.setOnClickListener(this);
         tvGuanzhu.setOnClickListener(this);
-        ivClose.setOnClickListener(this);
         rlDianzan.setOnClickListener(this);
         rlZhuanfa.setOnClickListener(this);
         ivCollection.setOnClickListener(this);
@@ -238,7 +235,6 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
         mTencent = Tencent.createInstance("101906973", this);
 
         sv.setHeader(new AliHeader(DynamicDetailsActivity.this));
-
 
         //获取动态
         getDetails();
@@ -419,11 +415,6 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                                 }
                             });
                 }
-                break;
-            //隐藏提示信息
-            case R.id.iv_close:
-                //隐藏展示信息
-                rlTips.setVisibility(View.GONE);
                 break;
             //点赞
             case R.id.rl_dianzan:

@@ -489,6 +489,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
     //获取用户信息
     public void getUserData() {
         DataType = true;
+        showDialog();
         NetUtils.getInstance().getApis()
                 .doGetAllUserInfo(userid, longitude, latitude, 1, 15)
                 .subscribeOn(Schedulers.io())
@@ -501,6 +502,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
 
                     @Override
                     public void onNext(AllUserInfoBean allUserInfoBean) {
+                        hideDialog();
                         list = allUserInfoBean.getObject().getList();
 
                         if (list.size() > 0 && list != null) {
@@ -525,7 +527,8 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
 
                     @Override
                     public void onError(Throwable e) {
-
+                        hideDialog();
+                        Toast.makeText(getContext(), "请求失败", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -533,12 +536,5 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
 
                     }
                 });
-    }
-
-    @Override
-    public void onAttach(@NonNull Activity activity) {
-        super.onAttach(activity);
-        Log.d("hmy", "onAttach");
-        doLocation();
     }
 }
