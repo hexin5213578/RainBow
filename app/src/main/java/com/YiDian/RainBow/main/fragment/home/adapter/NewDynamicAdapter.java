@@ -142,9 +142,8 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-
-
         userid = Integer.valueOf(Common.getUserId());
+
         listBean = list.get(position);
 
         //跳转到动态详情页

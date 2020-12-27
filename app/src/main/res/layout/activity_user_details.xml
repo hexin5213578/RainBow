@@ -4,13 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="match_parent">
+
             <RelativeLayout
                 android:id="@+id/rl1"
                 android:layout_width="match_parent"
@@ -102,6 +96,7 @@
                 android:layout_width="match_parent"
                 android:id="@+id/rl_nodata"
                 android:visibility="gone"
+                android:layout_below="@id/rl2"
                 android:layout_height="match_parent">
                 <ImageView
                     android:layout_width="@dimen/dp_153"
@@ -121,14 +116,17 @@
                 </TextView>
             </RelativeLayout>
 
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_below="@id/rl2"
+                android:layout_height="match_parent">
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:id="@+id/rc_dynamic"
                 android:layout_height="match_parent">
             </androidx.recyclerview.widget.RecyclerView>
+            </androidx.core.widget.NestedScrollView>
 
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
 
 
 </RelativeLayout>

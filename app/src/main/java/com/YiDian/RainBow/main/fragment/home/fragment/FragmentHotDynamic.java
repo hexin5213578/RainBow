@@ -27,6 +27,9 @@ import com.liaoinstan.springview.widget.SpringView;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.tencent.tauth.Tencent;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -159,6 +162,16 @@ public class FragmentHotDynamic extends BaseFragment {
                 }
             }
         });
+    }
+    //获取传过来的信息 刷新界面
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getStr(String str) {
+        if (str.equals("刷新界面")) {
+            if(alllist.size()>0){
+                alllist.clear();
+            }
+            getDynamic(1, size);
+        }
     }
     public void getDynamic(int page,int size){
         new Thread(new Runnable() {

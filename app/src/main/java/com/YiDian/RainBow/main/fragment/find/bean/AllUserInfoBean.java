@@ -8,7 +8,7 @@ public class AllUserInfoBean {
     /**
      * msg : 查询成功
      * type : OK
-     * object : {"total":20,"list":[{"id":2,"phoneNum":"11111333321","nickName":"张三","headImg":"http://img.rianbow.cn/202012091308475961960.jpg","backImg":"http://img.rianbow.cn/202012211425001701722.jpg","explains":"勇敢的去爱","birthday":"2020-12-21","userType":1,"userRole":"T","isSingle":2,"lng":116.49806488964842,"lat":39.963119082801875,"ratio":0.5,"attestation":2,"createTime":null,"isFans":null,"countNum":null,"distance":602,"distancing":null,"age":null,"invitationCode":null},{"id":11,"phoneNum":"12344445555","nickName":"赵柳","headImg":"http://img.rianbow.cn/202012091309042277711.jpg","backImg":"http://img.rianbow.cn/202012211430117975613.jpg","explains":"老顽童","birthday":"2020-12-21","userType":1,"userRole":"保密","isSingle":1,"lng":116.48776520703123,"lat":40.177768343374744,"ratio":0.5,"attestation":1,"createTime":null,"isFans":null,"countNum":null,"distance":626,"distancing":null,"age":null,"invitationCode":null},{"id":1031,"phoneNum":"11111114441","nickName":"李四","headImg":"http://img.rianbow.cn/202012091309325288188.jpg","backImg":"http://img.rianbow.cn/202012211434078716682.jpg","explains":"得到的","birthday":"2020-12-21","userType":1,"userRole":"T","isSingle":3,"lng":116.37927521679686,"lat":40.21186066153374,"ratio":0.5,"attestation":1,"createTime":null,"isFans":null,"countNum":null,"distance":629,"distancing":null,"age":null,"invitationCode":null},{"id":1032,"phoneNum":"18738037948","nickName":"hhhaaa","headImg":"http://img.rianbow.cn/20201209130924997312.jpg","backImg":"http://img.rianbow.cn/202012211435033172833.jpg","explains":"","birthday":"2020-12-21","userType":1,"userRole":"保密","isSingle":1,"lng":116.33601654980467,"lat":40.31717612509843,"ratio":0.5,"attestation":1,"createTime":null,"isFans":null,"countNum":null,"distance":640,"distancing":null,"age":null,"invitationCode":null},{"id":1033,"phoneNum":"18738037956","nickName":"万古神帝","headImg":"http://img.rianbow.cn/202012091309452565249.jpg","backImg":"http://img.rianbow.cn/202012211435159334318.jpg","explains":"","birthday":"2020-12-21","userType":1,"userRole":"保密","isSingle":1,"lng":116.15474213574217,"lat":40.45943140848351,"ratio":0.5,"attestation":1,"createTime":null,"isFans":null,"countNum":null,"distance":654,"distancing":null,"age":null,"invitationCode":null},{"id":1036,"phoneNum":"12236363636","nickName":"获取QQ昵称","headImg":"http://img.rianbow.cn/20201209131251122971.jpg","backImg":"http://img.rianbow.cn/202012211434078716682.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","birthday":"2020-12-21","userType":1,"userRole":"BI","isSingle":2,"lng":115.97209443066404,"lat":40.15573034613883,"ratio":null,"attestation":1,"createTime":null,"isFans":null,"countNum":null,"distance":620,"distancing":null,"age":null,"invitationCode":null},{"id":1038,"phoneNum":"14455556666","nickName":"北方","headImg":"http://img.rianbow.cn/202012091312202833963.jpg","backImg":"http://img.rianbow.cn/202012211434078716682.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","birthday":"2020-12-21","userType":1,"userRole":"T","isSingle":2,"lng":117.04326142285154,"lat":40.33602128077293,"ratio":null,"attestation":1,"createTime":null,"isFans":null,"countNum":null,"distance":651,"distancing":null,"age":null,"invitationCode":null},{"id":1039,"phoneNum":"18736666666","nickName":"东方人工","headImg":"http://img.rianbow.cn/20201209131203454171.jpg","backImg":"http://img.rianbow.cn/202012211434078716682.jpg","explains":"","birthday":"2000-01-01 13:53:39","userType":1,"userRole":"保密","isSingle":1,"lng":118.10893525097654,"lat":40.31508189413308,"ratio":null,"attestation":1,"createTime":null,"isFans":null,"countNum":null,"distance":673,"distancing":null,"age":null,"invitationCode":null},{"id":1040,"phoneNum":"15652578311","nickName":"狗狗","headImg":"http://img.rianbow.cn/20201209120320762727.jpg","backImg":"http://img.rianbow.cn/202012211434078716682.jpg","explains":"","birthday":"2007-12-05 13:53:39","userType":1,"userRole":"H","isSingle":3,"lng":118.07597626660154,"lat":39.827466436269226,"ratio":null,"attestation":1,"createTime":null,"isFans":null,"countNum":null,"distance":621,"distancing":null,"age":null,"invitationCode":null},{"id":1046,"phoneNum":"17884532354","nickName":"搜嘎","headImg":"http://img.rianbow.cn/202012091202481289490.jpg","backImg":"http://img.rianbow.cn/202012211434078716682.jpg","explains":"嘿嘿嘿嘿","birthday":"2020-12-04 13:53:39","userType":1,"userRole":"H","isSingle":1,"lng":117.18608368847654,"lat":39.438257917000854,"ratio":null,"attestation":1,"createTime":"2020-12-01 12:55:07","isFans":null,"countNum":null,"distance":556,"distancing":null,"age":null,"invitationCode":null},{"id":1054,"phoneNum":"17699887536","nickName":"测试","headImg":"http://img.rianbow.cn/202012091201383288491.jpg","backImg":"http://img.rianbow.cn/202012211434078716682.jpg","explains":"","birthday":"2000-01-01 13:53:39","userType":2,"userRole":"BI","isSingle":2,"lng":116.95537079785154,"lat":39.55694445496426,"ratio":null,"attestation":1,"createTime":"2020-12-09 09:43:50","isFans":null,"countNum":null,"distance":565,"distancing":null,"age":null,"invitationCode":null},{"id":1056,"phoneNum":"14455558888","nickName":"广告","headImg":"http://img.rianbow.cn/202012091201239282597.jpg","backImg":"http://img.rianbow.cn/202012211434078716682.jpg","explains":"12","birthday":"2008-12-10 13:53:39","userType":1,"userRole":"P","isSingle":1,"lng":116.31816376660154,"lat":39.53152868658318,"ratio":null,"attestation":1,"createTime":"2020-12-09 09:48:34","isFans":null,"countNum":null,"distance":553,"distancing":null,"age":null,"invitationCode":null},{"id":1057,"phoneNum":"14445454545","nickName":"hh","headImg":"http://img.rianbow.cn/202012091201129544124.jpg","backImg":"http://img.rianbow.cn/202012211434078716682.jpg","explains":"00","birthday":"2020-12-03 13:53:39","userType":1,"userRole":"P","isSingle":3,"lng":116.22477997753904,"lat":39.67965607435408,"ratio":null,"attestation":1,"createTime":"2020-12-09 10:28:13","isFans":null,"countNum":null,"distance":568,"distancing":null,"age":null,"invitationCode":null},{"id":1058,"phoneNum":"14555556666","nickName":"kk","headImg":"http://img.rianbow.cn/202012091200596933259.jpg","backImg":"http://img.rianbow.cn/202012211434078716682.jpg","explains":"12","birthday":"2020-12-01 13:53:39","userType":1,"userRole":"T","isSingle":1,"lng":116.15336884472654,"lat":39.81058987859244,"ratio":null,"attestation":1,"createTime":"2020-12-09 10:51:43","isFans":null,"countNum":null,"distance":582,"distancing":null,"age":null,"invitationCode":null},{"id":1059,"phoneNum":"11111121111","nickName":"11","headImg":"http://img.rianbow.cn/20201209120030244035.jpg","backImg":"http://img.rianbow.cn/202012211434078716682.jpg","explains":"","birthday":"2000-01-01 13:53:39","userType":1,"userRole":"T","isSingle":1,"lng":116.24125946972654,"lat":39.86963969636264,"ratio":null,"attestation":1,"createTime":"2020-12-09 11:35:31","isFans":null,"countNum":null,"distance":590,"distancing":null,"age":null,"invitationCode":null}],"pageNum":1,"pageSize":15,"size":15,"startRow":1,"endRow":15,"pages":2,"prePage":0,"nextPage":2,"isFirstPage":true,"isLastPage":false,"hasPreviousPage":false,"hasNextPage":true,"navigatePages":8,"navigatepageNums":[1,2],"navigateFirstPage":1,"navigateLastPage":2}
+     * object : {"total":192,"list":[{"id":1076,"phoneNum":"17912312111","nickName":"志尚","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"大概有几年飞哥和","birthday":"2011-12-09","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":9,"invitationCode":null},{"id":1077,"phoneNum":"17912312111","nickName":"风睿","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"风格又可以复活节","birthday":"2011-12-09","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":9,"invitationCode":null},{"id":1078,"phoneNum":"17912312111","nickName":"振荣","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"梵蒂冈同归于尽他大爷","birthday":"2011-12-09","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":9,"invitationCode":null},{"id":1079,"phoneNum":"17912312111","nickName":"嘉慕","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"对方提供意见和地方","birthday":"2011-12-09","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":9,"invitationCode":null},{"id":1080,"phoneNum":"17912312111","nickName":"飞雨","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"带头人有机会的投入各一份","birthday":"2011-12-09","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":9,"invitationCode":null},{"id":1081,"phoneNum":"17912312111","nickName":"天成","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"统一缴纳话费第三个","birthday":"2011-12-09","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":9,"invitationCode":null},{"id":1082,"phoneNum":"17912312111","nickName":"天空","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"当事人同意福建和内容","birthday":"2011-12-09","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":9,"invitationCode":null},{"id":1083,"phoneNum":"17912312111","nickName":"开霁","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"符合预计， 光大银行","birthday":"2008-12-10","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":12,"invitationCode":null},{"id":1084,"phoneNum":"17912312111","nickName":"明珠","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"应该付货款，衣服","birthday":"2008-12-10","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":12,"invitationCode":null},{"id":1085,"phoneNum":"17912312111","nickName":"长逸","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"古营集，","birthday":"2008-12-10","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":12,"invitationCode":null},{"id":1086,"phoneNum":"17912312111","nickName":"智刚","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"反倒是让他发红包那一套","birthday":"2008-12-10","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":12,"invitationCode":null},{"id":1087,"phoneNum":"17912312111","nickName":"天逸","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"大繁荣高回报大幅v","birthday":"2008-12-10","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":12,"invitationCode":null},{"id":1088,"phoneNum":"17912312111","nickName":"宏胜","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"早点睡方便v是A招待费 ","birthday":"2008-12-10","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":12,"invitationCode":null},{"id":1089,"phoneNum":"17912312111","nickName":"意远","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"阿耳朵软法规部的撒发VB最低消费 ","birthday":"2008-12-10","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:43","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":12,"invitationCode":null},{"id":1090,"phoneNum":"17912312111","nickName":"高达","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"我的撒发还能把对方","birthday":"2008-12-10","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:43","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":12,"invitationCode":null}],"pageNum":1,"pageSize":15,"size":15,"startRow":1,"endRow":15,"pages":13,"prePage":0,"nextPage":2,"isFirstPage":true,"isLastPage":false,"hasPreviousPage":false,"hasNextPage":true,"navigatePages":8,"navigatepageNums":[1,2,3,4,5,6,7,8],"navigateFirstPage":1,"navigateLastPage":8}
      */
 
     private String msg;
@@ -41,14 +41,14 @@ public class AllUserInfoBean {
 
     public static class ObjectBean {
         /**
-         * total : 20
-         * list : [{"id":2,"phoneNum":"11111333321","nickName":"张三","headImg":"http://img.rianbow.cn/202012091308475961960.jpg","backImg":"http://img.rianbow.cn/202012211425001701722.jpg","explains":"勇敢的去爱","birthday":"2020-12-21","userType":1,"userRole":"T","isSingle":2,"lng":116.49806488964842,"lat":39.963119082801875,"ratio":0.5,"attestation":2,"createTime":null,"isFans":null,"countNum":null,"distance":602,"distancing":null,"age":null,"invitationCode":null},{"id":11,"phoneNum":"12344445555","nickName":"赵柳","headImg":"http://img.rianbow.cn/202012091309042277711.jpg","backImg":"http://img.rianbow.cn/202012211430117975613.jpg","explains":"老顽童","birthday":"2020-12-21","userType":1,"userRole":"保密","isSingle":1,"lng":116.48776520703123,"lat":40.177768343374744,"ratio":0.5,"attestation":1,"createTime":null,"isFans":null,"countNum":null,"distance":626,"distancing":null,"age":null,"invitationCode":null},{"id":1031,"phoneNum":"11111114441","nickName":"李四","headImg":"http://img.rianbow.cn/202012091309325288188.jpg","backImg":"http://img.rianbow.cn/202012211434078716682.jpg","explains":"得到的","birthday":"2020-12-21","userType":1,"userRole":"T","isSingle":3,"lng":116.37927521679686,"lat":40.21186066153374,"ratio":0.5,"attestation":1,"createTime":null,"isFans":null,"countNum":null,"distance":629,"distancing":null,"age":null,"invitationCode":null},{"id":1032,"phoneNum":"18738037948","nickName":"hhhaaa","headImg":"http://img.rianbow.cn/20201209130924997312.jpg","backImg":"http://img.rianbow.cn/202012211435033172833.jpg","explains":"","birthday":"2020-12-21","userType":1,"userRole":"保密","isSingle":1,"lng":116.33601654980467,"lat":40.31717612509843,"ratio":0.5,"attestation":1,"createTime":null,"isFans":null,"countNum":null,"distance":640,"distancing":null,"age":null,"invitationCode":null},{"id":1033,"phoneNum":"18738037956","nickName":"万古神帝","headImg":"http://img.rianbow.cn/202012091309452565249.jpg","backImg":"http://img.rianbow.cn/202012211435159334318.jpg","explains":"","birthday":"2020-12-21","userType":1,"userRole":"保密","isSingle":1,"lng":116.15474213574217,"lat":40.45943140848351,"ratio":0.5,"attestation":1,"createTime":null,"isFans":null,"countNum":null,"distance":654,"distancing":null,"age":null,"invitationCode":null},{"id":1036,"phoneNum":"12236363636","nickName":"获取QQ昵称","headImg":"http://img.rianbow.cn/20201209131251122971.jpg","backImg":"http://img.rianbow.cn/202012211434078716682.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","birthday":"2020-12-21","userType":1,"userRole":"BI","isSingle":2,"lng":115.97209443066404,"lat":40.15573034613883,"ratio":null,"attestation":1,"createTime":null,"isFans":null,"countNum":null,"distance":620,"distancing":null,"age":null,"invitationCode":null},{"id":1038,"phoneNum":"14455556666","nickName":"北方","headImg":"http://img.rianbow.cn/202012091312202833963.jpg","backImg":"http://img.rianbow.cn/202012211434078716682.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","birthday":"2020-12-21","userType":1,"userRole":"T","isSingle":2,"lng":117.04326142285154,"lat":40.33602128077293,"ratio":null,"attestation":1,"createTime":null,"isFans":null,"countNum":null,"distance":651,"distancing":null,"age":null,"invitationCode":null},{"id":1039,"phoneNum":"18736666666","nickName":"东方人工","headImg":"http://img.rianbow.cn/20201209131203454171.jpg","backImg":"http://img.rianbow.cn/202012211434078716682.jpg","explains":"","birthday":"2000-01-01 13:53:39","userType":1,"userRole":"保密","isSingle":1,"lng":118.10893525097654,"lat":40.31508189413308,"ratio":null,"attestation":1,"createTime":null,"isFans":null,"countNum":null,"distance":673,"distancing":null,"age":null,"invitationCode":null},{"id":1040,"phoneNum":"15652578311","nickName":"狗狗","headImg":"http://img.rianbow.cn/20201209120320762727.jpg","backImg":"http://img.rianbow.cn/202012211434078716682.jpg","explains":"","birthday":"2007-12-05 13:53:39","userType":1,"userRole":"H","isSingle":3,"lng":118.07597626660154,"lat":39.827466436269226,"ratio":null,"attestation":1,"createTime":null,"isFans":null,"countNum":null,"distance":621,"distancing":null,"age":null,"invitationCode":null},{"id":1046,"phoneNum":"17884532354","nickName":"搜嘎","headImg":"http://img.rianbow.cn/202012091202481289490.jpg","backImg":"http://img.rianbow.cn/202012211434078716682.jpg","explains":"嘿嘿嘿嘿","birthday":"2020-12-04 13:53:39","userType":1,"userRole":"H","isSingle":1,"lng":117.18608368847654,"lat":39.438257917000854,"ratio":null,"attestation":1,"createTime":"2020-12-01 12:55:07","isFans":null,"countNum":null,"distance":556,"distancing":null,"age":null,"invitationCode":null},{"id":1054,"phoneNum":"17699887536","nickName":"测试","headImg":"http://img.rianbow.cn/202012091201383288491.jpg","backImg":"http://img.rianbow.cn/202012211434078716682.jpg","explains":"","birthday":"2000-01-01 13:53:39","userType":2,"userRole":"BI","isSingle":2,"lng":116.95537079785154,"lat":39.55694445496426,"ratio":null,"attestation":1,"createTime":"2020-12-09 09:43:50","isFans":null,"countNum":null,"distance":565,"distancing":null,"age":null,"invitationCode":null},{"id":1056,"phoneNum":"14455558888","nickName":"广告","headImg":"http://img.rianbow.cn/202012091201239282597.jpg","backImg":"http://img.rianbow.cn/202012211434078716682.jpg","explains":"12","birthday":"2008-12-10 13:53:39","userType":1,"userRole":"P","isSingle":1,"lng":116.31816376660154,"lat":39.53152868658318,"ratio":null,"attestation":1,"createTime":"2020-12-09 09:48:34","isFans":null,"countNum":null,"distance":553,"distancing":null,"age":null,"invitationCode":null},{"id":1057,"phoneNum":"14445454545","nickName":"hh","headImg":"http://img.rianbow.cn/202012091201129544124.jpg","backImg":"http://img.rianbow.cn/202012211434078716682.jpg","explains":"00","birthday":"2020-12-03 13:53:39","userType":1,"userRole":"P","isSingle":3,"lng":116.22477997753904,"lat":39.67965607435408,"ratio":null,"attestation":1,"createTime":"2020-12-09 10:28:13","isFans":null,"countNum":null,"distance":568,"distancing":null,"age":null,"invitationCode":null},{"id":1058,"phoneNum":"14555556666","nickName":"kk","headImg":"http://img.rianbow.cn/202012091200596933259.jpg","backImg":"http://img.rianbow.cn/202012211434078716682.jpg","explains":"12","birthday":"2020-12-01 13:53:39","userType":1,"userRole":"T","isSingle":1,"lng":116.15336884472654,"lat":39.81058987859244,"ratio":null,"attestation":1,"createTime":"2020-12-09 10:51:43","isFans":null,"countNum":null,"distance":582,"distancing":null,"age":null,"invitationCode":null},{"id":1059,"phoneNum":"11111121111","nickName":"11","headImg":"http://img.rianbow.cn/20201209120030244035.jpg","backImg":"http://img.rianbow.cn/202012211434078716682.jpg","explains":"","birthday":"2000-01-01 13:53:39","userType":1,"userRole":"T","isSingle":1,"lng":116.24125946972654,"lat":39.86963969636264,"ratio":null,"attestation":1,"createTime":"2020-12-09 11:35:31","isFans":null,"countNum":null,"distance":590,"distancing":null,"age":null,"invitationCode":null}]
+         * total : 192
+         * list : [{"id":1076,"phoneNum":"17912312111","nickName":"志尚","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"大概有几年飞哥和","birthday":"2011-12-09","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":9,"invitationCode":null},{"id":1077,"phoneNum":"17912312111","nickName":"风睿","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"风格又可以复活节","birthday":"2011-12-09","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":9,"invitationCode":null},{"id":1078,"phoneNum":"17912312111","nickName":"振荣","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"梵蒂冈同归于尽他大爷","birthday":"2011-12-09","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":9,"invitationCode":null},{"id":1079,"phoneNum":"17912312111","nickName":"嘉慕","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"对方提供意见和地方","birthday":"2011-12-09","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":9,"invitationCode":null},{"id":1080,"phoneNum":"17912312111","nickName":"飞雨","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"带头人有机会的投入各一份","birthday":"2011-12-09","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":9,"invitationCode":null},{"id":1081,"phoneNum":"17912312111","nickName":"天成","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"统一缴纳话费第三个","birthday":"2011-12-09","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":9,"invitationCode":null},{"id":1082,"phoneNum":"17912312111","nickName":"天空","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"当事人同意福建和内容","birthday":"2011-12-09","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":9,"invitationCode":null},{"id":1083,"phoneNum":"17912312111","nickName":"开霁","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"符合预计， 光大银行","birthday":"2008-12-10","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":12,"invitationCode":null},{"id":1084,"phoneNum":"17912312111","nickName":"明珠","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"应该付货款，衣服","birthday":"2008-12-10","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":12,"invitationCode":null},{"id":1085,"phoneNum":"17912312111","nickName":"长逸","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"古营集，","birthday":"2008-12-10","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":12,"invitationCode":null},{"id":1086,"phoneNum":"17912312111","nickName":"智刚","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"反倒是让他发红包那一套","birthday":"2008-12-10","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":12,"invitationCode":null},{"id":1087,"phoneNum":"17912312111","nickName":"天逸","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"大繁荣高回报大幅v","birthday":"2008-12-10","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":12,"invitationCode":null},{"id":1088,"phoneNum":"17912312111","nickName":"宏胜","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"早点睡方便v是A招待费 ","birthday":"2008-12-10","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:42","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":12,"invitationCode":null},{"id":1089,"phoneNum":"17912312111","nickName":"意远","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"阿耳朵软法规部的撒发VB最低消费 ","birthday":"2008-12-10","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:43","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":12,"invitationCode":null},{"id":1090,"phoneNum":"17912312111","nickName":"高达","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","backImg":null,"explains":"我的撒发还能把对方","birthday":"2008-12-10","userType":1,"userRole":"H","isSingle":1,"lng":143.123213,"lat":43.21312,"ratio":0.5,"attestation":null,"createTime":"2020-12-27 11:40:43","isFans":null,"countNum":null,"distance":2607495,"distancing":null,"age":12,"invitationCode":null}]
          * pageNum : 1
          * pageSize : 15
          * size : 15
          * startRow : 1
          * endRow : 15
-         * pages : 2
+         * pages : 13
          * prePage : 0
          * nextPage : 2
          * isFirstPage : true
@@ -56,9 +56,9 @@ public class AllUserInfoBean {
          * hasPreviousPage : false
          * hasNextPage : true
          * navigatePages : 8
-         * navigatepageNums : [1,2]
+         * navigatepageNums : [1,2,3,4,5,6,7,8]
          * navigateFirstPage : 1
-         * navigateLastPage : 2
+         * navigateLastPage : 8
          */
 
         private int total;
@@ -226,26 +226,26 @@ public class AllUserInfoBean {
 
         public static class ListBean implements Serializable {
             /**
-             * id : 2
-             * phoneNum : 11111333321
-             * nickName : 张三
-             * headImg : http://img.rianbow.cn/202012091308475961960.jpg
-             * backImg : http://img.rianbow.cn/202012211425001701722.jpg
-             * explains : 勇敢的去爱
-             * birthday : 2020-12-21
+             * id : 1076
+             * phoneNum : 17912312111
+             * nickName : 志尚
+             * headImg : http://img.rianbow.cn/202012091309129337159.jpg
+             * backImg : null
+             * explains : 大概有几年飞哥和
+             * birthday : 2011-12-09
              * userType : 1
-             * userRole : T
-             * isSingle : 2
-             * lng : 116.49806488964842
-             * lat : 39.963119082801875
+             * userRole : H
+             * isSingle : 1
+             * lng : 143.123213
+             * lat : 43.21312
              * ratio : 0.5
-             * attestation : 2
-             * createTime : null
+             * attestation : null
+             * createTime : 2020-12-27 11:40:42
              * isFans : null
              * countNum : null
-             * distance : 602
+             * distance : 2607495
              * distancing : null
-             * age : null
+             * age : 9
              * invitationCode : null
              */
 
@@ -253,7 +253,7 @@ public class AllUserInfoBean {
             private String phoneNum;
             private String nickName;
             private String headImg;
-            private String backImg;
+            private Object backImg;
             private String explains;
             private String birthday;
             private int userType;
@@ -262,13 +262,13 @@ public class AllUserInfoBean {
             private double lng;
             private double lat;
             private double ratio;
-            private int attestation;
-            private Object createTime;
+            private Object attestation;
+            private String createTime;
             private Object isFans;
             private Object countNum;
             private int distance;
             private Object distancing;
-            private Object age;
+            private int age;
             private Object invitationCode;
 
             public int getId() {
@@ -303,11 +303,11 @@ public class AllUserInfoBean {
                 this.headImg = headImg;
             }
 
-            public String getBackImg() {
+            public Object getBackImg() {
                 return backImg;
             }
 
-            public void setBackImg(String backImg) {
+            public void setBackImg(Object backImg) {
                 this.backImg = backImg;
             }
 
@@ -375,19 +375,19 @@ public class AllUserInfoBean {
                 this.ratio = ratio;
             }
 
-            public int getAttestation() {
+            public Object getAttestation() {
                 return attestation;
             }
 
-            public void setAttestation(int attestation) {
+            public void setAttestation(Object attestation) {
                 this.attestation = attestation;
             }
 
-            public Object getCreateTime() {
+            public String getCreateTime() {
                 return createTime;
             }
 
-            public void setCreateTime(Object createTime) {
+            public void setCreateTime(String createTime) {
                 this.createTime = createTime;
             }
 
@@ -423,11 +423,11 @@ public class AllUserInfoBean {
                 this.distancing = distancing;
             }
 
-            public Object getAge() {
+            public int getAge() {
                 return age;
             }
 
-            public void setAge(Object age) {
+            public void setAge(int age) {
                 this.age = age;
             }
 

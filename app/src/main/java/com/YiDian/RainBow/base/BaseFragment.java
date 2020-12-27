@@ -63,7 +63,6 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.i("baseF","onViewCreated");
 
         if (!isViewInit) {
             getid(mContentView);
@@ -108,7 +107,6 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
         super.setUserVisibleHint(isVisibleToUser);
         this.isUserHint = isVisibleToUser;
         loadData();
-        Log.i("baseF","setUserVisibleHint");
     }
 
     void loadData() {

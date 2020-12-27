@@ -1,6 +1,8 @@
 package com.YiDian.RainBow.utils;
 
 
+import com.YiDian.RainBow.friend.bean.FriendBean;
+import com.YiDian.RainBow.friend.bean.MyFansBean;
 import com.YiDian.RainBow.main.fragment.find.bean.AllLikeBean;
 import com.YiDian.RainBow.main.fragment.find.bean.AllUserInfoBean;
 import com.YiDian.RainBow.main.fragment.find.bean.LikeUserBean;
@@ -176,4 +178,13 @@ public interface Apis {
     //附近的人
     @GET("user/selectByAddUser")
     Observable<NearPersonBean> doGetNearPerson(@Query("id")int userid,@Query("lng")double lng,@Query("lat")double lat,@Query("page")int page,@Query("pageSize")int size);
+
+    //我的好友列表
+    @GET("fans/selectFansAndUser")
+    Observable<FriendBean> doGetMyFriend(@Query("userId")int userid);
+
+    //获取我的粉丝
+    @GET("fans/selectFansByUserId")
+    Observable<MyFansBean> doGetMyFans(@Query("userId")int userid,@Query("page")int page,@Query("pageSize") int size);
+
 }

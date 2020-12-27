@@ -66,7 +66,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
     private int distance;
     private String role;
     int single = 0;
-
+    boolean isfirst;
     @Override
     protected void getid(View view) {
 
@@ -86,10 +86,13 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
     protected void getData() {
         Alllist = new ArrayList<>();
 
+        //是否是第一次点击
+        isfirst = true;
 
         userid = Integer.valueOf(Common.getUserId());
-
         container.setStackMargin(20);
+
+        cardsDataAdapter = new CardsDataAdapter(getContext(), R.layout.card_layout);
 
         container.setListener(new CardStack.CardEventListener() {
             @Override
@@ -122,12 +125,6 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
             public void discarded(int i, int i1) {
                 Log.e("xxx", i + "   " + i1);
 
-                //滑动到倒数第二条  重新添加数据
-                if(i==Alllist.size()){
-                    rlNodata.setVisibility(View.VISIBLE);
-                    container.setVisibility(View.GONE);
-                }
-
                 if (i % 14 == 0  && DataType) {
                     NetUtils.getInstance().getApis()
                             .doGetAllUserInfo(userid, longitude, latitude, 1, 15)
@@ -145,10 +142,11 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
                                     if (list.size() > 0 && list != null) {
                                         rlNodata.setVisibility(View.GONE);
                                         container.setVisibility(View.VISIBLE);
-                                        Alllist.addAll(list);
 
-                                        for (int i = 0; i < list.size(); i++) {
+                                        for (int i = 1; i < list.size()-1; i++) {
                                             cardsDataAdapter.add(list.get(i));
+                                            Alllist.add(list.get(i));
+
                                         }
                                         container.setAdapter(cardsDataAdapter);
                                     }
@@ -273,10 +271,18 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
             public void topCardTapped() {
                 if (id == 0) {
                     // TODO: 2020/10/12 0012 传入需要使用的用户信息
-                    Intent intent = new Intent(getContext(), UserDetailsActivity.class);
-                    AllUserInfoBean.ObjectBean.ListBean listBean = Alllist.get(0);
-                    intent.putExtra("bean",listBean);
-                    startActivity(intent);
+                    if(isfirst){
+                        Intent intent = new Intent(getContext(), UserDetailsActivity.class);
+                        AllUserInfoBean.ObjectBean.ListBean listBean = Alllist.get(0);
+                        intent.putExtra("bean",listBean);
+                        startActivity(intent);
+                        isfirst = false;
+                    }else{
+                        Intent intent = new Intent(getContext(), UserDetailsActivity.class);
+                        AllUserInfoBean.ObjectBean.ListBean listBean = Alllist.get(index);
+                        intent.putExtra("bean",listBean);
+                        startActivity(intent);
+                    }
                 } else {
                     // TODO: 2020/10/12 0012 传入需要使用的用户信息
                     Intent intent = new Intent(getContext(), UserDetailsActivity.class);
@@ -333,12 +339,12 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
 
                                 Alllist.addAll(list);
 
+                                cardsDataAdapter.clear();
                                 cardsDataAdapter.notifyDataSetChanged();
 
-                                for (int i = 0; i < Alllist.size(); i++) {
-                                    cardsDataAdapter.add(Alllist.get(i));
+                                for (int i = 0; i < list.size(); i++) {
+                                    cardsDataAdapter.add(list.get(i));
                                 }
-                                cardsDataAdapter.notifyDataSetChanged();
                                 container.setAdapter(cardsDataAdapter);
                             }
                         }
@@ -483,7 +489,11 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getStr(String str){
         if(str.equals("重新请求数据")){
-            doLocation();
+            if (Alllist.size()>0 && Alllist!=null){
+
+            }else{
+                doLocation();
+            }
         }
     }
     //获取用户信息
@@ -509,12 +519,11 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
                             rlNodata.setVisibility(View.GONE);
                             container.setVisibility(View.VISIBLE);
 
-                            Alllist.addAll(list);
 
-                            cardsDataAdapter = new CardsDataAdapter(getContext(), R.layout.card_layout);
+                            for (int i = 0; i < list.size()-1; i++) {
+                                cardsDataAdapter.add(list.get(i));
+                                Alllist.add(list.get(i));
 
-                            for (int i = 0; i < Alllist.size(); i++) {
-                                cardsDataAdapter.add(Alllist.get(i));
                             }
                             container.setAdapter(cardsDataAdapter);
                         } else {

@@ -321,7 +321,9 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getStr(String str) {
         if (str.equals("刷新界面")) {
-            alllist.clear();
+            if(alllist.size()>0){
+                alllist.clear();
+            }
             getDynamic(1, size);
         }
     }

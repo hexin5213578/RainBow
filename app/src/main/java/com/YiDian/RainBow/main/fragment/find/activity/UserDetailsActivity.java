@@ -92,14 +92,17 @@ public class UserDetailsActivity extends BaseAvtivity implements View.OnClickLis
         //设置数据
         InitData();
 
+        Glide.with(UserDetailsActivity.this).load(bean.getBackImg()).into(ivBg);
+
     }
     public void InitData(){
-        Glide.with(UserDetailsActivity.this).load(bean.getBackImg()).into(ivBg);
+
+
         tvUsername.setText(bean.getNickName());
         if (bean.getUserRole().equals("保密")){
             tvAge.setText(bean.getAge()+"");
         }else{
-            tvAge.setText(bean.getUserRole()+" "+bean.getAge());
+            tvAge.setText(bean.getUserRole()+"  "+bean.getAge());
         }
         //设置距离
         int distance = bean.getDistance();

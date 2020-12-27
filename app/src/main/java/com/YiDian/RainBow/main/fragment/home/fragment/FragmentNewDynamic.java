@@ -177,8 +177,6 @@ public class FragmentNewDynamic extends BaseFragment {
             }
         });
 
-
-
         //判断是否有网 有网加载数据 无网展示缺省页
         if (NetWork(getContext())) {
             sv.setVisibility(View.VISIBLE);
@@ -194,6 +192,12 @@ public class FragmentNewDynamic extends BaseFragment {
                 getData();
             }
         });
+    }
+    public boolean onBackPressed() {
+        if (GSYVideoManager.backFromWindowFull(getActivity())) {
+            return true;
+        }
+        return false;
     }
 
     public void getNew(int page, int count) {
@@ -308,7 +312,9 @@ public class FragmentNewDynamic extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getStr(String str) {
         if (str.equals("刷新界面")) {
-            alllist.clear();
+            if(alllist.size()>0){
+                alllist.clear();
+            }
             getNew(1, count);
         }
     }

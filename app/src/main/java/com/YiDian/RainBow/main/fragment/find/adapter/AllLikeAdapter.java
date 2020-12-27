@@ -131,13 +131,13 @@ public class AllLikeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             });
                 }else if(bean.getIsFans()==1){
                     //已关注 取消关注
-                    ((MyLikeAdapter.ViewHolder)holder).btGuanzhu.setEnabled(false);
+                    ((ViewHolder)holder).btGuanzhu.setEnabled(false);
 
                     CustomDialogCancleFollow.Builder builder = new CustomDialogCancleFollow.Builder(context);
                     builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             //已关注 取消关注
-                            ((MyLikeAdapter.ViewHolder)holder).btGuanzhu.setEnabled(false);
+                            ((ViewHolder)holder).btGuanzhu.setEnabled(false);
                             dialog.dismiss();
 
                             NetUtils.getInstance().getApis()
@@ -152,8 +152,8 @@ public class AllLikeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                                         @Override
                                         public void onNext(FollowBean followBean) {
-                                            ((MyLikeAdapter.ViewHolder)holder).btGuanzhu.setEnabled(true);
-                                            ((MyLikeAdapter.ViewHolder)holder).btGuanzhu.setText("关注");
+                                            ((ViewHolder)holder).btGuanzhu.setEnabled(true);
+                                            ((ViewHolder)holder).btGuanzhu.setText("关注");
                                             bean.setIsFans(0);
 
                                             EventBus.getDefault().post("我喜欢的刷新界面");

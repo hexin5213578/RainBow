@@ -51,10 +51,8 @@ public class SPUtil {
     public static final String USER_ID = "user_id";
 
     public static final String JSON_Dynamic = "dynamic";
-    public static final String JSON_HotDynamic = "hotdynamic";
-    public static final String JSON_NearDynamic = "neardynamic";
-    public static final String JSON_AttDynamic = "Attdynamic";
     public static final String JSOn_drafts = "drafts";
+    public static final String JSON_Friend = "friend";
 
 
     private SPUtil() {
