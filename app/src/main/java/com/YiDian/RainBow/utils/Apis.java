@@ -3,13 +3,14 @@ package com.YiDian.RainBow.utils;
 
 import com.YiDian.RainBow.friend.bean.FriendBean;
 import com.YiDian.RainBow.friend.bean.MyFansBean;
+import com.YiDian.RainBow.friend.bean.MyfollowBean;
+import com.YiDian.RainBow.main.bean.NoticeCountBean;
 import com.YiDian.RainBow.main.fragment.find.bean.AllLikeBean;
 import com.YiDian.RainBow.main.fragment.find.bean.AllUserInfoBean;
 import com.YiDian.RainBow.main.fragment.find.bean.LikeUserBean;
 import com.YiDian.RainBow.main.fragment.find.bean.NearPersonBean;
 import com.YiDian.RainBow.main.fragment.find.bean.UserMySeeBean;
 import com.YiDian.RainBow.main.fragment.home.bean.CommentBean;
-import com.YiDian.RainBow.main.fragment.home.bean.FirstCommentBean;
 import com.YiDian.RainBow.dynamic.bean.SaveMsgSuccessBean;
 import com.YiDian.RainBow.dynamic.bean.WriteDevelopmentBean;
 import com.YiDian.RainBow.login.bean.ComPleteMsgBean;
@@ -18,7 +19,6 @@ import com.YiDian.RainBow.main.fragment.home.bean.CollectDynamicBean;
 import com.YiDian.RainBow.main.fragment.home.bean.DianzanBean;
 import com.YiDian.RainBow.main.fragment.home.bean.DynamicDetailsBean;
 import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
-import com.YiDian.RainBow.main.fragment.home.bean.MyFollowBean;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.main.fragment.home.bean.OneCommentBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.SelectAllDraftsBean;
@@ -100,10 +100,6 @@ public interface Apis {
     @POST("fans/deleteByUserIdAndFansId")
     Observable<FollowBean> doCancleFollow(@Query("fansId")int followid,@Query("userId")int byfollowid);
 
-    //我的关注
-    @GET("fans/selectFansByFansId")
-    Observable<MyFollowBean> doGetMyFollow(@Query("fansId")int userid,@Query("page")int page,@Query("pageSize")int pagesize);
-
     //动态详情
     @GET("content/getContentInfoById")
     Observable<DynamicDetailsBean> dogetDynamicDetails(@Query("contentId")int contentid,@Query("userId")int userid);
@@ -146,7 +142,6 @@ public interface Apis {
     @POST("content/delContent")
     Observable<CollectDynamicBean> doDeleteDynamic(@Query("contentId")int contentid,@Query("userId")int userid);
 
-
     //匹配 查询所有用户信息
     @GET("user/selectUser")
     Observable<AllUserInfoBean> doGetAllUserInfo(@Query("id")int userid,@Query("lng") double lng,@Query("lat")double lat,@Query("page")int page,@Query("pageSize")int size);
@@ -187,4 +182,11 @@ public interface Apis {
     @GET("fans/selectFansByUserId")
     Observable<MyFansBean> doGetMyFans(@Query("userId")int userid,@Query("page")int page,@Query("pageSize") int size);
 
+    //我的关注
+    @GET("fans/selectFansByFansId")
+    Observable<MyfollowBean> doGetMyFollow(@Query("fansId")int userid, @Query("page")int page, @Query("pageSize")int pagesize);
+
+    //获取通知数量
+    @GET("message/messageAllNum")
+    Observable<NoticeCountBean> doGetNoticeCount(@Query("msgUserId")int userid);
 }

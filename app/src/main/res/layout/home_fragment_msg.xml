@@ -41,72 +41,139 @@
             </ImageView>
         </RelativeLayout>
     </RelativeLayout>
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_below="@id/rl1"
-        android:layout_height="match_parent">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+
+
             <RelativeLayout
                 android:layout_width="match_parent"
+                android:layout_below="@id/rl1"
                 android:layout_height="match_parent">
                 <LinearLayout
                     android:id="@+id/rl2"
                     android:layout_width="match_parent"
-                    android:layout_marginLeft="@dimen/dp_15"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="@dimen/dp_32"
                     android:layout_marginRight="@dimen/dp_32"
                     android:layout_marginTop="@dimen/dp_20"
-                    android:layout_height="@dimen/dp_40">
-                    <ImageView
+                    android:layout_height="@dimen/dp_45">
+                    <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:id="@+id/iv_notice"
-                        android:src="@mipmap/xitongnotice"
-                        android:layout_marginLeft="@dimen/dp_17"
-                        android:layout_height="@dimen/dp_40">
-                    </ImageView>
-                    <ImageView
+                        android:id="@+id/rl_system"
+                        android:layout_height="match_parent">
+                        <ImageView
+                            android:layout_width="@dimen/dp_45"
+                            android:layout_centerHorizontal="true"
+                            android:src="@mipmap/xitongnotice"
+                            android:layout_height="@dimen/dp_45">
+                        </ImageView>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:text="1"
+                            android:id="@+id/systemcount"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="@dimen/dp_8"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/sp_8"
+                            android:paddingLeft="@dimen/dp_3"
+                            android:paddingRight="@dimen/dp_3"
+                            android:background="@drawable/count_bg"
+                            android:layout_height="wrap_content">
+                        </TextView>
+                    </RelativeLayout>
+                    <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:layout_marginLeft="@dimen/dp_35"
-                        android:src="@mipmap/fensinotice"
-                        android:id="@+id/iv_buddy"
-                        android:layout_toRightOf="@id/iv_notice"
-                        android:layout_height="@dimen/dp_40">
-                    </ImageView>
-                    <ImageView
+                        android:id="@+id/rl_friend"
+                        android:layout_marginLeft="@dimen/dp_20"
+                        android:layout_height="match_parent">
+                        <ImageView
+                            android:layout_width="@dimen/dp_45"
+                            android:layout_centerHorizontal="true"
+                            android:src="@mipmap/fensinotice"
+                            android:layout_height="@dimen/dp_45">
+                        </ImageView>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:text="11"
+                            android:id="@+id/friendcount"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="@dimen/dp_8"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/sp_8"
+                            android:paddingLeft="@dimen/dp_3"
+                            android:paddingRight="@dimen/dp_3"
+                            android:background="@drawable/count_bg"
+                            android:layout_height="wrap_content">
+                        </TextView>
+                    </RelativeLayout>
+                    <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:layout_marginLeft="@dimen/dp_35"
-                        android:src="@mipmap/pinglunnotice"
-                        android:id="@+id/iv_comment"
-                        android:layout_toRightOf="@id/iv_buddy"
-                        android:layout_height="@dimen/dp_40">
-                    </ImageView>
-                    <ImageView
+                        android:id="@+id/rl_comment"
+                        android:layout_marginLeft="@dimen/dp_20"
+                        android:layout_height="match_parent">
+                        <ImageView
+                            android:layout_width="@dimen/dp_45"
+                            android:layout_centerHorizontal="true"
+                            android:src="@mipmap/pinglunnotice"
+                            android:layout_height="@dimen/dp_45">
+                        </ImageView>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:text="11"
+                            android:id="@+id/commentcount"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="@dimen/dp_8"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/sp_8"
+                            android:paddingLeft="@dimen/dp_3"
+                            android:paddingRight="@dimen/dp_3"
+                            android:background="@drawable/count_bg"
+                            android:layout_height="wrap_content">
+                        </TextView>
+                    </RelativeLayout>
+                    <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:layout_marginLeft="@dimen/dp_35"
-                        android:src="@mipmap/dianzannotice"
-                        android:id="@+id/iv_like"
-                        android:layout_toRightOf="@id/iv_comment"
-                        android:layout_height="@dimen/dp_40">
-                    </ImageView>
+                        android:id="@+id/rl_click"
+                        android:layout_marginLeft="@dimen/dp_20"
+                        android:layout_height="match_parent">
+                        <ImageView
+                            android:layout_width="@dimen/dp_45"
+                            android:layout_centerHorizontal="true"
+                            android:src="@mipmap/dianzannotice"
+                            android:layout_height="@dimen/dp_45">
+                        </ImageView>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:text="9"
+                            android:id="@+id/clickcount"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="@dimen/dp_8"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/sp_8"
+                            android:paddingLeft="@dimen/dp_3"
+                            android:paddingRight="@dimen/dp_3"
+                            android:background="@drawable/count_bg"
+                            android:layout_height="wrap_content">
+                        </TextView>
+                    </RelativeLayout>
                 </LinearLayout>
-
-                <com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView
+                <com.liaoinstan.springview.widget.SpringView
                     android:layout_width="match_parent"
                     android:layout_below="@id/rl2"
-                    android:id="@+id/rc_msg_recording"
-                    android:layout_marginLeft="@dimen/dp_15"
-                    android:layout_marginRight="@dimen/dp_15"
-                    android:layout_marginTop="@dimen/dp_25"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:id="@+id/sv"
                     android:layout_height="match_parent">
-                </com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView>
+                    <androidx.core.widget.NestedScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView
+                            android:layout_width="match_parent"
+                            android:id="@+id/rc_msg_recording"
+                            android:layout_height="match_parent">
+                        </com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView>
+                    </androidx.core.widget.NestedScrollView>
+                </com.liaoinstan.springview.widget.SpringView>
             </RelativeLayout>
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-
-
 </RelativeLayout>

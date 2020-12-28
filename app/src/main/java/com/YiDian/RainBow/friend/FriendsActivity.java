@@ -1,6 +1,5 @@
 package com.YiDian.RainBow.friend;
 
-import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -16,18 +15,16 @@ import androidx.viewpager.widget.ViewPager;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
-import com.YiDian.RainBow.friend.fragment.FragmentAtt;
+import com.YiDian.RainBow.friend.fragment.FragmentFollow;
 import com.YiDian.RainBow.friend.fragment.FragmentFans;
 import com.YiDian.RainBow.friend.fragment.FragmentFriend;
 import com.YiDian.RainBow.friend.fragment.FragmentGroup;
-import com.YiDian.RainBow.main.fragment.FragmentHome;
 import com.leaf.library.StatusBarUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 //我的好友页
 public class FriendsActivity extends BaseAvtivity implements RadioGroup.OnCheckedChangeListener, View.OnClickListener {
@@ -64,7 +61,7 @@ public class FriendsActivity extends BaseAvtivity implements RadioGroup.OnChecke
     private FragmentFriend fragmentFriend;
     private FragmentFans fragmentFans;
     private FragmentGroup fragmentGroup;
-    private FragmentAtt fragmentAtt;
+    private FragmentFollow fragmentAtt;
 
     @Override
     protected int getResId() {
@@ -93,7 +90,7 @@ public class FriendsActivity extends BaseAvtivity implements RadioGroup.OnChecke
         fragmentFriend = new FragmentFriend();
         fragmentFans = new FragmentFans();
         fragmentGroup = new FragmentGroup();
-        fragmentAtt = new FragmentAtt();
+        fragmentAtt = new FragmentFollow();
 
         list.add(fragmentFriend);
         list.add(fragmentFans);

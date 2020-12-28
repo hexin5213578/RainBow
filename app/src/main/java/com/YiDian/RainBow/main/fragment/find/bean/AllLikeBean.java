@@ -244,7 +244,7 @@ public class AllLikeBean {
             private String nickName;
             private String headImg;
             private String explains;
-            private Object userRole;
+            private String userRole;
             private int isFans;
             private int buserId;
 
@@ -304,11 +304,11 @@ public class AllLikeBean {
                 this.explains = explains;
             }
 
-            public Object getUserRole() {
+            public String getUserRole() {
                 return userRole;
             }
 
-            public void setUserRole(Object userRole) {
+            public void setUserRole(String userRole) {
                 this.userRole = userRole;
             }
 

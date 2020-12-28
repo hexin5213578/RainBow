@@ -1,5 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
-
+    android:layout_width="match_parent"
+    android:background="@color/white" android:layout_height="match_parent">
+    <com.liaoinstan.springview.widget.SpringView
+        android:layout_width="match_parent"
+        android:id="@+id/sv"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginRight="@dimen/dp_15"
+        android:layout_height="match_parent">
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:id="@+id/rc_follow"
+                android:layout_height="match_parent">
+            </androidx.recyclerview.widget.RecyclerView>
+        </androidx.core.widget.NestedScrollView>
+    </com.liaoinstan.springview.widget.SpringView>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/rl_nodata"
+        android:visibility="gone"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_width="@dimen/dp_153"
+            android:src="@mipmap/nodynamic"
+            android:layout_centerInParent="true"
+            android:id="@+id/iv"
+            android:layout_height="@dimen/dp_136">
+        </ImageView>
+        <TextView
+            android:layout_below="@id/iv"
+            android:text="您还没有关注任何人哦~"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/color_999999"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_29"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </TextView>
+    </RelativeLayout>
 </RelativeLayout>

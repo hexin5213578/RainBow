@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,10 +12,10 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
-import com.YiDian.RainBow.friend.adapter.ContactAdapter;
 import com.YiDian.RainBow.friend.adapter.MyFansAdapter;
-import com.YiDian.RainBow.friend.bean.FriendBean;
+import com.YiDian.RainBow.friend.adapter.MyFollowAdapter;
 import com.YiDian.RainBow.friend.bean.MyFansBean;
+import com.YiDian.RainBow.friend.bean.MyfollowBean;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.YiDian.RainBow.utils.SPUtil;
 import com.google.gson.Gson;
@@ -38,23 +37,22 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class FragmentFans extends BaseFragment {
-    @BindView(R.id.rc_fans)
-    RecyclerView rcFans;
+public class FragmentFollow extends BaseFragment {
+    @BindView(R.id.rc_follow)
+    RecyclerView rcFollow;
     @BindView(R.id.sv)
     SpringView sv;
     @BindView(R.id.rl_nodata)
     RelativeLayout rlNodata;
-    private int userid;
-    private List<MyFansBean.ObjectBean.ListBean> allList;
-    private LinearLayoutManager linearLayoutManager;
-    private MyFansAdapter myFansAdapter;
     int page = 1;
     int size = 15;
+    private int userid;
+    private List<MyfollowBean.ObjectBean.ListBean> allList;
+    private LinearLayoutManager linearLayoutManager;
+    private MyFollowAdapter myFollowAdapter;
+    private List<MyfollowBean.ObjectBean.ListBean> spList;
     File f = new File(
-            "/data/data/com.YiDian.RainBow/shared_prefs/fans.xml");
-    private List<MyFansBean.ObjectBean.ListBean> spList;
-
+            "/data/data/com.YiDian.RainBow/shared_prefs/follow.xml");
     @Override
     protected void getid(View view) {
 
@@ -62,7 +60,7 @@ public class FragmentFans extends BaseFragment {
 
     @Override
     protected int getResId() {
-        return R.layout.fragment_fans;
+        return R.layout.fragment_att;
     }
 
     @Override
@@ -79,8 +77,8 @@ public class FragmentFans extends BaseFragment {
         Gson gson = new Gson();
         spList = new ArrayList<>();
         for (int i = 1; i < 10; i++) {
-            String json = SPUtil.getInstance().getData(getContext(), SPUtil.JSON_Fans, "json" + i);
-            MyFansBean.ObjectBean.ListBean listBean = gson.fromJson(json, MyFansBean.ObjectBean.ListBean.class);
+            String json = SPUtil.getInstance().getData(getContext(), SPUtil.JSON_Follow, "json" + i);
+            MyfollowBean.ObjectBean.ListBean listBean = gson.fromJson(json, MyfollowBean.ObjectBean.ListBean.class);
             if(listBean!=null){
                 spList.add(listBean);
             }
@@ -91,14 +89,14 @@ public class FragmentFans extends BaseFragment {
                 rlNodata.setVisibility(View.GONE);
 
                 linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                rcFans.setLayoutManager(linearLayoutManager);
-                myFansAdapter = new MyFansAdapter(getContext(), spList);
+                rcFollow.setLayoutManager(linearLayoutManager);
+                myFollowAdapter = new MyFollowAdapter(getContext(), spList);
 
-                rcFans.setAdapter(myFansAdapter);
+                rcFollow.setAdapter(myFollowAdapter);
             }
         }
         //获取我的粉丝
-        getMyFans(page,size);
+        getMyFollow(page,size);
 
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
@@ -108,7 +106,7 @@ public class FragmentFans extends BaseFragment {
                     public void run() {
                         allList.clear();
                         page = 1;
-                        getMyFans(page,size);
+                        getMyFollow(page,size);
                         sv.onFinishFreshAndLoad();
                     }
                 },1000);
@@ -120,42 +118,42 @@ public class FragmentFans extends BaseFragment {
                     @Override
                     public void run() {
                         page++;
-                        getMyFans(page,size);
+                        getMyFollow(page,size);
                         sv.onFinishFreshAndLoad();
                     }
                 },1000);
             }
         });
     }
-    public void getMyFans(int page,int size){
+    public void getMyFollow(int page,int size){
         showDialog();
         NetUtils.getInstance().getApis()
-                .doGetMyFans(userid,page,size)
+                .doGetMyFollow(userid,page,size)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<MyFansBean>() {
+                .subscribe(new Observer<MyfollowBean>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(MyFansBean myFansBean) {
+                    public void onNext(MyfollowBean myFollowBean) {
 
                         hideDialog();
 
-                        List<MyFansBean.ObjectBean.ListBean> list =
-                                myFansBean.getObject().getList();
+                        List<MyfollowBean.ObjectBean.ListBean> list =
+                                myFollowBean.getObject().getList();
 
                         if(list.size()>0 && list!=null){
                             allList.addAll(list);
 
                             //存本地缓存
                             for (int i = 1; i <= list.size(); i++) {
-                                MyFansBean.ObjectBean.ListBean listBean = list.get(i - 1);
+                                MyfollowBean.ObjectBean.ListBean listBean = list.get(i - 1);
                                 Gson gson = new Gson();
                                 String json1 = gson.toJson(listBean);
-                                SPUtil.getInstance().saveData(getContext(), SPUtil.JSON_Fans, "json"+i, json1);
+                                SPUtil.getInstance().saveData(getContext(), SPUtil.JSON_Follow, "json"+i, json1);
                             }
 
                             sv.setVisibility(View.VISIBLE);
@@ -164,19 +162,19 @@ public class FragmentFans extends BaseFragment {
                             sv.setHeader(new AliHeader(getContext()));
 
                             linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                            rcFans.setLayoutManager(linearLayoutManager);
+                            rcFollow.setLayoutManager(linearLayoutManager);
 
-                            myFansAdapter = new MyFansAdapter(getContext(), allList);
+                            myFollowAdapter = new MyFollowAdapter(getContext(), allList);
 
-                            rcFans.setAdapter(myFansAdapter);
+                            rcFollow.setAdapter(myFollowAdapter);
                         }else{
                             if(allList.size()>0 && allList!=null){
                                 linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                                rcFans.setLayoutManager(linearLayoutManager);
+                                rcFollow.setLayoutManager(linearLayoutManager);
 
-                                myFansAdapter = new MyFansAdapter(getContext(), allList);
+                                myFollowAdapter = new MyFollowAdapter(getContext(), allList);
 
-                                rcFans.setAdapter(myFansAdapter);
+                                rcFollow.setAdapter(myFollowAdapter);
                             }else{
                                 rlNodata.setVisibility(View.VISIBLE);
                                 sv.setVisibility(View.GONE);
@@ -218,9 +216,9 @@ public class FragmentFans extends BaseFragment {
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getStr (String str){
-        if(str.equals("粉丝刷新界面")){
+        if(str.equals("关注刷新界面")){
             allList.clear();
-            getMyFans(page,size);
+            getMyFollow(page,size);
         }
     }
 }

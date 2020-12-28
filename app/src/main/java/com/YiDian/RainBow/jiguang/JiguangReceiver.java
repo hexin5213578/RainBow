@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.YiDian.RainBow.main.activity.MainActivity;
 
@@ -18,10 +19,11 @@ import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.helper.Logger;
 import cn.jpush.android.service.JPushMessageReceiver;
 
-public class JiguangReceiver extends JPushMessageReceiver {
+public class JiguangReceiver extends JPushMessageReceiver   {
     private static final String TAG = "MyReceiver";
     private NotificationManager nm;
-/*    public void onReceive(Context context, Intent intent) {
+
+  /*  public void recevie(Context context, Intent intent) {
         if (null == nm) {
             nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         }

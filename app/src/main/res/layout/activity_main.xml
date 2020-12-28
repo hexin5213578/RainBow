@@ -2,24 +2,27 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/rl_main"
     tools:context=".main.activity.MainActivity">
-   <com.YiDian.RainBow.custom.viewpager.NoScrollViewPager
-       android:layout_width="match_parent"
-       android:layout_above="@id/rgMenu"
-       android:id="@+id/vp"
-       android:layout_height="match_parent">
-   </com.YiDian.RainBow.custom.viewpager.NoScrollViewPager>
+
+    <com.YiDian.RainBow.custom.viewpager.NoScrollViewPager
+        android:id="@+id/vp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/rgMenu">
+    </com.YiDian.RainBow.custom.viewpager.NoScrollViewPager>
+
     <RadioGroup
-        android:layout_alignParentBottom="true"
         android:id="@+id/rgMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:minHeight="@dimen/dp_50"
         android:orientation="horizontal">
+
         <RadioButton
             android:id="@+id/rbHome"
             style="@style/MainTab"
@@ -45,4 +48,5 @@
             android:drawableTop="@drawable/selector_main_mine"
             android:text="我的" />
     </RadioGroup>
+
 </RelativeLayout>

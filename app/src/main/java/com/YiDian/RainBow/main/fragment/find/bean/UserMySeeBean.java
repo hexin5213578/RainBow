@@ -7,7 +7,7 @@ public class UserMySeeBean {
     /**
      * msg : 查询成功
      * type : OK
-     * object : [{"id":null,"userId":1030,"likeType":1,"createTime":"2020-12-24 14:00:07","nickName":"重复认同感很牛逼","headImg":"http://img.rianbow.cn/202012171106214632768.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","isFans":0,"buserId":1066},{"id":null,"userId":1030,"likeType":1,"createTime":"2020-12-24 13:59:36","nickName":"色弱GV","headImg":"http://img.rianbow.cn/202012091311039645114.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","isFans":0,"buserId":1062},{"id":null,"userId":1030,"likeType":1,"createTime":"2020-12-24 13:58:49","nickName":"11","headImg":"http://img.rianbow.cn/20201209120030244035.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","isFans":0,"buserId":1059},{"id":null,"userId":1030,"likeType":1,"createTime":"2020-12-24 13:55:29","nickName":"搜嘎","headImg":"http://img.rianbow.cn/202012091202481289490.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","isFans":0,"buserId":1046},{"id":null,"userId":1030,"likeType":1,"createTime":"2020-12-24 13:55:18","nickName":"北方","headImg":"http://img.rianbow.cn/202012091312202833963.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","isFans":0,"buserId":1038},{"id":null,"userId":1030,"likeType":1,"createTime":"2020-12-24 11:07:13","nickName":"hhhaaa","headImg":"http://img.rianbow.cn/20201209130924997312.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","isFans":0,"buserId":1032}]
+     * object : [{"id":null,"userId":1030,"likeType":1,"createTime":"2020-12-27 17:12:47","nickName":"wan码子64","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","userRole":"H","isFans":0,"buserId":1132},{"id":null,"userId":1030,"likeType":1,"createTime":"2020-12-27 17:12:46","nickName":"wan码子63","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","userRole":"H","isFans":0,"buserId":1131},{"id":null,"userId":1030,"likeType":1,"createTime":"2020-12-27 17:12:44","nickName":"wan码子62","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","userRole":"H","isFans":0,"buserId":1130},{"id":null,"userId":1030,"likeType":1,"createTime":"2020-12-27 17:12:42","nickName":"wan码子61","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","userRole":"H","isFans":0,"buserId":1129},{"id":null,"userId":1030,"likeType":1,"createTime":"2020-12-27 17:12:40","nickName":"wan码子60","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","userRole":"H","isFans":0,"buserId":1128},{"id":null,"userId":1030,"likeType":1,"createTime":"2020-12-27 17:12:38","nickName":"wan码子59","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","userRole":"H","isFans":0,"buserId":1127},{"id":null,"userId":1030,"likeType":1,"createTime":"2020-12-27 17:12:37","nickName":"wan码子58","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","userRole":"H","isFans":0,"buserId":1126},{"id":null,"userId":1030,"likeType":1,"createTime":"2020-12-27 17:12:35","nickName":"wan码子57","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","userRole":"H","isFans":0,"buserId":1125},{"id":null,"userId":1030,"likeType":1,"createTime":"2020-12-27 17:10:18","nickName":"wan码子56","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","userRole":"H","isFans":0,"buserId":1124},{"id":null,"userId":1030,"likeType":1,"createTime":"2020-12-27 17:10:17","nickName":"wan码子55","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","userRole":"H","isFans":0,"buserId":1123},{"id":null,"userId":1030,"likeType":1,"createTime":"2020-12-27 17:10:14","nickName":"wan码子54","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","userRole":"H","isFans":0,"buserId":1122},{"id":null,"userId":1030,"likeType":1,"createTime":"2020-12-27 17:10:13","nickName":"wan码子53","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","userRole":"H","isFans":0,"buserId":1121},{"id":null,"userId":1030,"likeType":1,"createTime":"2020-12-27 17:10:09","nickName":"wan码子52","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","userRole":"H","isFans":0,"buserId":1120},{"id":null,"userId":1030,"likeType":1,"createTime":"2020-12-27 17:10:05","nickName":"wan码子51","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","userRole":"H","isFans":0,"buserId":1119},{"id":null,"userId":1030,"likeType":1,"createTime":"2020-12-27 17:10:02","nickName":"wan码子50","headImg":"http://img.rianbow.cn/202012091309129337159.jpg","explains":"喔、卟説·~伱\u2018*卟懂\u2019\u2018！","userRole":"H","isFans":0,"buserId":1118}]
      */
 
     private String msg;
@@ -43,12 +43,13 @@ public class UserMySeeBean {
          * id : null
          * userId : 1030
          * likeType : 1
-         * createTime : 2020-12-24 14:00:07
-         * nickName : 重复认同感很牛逼
-         * headImg : http://img.rianbow.cn/202012171106214632768.jpg
+         * createTime : 2020-12-27 17:12:47
+         * nickName : wan码子64
+         * headImg : http://img.rianbow.cn/202012091309129337159.jpg
          * explains : 喔、卟説·~伱‘*卟懂’‘！
+         * userRole : H
          * isFans : 0
-         * buserId : 1066
+         * buserId : 1132
          */
 
         private Object id;
@@ -58,6 +59,7 @@ public class UserMySeeBean {
         private String nickName;
         private String headImg;
         private String explains;
+        private String userRole;
         private int isFans;
         private int buserId;
 
@@ -115,6 +117,14 @@ public class UserMySeeBean {
 
         public void setExplains(String explains) {
             this.explains = explains;
+        }
+
+        public String getUserRole() {
+            return userRole;
+        }
+
+        public void setUserRole(String userRole) {
+            this.userRole = userRole;
         }
 
         public int getIsFans() {

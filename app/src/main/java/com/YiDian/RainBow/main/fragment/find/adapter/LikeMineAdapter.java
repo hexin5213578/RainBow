@@ -64,7 +64,14 @@ public class LikeMineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         ((ViewHolder)holder).tvAutograph.setText(bean.getExplains());
         //设置时间
         ((ViewHolder)holder).tvTime.setText(bean.getCreateTime());
-
+        //判断角色
+        String userRole = bean.getUserRole();
+        if(userRole.equals("保密")){
+            ((ViewHolder)holder).tvXingbie.setVisibility(View.GONE);
+        }else{
+            ((ViewHolder)holder).tvXingbie.setVisibility(View.VISIBLE);
+            ((ViewHolder)holder).tvXingbie.setText(userRole);
+        }
         //跳转到用户详情页
         ((ViewHolder)holder).ivHeadimg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,13 +137,13 @@ public class LikeMineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             });
                 }else if(bean.getIsFans()==1){
                     //已关注 取消关注
-                    ((MyLikeAdapter.ViewHolder)holder).btGuanzhu.setEnabled(false);
+                    ((ViewHolder)holder).btGuanzhu.setEnabled(false);
 
                     CustomDialogCancleFollow.Builder builder = new CustomDialogCancleFollow.Builder(context);
                     builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             //已关注 取消关注
-                            ((MyLikeAdapter.ViewHolder)holder).btGuanzhu.setEnabled(false);
+                            ((ViewHolder)holder).btGuanzhu.setEnabled(false);
                             dialog.dismiss();
 
                             NetUtils.getInstance().getApis()
@@ -151,8 +158,8 @@ public class LikeMineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                                         @Override
                                         public void onNext(FollowBean followBean) {
-                                            ((MyLikeAdapter.ViewHolder)holder).btGuanzhu.setEnabled(true);
-                                            ((MyLikeAdapter.ViewHolder)holder).btGuanzhu.setText("关注");
+                                            ((ViewHolder)holder).btGuanzhu.setEnabled(true);
+                                            ((ViewHolder)holder).btGuanzhu.setText("关注");
                                             bean.setIsFans(0);
 
                                             EventBus.getDefault().post("我喜欢的刷新界面");

@@ -16,14 +16,12 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.friend.bean.MyfollowBean;
 import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
-import com.YiDian.RainBow.main.fragment.home.bean.MyFollowBean;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.utils.KeyBoardUtils;
 import com.YiDian.RainBow.utils.NetUtils;
-import com.YiDian.RainBow.utils.SPUtil;
 import com.google.gson.Gson;
-import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.container.AliHeader;
 import com.liaoinstan.springview.widget.SpringView;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
@@ -33,7 +31,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -256,15 +253,15 @@ public class FragmentAttDynamic extends BaseFragment {
                         .doGetMyFollow(userid,1,5)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<MyFollowBean>() {
+                        .subscribe(new Observer<MyfollowBean>() {
                             @Override
                             public void onSubscribe(Disposable d) {
 
                             }
 
                             @Override
-                            public void onNext(MyFollowBean myFollowBean) {
-                                List<MyFollowBean.ObjectBean.ListBean> list =
+                            public void onNext(MyfollowBean myFollowBean) {
+                                List<MyfollowBean.ObjectBean.ListBean> list =
                                         myFollowBean.getObject().getList();
                                 //没有关注的用户去关注
                                 if(list.size()==0){
