@@ -2,14 +2,18 @@ package com.YiDian.RainBow.main.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -21,6 +25,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -36,6 +42,7 @@ import com.YiDian.RainBow.main.fragment.FragmentFind;
 import com.YiDian.RainBow.main.fragment.FragmentHome;
 import com.YiDian.RainBow.main.fragment.FragmentMine;
 import com.YiDian.RainBow.main.fragment.FragmentMsg;
+import com.YiDian.RainBow.service.GrayService;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -120,6 +127,22 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
                     Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
 
+        boolean ignoringBatteryOptimizations = isIgnoringBatteryOptimizations(MainActivity.this);
+        //判断是否存在于白名单
+        if(!ignoringBatteryOptimizations){
+            //不存在加入白名单
+            requestIgnoreBatteryOptimizations(MainActivity.this);
+        }
+
+        //开启服务
+        Intent intent = new Intent(MainActivity.this, GrayService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //android8.0以上通过startForegroundService启动service
+            startForegroundService(intent);
+        } else {
+            startService(intent);
+        }
+        Request();
         rbs[0] = rbHome;
         //rbs[1] = rbIM;
         rbs[1] = rbFind;
@@ -161,8 +184,44 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
         MyAdapter myAdapter = new MyAdapter(getSupportFragmentManager());
         vp.setAdapter(myAdapter);
     }
+    //安卓10.0定位权限
+    public void Request() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            int request = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+            if (request != PackageManager.PERMISSION_GRANTED)//缺少权限，进行权限申请
+            {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
+                return;//
+            } else {
 
+            }
+        } else {
 
+        }
+    }
+    //判断是否存在白名单
+    @RequiresApi(Build.VERSION_CODES.M)
+    public boolean isIgnoringBatteryOptimizations(Context context){
+        boolean isIgnoring = false;
+        if (Build.VERSION.SDK_INT>=23)       {
+            PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+
+            if (powerManager != null){
+                isIgnoring = powerManager.isIgnoringBatteryOptimizations(getPackageName());
+            }
+        }
+        return isIgnoring;
+    }
+    //加入白名单
+    public void requestIgnoreBatteryOptimizations(Context context){
+        try {
+            Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+            intent.setData(Uri.parse("package:" + getPackageName()));
+            context.startActivity(intent);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     @Override
     protected BasePresenter initPresenter() {
         return null;

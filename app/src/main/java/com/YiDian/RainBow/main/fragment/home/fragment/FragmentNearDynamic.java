@@ -97,11 +97,11 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
         //腾讯AppId(替换你自己App Id)、上下文
         mTencent = Tencent.createInstance("101906973", getContext());
 
+        rcNewDynamic.setHasFixedSize(true);
+        rcNewDynamic.setItemAnimator(null);
+
 
         alllist = new ArrayList<>();
-
-
-        sv.setFooter(new AliFooter(getContext()));
 
         //获取数据
         getDynamic(page,size);
@@ -207,6 +207,8 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
                                     noData.setVisibility(View.GONE);
 
                                     sv.setHeader(new AliHeader(getContext()));
+
+                                    sv.setFooter(new AliFooter(getContext()));
                                     //创建最新动态适配器
                                     linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
                                     rcNewDynamic.setLayoutManager(linearLayoutManager);

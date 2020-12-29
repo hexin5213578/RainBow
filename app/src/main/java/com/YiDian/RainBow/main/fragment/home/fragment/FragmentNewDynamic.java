@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -89,6 +90,8 @@ public class FragmentNewDynamic extends BaseFragment {
         alllist = new ArrayList<>();
         id = Integer.valueOf(Common.getUserId());
 
+        rcNewDynamic.setHasFixedSize(true);
+        rcNewDynamic.setItemAnimator(null);
         //腾讯AppId(替换你自己App Id)、上下文
         mTencent = Tencent.createInstance("101906973", getContext());
         KeyBoardUtils.closeKeyboard(getActivity());
@@ -239,6 +242,8 @@ public class FragmentNewDynamic extends BaseFragment {
                                     rcNewDynamic.setLayoutManager(linearLayoutManager);
                                     newDynamicAdapter = new NewDynamicAdapter(getActivity(), alllist,mTencent);
                                     rcNewDynamic.setAdapter(newDynamicAdapter);
+
+
                                 } else {
                                     if (alllist.size() > 0 && alllist != null) {
                                         //创建最新动态适配器

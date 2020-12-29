@@ -84,7 +84,8 @@ public class FragmentHotDynamic extends BaseFragment {
         mTencent = Tencent.createInstance("101906973", getContext());
         KeyBoardUtils.closeKeyboard(getActivity());
 
-
+        rcNewDynamic.setHasFixedSize(true);
+        rcNewDynamic.setItemAnimator(null);
 
         //进入界面获取数据
         getDynamic(page,size);

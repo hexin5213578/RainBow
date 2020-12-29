@@ -92,9 +92,9 @@ public class FragmentAttDynamic extends BaseFragment {
 
         //腾讯AppId(替换你自己App Id)、上下文
         mTencent = Tencent.createInstance("101906973", getContext());
-        Gson gson = new Gson();
-        List<NewDynamicBean.ObjectBean.ListBean> SpList = new ArrayList<>();
 
+        rcNewDynamic.setHasFixedSize(true);
+        rcNewDynamic.setItemAnimator(null);
 
         //下拉刷新下拉加载
         sv.setListener(new SpringView.OnFreshListener() {
@@ -250,7 +250,7 @@ public class FragmentAttDynamic extends BaseFragment {
             public void run() {
 
                 NetUtils.getInstance().getApis()
-                        .doGetMyFollow(userid,1,5)
+                        .doGetMyFollow(userid,1,1)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Observer<MyfollowBean>() {
@@ -312,7 +312,6 @@ public class FragmentAttDynamic extends BaseFragment {
         GSYVideoManager.onResume();
         //关闭输入框
         KeyBoardUtils.closeKeyboard(getActivity());
-        Log.d("xxx", "onResume");
     }
 
     @Override
@@ -333,6 +332,14 @@ public class FragmentAttDynamic extends BaseFragment {
         }
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser){
+            //重新获取数据
+            getAttUser();
+        }
+    }
 
     @Override
     public void onHiddenChanged(boolean hidden) {

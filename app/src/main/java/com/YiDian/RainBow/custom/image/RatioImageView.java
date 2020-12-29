@@ -12,7 +12,7 @@ import android.widget.ImageView;
 
 import com.YiDian.RainBow.R;
 
-public class RatioImageView extends ImageView {
+public class RatioImageView extends androidx.appcompat.widget.AppCompatImageView {
 
 
     /**

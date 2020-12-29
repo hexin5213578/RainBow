@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.YiDian.RainBow">
+
     <!-- 允许应用程序改变网络状态 -->
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> <!-- 允许应用程序改变WIFI连接状态 -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -23,19 +24,14 @@
     <uses-permission android:name="android.permission.VIBRATE" /> <!-- 震动权限 -->
     <uses-permission android:name="android.permission.CAMERA" /> <!-- 摄像头权限 -->
     <uses-feature android:name="android.hardware.camera.autofocus" /> <!-- 自动聚焦权限 -->
-    
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission
         android:name="android.permission.WRITE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="MOUNT_UNMOUNT_FILESYSTEMS" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-
-    <!--华为角标-->
-    <uses-permission
-        android:name="com.huawei.android.launcher.permission.CHANGE_BADGE"/>
-
-    <!-- Required -->
+    <uses-permission android:name="android.permission.VIBRATE" /> <!-- 华为角标 -->
+    <uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE" /> <!-- Required -->
     <permission
         android:name="${applicationId}.permission.JPUSH_MESSAGE"
         android:protectionLevel="signature" />
@@ -43,14 +39,19 @@
     <application
         android:name=".base.App"
         android:allowBackup="true"
+        android:fitsSystemWindows="true"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
-        android:fitsSystemWindows="true"
-        android:usesCleartextTraffic="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <service
+            android:name=".service.GrayService"
+            android:enabled="true"
+            android:exported="true"></service>
+
         <meta-data
             android:name="design_width_in_dp"
             android:value="360" />
@@ -64,27 +65,23 @@
             android:name="android.notch_support"
             android:value="true" />
 
-        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
-
-
-        <!-- 高德地图 -->
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" /> <!-- 高德地图 -->
         <meta-data
-            android:name="com.amap.api.v2.apikey" android:value="6bbee3d776ea777c5a13959c27c7fa14">
-        </meta-data>
-        <!-- 高德地图定位 -->
-        <service android:name="com.amap.api.location.APSService" />
-
-
-
-        <!-- QQ -->
+            android:name="com.amap.api.v2.apikey"
+            android:value="6bbee3d776ea777c5a13959c27c7fa14"></meta-data> <!-- 高德地图定位 -->
+        <service android:name="com.amap.api.location.APSService" /> <!-- QQ -->
         <activity
             android:name="com.tencent.tauth.AuthActivity"
-            android:noHistory="true"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="tencent101906973" />
             </intent-filter>
         </activity>
@@ -92,35 +89,31 @@
             android:name="com.tencent.connect.common.AssistActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="behind"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-
-
-        <!-- Since JCore2.0.0 Required SDK核心功能-->
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" /> <!-- Since JCore2.0.0 Required SDK核心功能 -->
         <!-- 这个Service要继承JCommonService -->
-        <service android:name=".jiguang.JiguangService"
+        <service
+            android:name=".jiguang.JiguangService"
             android:enabled="true"
             android:exported="false"
-            android:process=":pushcore"
-            >
+            android:process=":pushcore">
             <intent-filter>
                 <action android:name="cn.jiguang.user.service.action" />
             </intent-filter>
-        </service>
-        <!-- Required since 3.0.7 -->
+        </service> <!-- Required since 3.0.7 -->
         <!-- 新的 tag/alias 接口结果返回需要开发者配置一个自定的广播 -->
         <!-- 3.3.0开始所有事件将通过该类回调 -->
         <!-- 该广播需要继承 JPush 提供的 JPushMessageReceiver 类, 并如下新增一个 Intent-Filter -->
         <receiver
             android:name=".jiguang.JiguangReceiver"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE" />
-                <action android:name="cn.jpush.android.intent.REGISTRATION" /> <!--Required  用户注册SDK的intent-->
-                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" /> <!--Required  用户接收SDK消息的intent-->
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" /> <!--Required  用户接收SDK通知栏信息的intent-->
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" /> <!--Required  用户打开自定义通知栏的intent-->
-                <action android:name="cn.jpush.android.intent.CONNECTION" /><!-- 接收网络变化 连接/断开 since 1.6.3 -->
+                <action android:name="cn.jpush.android.intent.REGISTRATION" /> <!-- Required  用户注册SDK的intent -->
+                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" /> <!-- Required  用户接收SDK消息的intent -->
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" /> <!-- Required  用户接收SDK通知栏信息的intent -->
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" /> <!-- Required  用户打开自定义通知栏的intent -->
+                <action android:name="cn.jpush.android.intent.CONNECTION" /> <!-- 接收网络变化 连接/断开 since 1.6.3 -->
                 <category android:name="com.YiDian.RainBow" />
             </intent-filter>
         </receiver>
@@ -132,14 +125,11 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/external_path"/>
-        </provider>
-
-        <!-- 引导页 -->
-        <activity android:name=".welcome.WelcomeActivity"
-            android:screenOrientation="portrait">
-        </activity>
-        <!-- 主页 -->
+                android:resource="@xml/external_path" />
+        </provider> <!-- 引导页 -->
+        <activity
+            android:name=".welcome.WelcomeActivity"
+            android:screenOrientation="portrait" /> <!-- 主页 -->
         <activity
             android:name=".main.activity.MainActivity"
             android:screenOrientation="portrait">
@@ -149,210 +139,119 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name=".service.GrayService" android:exported="true" android:enabled="true" />
         <!-- 注册 -->
         <activity
             android:name=".regist.activity.RegistActivity"
-            android:screenOrientation="portrait"
-            />
-        <!-- 登录 -->
+            android:screenOrientation="portrait" /> <!-- 登录 -->
         <activity
             android:name=".login.activity.LoginActivity"
-            android:screenOrientation="portrait">
-        </activity>
-        <!-- 微信回调 -->
+            android:screenOrientation="portrait" /> <!-- 微信回调 -->
         <activity
             android:name=".wxapi.WXEntryActivity"
-            android:label="@string/app_name"
             android:exported="true"
-            android:taskAffinity="com.YiDian.RainBow"
-            android:launchMode="singleTask">
-        </activity>
-        
-        <!-- 设置密码 -->
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.YiDian.RainBow" /> <!-- 设置密码 -->
         <activity
             android:name=".setpwd.activity.SetPwdActivity"
-            android:screenOrientation="portrait"
-            />
-        <!-- 忘记密码 -->
+            android:screenOrientation="portrait" /> <!-- 忘记密码 -->
         <activity
             android:name=".remember.activity.RememberPwdActivity"
-            android:screenOrientation="portrait"
-            >
-
-        </activity>
-        <!-- 完善资料 -->
+            android:screenOrientation="portrait" /> <!-- 完善资料 -->
         <activity
             android:name=".login.activity.CompleteMsgActivity"
-            android:screenOrientation="portrait">
-
-        </activity>
-        <!-- 问题反馈 -->
+            android:screenOrientation="portrait" /> <!-- 问题反馈 -->
         <activity
             android:name=".feedback.activity.FeedBackActivity"
-            android:screenOrientation="portrait"
-            >
-
-        </activity>
-        <!--android:windowSoftInputMode="adjustPan|stateHidden"-->
-        <!-- 动态详情 -->
-        <activity android:name=".main.fragment.home.activity.DynamicDetailsActivity"
-
-            android:screenOrientation="portrait">
-        </activity>
-
-        <!-- 评论详情 -->
-        <activity android:name=".main.fragment.home.activity.CommentDetailsActivity"
-
-            android:screenOrientation="portrait">
-        </activity>
-
-        <!-- 直接播放 -->
+            android:screenOrientation="portrait" /> <!-- 动态详情 -->
+        <activity
+            android:name=".main.fragment.home.activity.DynamicDetailsActivity"
+            android:screenOrientation="portrait" /> <!-- 评论详情 -->
+        <activity
+            android:name=".main.fragment.home.activity.CommentDetailsActivity"
+            android:screenOrientation="portrait" /> <!-- 直接播放 -->
         <activity
             android:name=".main.fragment.activity.SimplePlayerActivity"
-            android:screenOrientation="portrait" />
-        <!-- 图片预览 -->
+            android:screenOrientation="portrait" /> <!-- 图片预览 -->
         <activity
             android:name=".main.fragment.home.activity.NewDynamicImage"
-            android:screenOrientation="portrait"
-            >
-        </activity>
-        <!-- 用户详情 -->
-        <activity android:name=".main.fragment.find.activity.UserDetailsActivity"
-            android:screenOrientation="portrait"
-            >
-        </activity>
-        <!-- 搜索话题用户 -->
-        <activity android:name=".search.SearchActivity"
-            android:screenOrientation="portrait"
-            >
-        </activity>
-        <!-- 搜索信息展示 -->
-        <activity android:name=".search.activity.SearchMsgActivity"
-            android:screenOrientation="portrait"
-            >
-
-        </activity>
-        <!-- 话题详情 -->
-        <activity android:name=".search.activity.TopicDetailsActivity"
-            android:screenOrientation="portrait"
-            >
-        </activity>
-
-        <!-- 设置 -->
-        <activity android:name=".setup.SetupActivity"
-            android:screenOrientation="portrait"
-            >
-        </activity>
-
-        <!-- 我的二维码 -->
-        <activity android:name=".main.fragment.mine.activity.MyQrCodeActivity"
-            android:screenOrientation="portrait"
-            >
-        </activity>
-
-        <!-- 更多房间 -->
-        <activity android:name=".main.fragment.im.activity.MordRoomActivity"
-            android:screenOrientation="portrait"
-            >
-        </activity>
-
-        <!-- 公会排行榜 -->
-        <activity android:name=".main.fragment.im.activity.UnionRankingActivity"
-            android:screenOrientation="portrait"
-            >
-        </activity>
-
-        <!-- 我的公会 -->
-        <activity android:name=".main.fragment.im.activity.MyUnionActivity"
-            android:screenOrientation="portrait"
-            >
-        </activity>
-
-        <!-- 编辑资料 -->
-        <activity android:name=".main.fragment.mine.activity.EditMsgActivity"
-            android:screenOrientation="portrait"
-            >
-        </activity>
-
-        <!-- 金币充值 -->
-        <activity android:name=".main.fragment.mine.activity.RechargeGlodActivity"
-            android:screenOrientation="portrait"
-            >
-        </activity>
-
-        <!-- 扫描二维码 -->
-        <activity android:name=".custom.zbar.CaptureActivity"
-            android:screenOrientation="portrait"
-            >
-        </activity>
-
-
-        <!-- 测试选择视频压缩 -->
-        <activity android:name=".feedback.activity.TextActivity"
-            android:screenOrientation="portrait"
-            >
-
-        </activity>
-        <!-- 压缩成功回调 -->
-        <activity android:name=".feedback.activity.PreviewActivity"
-            android:screenOrientation="portrait"
-            >
-        </activity>
-
-        <!-- 发布新动态 -->
-        <activity android:name=".dynamic.activity.DevelopmentDynamicActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <!-- 选择@好友 -->
-        <activity android:name=".dynamic.activity.SelectFriendActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <!-- 选择谁可以看见 -->
-        <activity android:name=".dynamic.activity.SelectWhoCanSeeActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <!-- 我的草稿箱 -->
-        <activity android:name=".main.fragment.mine.activity.MydraftActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <!-- 用户主页 -->
-        <activity android:name=".user.PersonHomeActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <!-- 话题详情页 -->
-        <activity android:name=".topic.TopicDetailsActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <!-- 我的好友页 -->
-        <activity android:name=".friend.FriendsActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <!-- 系统通知 -->
-        <activity android:name=".notice.SystemNoticeActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <!-- 好友通知 -->
-        <activity android:name=".notice.FriendNoticeActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <!-- 评论通知 -->
-        <activity android:name=".notice.CommentNoticeActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <!-- 点赞通知 -->
-        <activity android:name=".notice.ClickNoticeActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait" /> <!-- 用户详情 -->
+        <activity
+            android:name=".main.fragment.find.activity.UserDetailsActivity"
+            android:screenOrientation="portrait" /> <!-- 搜索话题用户 -->
+        <activity
+            android:name=".search.SearchActivity"
+            android:screenOrientation="portrait" /> <!-- 搜索信息展示 -->
+        <activity
+            android:name=".search.activity.SearchMsgActivity"
+            android:screenOrientation="portrait" /> <!-- 话题详情 -->
+        <activity
+            android:name=".search.activity.TopicDetailsActivity"
+            android:screenOrientation="portrait" /> <!-- 设置 -->
+        <activity
+            android:name=".setup.SetupActivity"
+            android:screenOrientation="portrait" /> <!-- 我的二维码 -->
+        <activity
+            android:name=".main.fragment.mine.activity.MyQrCodeActivity"
+            android:screenOrientation="portrait" /> <!-- 更多房间 -->
+        <activity
+            android:name=".main.fragment.im.activity.MordRoomActivity"
+            android:screenOrientation="portrait" /> <!-- 公会排行榜 -->
+        <activity
+            android:name=".main.fragment.im.activity.UnionRankingActivity"
+            android:screenOrientation="portrait" /> <!-- 我的公会 -->
+        <activity
+            android:name=".main.fragment.im.activity.MyUnionActivity"
+            android:screenOrientation="portrait" /> <!-- 编辑资料 -->
+        <activity
+            android:name=".main.fragment.mine.activity.EditMsgActivity"
+            android:screenOrientation="portrait" /> <!-- 金币充值 -->
+        <activity
+            android:name=".main.fragment.mine.activity.RechargeGlodActivity"
+            android:screenOrientation="portrait" /> <!-- 扫描二维码 -->
+        <activity
+            android:name=".custom.zbar.CaptureActivity"
+            android:screenOrientation="portrait" /> <!-- 测试选择视频压缩 -->
+        <activity
+            android:name=".feedback.activity.TextActivity"
+            android:screenOrientation="portrait" /> <!-- 压缩成功回调 -->
+        <activity
+            android:name=".feedback.activity.PreviewActivity"
+            android:screenOrientation="portrait" /> <!-- 发布新动态 -->
+        <activity
+            android:name=".dynamic.activity.DevelopmentDynamicActivity"
+            android:screenOrientation="portrait" /> <!-- 选择@好友 -->
+        <activity
+            android:name=".dynamic.activity.SelectFriendActivity"
+            android:screenOrientation="portrait" /> <!-- 选择谁可以看见 -->
+        <activity
+            android:name=".dynamic.activity.SelectWhoCanSeeActivity"
+            android:screenOrientation="portrait" /> <!-- 我的草稿箱 -->
+        <activity
+            android:name=".main.fragment.mine.activity.MydraftActivity"
+            android:screenOrientation="portrait" /> <!-- 用户主页 -->
+        <activity
+            android:name=".user.PersonHomeActivity"
+            android:screenOrientation="portrait" /> <!-- 话题详情页 -->
+        <activity
+            android:name=".topic.TopicDetailsActivity"
+            android:screenOrientation="portrait" /> <!-- 我的好友页 -->
+        <activity
+            android:name=".friend.FriendsActivity"
+            android:screenOrientation="portrait" /> <!-- 系统通知 -->
+        <activity
+            android:name=".notice.SystemNoticeActivity"
+            android:screenOrientation="portrait" /> <!-- 好友通知 -->
+        <activity
+            android:name=".notice.FriendNoticeActivity"
+            android:screenOrientation="portrait" /> <!-- 评论通知 -->
+        <activity
+            android:name=".notice.CommentNoticeActivity"
+            android:screenOrientation="portrait" /> <!-- 点赞通知 -->
+        <activity
+            android:name=".notice.ClickNoticeActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

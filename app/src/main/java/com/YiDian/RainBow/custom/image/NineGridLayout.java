@@ -204,7 +204,7 @@ public abstract class NineGridLayout extends ViewGroup {
         imageView.layout(left, top, right, bottom);
 
         addView(imageView);
-        if (showNumFlag) {//添加超过最大显示数量的文本
+        /*if (showNumFlag) {//添加超过最大显示数量的文本
             int overCount = getListSize(mUrlList) - MAX_COUNT;
             if (overCount > 0) {
                 float textSize = 30;
@@ -220,7 +220,7 @@ public abstract class NineGridLayout extends ViewGroup {
                 textView.layout(left, top, right, bottom);
                 addView(textView);
             }
-        }
+        }*/
         displayImage(imageView, url);
     }
 

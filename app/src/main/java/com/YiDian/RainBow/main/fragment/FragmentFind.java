@@ -362,6 +362,7 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if(isVisibleToUser){
+            Log.d("xxx","fragmentfind的setUserVisibleHint");
             EventBus.getDefault().post("重新请求数据");
         }
     }

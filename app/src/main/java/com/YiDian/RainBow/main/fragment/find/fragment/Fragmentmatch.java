@@ -401,7 +401,6 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
 
                 Log.d("xxx", "定位成功");
                 getUserData();
-
             } else {
                 //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
                 Log.e("AmapError", "location Error, ErrCode:"
@@ -435,9 +434,6 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
         super.onStart();
         index = 0;
         Log.d("hmy", "onStart");
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
     }
 
     @Override
@@ -453,9 +449,6 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
     public void onStop() {
         super.onStop();
         Log.d("hmy", "onStop");
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
-        }
     }
 
     @Override
@@ -476,8 +469,8 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
         Log.d("hmy", "onDestroy");
         //停止定位
         mlocationClient.stopLocation();
-        if(EventBus.getDefault().isRegistered(this)){
-            EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
         }
     }
 
@@ -488,7 +481,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getStr(String str){
-        if(str.equals("重新请求数据")){
+        if (str.equals("重新请求数据")){
             if (Alllist.size()>0 && Alllist!=null){
 
             }else{
@@ -496,6 +489,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
             }
         }
     }
+
     //获取用户信息
     public void getUserData() {
         DataType = true;
@@ -530,8 +524,6 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
                             rlNodata.setVisibility(View.VISIBLE);
                             container.setVisibility(View.GONE);
                         }
-
-
                     }
 
                     @Override
