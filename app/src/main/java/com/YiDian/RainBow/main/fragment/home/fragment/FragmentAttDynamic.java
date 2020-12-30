@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,6 +23,7 @@ import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.utils.KeyBoardUtils;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.google.gson.Gson;
+import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.container.AliHeader;
 import com.liaoinstan.springview.widget.SpringView;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
@@ -69,7 +71,7 @@ public class FragmentAttDynamic extends BaseFragment {
     private int page = 1;
     private int size = 5;
     private Tencent mTencent;
-
+    private boolean FirstInit;
     @Override
     protected void getid(View view) {
 
@@ -89,6 +91,8 @@ public class FragmentAttDynamic extends BaseFragment {
     protected void getData() {
 
         alllist = new ArrayList<>();
+
+        FirstInit = true;
 
         //腾讯AppId(替换你自己App Id)、上下文
         mTencent = Tencent.createInstance("101906973", getContext());
@@ -120,6 +124,7 @@ public class FragmentAttDynamic extends BaseFragment {
                         page++;
                         sv.onFinishFreshAndLoad();
                         getDynamic(page, size);
+                        GSYVideoManager.releaseAllVideos();
                     }
                 }, 1000);
             }
@@ -209,6 +214,7 @@ public class FragmentAttDynamic extends BaseFragment {
                                     noData.setVisibility(View.GONE);
 
                                     sv.setHeader(new AliHeader(getContext()));
+                                    sv.setFooter(new AliFooter(getContext()));
                                     //创建最新动态适配器
                                     linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
                                     rcNewDynamic.setLayoutManager(linearLayoutManager);
@@ -217,11 +223,7 @@ public class FragmentAttDynamic extends BaseFragment {
                                 } else {
                                     if (alllist.size() > 0 && alllist != null) {
                                         //创建最新动态适配器
-                                        linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                                        rcNewDynamic.setLayoutManager(linearLayoutManager);
-                                        newDynamicAdapter = new NewDynamicAdapter(getActivity(), alllist,mTencent);
-                                        rcNewDynamic.setAdapter(newDynamicAdapter);
-
+                                        Toast.makeText(getContext(), "没有更多内容了", Toast.LENGTH_SHORT).show();
                                     } else {
                                         sv.setVisibility(View.GONE);
                                         noData.setVisibility(View.VISIBLE);
@@ -337,7 +339,9 @@ public class FragmentAttDynamic extends BaseFragment {
         super.setUserVisibleHint(isVisibleToUser);
         if(isVisibleToUser){
             //重新获取数据
-            getAttUser();
+            if(FirstInit){
+                getAttUser();
+            }
         }
     }
 

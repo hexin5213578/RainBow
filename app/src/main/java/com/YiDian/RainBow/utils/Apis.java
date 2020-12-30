@@ -22,6 +22,7 @@ import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.main.fragment.home.bean.OneCommentBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.SelectAllDraftsBean;
+import com.YiDian.RainBow.notice.bean.NoticeMsgBean;
 import com.YiDian.RainBow.regist.bean.RegistBean;
 import com.YiDian.RainBow.remember.bean.RememberPwdBean;
 import com.YiDian.RainBow.setpwd.bean.GetPhoneCodeBean;
@@ -189,4 +190,22 @@ public interface Apis {
     //获取通知数量
     @GET("message/messageAllNum")
     Observable<NoticeCountBean> doGetNoticeCount(@Query("msgUserId")int userid);
+
+    //获取系统通知
+    @GET("message/selectMsg")
+    Observable<NoticeMsgBean> doGetSystemNoticeMsg(@Query("msgUserId")int userid,@Query("page")int page,@Query("pageSize")int size);
+
+    //获取好友通知
+
+
+    //获取评论通知
+
+
+    //获取点赞通知
+
+
+    //清空通知
+
+
+    //删除单个通知
 }

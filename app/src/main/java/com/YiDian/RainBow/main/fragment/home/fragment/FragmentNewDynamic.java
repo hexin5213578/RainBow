@@ -246,12 +246,7 @@ public class FragmentNewDynamic extends BaseFragment {
 
                                 } else {
                                     if (alllist.size() > 0 && alllist != null) {
-                                        //创建最新动态适配器
-                                        linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                                        rcNewDynamic.setLayoutManager(linearLayoutManager);
-                                        newDynamicAdapter = new NewDynamicAdapter(getActivity(), alllist,mTencent);
-                                        rcNewDynamic.setAdapter(newDynamicAdapter);
-
+                                        Toast.makeText(getContext(), "没有更多内容了", Toast.LENGTH_SHORT).show();
                                     } else {
                                         sv.setVisibility(View.GONE);
                                         noData.setVisibility(View.VISIBLE);

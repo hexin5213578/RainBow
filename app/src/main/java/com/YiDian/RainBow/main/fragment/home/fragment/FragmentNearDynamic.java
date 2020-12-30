@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -100,11 +101,7 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
         rcNewDynamic.setHasFixedSize(true);
         rcNewDynamic.setItemAnimator(null);
 
-
         alllist = new ArrayList<>();
-
-        //获取数据
-        getDynamic(page,size);
         //下拉刷新下拉加载
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
@@ -217,11 +214,7 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
                                 } else {
                                     if (alllist.size() > 0 && alllist != null) {
                                         //创建最新动态适配器
-                                        linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                                        rcNewDynamic.setLayoutManager(linearLayoutManager);
-                                        newDynamicAdapter = new NewDynamicAdapter(getActivity(), alllist,mTencent);
-                                        rcNewDynamic.setAdapter(newDynamicAdapter);
-
+                                        Toast.makeText(getContext(), "没有更多内容了", Toast.LENGTH_SHORT).show();
                                     } else {
                                         sv.setVisibility(View.GONE);
                                         noData.setVisibility(View.VISIBLE);
@@ -251,8 +244,8 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
         mlocationClient.setLocationListener(this);
         //设置定位模式为高精度模式，Battery_Saving为低功耗模式，Device_Sensors是仅设备模式
         mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
-        //设置定位间隔,单位毫秒,默认为2000ms
-        mLocationOption.setInterval(2000);
+        //设置定位间隔,单位毫秒,默认为2000ms\
+        mLocationOption.setOnceLocation(true);
         //设置定位参数
         mlocationClient.setLocationOption(mLocationOption);
         // 此方法为每隔固定时间会发起一次定位请求，为了减少电量消耗或网络流量消耗，
@@ -277,7 +270,8 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Date date = new Date(aMapLocation.getTime());
                 df.format(date);//定位时间
-
+                //获取数据
+                getDynamic(page,size);
             } else {
                 //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
                 Log.e("AmapError", "location Error, ErrCode:"
@@ -298,7 +292,6 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
         super.onDestroy();
         GSYVideoManager.releaseAllVideos();
         if (EventBus.getDefault().isRegistered(this)) {
-
             EventBus.getDefault().unregister(this);
         }
     }

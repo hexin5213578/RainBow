@@ -136,12 +136,7 @@ public class AllLikeFragment extends BaseFragment {
                                     rcallLike.setAdapter(allLikeAdapter);
                                 }else{
                                     if(allList.size()>0 && allList!=null){
-                                        linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                                        rcallLike.setLayoutManager(linearLayoutManager);
-                                        allLikeAdapter = new AllLikeAdapter(getContext(), allList);
-
-                                        rcallLike.setAdapter(allLikeAdapter);
-
+                                        Toast.makeText(getContext(), "没有更多内容了", Toast.LENGTH_SHORT).show();
                                     }else{
                                         rlNodata.setVisibility(View.VISIBLE);
                                         sv.setVisibility(View.GONE);

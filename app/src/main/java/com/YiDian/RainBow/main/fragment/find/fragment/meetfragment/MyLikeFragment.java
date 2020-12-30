@@ -131,12 +131,7 @@ public class MyLikeFragment extends BaseFragment {
                                     rcMylike.setAdapter(myLikeAdapter);
                                 }else{
                                     if(allList.size()>0 && allList!=null){
-                                        linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                                        rcMylike.setLayoutManager(linearLayoutManager);
-
-                                        myLikeAdapter = new MyLikeAdapter(getContext(), allList);
-
-                                        rcMylike.setAdapter(myLikeAdapter);
+                                        Toast.makeText(getContext(), "没有更多内容了", Toast.LENGTH_SHORT).show();
                                     }else{
                                         rlNodata.setVisibility(View.VISIBLE);
                                         sv.setVisibility(View.GONE);

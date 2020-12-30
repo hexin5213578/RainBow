@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -119,6 +120,7 @@ public class UserDetailsActivity extends BaseAvtivity implements View.OnClickLis
     }
     //获取网络数据
     public void getUserDynamic(int page,int size){
+        showDialog();
         NetUtils.getInstance().getApis()
                 .doGetDynamicByUserid(id,userid,page,size)
                 .subscribeOn(Schedulers.io())
@@ -131,6 +133,7 @@ public class UserDetailsActivity extends BaseAvtivity implements View.OnClickLis
 
                     @Override
                     public void onNext(NewDynamicBean newDynamicBean) {
+                        hideDialog();
                         List<NewDynamicBean.ObjectBean.ListBean> list =
                                 newDynamicBean.getObject().getList();
                         if (list.size()>0 && list!=null){
@@ -149,7 +152,8 @@ public class UserDetailsActivity extends BaseAvtivity implements View.OnClickLis
 
                     @Override
                     public void onError(Throwable e) {
-
+                        hideDialog();
+                        Toast.makeText(UserDetailsActivity.this, "请求失败", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

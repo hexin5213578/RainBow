@@ -724,13 +724,7 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
 
                         }else{
                             if(AllList.size()>0){
-
-                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(DynamicDetailsActivity.this, RecyclerView.VERTICAL, false);
-                                rcComment.setLayoutManager(linearLayoutManager);
-                                //创建适配器
-                                CommentAdapter commentAdapter = new CommentAdapter(DynamicDetailsActivity.this, AllList);
-                                rcComment.setAdapter(commentAdapter);
-
+                                Toast.makeText(DynamicDetailsActivity.this, "没有更多内容了", Toast.LENGTH_SHORT).show();
                             }else{
 
                                 rlNotdata.setVisibility(View.VISIBLE);

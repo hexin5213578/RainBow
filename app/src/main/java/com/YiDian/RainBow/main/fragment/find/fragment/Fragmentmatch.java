@@ -22,6 +22,7 @@ import com.YiDian.RainBow.main.fragment.find.bean.AllUserInfoBean;
 import com.YiDian.RainBow.main.fragment.find.bean.LikeUserBean;
 import com.YiDian.RainBow.main.fragment.find.bean.SaveFilterBean;
 import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.SPUtil;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
@@ -67,6 +68,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
     private String role;
     int single = 0;
     boolean isfirst;
+
     @Override
     protected void getid(View view) {
 
@@ -85,7 +87,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
     @Override
     protected void getData() {
         Alllist = new ArrayList<>();
-
+        Log.d("xxx", "重新加载");
         //是否是第一次点击
         isfirst = true;
 
@@ -125,7 +127,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
             public void discarded(int i, int i1) {
                 Log.e("xxx", i + "   " + i1);
 
-                if (i % 14 == 0  && DataType) {
+                if (i % 14 == 0 && DataType) {
                     NetUtils.getInstance().getApis()
                             .doGetAllUserInfo(userid, longitude, latitude, 1, 15)
                             .subscribeOn(Schedulers.io())
@@ -135,6 +137,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
                                 public void onSubscribe(Disposable d) {
 
                                 }
+
                                 @Override
                                 public void onNext(AllUserInfoBean allUserInfoBean) {
                                     list = allUserInfoBean.getObject().getList();
@@ -143,10 +146,9 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
                                         rlNodata.setVisibility(View.GONE);
                                         container.setVisibility(View.VISIBLE);
 
-                                        for (int i = 1; i < list.size()-1; i++) {
+                                        for (int i = 1; i < list.size() - 1; i++) {
                                             cardsDataAdapter.add(list.get(i));
                                             Alllist.add(list.get(i));
-
                                         }
                                         container.setAdapter(cardsDataAdapter);
                                     }
@@ -163,9 +165,9 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
 
                                 }
                             });
-                }else if(i % 14 == 0  && !DataType){
+                } else if (i % 14 == 0 && !DataType) {
                     //获取筛选后的数据
-                    NetUtils.getInstance().getApis().doGetFilterUser(userid,age,distance,single,role,longitude,latitude,1,15)
+                    NetUtils.getInstance().getApis().doGetFilterUser(userid, age, distance, single, role, longitude, latitude, 1, 15)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Observer<AllUserInfoBean>() {
@@ -182,10 +184,9 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
                                         rlNodata.setVisibility(View.GONE);
                                         container.setVisibility(View.VISIBLE);
 
-                                        Alllist.addAll(list);
-
-                                        for (int i = 0; i < list.size(); i++) {
+                                        for (int i = 1; i < list.size() - 1; i++) {
                                             cardsDataAdapter.add(list.get(i));
+                                            Alllist.add(list.get(i));
                                         }
                                         container.setAdapter(cardsDataAdapter);
                                     }
@@ -204,14 +205,15 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
                 }
                 index = i;
 
-                id = 1;
+                SPUtil.getInstance().saveData(getContext(), SPUtil.FILE_NAME, SPUtil.COUNT, String.valueOf(index));
 
+                id = 1;
                 //i   下标
                 if (i1 == 1 || i1 == 3) {
                     // TODO: 2020/10/12 0012  右滑喜欢
                     Log.d("xxx", "喜欢了" + Alllist.get(index - 1).getNickName());
                     NetUtils.getInstance().getApis()
-                            .doLikeUser(userid,Alllist.get(index-1).getId(),1)
+                            .doLikeUser(userid, Alllist.get(index - 1).getId(), 1)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Observer<LikeUserBean>() {
@@ -239,7 +241,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
                     // TODO: 2020/10/12 0012  左滑不喜欢
                     Log.d("xxx", "不喜欢" + Alllist.get(index - 1).getNickName());
                     NetUtils.getInstance().getApis()
-                            .doLikeUser(userid,Alllist.get(index-1).getId(),0)
+                            .doLikeUser(userid, Alllist.get(index - 1).getId(), 0)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Observer<LikeUserBean>() {
@@ -271,25 +273,26 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
             public void topCardTapped() {
                 if (id == 0) {
                     // TODO: 2020/10/12 0012 传入需要使用的用户信息
-                    if(isfirst){
+                    if (isfirst) {
                         Intent intent = new Intent(getContext(), UserDetailsActivity.class);
                         AllUserInfoBean.ObjectBean.ListBean listBean = Alllist.get(0);
-                        intent.putExtra("bean",listBean);
+                        intent.putExtra("bean", listBean);
                         startActivity(intent);
                         isfirst = false;
-                    }else{
+                    } else {
                         Intent intent = new Intent(getContext(), UserDetailsActivity.class);
                         AllUserInfoBean.ObjectBean.ListBean listBean = Alllist.get(index);
-                        intent.putExtra("bean",listBean);
+                        intent.putExtra("bean", listBean);
                         startActivity(intent);
                     }
                 } else {
                     // TODO: 2020/10/12 0012 传入需要使用的用户信息
+                    String count = SPUtil.getInstance().getData(getContext(), SPUtil.FILE_NAME, SPUtil.COUNT);
+                    int num = Integer.valueOf(count);
                     Intent intent = new Intent(getContext(), UserDetailsActivity.class);
-                    AllUserInfoBean.ObjectBean.ListBean listBean = Alllist.get(index);
-                    intent.putExtra("bean",listBean);
+                    AllUserInfoBean.ObjectBean.ListBean listBean = Alllist.get(num);
+                    intent.putExtra("bean", listBean);
                     startActivity(intent);
-
                 }
 
             }
@@ -309,13 +312,12 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
         Log.e("xxx", age + "   " + distance + "   " + isSingle + "   " + role);
         DataType = false;
         // TODO: 2020/11/18 0018 通过该筛选信息 查询列表
-        if(isSingle.equals("是")){
+        if (isSingle.equals("是")) {
             single = 1;
-        }else if(isSingle.equals("否")){
+        } else if (isSingle.equals("否")) {
             single = 2;
         }
-        Alllist.clear();
-        NetUtils.getInstance().getApis().doGetFilterUser(userid, age, distance,single, role,longitude,latitude,1,15)
+        NetUtils.getInstance().getApis().doGetFilterUser(userid, age, distance, single, role, longitude, latitude, 1, 15)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<AllUserInfoBean>() {
@@ -323,27 +325,26 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
                     public void onSubscribe(Disposable d) {
 
                     }
+
                     @Override
                     public void onNext(AllUserInfoBean allUserInfoBean) {
                         String msg = allUserInfoBean.getMsg();
+                        if (msg.equals("暂无数据")) {
+                            Alllist.clear();
 
-                        if(msg.equals("暂无数据")){
                             rlNodata.setVisibility(View.VISIBLE);
                             container.setVisibility(View.GONE);
-                        }else{
-                            list = allUserInfoBean.getObject().getList();
-
+                        } else {
                             if (list.size() > 0 && list != null) {
                                 rlNodata.setVisibility(View.GONE);
                                 container.setVisibility(View.VISIBLE);
 
-                                Alllist.addAll(list);
-
                                 cardsDataAdapter.clear();
                                 cardsDataAdapter.notifyDataSetChanged();
 
-                                for (int i = 0; i < list.size(); i++) {
+                                for (int i = 0; i < list.size() - 1; i++) {
                                     cardsDataAdapter.add(list.get(i));
+                                    Alllist.add(list.get(i));
                                 }
                                 container.setAdapter(cardsDataAdapter);
                             }
@@ -440,7 +441,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
     public void onResume() {
         super.onResume();
         Log.d("hmy", "onResume");
-        if(!EventBus.getDefault().isRegistered(this)){
+        if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
     }
@@ -469,7 +470,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
         Log.d("hmy", "onDestroy");
         //停止定位
         mlocationClient.stopLocation();
-        if (EventBus.getDefault().isRegistered(this)){
+        if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
     }
@@ -479,12 +480,13 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
         super.onDestroyView();
         Log.d("hmy", "onDestroyView");
     }
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getStr(String str){
-        if (str.equals("重新请求数据")){
-            if (Alllist.size()>0 && Alllist!=null){
 
-            }else{
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getStr(String str) {
+        if (str.equals("重新请求数据")) {
+            if (Alllist.size() > 0 && Alllist != null) {
+
+            } else {
                 doLocation();
             }
         }
@@ -514,10 +516,9 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
                             container.setVisibility(View.VISIBLE);
 
 
-                            for (int i = 0; i < list.size()-1; i++) {
+                            for (int i = 0; i < list.size() - 1; i++) {
                                 cardsDataAdapter.add(list.get(i));
                                 Alllist.add(list.get(i));
-
                             }
                             container.setAdapter(cardsDataAdapter);
                         } else {

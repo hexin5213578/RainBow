@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -240,10 +241,7 @@ public class FragmentNear extends Fragment implements AMapLocationListener {
                             rcNearPerson.setAdapter(nearPersonAdapter);
                         }else{
                             if(alllist.size()>0 && alllist!=null){
-                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                                rcNearPerson.setLayoutManager(linearLayoutManager);
-                                NearPersonAdapter nearPersonAdapter = new NearPersonAdapter(getContext(), alllist);
-                                rcNearPerson.setAdapter(nearPersonAdapter);
+                                Toast.makeText(getContext(), "没有更多内容了", Toast.LENGTH_SHORT).show();
                             }else{
                                 sv.setVisibility(View.GONE);
                                 rlNodata.setVisibility(View.VISIBLE);

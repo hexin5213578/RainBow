@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -389,7 +390,10 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
                             rcComment.setLayoutManager(linearLayoutManager);
                             CommentDetailsAdapter commentDetailsAdapter = new CommentDetailsAdapter(CommentDetailsActivity.this, AllList);
                             rcComment.setAdapter(commentDetailsAdapter);
-
+                        }else{
+                            if(AllList.size()>0 && AllList!=null){
+                                Toast.makeText(CommentDetailsActivity.this, "没有更多内容了", Toast.LENGTH_SHORT).show();
+                            }
                         }
 
                         if (list.size() > 14) {
@@ -429,8 +433,6 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
                         commentUserid = bean.getId();
                         //获取用户信息
                         OneCommentBean.ObjectBean.UserInfoBean userInfo = bean.getUserInfo();
-
-
 
                         //设置用户名
                         tvName.setText(userInfo.getNickName());
