@@ -161,7 +161,31 @@
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </com.liaoinstan.springview.widget.SpringView>
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_below="@id/v2"
+        android:id="@+id/rl_notdata"
+        android:visibility="gone"
+        android:layout_marginBottom="@dimen/dp_48"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_width="@dimen/dp_183"
+            android:id="@+id/iv"
+            android:layout_height="@dimen/dp_124"
+            android:layout_centerInParent="true"
+            android:src="@mipmap/noconment">
+        </ImageView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="快来给楼主写评论吧！"
+            android:layout_below="@id/iv"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_25"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_12"
+            android:layout_height="wrap_content">
+        </TextView>
+    </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"

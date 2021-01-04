@@ -1,8 +1,10 @@
 package com.YiDian.RainBow.main.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +44,8 @@ import com.yanzhenjie.recyclerview.swipe.SwipeMenuItemClickListener;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +98,6 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
     protected BasePresenter initPresenter() {
         return null;
     }
-
     protected void getData() {
         //设置状态栏颜色与字体颜色
         StatusBarUtil.setGradientColor(getActivity(), toolbar);
@@ -105,6 +108,7 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
 
         //获取评论数量
         getNoticeCount();
+
         //设置下拉
         sv.setHeader(new AliHeader(getContext()));
         sv.setListener(new SpringView.OnFreshListener() {
@@ -117,12 +121,26 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
                     }
                 },1000);
             }
-
             @Override
             public void onLoadmore() {
 
             }
         });
+        rcMsgRecording.setAdapter(null);
+
+        //设置侧滑菜单
+        rcMsgRecording.setSwipeMenuCreator(new SwipeMenuCreator() {
+            @Override
+            public void onCreateMenu(SwipeMenu swipeLeftMenu, SwipeMenu swipeRightMenu, int viewType) {
+                SwipeMenuItem deleteItem = new SwipeMenuItem(getContext())
+                        .setBackground(R.color.red)
+                        .setImage(R.mipmap.delete)
+                        .setHeight(ViewGroup.LayoutParams.MATCH_PARENT)//设置高，这里使用match_parent，就是与item的高相同
+                        .setWidth(150);//设置宽
+                swipeRightMenu.addMenuItem(deleteItem);//设置右边的侧滑
+            }
+        });
+
         //设置点击事件监听
         ivMyBuddy.setOnClickListener(this);
         rlSystem.setOnClickListener(this);
@@ -139,18 +157,7 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
         list.add("何梦洋");
         //创建recycleView管理器
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-        //设置侧滑菜单
-        rcMsgRecording.setSwipeMenuCreator(new SwipeMenuCreator() {
-            @Override
-            public void onCreateMenu(SwipeMenu swipeLeftMenu, SwipeMenu swipeRightMenu, int viewType) {
-                SwipeMenuItem deleteItem = new SwipeMenuItem(getContext())
-                        .setBackground(R.color.red)
-                        .setImage(R.mipmap.delete)
-                        .setHeight(ViewGroup.LayoutParams.MATCH_PARENT)//设置高，这里使用match_parent，就是与item的高相同
-                        .setWidth(150);//设置宽
-                swipeRightMenu.addMenuItem(deleteItem);//设置右边的侧滑
-            }
-        });
+
         rcMsgRecording.setLayoutManager(linearLayoutManager);
 
         //创建适配器
@@ -192,6 +199,28 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
                 //重新计算通知数量
                 getNoticeCount();
             }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getStr(String str){
+        if (str.equals("重新计算数量")){
+            getNoticeCount();
         }
     }
     //获取通知数量
@@ -273,17 +302,17 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
                 intent = new Intent(getContext(), SystemNoticeActivity.class);
                 startActivity(intent);
                 break;
-            //添加好友
+            //添加好友通知
             case R.id.rl_friend:
                 intent = new Intent(getContext(), FriendNoticeActivity.class);
                 startActivity(intent);
                 break;
-            //评论
+            //评论通知
             case R.id.rl_comment:
                 intent = new Intent(getContext(), CommentNoticeActivity.class);
                 startActivity(intent);
                 break;
-            //点赞
+            //点赞通知
             case R.id.rl_click:
                 intent = new Intent(getContext(), ClickNoticeActivity.class);
                 startActivity(intent);

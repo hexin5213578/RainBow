@@ -1,5 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:background="@color/white" android:layout_height="match_parent">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0_1"
+        android:background="@color/white" />
+    <RelativeLayout
+        android:id="@+id/rl_top"
+        android:layout_below="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_58"
+        android:background="@color/white">
+        <LinearLayout
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/dp_50"
+            android:layout_alignParentBottom="true"
+            android:layout_height="@dimen/dp_42">
 
+            <ImageView
+                android:layout_width="@dimen/dp_8"
+                android:layout_height="@dimen/dp_15"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_15"
+                android:src="@mipmap/back" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_22"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:text="点赞通知"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:textColor="@color/color_333333"
+            android:textSize="@dimen/sp_18"
+            android:textStyle="bold" />
+        <LinearLayout
+            android:id="@+id/ll_clear"
+            android:layout_width="@dimen/dp_50"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:gravity="right"
+            android:layout_height="@dimen/dp_42">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_14"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/color_999999"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_15"
+                android:layout_gravity="bottom"
+                android:text="清空"
+                >
+            </TextView>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_below="@id/rl_top"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginRight="@dimen/dp_15"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:id="@+id/rl_nodata"
+            android:visibility="gone"
+            android:layout_height="match_parent">
+            <ImageView
+                android:layout_width="@dimen/dp_221"
+                android:src="@mipmap/nouser"
+                android:id="@+id/iv"
+                android:layout_centerInParent="true"
+                android:layout_height="@dimen/dp_155">
+            </ImageView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="没有收到任何评论通知哦~"
+                android:layout_below="@id/iv"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dp_29"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/color_666666"
+                android:layout_height="wrap_content">
+            </TextView>
+        </RelativeLayout>
+
+        <com.liaoinstan.springview.widget.SpringView
+            android:layout_width="match_parent"
+            android:id="@+id/sv"
+            android:layout_height="match_parent">
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView
+                    android:layout_width="match_parent"
+                    android:id="@+id/rc_notice"
+                    android:layout_height="match_parent">
+                </com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView>
+            </androidx.core.widget.NestedScrollView>
+        </com.liaoinstan.springview.widget.SpringView>
+    </RelativeLayout>
 </RelativeLayout>

@@ -24,22 +24,18 @@ import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.main.fragment.home.adapter.CommentDetailsAdapter;
-import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
 import com.YiDian.RainBow.main.fragment.home.bean.CollectDynamicBean;
 import com.YiDian.RainBow.main.fragment.home.bean.CommentBean;
 import com.YiDian.RainBow.main.fragment.home.bean.DianzanBean;
-import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.main.fragment.home.bean.OneCommentBean;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.user.PersonHomeActivity;
 import com.YiDian.RainBow.utils.KeyBoardUtils;
 import com.YiDian.RainBow.utils.NetUtils;
-import com.YiDian.RainBow.utils.SPUtil;
 import com.YiDian.RainBow.utils.StringUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.gson.Gson;
 import com.leaf.library.StatusBarUtil;
 import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.container.AliHeader;
@@ -104,6 +100,8 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
     RelativeLayout rlSendReply;
     @BindView(R.id.rl_middle)
     RelativeLayout rlMiddle;
+    @BindView(R.id.rl_notdata)
+    RelativeLayout rlNotdata;
     private int commentId;
     private int userId;
     int page = 1;
@@ -113,6 +111,7 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
     private OneCommentBean.ObjectBean bean;
     File f = new File(
             "/data/data/com.YiDian.RainBow/shared_prefs/comment.xml");
+
     @Override
     protected int getResId() {
         return R.layout.activity_comment_details;
@@ -384,15 +383,21 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
                         if (list.size() > 0 && list != null) {
                             sv.setHeader(new AliHeader(CommentDetailsActivity.this));
 
+                            rlNotdata.setVisibility(View.GONE);
+                            sv.setVisibility(View.VISIBLE);
+
                             AllList.addAll(list);
                             //创建适配器
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(CommentDetailsActivity.this, RecyclerView.VERTICAL, false);
                             rcComment.setLayoutManager(linearLayoutManager);
                             CommentDetailsAdapter commentDetailsAdapter = new CommentDetailsAdapter(CommentDetailsActivity.this, AllList);
                             rcComment.setAdapter(commentDetailsAdapter);
-                        }else{
-                            if(AllList.size()>0 && AllList!=null){
+                        } else {
+                            if (AllList.size() > 0 && AllList != null) {
                                 Toast.makeText(CommentDetailsActivity.this, "没有更多内容了", Toast.LENGTH_SHORT).show();
+                            }else{
+                                rlNotdata.setVisibility(View.VISIBLE);
+                                sv.setVisibility(View.GONE);
                             }
                         }
 
@@ -413,7 +418,6 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
                     }
                 });
     }
-
     public void InitData() {
         NetUtils.getInstance().getApis()
                 .doGetCommentbyId(commentId, userId)

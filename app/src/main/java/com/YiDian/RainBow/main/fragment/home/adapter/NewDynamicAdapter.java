@@ -417,7 +417,6 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
 
                                         listBean.setIsAttention(true);
 
-                                        // TODO: 2020/12/15 0015 推送通知
 
                                     }
                                 }

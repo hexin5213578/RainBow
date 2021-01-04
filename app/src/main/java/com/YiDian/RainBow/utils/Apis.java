@@ -22,6 +22,10 @@ import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.main.fragment.home.bean.OneCommentBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.SelectAllDraftsBean;
+import com.YiDian.RainBow.notice.bean.CleanNoticeBean;
+import com.YiDian.RainBow.notice.bean.ClickNoticeBean;
+import com.YiDian.RainBow.notice.bean.CommentNoticeBean;
+import com.YiDian.RainBow.notice.bean.FriendNoticeBean;
 import com.YiDian.RainBow.notice.bean.NoticeMsgBean;
 import com.YiDian.RainBow.regist.bean.RegistBean;
 import com.YiDian.RainBow.remember.bean.RememberPwdBean;
@@ -117,7 +121,6 @@ public interface Apis {
     @GET("comment/getCommentByIdAndUserId")
     Observable<OneCommentBean> doGetCommentbyId(@Query("id")int commentid,@Query("userId")int userid);
 
-
     //收藏动态
     @POST("collect/addCollect")
     Observable<CollectDynamicBean> doCollectDynamic(@Query("userId")int userid,@Query("contentId")int contentid);
@@ -196,16 +199,20 @@ public interface Apis {
     Observable<NoticeMsgBean> doGetSystemNoticeMsg(@Query("msgUserId")int userid,@Query("page")int page,@Query("pageSize")int size);
 
     //获取好友通知
-
+    @GET("message/selectMsgType")
+    Observable<FriendNoticeBean> doGetFriendNoticeMsg(@Query("msgUserId")int userid,@Query("page")int page,@Query("pageSize")int size);
 
     //获取评论通知
-
-
+    @GET("message/selectCommentType")
+    Observable<CommentNoticeBean> doGetContentNotice(@Query("msgUserId")int userid, @Query("page")int page, @Query("pageSize")int size);
     //获取点赞通知
-
-
+    @GET("message/selectClickType")
+    Observable<ClickNoticeBean> doGetClickNotice(@Query("msgUserId")int userid,@Query("page")int page,@Query("pageSize")int size);
     //清空通知
-
+    @POST("message/deleteAll")
+    Observable<CleanNoticeBean> doDeleteNotice(@Query("msgUserId")int userid,@Query("msgType")int type);
 
     //删除单个通知
+    @POST("message/deleteId")
+    Observable<CleanNoticeBean> doDeleteOneNotice(@Query("id")int id,@Query("msgType")int type);
 }

@@ -109,7 +109,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     @Override
     protected void getData() {
 
-        JMessageClient.login("1038", "1038", new BasicCallback() {
+        JMessageClient.login("1030", "1030", new BasicCallback() {
             @Override
             public void gotResult(int i, String s) {
                 Log.d("xxx", "极光登录状态为" + i + "原因为" + s);
@@ -228,7 +228,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     }
 
     public void setAlias() {
-        JPushInterface.setAlias(MainActivity.this, "1000", new TagAliasCallback() {
+        JPushInterface.setAlias(MainActivity.this, "1030", new TagAliasCallback() {
             @Override
             public void gotResult(int i, String s, Set<String> set) {
                 Log.d("xxx", "回调是" + i);

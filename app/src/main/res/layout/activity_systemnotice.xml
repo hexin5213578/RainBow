@@ -38,7 +38,7 @@
             android:textSize="@dimen/sp_18"
             android:textStyle="bold"></TextView>
         <LinearLayout
-            android:id="@+id/iv_more"
+            android:id="@+id/ll_clear"
             android:layout_width="@dimen/dp_50"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
@@ -61,7 +61,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_below="@id/rl_top"
-        android:background="#F7F7F7"
         android:layout_height="match_parent">
         <RelativeLayout
             android:layout_width="match_parent"
@@ -93,7 +92,6 @@
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginBottom="@dimen/dp_20"
             android:layout_height="match_parent">
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:id="@+id/rc_notice"
