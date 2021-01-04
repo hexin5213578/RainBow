@@ -360,12 +360,6 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
         }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
 
     // TODO: 2020/12/25 0025 二维码识别回调
     @Override
