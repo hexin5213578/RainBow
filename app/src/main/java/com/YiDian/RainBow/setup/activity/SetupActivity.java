@@ -1,12 +1,12 @@
-package com.YiDian.RainBow.setup;
+package com.YiDian.RainBow.setup.activity;
 
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -28,7 +28,6 @@ import com.YiDian.RainBow.utils.DataCleanManager;
 import com.leaf.library.StatusBarUtil;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class SetupActivity extends BaseAvtivity implements View.OnClickListener {
     @BindView(R.id.toolbar)
@@ -58,6 +57,7 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
     @BindView(R.id.rl_loginout)
     RelativeLayout rlLoginout;
     private PopupWindow mPopupWindow;
+    private Intent intent;
 
     @Override
     protected int getResId() {
@@ -120,7 +120,8 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
                 break;
                 //实名认证
             case R.id.rl_shiming:
-
+                intent = new Intent(SetupActivity.this, RealnameActivity.class);
+                startActivity(intent);
                 break;
                 //黑名单
             case R.id.rl_hei:

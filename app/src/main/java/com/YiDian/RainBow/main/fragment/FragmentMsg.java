@@ -49,6 +49,8 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -98,16 +100,32 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
     protected BasePresenter initPresenter() {
         return null;
     }
+
+    Handler handler=new Handler(){//实例化一个Handler，并复写handlerMessage方法
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {//这句就不做说明了，都能看懂
+                case 1:
+                    //实例化时一个TimerTask实力类，调用构造函数，并执行run方法，测试用，看方法是否定时执行
+                    getNoticeCount();
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+
+    };
+
     protected void getData() {
         //设置状态栏颜色与字体颜色
         StatusBarUtil.setGradientColor(getActivity(), toolbar);
         StatusBarUtil.setDarkMode(getActivity());
 
+        Timer timer=new Timer();//实例化一个定时器
+
+        timer.schedule(timerTask,0,1000 * 60);
+
         //获取当前登录的用户
         userid = Integer.valueOf(Common.getUserId());
-
-        //获取评论数量
-        getNoticeCount();
 
         //设置下拉
         sv.setHeader(new AliHeader(getContext()));
@@ -190,6 +208,16 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
         //设置适配器
         rcMsgRecording.setAdapter(msgRecordingAdapter);
     }
+    TimerTask timerTask=new TimerTask() {//实例TimerTask,在run函数中向hangdler发送消息
+
+        @Override
+        public void run() {
+            Message message=new Message();
+            message.what=1;
+            handler.sendMessage(message);
+        }
+    };
+
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);

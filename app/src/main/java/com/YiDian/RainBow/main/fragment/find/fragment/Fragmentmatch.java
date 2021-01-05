@@ -382,7 +382,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
         // 在单次定位情况下，定位无论成功与否，都无需调用stopLocation()方法移除请求，定位sdk内部会移除
         //启动定位
         mlocationClient.startLocation();
-
+        showDialog();
     }
 
     @Override
@@ -495,7 +495,6 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
     //获取用户信息
     public void getUserData() {
         DataType = true;
-        showDialog();
         NetUtils.getInstance().getApis()
                 .doGetAllUserInfo(userid, longitude, latitude, 1, 15)
                 .subscribeOn(Schedulers.io())

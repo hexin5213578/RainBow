@@ -65,6 +65,7 @@ import com.YiDian.RainBow.utils.Base64;
 import com.YiDian.RainBow.utils.KeyBoardUtils;
 import com.YiDian.RainBow.utils.MD5Utils;
 import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.SPUtil;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
@@ -308,31 +309,8 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
             }
         });
 
-        //获取七牛云uploadToken
-        NetUtils.getInstance().getApis().getUpdateToken()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<SaveMsgSuccessBean>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(SaveMsgSuccessBean saveMsgSuccessBean) {
-                        upToken = saveMsgSuccessBean.getUpToken();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+        //获取七牛云uptoken
+        upToken = SPUtil.getInstance().getData(DevelopmentDynamicActivity.this,SPUtil.FILE_NAME,SPUtil.UPTOKEN);
     }
 
     //获取热门话题

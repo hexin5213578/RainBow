@@ -38,11 +38,14 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.custom.zbar.CaptureActivity;
+import com.YiDian.RainBow.dynamic.bean.SaveMsgSuccessBean;
 import com.YiDian.RainBow.main.fragment.FragmentFind;
 import com.YiDian.RainBow.main.fragment.FragmentHome;
 import com.YiDian.RainBow.main.fragment.FragmentMine;
 import com.YiDian.RainBow.main.fragment.FragmentMsg;
 import com.YiDian.RainBow.service.GrayService;
+import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.SPUtil;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -59,6 +62,10 @@ import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.api.BasicCallback;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedChangeListener {
 
@@ -133,7 +140,33 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
             //不存在加入白名单
             requestIgnoreBatteryOptimizations(MainActivity.this);
         }
+        //获取七牛云uploadToken
+        NetUtils.getInstance().getApis().getUpdateToken()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<SaveMsgSuccessBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
+                    }
+
+                    @Override
+                    public void onNext(SaveMsgSuccessBean saveMsgSuccessBean) {
+                        String upToken = saveMsgSuccessBean.getUpToken();
+                        SPUtil.getInstance().saveData(MainActivity.this,SPUtil.FILE_NAME,SPUtil.UPTOKEN,upToken);
+                        Log.d("xxx","uptoken存入成功");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
         //开启服务
         Intent intent = new Intent(MainActivity.this, GrayService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

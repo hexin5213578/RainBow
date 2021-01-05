@@ -146,7 +146,11 @@ dependencies {
     implementation project(':mediapicker')
     implementation project(':videoprocessor')
 
-    //implementation project(':picuter_list')
+
+    // 引入身份证plugin与识别能力集合包。
+    implementation 'com.huawei.hms:ml-computer-card-icr-cn:2.0.3.303'
+
+
     // 支付宝支付
 
     //bugly更新

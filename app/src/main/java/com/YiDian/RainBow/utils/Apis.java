@@ -30,6 +30,8 @@ import com.YiDian.RainBow.notice.bean.NoticeMsgBean;
 import com.YiDian.RainBow.regist.bean.RegistBean;
 import com.YiDian.RainBow.remember.bean.RememberPwdBean;
 import com.YiDian.RainBow.setpwd.bean.GetPhoneCodeBean;
+import com.YiDian.RainBow.setup.bean.GetRealDataBean;
+import com.YiDian.RainBow.setup.bean.InsertRealBean;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
@@ -205,9 +207,11 @@ public interface Apis {
     //获取评论通知
     @GET("message/selectCommentType")
     Observable<CommentNoticeBean> doGetContentNotice(@Query("msgUserId")int userid, @Query("page")int page, @Query("pageSize")int size);
+
     //获取点赞通知
     @GET("message/selectClickType")
     Observable<ClickNoticeBean> doGetClickNotice(@Query("msgUserId")int userid,@Query("page")int page,@Query("pageSize")int size);
+
     //清空通知
     @POST("message/deleteAll")
     Observable<CleanNoticeBean> doDeleteNotice(@Query("msgUserId")int userid,@Query("msgType")int type);
@@ -215,4 +219,12 @@ public interface Apis {
     //删除单个通知
     @POST("message/deleteId")
     Observable<CleanNoticeBean> doDeleteOneNotice(@Query("id")int id,@Query("msgType")int type);
+
+    //提交实名认证
+    @POST("idCardCheck/insertIdCardMsg")
+    Observable<InsertRealBean> doInsertReal(@Query("idNum")String idnum,@Query("userId")int userid,@Query("userName")String username,@Query("frontCardImg")String zmurl,@Query("reverseCardImg")String fmurl);
+
+    //查询是否实名
+    @GET("idCardCheck/selectIdCardMsgByUserId")
+    Observable<GetRealDataBean> doGetRealMsg(@Query("userId")int userid);
 }

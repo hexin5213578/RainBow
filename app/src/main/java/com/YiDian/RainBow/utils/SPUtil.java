@@ -50,7 +50,7 @@ public class SPUtil {
     public static final String USER_NAME = "username";
     public static final String USER_ID = "user_id";
 
-
+    public static  final String UPTOKEN = "upToken";
     public static final String COUNT = "count";
 
     public static final String JSON_Dynamic = "dynamic";

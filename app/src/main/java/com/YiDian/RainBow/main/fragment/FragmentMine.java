@@ -28,7 +28,7 @@ import com.YiDian.RainBow.main.fragment.mine.activity.MyQrCodeActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.MydraftActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.RechargeGlodActivity;
 import com.YiDian.RainBow.main.fragment.mine.adapter.HobbyAdapter;
-import com.YiDian.RainBow.setup.SetupActivity;
+import com.YiDian.RainBow.setup.activity.SetupActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;

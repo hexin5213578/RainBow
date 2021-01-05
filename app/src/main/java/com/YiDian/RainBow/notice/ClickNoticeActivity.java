@@ -23,6 +23,8 @@ import com.YiDian.RainBow.notice.bean.CleanNoticeBean;
 import com.YiDian.RainBow.notice.bean.ClickNoticeBean;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.leaf.library.StatusBarUtil;
+import com.liaoinstan.springview.container.AliFooter;
+import com.liaoinstan.springview.container.AliHeader;
 import com.liaoinstan.springview.widget.SpringView;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuBridge;
@@ -88,7 +90,7 @@ public class ClickNoticeActivity extends BaseAvtivity implements View.OnClickLis
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        page++;
+                        page=  1;
                         getNotice(page,size);
                         sv.onFinishFreshAndLoad();
                     }
@@ -97,7 +99,14 @@ public class ClickNoticeActivity extends BaseAvtivity implements View.OnClickLis
 
             @Override
             public void onLoadmore() {
-
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        page++;
+                        getNotice(page,size);
+                        sv.onFinishFreshAndLoad();
+                    }
+                },1000);
             }
         });
         rcNotice.setAdapter(null);
@@ -192,7 +201,9 @@ public class ClickNoticeActivity extends BaseAvtivity implements View.OnClickLis
 
         });
     }
+    //获取所有点赞通知
     public void getNotice(int page,int size){
+        showDialog();
         NetUtils.getInstance().getApis()
                 .doGetClickNotice(userid,page,size)
                 .subscribeOn(Schedulers.io())
@@ -205,12 +216,16 @@ public class ClickNoticeActivity extends BaseAvtivity implements View.OnClickLis
 
                     @Override
                     public void onNext(ClickNoticeBean clickNoticeBean) {
+                        hideDialog();
                         List<ClickNoticeBean.ObjectBean> list = clickNoticeBean.getObject();
                         if (list.size()>0 && list!=null){
                             llClear.setEnabled(true);
                             allList.addAll(list);
+
                             sv.setVisibility(View.VISIBLE);
                             rlNodata.setVisibility(View.GONE);
+
+                            sv.setHeader(new AliHeader(ClickNoticeActivity.this));
 
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ClickNoticeActivity.this,RecyclerView.VERTICAL,false);
                             rcNotice.setLayoutManager(linearLayoutManager);
@@ -227,11 +242,14 @@ public class ClickNoticeActivity extends BaseAvtivity implements View.OnClickLis
                                 rlNodata.setVisibility(View.VISIBLE);
                             }
                         }
+                        if(list.size()>14){
+                            sv.setFooter(new AliFooter(ClickNoticeActivity.this));
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        hideDialog();
                     }
 
                     @Override
