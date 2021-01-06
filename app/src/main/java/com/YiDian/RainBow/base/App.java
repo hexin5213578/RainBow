@@ -137,7 +137,7 @@ public class App extends Application {
     public void initImageloader() {
         DisplayImageOptions options = new DisplayImageOptions.Builder()
                 .resetViewBeforeLoading(false)  // default 图片在下载前是否重置,复位
-                .delayBeforeLoading(1000) // 图片开始加载前的延时.默认是0
+                .delayBeforeLoading(100) // 图片开始加载前的延时.默认是0
                 .cacheInMemory(true) // default , 是否缓存在内存中, 默认不缓存
                 .cacheOnDisk(true) // default , 是否缓存在硬盘 , 默认不缓存
                 .considerExifParams(false) // default , 设置是否考虑JPEG图片的EXIF参数信息,默认不考虑

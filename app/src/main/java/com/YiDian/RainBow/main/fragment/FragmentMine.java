@@ -39,6 +39,7 @@ import java.util.List;
 
 import butterknife.BindView;
 
+//我的
 public class FragmentMine extends BaseFragment implements View.OnClickListener {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -64,8 +65,6 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
     TextView tvCountGreat;
     @BindView(R.id.ll_great)
     LinearLayout llGreat;
-    @BindView(R.id.rc_hobby)
-    RecyclerView rcHobby;
     @BindView(R.id.tv_count_haoyou)
     TextView tvCountHaoyou;
     @BindView(R.id.ll_haoyou)
@@ -173,17 +172,6 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
         tvUserId.setText("12346789");
         //年龄赋值
         tvAge.setText("35");
-        // TODO: 2020/10/8 0008 需更换数据源 s
-        //假数据测试爱好
-        List<String> list = new ArrayList<>();
-        list.add("美食");
-        list.add("旅行");
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
-        rcHobby.setLayoutManager(linearLayoutManager);
-        //设置适配器
-        HobbyAdapter hobbyAdapter = new HobbyAdapter(getContext(), list);
-        rcHobby.setAdapter(hobbyAdapter);
-        rcHobby.addItemDecoration(new SpacesItemDecoration(space));
     }
 
     @Override
@@ -254,7 +242,7 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
             case R.id.ll_shoucang:
 
                 break;
-            //邀请好友
+            //情侣标识
             case R.id.ll_yaoqing:
 
                 break;
@@ -275,15 +263,12 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
             //设置
             case R.id.ll_shezhi:
                 startActivity(new Intent(getContext(), SetupActivity.class));
-
                 break;
             //编辑个人信息
             case R.id.iv_headimg:
             case R.id.tv_username:
                 startActivity(new Intent(getContext(), EditMsgActivity.class));
                 break;
-
-
         }
     }
 

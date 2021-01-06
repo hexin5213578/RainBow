@@ -1,13 +1,12 @@
 package com.YiDian.RainBow.setup.activity;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
-import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -17,8 +16,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -26,37 +25,39 @@ import androidx.core.content.ContextCompat;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.setup.bean.GetRealDataBean;
+import com.YiDian.RainBow.setup.bean.InsertRealBean;
 import com.YiDian.RainBow.utils.MD5Utils;
+import com.YiDian.RainBow.utils.NetUtils;
 import com.YiDian.RainBow.utils.SPUtil;
-import com.bumptech.glide.Glide;
-import com.huawei.hmf.tasks.OnFailureListener;
-import com.huawei.hmf.tasks.OnSuccessListener;
-import com.huawei.hmf.tasks.Task;
+import com.YiDian.RainBow.utils.StringUtil;
 import com.huawei.hms.mlplugin.card.icr.cn.MLCnIcrCapture;
 import com.huawei.hms.mlplugin.card.icr.cn.MLCnIcrCaptureConfig;
 import com.huawei.hms.mlplugin.card.icr.cn.MLCnIcrCaptureFactory;
 import com.huawei.hms.mlplugin.card.icr.cn.MLCnIcrCaptureResult;
-import com.huawei.hms.mlsdk.card.MLCardAnalyzerFactory;
-import com.huawei.hms.mlsdk.card.icr.MLIcrAnalyzer;
-import com.huawei.hms.mlsdk.card.icr.MLIcrAnalyzerSetting;
-import com.huawei.hms.mlsdk.card.icr.MLIdCard;
-import com.huawei.hms.mlsdk.common.MLFrame;
 import com.leaf.library.StatusBarUtil;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UploadManager;
 
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class RealnameActivity extends BaseAvtivity implements View.OnClickListener {
     @BindView(R.id.toolbar)
@@ -87,13 +88,19 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
     ImageView ivZhengm;
     @BindView(R.id.iv_fanm)
     ImageView ivFanm;
+    @BindView(R.id.bt_reconfirm)
+    Button btReconfirm;
     private Handler handler;
     private UploadManager uploadManager;
     private String upToken;
-    private ArrayList<String> upimg_key_list;
     private static final String serverPath = "http://img.rianbow.cn/";
-    private List<String> imgList = new ArrayList<>();
-    String access_token = "24.5f32ded24e2e71d9896ba936d0f021f0.2592000.1612421054.282335-23489488";
+    String Username;
+    String num;
+    private File file1;
+    private File file2;
+    private String img1;
+    private String img2;
+    private int userid;
 
     @Override
     protected int getResId() {
@@ -104,9 +111,78 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
         @Override
         public void onSuccess(MLCnIcrCaptureResult idCardResult) {
             // 识别成功处理。
-            Log.d("xxx", idCardResult.name);
-            Log.d("xxx", "识别成功");
+            if (idCardResult.sideType == 1) {
+                ivZhengm.setVisibility(View.VISIBLE);
+                rlZhengmian.setVisibility(View.GONE);
 
+                ivZhengm.setImageBitmap(idCardResult.cardBitmap);
+
+                file1 = getFile(idCardResult.cardBitmap);
+
+                Username = idCardResult.name;
+                num = idCardResult.idNum;
+
+                Log.d("xxx",idCardResult.idNum);
+                // 图片上传到七牛 重用 uploadManager。一般地，只需要创建一个 uploadManager 对象
+                uploadManager = new UploadManager();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+                // 设置名字
+                String s = MD5Utils.string2Md5_16(file1.getAbsolutePath());
+                String key = s + sdf.format(new Date()) + ".jpg";
+                uploadManager.put(file1, key, upToken,
+                        new UpCompletionHandler() {
+                            @Override
+                            public void complete(String key, ResponseInfo info, JSONObject res) {
+                                //res 包含 hash、key 等信息，具体字段取决于上传策略的设置
+                                if (info.isOK()) {
+                                    // 七牛返回的文件名
+                                    try {
+                                        String upimg = res.getString("key");
+                                        //将七牛返回图片的文件名添加到list集合中
+                                        img1 = serverPath + upimg;
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    Log.i("xxx", "Upload Fail");
+                                    //如果失败，这里可以把 info 信息上报自己的服务器，便于后面分析上传错误原因
+                                }
+                                Log.i("xxx", img1);
+                            }
+                        }, null);
+            } else if (idCardResult.sideType == 2) {
+                ivFanm.setVisibility(View.VISIBLE);
+                rlFanmian.setVisibility(View.GONE);
+                ivFanm.setImageBitmap(idCardResult.cardBitmap);
+
+                file2 = getFile(idCardResult.cardBitmap);
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+                // 设置名字
+                String s = MD5Utils.string2Md5_16(file2.getAbsolutePath());
+                String key = s + sdf.format(new Date()) + ".jpg";
+                uploadManager.put(file2, key, upToken,
+                        new UpCompletionHandler() {
+                            @Override
+                            public void complete(String key, ResponseInfo info, JSONObject res) {
+                                //res 包含 hash、key 等信息，具体字段取决于上传策略的设置
+                                if (info.isOK()) {
+                                    // 七牛返回的文件名
+                                    try {
+                                        String upimg = res.getString("key");
+                                        //将七牛返回图片的文件名添加到list集合中
+                                        img2 = serverPath + upimg;
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    Log.i("xxx", "Upload Fail");
+                                    //如果失败，这里可以把 info 信息上报自己的服务器，便于后面分析上传错误原因
+                                }
+                                Log.i("xxx", img2);
+                            }
+                        }, null);
+            }
         }
 
         @Override
@@ -123,15 +199,14 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
         public void onFailure(int retCode, Bitmap bitmap) {
             // 识别异常处理。
 
-            Log.d("xxx", "识别错误，错误码为"+retCode+"错误图片为"+bitmap.toString());
+            Log.d("xxx", "识别错误，错误码为" + retCode + "错误图片为" + bitmap.toString());
 
         }
 
         @Override
         public void onDenied() {
             // 相机不支持等场景处理。
-            Log.d("xxx", "相机不支持此操作");
-
+            Toast.makeText(RealnameActivity.this, "相机不支持此操作", Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -146,17 +221,71 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
         rlFanmian.setOnClickListener(this);
         ivZhengm.setOnClickListener(this);
         ivFanm.setOnClickListener(this);
-
+        btReconfirm.setOnClickListener(this);
+        userid = Integer.valueOf(Common.getUserId());
         upToken = SPUtil.getInstance().getData(RealnameActivity.this, SPUtil.FILE_NAME, SPUtil.UPTOKEN);
 
-
+        //获取状态
+        doGetRealStatus();
     }
 
     @Override
     protected BasePresenter initPresenter() {
         return null;
     }
+    public void doGetRealStatus(){
+        //先判断是否认证过
+        NetUtils.getInstance().getApis()
+                .doGetRealMsg(userid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GetRealDataBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
+                    }
+
+                    @Override
+                    public void onNext(GetRealDataBean getRealDataBean) {
+                        String msg = getRealDataBean.getMsg();
+                        if (msg.equals("您还没有提交实名信息")) {
+                            rlConfirm.setVisibility(View.VISIBLE);
+                            rlIsreal.setVisibility(View.GONE);
+                        } else {
+
+                            rlConfirm.setVisibility(View.GONE);
+                            rlIsreal.setVisibility(View.VISIBLE);
+                            btReconfirm.setVisibility(View.GONE);
+
+                            GetRealDataBean.ObjectBean bean = getRealDataBean.getObject();
+
+                            int auditStatus = bean.getAuditStatus();
+                            tvName.setText(bean.getUserName());
+                            tvIdcard.setText(bean.getIdNum());
+                            if (auditStatus == 2) {
+                                tvStatus.setText("您的提交正在审核中");
+                            }
+                            if (auditStatus == 1) {
+                                tvStatus.setText("你已通过实名认证");
+                            }
+                            if (auditStatus == 0) {
+                                tvStatus.setText("您的提交审核失败");
+                                btReconfirm.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -171,17 +300,70 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
             case R.id.rl_zhengmian:
                 onTakePhoto();
                 startCaptureActivity(idCallback, true);
-
                 break;
             case R.id.rl_fanmian:
                 onTakePhoto();
                 startCaptureActivity(idCallback, false);
-
                 break;
             case R.id.bt_confirm:
                 String name = etName.getText().toString();
                 String idcard = etIdcard.getText().toString();
+                if (!TextUtils.isEmpty(img1)) {
+                    if (!TextUtils.isEmpty(img2)) {
+                        if (!TextUtils.isEmpty(name)) {
+                            if (StringUtil.checkIdCard(idcard)) {
+                                if (name.equals(Username)) {
+                                    if (idcard.equals(num)) {
+                                        NetUtils.getInstance().getApis()
+                                                .doInsertReal(idcard,userid,name,img1,img2)
+                                                .subscribeOn(Schedulers.io())
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .subscribe(new Observer<InsertRealBean>() {
+                                                    @Override
+                                                    public void onSubscribe(Disposable d) {
 
+                                                    }
+
+                                                    @Override
+                                                    public void onNext(InsertRealBean insertRealBean) {
+                                                        String str = insertRealBean.getObject();
+                                                        if(str.equals("新增成功")){
+                                                            //上传成功 获取审核状态
+                                                            doGetRealStatus();
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onError(Throwable e) {
+
+                                                    }
+
+                                                    @Override
+                                                    public void onComplete() {
+
+                                                    }
+                                                });
+
+                                    } else {
+                                        Toast.makeText(this, "输入的身份证号与身份证信息不一致", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    Toast.makeText(this, "输入的姓名与身份证信息不一致", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        } else {
+                            Toast.makeText(this, "请输入您的真实姓名", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(this, "请先上传身份证反面照", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(this, "请先上传身份证正面照", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.id.bt_reconfirm:
+                rlConfirm.setVisibility(View.VISIBLE);
+                rlIsreal.setVisibility(View.GONE);
                 break;
         }
     }
@@ -195,49 +377,6 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
                 .create();
         MLCnIcrCapture icrCapture = MLCnIcrCaptureFactory.getInstance().getIcrCapture(config);
         icrCapture.capture(callback, this);
-    }
-
-    public void getUpimg(String imagePath, int picSize, Handler mHandler) {
-
-        Log.d("xxx", "到这里了");
-        upimg_key_list = new ArrayList<String>();
-        new Thread() {
-            public void run() {
-                // 图片上传到七牛 重用 uploadManager。一般地，只需要创建一个 uploadManager 对象
-                uploadManager = new UploadManager();
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-                // 设置名字
-                String s = MD5Utils.string2Md5_16(imagePath);
-                String key = s + sdf.format(new Date()) + ".jpg";
-                uploadManager.put(imagePath, key, upToken,
-                        new UpCompletionHandler() {
-                            @Override
-                            public void complete(String key, ResponseInfo info,
-                                                 JSONObject res) {
-                                // res 包含hash、key等信息，具体字段取决于上传策略的设置。
-                                Log.i("xxx", key + ",\r\n " + info + ",\r\n "
-                                        + res);
-                                try {
-                                    // 七牛返回的文件名
-                                    String upimg = res.getString("key");
-                                    upimg_key_list.add(serverPath + upimg);//将七牛返回图片的文件名添加到list集合中
-
-                                    if (upimg_key_list.size() == picSize) {
-                                        Bundle bundle = new Bundle();
-                                        bundle.putStringArrayList("resultImagePath", upimg_key_list);
-                                        Message message = new Message();
-                                        message.what = 1;
-                                        message.setData(bundle);
-                                        handler.sendMessage(message);
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    Log.d("xxx", e.getMessage());
-                                }
-                            }
-                        }, null);
-            }
-        }.start();
     }
 
     //开启相机相册动态权限
@@ -254,5 +393,33 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
         } else {
             //低于23 不需要特殊处理，去掉用拍照的方法
         }
+    }
+
+    //在这里抽取了一个方法   可以封装到自己的工具类中...
+    public File getFile(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+        File file = new File(Environment.getExternalStorageDirectory() + "/temp.jpg");
+        try {
+            file.createNewFile();
+            FileOutputStream fos = new FileOutputStream(file);
+            InputStream is = new ByteArrayInputStream(baos.toByteArray());
+            int x = 0;
+            byte[] b = new byte[1024 * 100];
+            while ((x = is.read(b)) != -1) {
+                fos.write(b, 0, x);
+            }
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }

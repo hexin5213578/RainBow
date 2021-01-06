@@ -24,10 +24,18 @@ import androidx.appcompat.widget.Toolbar;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.feedback.activity.FeedBackActivity;
+import com.YiDian.RainBow.setup.bean.GetRealDataBean;
 import com.YiDian.RainBow.utils.DataCleanManager;
+import com.YiDian.RainBow.utils.NetUtils;
 import com.leaf.library.StatusBarUtil;
 
 import butterknife.BindView;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class SetupActivity extends BaseAvtivity implements View.OnClickListener {
     @BindView(R.id.toolbar)
@@ -58,6 +66,7 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
     RelativeLayout rlLoginout;
     private PopupWindow mPopupWindow;
     private Intent intent;
+    private int userid;
 
     @Override
     protected int getResId() {
@@ -79,7 +88,7 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
         rlUpdate.setOnClickListener(this);
         rlLoginout.setOnClickListener(this);
 
-
+        userid = Integer.valueOf(Common.getUserId());
         //获取当前应用版本号
         String appVersionName = "";
         try {
@@ -100,9 +109,53 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
             e.printStackTrace();
         }
         tvMemory.setText(totalCacheSize);
-
+        //获取实名认证状态
+        getRealStatus();
     }
+    //获取实名认证状态
+    public void getRealStatus(){
+        NetUtils.getInstance().getApis()
+                .doGetRealMsg(userid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GetRealDataBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
+                    }
+
+                    @Override
+                    public void onNext(GetRealDataBean getRealDataBean) {
+                        String msg = getRealDataBean.getMsg();
+                        if (msg.equals("您还没有提交实名信息")) {
+                            tvIsRealname.setText("未认证");
+                        } else {
+                            int auditStatus = getRealDataBean.getObject().getAuditStatus();
+                            if (auditStatus == 2) {
+                                tvIsRealname.setText("正在审核中");
+                            }
+                            if (auditStatus == 1) {
+                                tvIsRealname.setText("已认证");
+
+                            }
+                            if (auditStatus==0){
+                                tvIsRealname.setText("认证失败");
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
     @Override
     protected BasePresenter initPresenter() {
         return null;
@@ -116,7 +169,8 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
                 break;
                 //账户安全
             case R.id.rl_safe:
-
+                intent = new Intent(SetupActivity.this,AccountSafeActivity.class);
+                startActivity(intent);
                 break;
                 //实名认证
             case R.id.rl_shiming:
@@ -125,15 +179,19 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
                 break;
                 //黑名单
             case R.id.rl_hei:
-
+                intent = new Intent(SetupActivity.this,BlackListActivity.class);
+                startActivity(intent);
                 break;
                 //反馈
             case R.id.rl_fankui:
-
+                //跳转到意见反馈页
+                intent = new Intent(SetupActivity.this, FeedBackActivity.class);
+                startActivity(intent);
                 break;
                 //关于我们
             case R.id.rl_guanyu:
-
+                intent = new Intent(SetupActivity.this,AboutUsActivity.class);
+                startActivity(intent);
                 break;
                 //清除缓存
             case R.id.rl_clean:
@@ -146,6 +204,7 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
                 break;
                 //登出
             case R.id.rl_loginout:
+                // TODO: 2021/1/6 0006 退出登录
 
                 break;
         }

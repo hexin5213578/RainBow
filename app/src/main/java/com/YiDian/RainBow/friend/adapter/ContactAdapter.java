@@ -124,7 +124,6 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                         }
                     });
-                    // TODO: 2020/12/27 0027 跳转到用户详情页
                     int finalI = i;
                     ((ContactHolder) holder).ivimage.setOnClickListener(new View.OnClickListener() {
                         @Override

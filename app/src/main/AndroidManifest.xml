@@ -355,5 +355,34 @@
             android:name=".setup.activity.RealnameActivity"
             android:screenOrientation="portrait" />
 
+        <!-- 账号安全 -->
+        <activity
+            android:name=".setup.activity.AccountSafeActivity"
+            android:screenOrientation="portrait" />
+
+        <!-- 关于我们 -->
+        <activity
+            android:name=".setup.activity.AboutUsActivity"
+            android:screenOrientation="portrait" />
+
+        <!-- 黑名单 -->
+        <activity
+            android:name=".setup.activity.BlackListActivity"
+            android:screenOrientation="portrait" />
+
+        <!-- 用户协议 -->
+        <activity
+            android:name=".agreement.YonghuActivity"
+            android:screenOrientation="portrait" />
+
+        <!-- 隐私政策 -->
+        <activity
+            android:name=".agreement.YinsiActivity"
+            android:screenOrientation="portrait" />
+
+        <!-- 行为规范 -->
+        <activity
+            android:name=".agreement.XingweiActivity"
+            android:screenOrientation="portrait" />
     </application>
 </manifest>

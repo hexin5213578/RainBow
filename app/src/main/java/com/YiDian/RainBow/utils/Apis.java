@@ -30,6 +30,8 @@ import com.YiDian.RainBow.notice.bean.NoticeMsgBean;
 import com.YiDian.RainBow.regist.bean.RegistBean;
 import com.YiDian.RainBow.remember.bean.RememberPwdBean;
 import com.YiDian.RainBow.setpwd.bean.GetPhoneCodeBean;
+import com.YiDian.RainBow.setup.bean.BlackListBean;
+import com.YiDian.RainBow.setup.bean.GetBindPhoneMsgBean;
 import com.YiDian.RainBow.setup.bean.GetRealDataBean;
 import com.YiDian.RainBow.setup.bean.InsertRealBean;
 
@@ -56,7 +58,7 @@ public interface Apis {
     Observable<NewDynamicBean> getHotDynamic(@Query("userId")int userid,@Query("page")int page,@Query("pageSize")int size);
 
     //发送验证码
-    @GET("user/sendSms")
+    @POST("user/sendSms")
     Observable<GetPhoneCodeBean> getPhoneCode(@Query("phoneNum")String phone);
 
     //注册
@@ -227,4 +229,24 @@ public interface Apis {
     //查询是否实名
     @GET("idCardCheck/selectIdCardMsgByUserId")
     Observable<GetRealDataBean> doGetRealMsg(@Query("userId")int userid);
+
+    //查询我的黑名单
+    @GET("blackList/selectUser")
+    Observable<BlackListBean> doGetBlackFriend(@Query("userId")int userid,@Query("page")int page,@Query("pageSize")int size);
+
+    //将用户移出黑名单
+    @POST("blackList/deleteUser")
+    Observable<InsertRealBean> doDeleteBlackFriend(@Query("userId")int userid,@Query("beUserId")int beuserid);
+
+    //判断是否绑定手机号
+    @GET("user/selectPhone")
+    Observable<GetBindPhoneMsgBean> doGetPhoneMsg(@Query("userId")int userid);
+
+    //绑定/修改手机号
+    @POST("user/updatePhone")
+    Observable<InsertRealBean> doBindPhone(@Query("userId")int userid,@Query("phoneNum")String phonenum);
+
+    //修改密码
+    @POST("user/updatePassword")
+    Observable<InsertRealBean> doUpdatePwd(@Query("password")String pwd,@Query("userId")int userid);
 }

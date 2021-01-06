@@ -147,8 +147,8 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:id="@+id/iv_zhengm"
-                android:scaleType="centerCrop"
                 android:visibility="gone"
+                android:scaleType="fitXY"
                 android:layout_height="match_parent">
             </ImageView>
         </RelativeLayout>
@@ -188,8 +188,8 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:id="@+id/iv_fanm"
-                android:scaleType="centerCrop"
                 android:visibility="gone"
+                android:scaleType="fitXY"
                 android:layout_height="match_parent">
             </ImageView>
         </RelativeLayout>
@@ -294,5 +294,16 @@
                 android:layout_height="wrap_content">
             </TextView>
         </RelativeLayout>
+        <Button
+            android:layout_width="@dimen/dp_160"
+            android:text="重新提交"
+            android:layout_marginTop="@dimen/dp_40"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/bt_reconfirm"
+            android:visibility="gone"
+            android:layout_below="@id/l5"
+            android:background="@drawable/idcardbt_bg"
+            android:layout_height="@dimen/dp_34">
+        </Button>
     </RelativeLayout>
 </RelativeLayout>

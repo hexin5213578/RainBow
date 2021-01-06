@@ -531,8 +531,7 @@ public class StringUtil {
      */
     public static boolean checkIdCard(String id) {
         if (TextUtils.isEmpty(id)) {
-            Toast.makeText(App.getContext(), "请选择您的身份证号码", Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(App.getContext(), "请输入您的身份证号码", Toast.LENGTH_SHORT).show();
             return false;
         }
         int lengthId = id.length();

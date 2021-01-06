@@ -65,18 +65,10 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
     TextView tvMyrole;
     @BindView(R.id.rl_myrole)
     RelativeLayout rlMyrole;
-    @BindView(R.id.tv_mylikerole)
-    TextView tvMylikerole;
-    @BindView(R.id.rl_mylikerole)
-    RelativeLayout rlMylikerole;
     @BindView(R.id.tv_mystate)
     TextView tvMystate;
     @BindView(R.id.rl_ganqingstate)
     RelativeLayout rlGanqingstate;
-    @BindView(R.id.tv_mylable)
-    TextView tvMylable;
-    @BindView(R.id.rl_mylable)
-    RelativeLayout rlMylable;
     private PopupWindow mPopupWindow;
     private PopupWindow mPopupWindow1;
 
@@ -96,9 +88,7 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
         rlAge.setOnClickListener(this);
         rlQianming.setOnClickListener(this);
         rlMyrole.setOnClickListener(this);
-        rlMylikerole.setOnClickListener(this);
         rlGanqingstate.setOnClickListener(this);
-        rlMylable.setOnClickListener(this);
         ivBack.setOnClickListener(this);
 
         // TODO: 2020/11/26 0026 获取当前用户个人信息展示
@@ -140,16 +130,8 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
             case R.id.rl_myrole:
 
                 break;
-            //我喜欢的角色
-            case R.id.rl_mylikerole:
-
-                break;
             //我的感情状态
             case R.id.rl_ganqingstate:
-
-                break;
-            //我的标签
-            case R.id.rl_mylable:
 
                 break;
         }
@@ -195,8 +177,8 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
     public void showChangeQianming() {
         //创建popwiondow弹出框
         mPopupWindow = new PopupWindow();
-        mPopupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        mPopupWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+        mPopupWindow.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+        mPopupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_qianming, null);
 
         TextView cancle = view.findViewById(R.id.tv_cancle);
@@ -296,7 +278,7 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
      */
     private void show(View v) {
         if (mPopupWindow != null && !mPopupWindow.isShowing()) {
-            mPopupWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
+            mPopupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
         }
         setWindowAlpa(true);
 
@@ -320,10 +302,14 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_changename, null);
         EditText et_name = view.findViewById(R.id.et_name);
         TextView tv_rem = view.findViewById(R.id.tv_Rem);
+        TextView tv_jiance = view.findViewById(R.id.tv_jiance);
+        TextView tvcancle = view.findViewById(R.id.tv_cancle);
+        TextView tv_confirm = view.findViewById(R.id.tv_confirm);
+
+        tv_confirm.setEnabled(false);
 
         //将用户名 回显到输入框
         et_name.setText(tvName.getText().toString());
-
         //禁止输入特殊字符及空格
         setEditTextInhibitInputSpace(et_name);
         setEditTextInhibitInputSpeChat(et_name);
@@ -350,14 +336,27 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                 tv_rem.setText(length + "/10");
             }
         });
+        tv_jiance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String s = et_name.getText().toString();
+                if (!TextUtils.isEmpty(s)) {
+                    // TODO: 2021/1/6 0006 检测名称是否存在
+
+                } else {
+                    Toast.makeText(EditMsgActivity.this, "昵称不能为空", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         //取消
-        view.findViewById(R.id.tv_cancle).setOnClickListener(new View.OnClickListener() {
+        tvcancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss1();
             }
         });
-        view.findViewById(R.id.tv_confirm).setOnClickListener(new View.OnClickListener() {
+        tv_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //获取输入框文本  判空发起更换昵称的网络请求  请求成功关闭弹出框
