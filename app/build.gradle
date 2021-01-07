@@ -60,7 +60,15 @@ android {
             jniLibs.srcDirs = ['jniLibs']
         }
     }
-
+  /*  packagingOptions{
+        exclude 'META-INF/android.support.design_material.version'
+        exclude 'assets/ap1.data'
+        exclude 'pinyindb/pinyin_mapping.xml'
+        exclude 'META-INF/androidx.localbroadcastmanager_localbroadcastmanager.version'
+        exclude 'assets/marker_gps_no_sharing.png'
+        exclude 'assets/map_assets/roadarrow.data'
+        exclude 'kotlin/reflect/reflect.kotlin_builtins'
+    }*/
 }
 
 dependencies {

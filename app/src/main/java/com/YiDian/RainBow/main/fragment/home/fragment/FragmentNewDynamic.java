@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
@@ -92,6 +93,13 @@ public class FragmentNewDynamic extends BaseFragment {
 
         rcNewDynamic.setHasFixedSize(true);
         rcNewDynamic.setItemAnimator(null);
+
+        //直接取消动画
+        RecyclerView.ItemAnimator animator = rcNewDynamic.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
+
         //腾讯AppId(替换你自己App Id)、上下文
         mTencent = Tencent.createInstance("101906973", getContext());
         KeyBoardUtils.closeKeyboard(getActivity());
@@ -116,6 +124,8 @@ public class FragmentNewDynamic extends BaseFragment {
                     linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
                     rcNewDynamic.setLayoutManager(linearLayoutManager);
                     newDynamicAdapter = new NewDynamicAdapter(getActivity(), SpList,mTencent);
+                    newDynamicAdapter.setHasStableIds(true);
+
                     rcNewDynamic.setAdapter(newDynamicAdapter);
                 }
             }
@@ -218,7 +228,6 @@ public class FragmentNewDynamic extends BaseFragment {
                             public void onSubscribe(Disposable d) {
 
                             }
-
                             @Override
                             public void onNext(NewDynamicBean newDynamicBean) {
                                 NewDynamicBean.ObjectBean object = newDynamicBean.getObject();
@@ -241,9 +250,9 @@ public class FragmentNewDynamic extends BaseFragment {
                                     linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
                                     rcNewDynamic.setLayoutManager(linearLayoutManager);
                                     newDynamicAdapter = new NewDynamicAdapter(getActivity(), alllist,mTencent);
+                                    newDynamicAdapter.setHasStableIds(true);
+
                                     rcNewDynamic.setAdapter(newDynamicAdapter);
-
-
                                 } else {
                                     if (alllist.size() > 0 && alllist != null) {
                                         Toast.makeText(getContext(), "没有更多内容了", Toast.LENGTH_SHORT).show();

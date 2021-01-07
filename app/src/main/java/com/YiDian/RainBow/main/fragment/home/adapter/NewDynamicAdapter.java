@@ -636,6 +636,10 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
     }
 
     @Override
+    public long getItemId(int position) {
+        return position;
+    }
+    @Override
     public int getItemViewType(int position) {
         int imgType = list.get(position).getImgType();
 

@@ -19,6 +19,10 @@ import com.YiDian.RainBow.setup.bean.GetBindPhoneMsgBean;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.leaf.library.StatusBarUtil;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observer;
@@ -59,6 +63,10 @@ public class AccountSafeActivity extends BaseAvtivity implements View.OnClickLis
         rlChangePhone.setOnClickListener(this);
         rlChangePwd.setOnClickListener(this);
 
+
+        isbind();
+    }
+    public void isbind(){
         //判断是否已经绑定手机号
         NetUtils.getInstance().getApis()
                 .doGetPhoneMsg(userid)
@@ -71,14 +79,16 @@ public class AccountSafeActivity extends BaseAvtivity implements View.OnClickLis
                     }
                     @Override
                     public void onNext(GetBindPhoneMsgBean getBindPhoneMsgBean) {
-                        if (getBindPhoneMsgBean.equals("您已绑定手机号！")) {
+                        if (getBindPhoneMsgBean.getMsg().equals("您已绑定手机号！")) {
 
-                            tvIsbind.setText(getBindPhoneMsgBean.getObject().getPhoneNum());
                             tvBind.setText("更改手机号");
-                        } else if (getBindPhoneMsgBean.equals("您还未绑定手机号！")) {
+                            tvIsbind.setText(getBindPhoneMsgBean.getObject().getPhoneNum());
 
-                            tvIsbind.setText("未绑定");
+                        } else if (getBindPhoneMsgBean.getMsg().equals("您还未绑定手机号！")) {
+
                             tvBind.setText("绑定手机号");
+                            tvIsbind.setText("未绑定");
+
                         }
                     }
                     @Override
@@ -91,10 +101,30 @@ public class AccountSafeActivity extends BaseAvtivity implements View.OnClickLis
                     }
                 });
     }
-
     @Override
     protected BasePresenter initPresenter() {
         return null;
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getStr(String msg){
+        if (msg.equals("绑定成功")){
+            isbind();
+        }
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(EventBus.getDefault().isRegistered(this)){
+           EventBus.getDefault().unregister(this);
+        }
     }
 
     @Override
@@ -112,12 +142,5 @@ public class AccountSafeActivity extends BaseAvtivity implements View.OnClickLis
                 startActivity(intent);
                 break;
         }
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
     }
 }

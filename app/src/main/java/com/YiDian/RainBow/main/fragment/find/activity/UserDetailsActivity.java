@@ -3,6 +3,7 @@ package com.YiDian.RainBow.main.fragment.find.activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,8 +24,12 @@ import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.bumptech.glide.Glide;
 import com.leaf.library.StatusBarUtil;
+import com.liaoinstan.springview.container.AliFooter;
+import com.liaoinstan.springview.container.AliHeader;
+import com.liaoinstan.springview.widget.SpringView;
 import com.tencent.tauth.Tencent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -53,15 +58,17 @@ public class UserDetailsActivity extends BaseAvtivity implements View.OnClickLis
     RelativeLayout rlNodata;
     @BindView(R.id.rc_dynamic)
     RecyclerView rcDynamic;
+    @BindView(R.id.sv)
+    SpringView sv;
     private int id;
     private int userid;
     private AllUserInfoBean.ObjectBean.ListBean bean;
-    int page =1;
-    int size = 15;
+    int page = 1;
+    int size = 5;
     private LinearLayoutManager linearLayoutManager;
     private NewDynamicAdapter newDynamicAdapter;
     private Tencent mTencent;
-
+    List<NewDynamicBean.ObjectBean.ListBean> allList;
     @Override
     protected int getResId() {
         return R.layout.activity_user_details;
@@ -83,46 +90,74 @@ public class UserDetailsActivity extends BaseAvtivity implements View.OnClickLis
         Intent intent = getIntent();
         //获取用户信息
         bean = (AllUserInfoBean.ObjectBean.ListBean) intent.getSerializableExtra("bean");
-
         id = bean.getId();
-
         userid = Integer.valueOf(Common.getUserId());
 
+        allList = new ArrayList<>();
+        
+        sv.setHeader(new AliHeader(UserDetailsActivity.this));
+        sv.setListener(new SpringView.OnFreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        allList.clear();
+                        page = 1;
+                        getUserDynamic(page, size);
+                        sv.onFinishFreshAndLoad();
 
-        getUserDynamic(page,size);
+                    }
+                },1000);
+            }
+            @Override
+            public void onLoadmore() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        page++;
+                        getUserDynamic(page, size);
+                        sv.onFinishFreshAndLoad();
+                    }
+                },1000);
+            }
+        });
+        
+        getUserDynamic(page, size);
         //设置数据
         InitData();
-
         Glide.with(UserDetailsActivity.this).load(bean.getBackImg()).into(ivBg);
-
     }
-    public void InitData(){
+
+    public void InitData() {
 
 
         tvUsername.setText(bean.getNickName());
-        if (bean.getUserRole().equals("保密")){
-            tvAge.setText(bean.getAge()+"");
-        }else{
-            tvAge.setText(bean.getUserRole()+"  "+bean.getAge());
+        if (bean.getUserRole().equals("保密")) {
+            tvAge.setText(bean.getAge() + "");
+        } else {
+            tvAge.setText(bean.getUserRole() + "  " + bean.getAge());
         }
         //设置距离
         int distance = bean.getDistance();
-        if(distance<1000){
-            tvDistance.setText(distance+"m");
-        }else{
-            String dis = String.valueOf(distance/1000);
-            tvDistance.setText(dis+"Km");
+        if (distance < 1000) {
+            tvDistance.setText(distance + "m");
+        } else {
+            String dis = String.valueOf(distance / 1000);
+            tvDistance.setText(dis + "Km");
         }
     }
+
     @Override
     protected BasePresenter initPresenter() {
         return null;
     }
+
     //获取网络数据
-    public void getUserDynamic(int page,int size){
+    public void getUserDynamic(int page, int size) {
         showDialog();
         NetUtils.getInstance().getApis()
-                .doGetDynamicByUserid(id,userid,page,size)
+                .doGetDynamicByUserid(id, userid, page, size)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<NewDynamicBean>() {
@@ -136,17 +171,25 @@ public class UserDetailsActivity extends BaseAvtivity implements View.OnClickLis
                         hideDialog();
                         List<NewDynamicBean.ObjectBean.ListBean> list =
                                 newDynamicBean.getObject().getList();
-                        if (list.size()>0 && list!=null){
+                        if (list.size() > 0 && list != null) {
                             rlNodata.setVisibility(View.GONE);
                             rcDynamic.setVisibility(View.VISIBLE);
+                            allList.addAll(list);
                             //创建最新动态适配器
                             linearLayoutManager = new LinearLayoutManager(UserDetailsActivity.this, RecyclerView.VERTICAL, false);
                             rcDynamic.setLayoutManager(linearLayoutManager);
-                            newDynamicAdapter = new NewDynamicAdapter(UserDetailsActivity.this, list,mTencent);
+                            newDynamicAdapter = new NewDynamicAdapter(UserDetailsActivity.this, allList, mTencent);
                             rcDynamic.setAdapter(newDynamicAdapter);
-                        }else{
-                            rlNodata.setVisibility(View.VISIBLE);
-                            rcDynamic.setVisibility(View.GONE);
+                        } else {
+                            if(allList.size()>0 && allList!=null){
+                                Toast.makeText(UserDetailsActivity.this, "没有更多内容了", Toast.LENGTH_SHORT).show();
+                            }else{
+                                rlNodata.setVisibility(View.VISIBLE);
+                                rcDynamic.setVisibility(View.GONE);
+                            }
+                        }
+                        if(list.size()>4){
+                            sv.setFooter(new AliFooter(UserDetailsActivity.this));
                         }
                     }
 
@@ -162,6 +205,7 @@ public class UserDetailsActivity extends BaseAvtivity implements View.OnClickLis
                     }
                 });
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -174,7 +218,7 @@ public class UserDetailsActivity extends BaseAvtivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.back:
                 //退出当前界面
                 finish();
@@ -183,5 +227,12 @@ public class UserDetailsActivity extends BaseAvtivity implements View.OnClickLis
 
                 break;
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }

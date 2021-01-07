@@ -100,6 +100,8 @@ public class FragmentAttDynamic extends BaseFragment {
         rcNewDynamic.setHasFixedSize(true);
         rcNewDynamic.setItemAnimator(null);
 
+        getAttUser();
+
         //下拉刷新下拉加载
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
@@ -110,7 +112,7 @@ public class FragmentAttDynamic extends BaseFragment {
                         alllist.clear();
                         page = 1;
                         sv.onFinishFreshAndLoad();
-                        getDynamic(page, size);
+                        getAttUser();
                         GSYVideoManager.releaseAllVideos();
                     }
                 }, 1000);
@@ -146,9 +148,6 @@ public class FragmentAttDynamic extends BaseFragment {
                 getData();
             }
         });
-
-        //获取关注用户
-        getAttUser();
         btGoAtt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -333,18 +332,6 @@ public class FragmentAttDynamic extends BaseFragment {
             getDynamic(1, size);
         }
     }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if(isVisibleToUser){
-            //重新获取数据
-            if(FirstInit){
-                getAttUser();
-            }
-        }
-    }
-
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);

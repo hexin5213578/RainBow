@@ -4,13 +4,10 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -27,10 +24,6 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.feedback.adapter.FeedBackImgAdapter;
-import com.YiDian.RainBow.login.activity.CompleteMsgActivity;
-import com.YiDian.RainBow.main.activity.MainActivity;
-import com.dmcbig.mediapicker.PickerActivity;
-import com.dmcbig.mediapicker.PickerConfig;
 import com.dmcbig.mediapicker.entity.Media;
 import com.leaf.library.StatusBarUtil;
 
@@ -47,8 +40,6 @@ import butterknife.ButterKnife;
 
 //问题反馈
 public class FeedBackActivity extends BaseAvtivity implements View.OnClickListener {
-    @BindView(R.id.iv_back)
-    LinearLayout back;
     @BindView(R.id.et_pro)
     EditText etPro;
     @BindView(R.id.rc_pro_img)
@@ -63,6 +54,8 @@ public class FeedBackActivity extends BaseAvtivity implements View.OnClickListen
     Button btSubmit;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.iv_back)
+    LinearLayout ivBack;
     private List<String> paths;
     private FeedBackImgAdapter feedBackImgAdapter;
     private GridLayoutManager gridLayoutManager;
@@ -76,10 +69,10 @@ public class FeedBackActivity extends BaseAvtivity implements View.OnClickListen
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void getData() {
-        back.setOnClickListener(this);
+        ivBack.setOnClickListener(this);
         btSubmit.setOnClickListener(this);
         rlSelectedimg.setOnClickListener(this);
-        StatusBarUtil.setGradientColor(FeedBackActivity.this,toolbar);
+        StatusBarUtil.setGradientColor(FeedBackActivity.this, toolbar);
         StatusBarUtil.setDarkMode(FeedBackActivity.this);
 
         //申请开启内存卡权限
@@ -109,12 +102,11 @@ public class FeedBackActivity extends BaseAvtivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.back:
+            case R.id.iv_back:
                 finish();
                 break;
             case R.id.bt_submit:
                 // TODO: 2020/10/6 0006 携带提出的问题图片 描述 电话/邮箱 提交到服务器
-
 
 
                 break;
@@ -163,21 +155,20 @@ public class FeedBackActivity extends BaseAvtivity implements View.OnClickListen
                 if (paths.size() != 0 && paths != null) {
                     tvSelectedimg.setVisibility(View.GONE);
                     rcProImg.setVisibility(View.VISIBLE);
-                    if(paths.size()<=4){
+                    if (paths.size() <= 4) {
                         //设置图片适配器 展示问题图片
                         gridLayoutManager = new GridLayoutManager(FeedBackActivity.this, paths.size());
                         rcProImg.setLayoutManager(gridLayoutManager);
                         feedBackImgAdapter = new FeedBackImgAdapter(FeedBackActivity.this, paths);
                         rcProImg.setAdapter(feedBackImgAdapter);
                     }
-                    if(paths.size()==4){
+                    if (paths.size() == 4) {
                         rlSelectedimg.setVisibility(View.GONE);
                     }
                     Log.d("xxx", paths.size() + "");
                 }
             }
         }
-
 
 
     }

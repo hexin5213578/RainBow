@@ -87,7 +87,6 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
     @Override
     protected void getData() {
         Alllist = new ArrayList<>();
-        Log.d("xxx", "重新加载");
         //是否是第一次点击
         isfirst = true;
 
@@ -422,12 +421,6 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
         super.onAttach(context);
         Log.d("hmy", "onAttach");
 
-    }
-
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        Log.d("hmy", "onHiddenChanged");
     }
 
     @Override

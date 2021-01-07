@@ -360,6 +360,16 @@
             android:name=".setup.activity.AccountSafeActivity"
             android:screenOrientation="portrait" />
 
+        <!-- 绑定手机 -->
+        <activity
+            android:name=".setup.activity.bindphone.BindPhoneActivity"
+            android:screenOrientation="portrait" />
+
+        <!-- 更改密码 -->
+        <activity
+            android:name=".setup.activity.changepwd.ChangePwdActivity"
+            android:screenOrientation="portrait" />
+
         <!-- 关于我们 -->
         <activity
             android:name=".setup.activity.AboutUsActivity"
