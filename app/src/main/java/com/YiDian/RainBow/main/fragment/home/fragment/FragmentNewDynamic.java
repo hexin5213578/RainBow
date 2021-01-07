@@ -179,12 +179,12 @@ public class FragmentNewDynamic extends BaseFragment {
                     if (GSYVideoManager.instance().getPlayTag().equals(TAG)
                             && (position < firstVisibleItem || position > lastVisibleItem)) {
 
+                        Log.d("xxx","划出去了");
+
                         //如果滑出去了上面和下面就是否，和今日头条一样
                         //是否全屏
-                        if(!GSYVideoManager.isFullState(getActivity())) {
                             GSYVideoManager.releaseAllVideos();
                             newDynamicAdapter.notifyItemChanged(position);
-                        }
                     }
                 }
             }
@@ -250,6 +250,7 @@ public class FragmentNewDynamic extends BaseFragment {
                                     linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
                                     rcNewDynamic.setLayoutManager(linearLayoutManager);
                                     newDynamicAdapter = new NewDynamicAdapter(getActivity(), alllist,mTencent);
+
                                     newDynamicAdapter.setHasStableIds(true);
 
                                     rcNewDynamic.setAdapter(newDynamicAdapter);

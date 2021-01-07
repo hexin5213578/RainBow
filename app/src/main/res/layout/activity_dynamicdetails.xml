@@ -127,7 +127,7 @@
                         android:layout_marginLeft="@dimen/dp_8"
                         android:layout_marginTop="@dimen/dp_18"
                         android:layout_toRightOf="@id/tv_username"
-                        android:src="@mipmap/isattation"></ImageView>
+                        ></ImageView>
 
                     <TextView
                         android:id="@+id/tv_guanzhu"
@@ -374,7 +374,6 @@
                         android:layout_marginBottom="@dimen/dp_48"
                         android:layout_height="match_parent">
                     </androidx.recyclerview.widget.RecyclerView>
-
 
                     <RelativeLayout
                         android:layout_width="match_parent"

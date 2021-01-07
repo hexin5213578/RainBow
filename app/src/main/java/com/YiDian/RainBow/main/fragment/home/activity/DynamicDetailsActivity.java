@@ -61,6 +61,7 @@ import com.YiDian.RainBow.main.fragment.home.adapter.TopicsAdapter;
 import com.YiDian.RainBow.main.fragment.home.bean.DianzanBean;
 import com.YiDian.RainBow.main.fragment.home.bean.DynamicDetailsBean;
 import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
+import com.YiDian.RainBow.main.fragment.mine.adapter.MyDraftsAdapter;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.topic.TopicDetailsActivity;
 import com.YiDian.RainBow.user.PersonHomeActivity;
@@ -783,12 +784,23 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                         if(userId==userInfo.getId()){
                             tvGuanzhu.setVisibility(View.GONE);
                         }
-                        //判断是否认证
-                        if (userInfo.getAttestation() == 1) {
-                            isattaction.setVisibility(View.VISIBLE);
-                        } else {
+                        
+                        int attestation = userInfo.getAttestation();
+                        //认证等级
+                        if (attestation == 0) {
                             isattaction.setVisibility(View.GONE);
+                        } else if(attestation==1){
+                            isattaction.setImageResource(R.mipmap.qingtong);
+                        }else if(attestation==2){
+                            isattaction.setImageResource(R.mipmap.baiyin);
+                        }else if(attestation==3){
+                            isattaction.setImageResource(R.mipmap.huangjin);
+                        }else if(attestation==4){
+                            isattaction.setImageResource(R.mipmap.bojin);
+                        }else if (attestation==5){
+                            isattaction.setImageResource(R.mipmap.zuanshi);
                         }
+
                         //判断是否点赞
                         if (bean.isIsClick()) {
                             ivDianzan.setImageResource(R.mipmap.dianzan);

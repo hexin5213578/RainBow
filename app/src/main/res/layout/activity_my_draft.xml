@@ -40,12 +40,12 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_below="@id/rl_top"
-        android:id="@+id/rl_nodata"
         android:visibility="gone"
+        android:id="@+id/rl_nodata"
         android:layout_height="match_parent">
         <ImageView
             android:layout_width="@dimen/dp_180"
-            android:src="@mipmap/noperson"
+            android:src="@mipmap/nodrafts"
             android:id="@+id/iv"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_150"
@@ -53,7 +53,7 @@
         </ImageView>
         <TextView
             android:layout_width="wrap_content"
-            android:text="暂无数据"
+            android:text="暂无可编辑的动态~"
             android:layout_below="@id/iv"
             android:textSize="@dimen/sp_18"
             android:textColor="#999999"
@@ -63,14 +63,10 @@
         </TextView>
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_below="@id/rl_top"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_height="match_parent">
         <com.liaoinstan.springview.widget.SpringView
             android:layout_width="match_parent"
             android:id="@+id/sv"
+            android:layout_below="@id/rl_top"
             android:layout_height="match_parent">
             <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
@@ -82,5 +78,5 @@
                 </androidx.recyclerview.widget.RecyclerView>
             </androidx.core.widget.NestedScrollView>
         </com.liaoinstan.springview.widget.SpringView>
-    </RelativeLayout>
+
 </RelativeLayout>

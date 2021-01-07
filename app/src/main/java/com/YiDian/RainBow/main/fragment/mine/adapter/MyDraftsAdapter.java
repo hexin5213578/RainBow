@@ -126,12 +126,24 @@ public class MyDraftsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         Glide.with(context).load(userInfo.getHeadImg()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder) holder).ivHeadimg);
         //设置角色
         ((ViewHolder) holder).tvAge.setText(userInfo.getUserRole());
-        //是否认证
-        if (userInfo.getAttestation() == 1) {
-            ((ViewHolder) holder).ivIsatt.setVisibility(View.VISIBLE);
-        } else {
+
+        int attestation = userInfo.getAttestation();
+
+        //认证等级
+        if (attestation == 0) {
             ((ViewHolder) holder).ivIsatt.setVisibility(View.GONE);
+        } else if(attestation==1){
+            ((ViewHolder) holder).ivIsatt.setImageResource(R.mipmap.qingtong);
+        }else if(attestation==2){
+            ((ViewHolder) holder).ivIsatt.setImageResource(R.mipmap.baiyin);
+        }else if(attestation==3){
+            ((ViewHolder) holder).ivIsatt.setImageResource(R.mipmap.huangjin);
+        }else if(attestation==4){
+            ((ViewHolder) holder).ivIsatt.setImageResource(R.mipmap.bojin);
+        }else if (attestation==5){
+            ((ViewHolder) holder).ivIsatt.setImageResource(R.mipmap.zuanshi);
         }
+
         //判断性别是否保密
         String userRole = userInfo.getUserRole();
         if (userRole.equals("保密")) {
@@ -239,7 +251,7 @@ public class MyDraftsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
         //纯视频
         if (imgType == 3) {
-//设置播放视频
+            //设置播放视频
             String contentImg = list.get(position).getContentImg();
 
             Bitmap netVideoBitmap = getNetVideoBitmap(contentImg);
@@ -315,6 +327,10 @@ public class MyDraftsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         int imgType = list.get(position).getImgType();
         //返回获取到的动态类型
         return imgType;
+    }
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
     public void showSelect() {
         //添加成功后处理

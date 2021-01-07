@@ -55,7 +55,6 @@
     <ImageView
         android:layout_width="@dimen/dp_15"
         android:layout_marginTop="@dimen/dp_18"
-        android:src="@mipmap/isattation"
         android:layout_marginLeft="@dimen/dp_8"
         android:id="@+id/isattaction"
         android:layout_toRightOf="@id/tv_username"
@@ -82,6 +81,7 @@
         android:layout_marginTop="@dimen/dp_14"
         android:layout_height="@dimen/dp_165">
     </com.YiDian.RainBow.custom.videoplayer.SampleCoverVideo>
+
     <LinearLayout
         android:id="@+id/ll_huati"
         android:layout_width="@dimen/dp_100"

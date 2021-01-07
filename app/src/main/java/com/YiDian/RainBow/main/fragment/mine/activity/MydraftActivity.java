@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
@@ -61,7 +62,7 @@ public class MydraftActivity extends BaseAvtivity implements View.OnClickListene
     int userid ;
     List<SelectAllDraftsBean.ObjectBean.ListBean> AllList = new ArrayList<>();
     int page = 1;
-    int pagesize = 15;
+    int pagesize = 5;
     File f = new File(
             "/data/data/com.YiDian.RainBow/shared_prefs/drafts.xml");
     @Override
@@ -78,6 +79,12 @@ public class MydraftActivity extends BaseAvtivity implements View.OnClickListene
 
         Gson gson = new Gson();
         List<SelectAllDraftsBean.ObjectBean.ListBean> SpList = new ArrayList<>();
+
+        //直接取消动画
+        RecyclerView.ItemAnimator animator = rcMydraftDevelopment.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
 
         for (int i = 1; i < 6; i++) {
             String json = SPUtil.getInstance().getData(MydraftActivity.this, SPUtil.JSOn_drafts, "json" + i);
@@ -183,6 +190,7 @@ public class MydraftActivity extends BaseAvtivity implements View.OnClickListene
                         List<SelectAllDraftsBean.ObjectBean.ListBean> list = selectAllDraftsBean.getObject().getList();
                         if(list.size()>0 && list!=null){
                             AllList.addAll(list);
+
                             sv.setHeader(new AliHeader(MydraftActivity.this));
 
                             //存五条数据
@@ -202,20 +210,19 @@ public class MydraftActivity extends BaseAvtivity implements View.OnClickListene
                             rcMydraftDevelopment.setLayoutManager(linearLayoutManager);
 
                             MyDraftsAdapter myDraftsAdapter = new MyDraftsAdapter(MydraftActivity.this,AllList);
+
+                            myDraftsAdapter.setHasStableIds(true);
+
                             rcMydraftDevelopment.setAdapter(myDraftsAdapter);
 
                             //集合长度大于14 可以加载更多内容
-                            if(list.size()>14){
+                            if(list.size()>4){
                                 sv.setFooter(new AliFooter(MydraftActivity.this));
                             }
                         }else{
                             if(AllList.size()>=0 && AllList!=null){
                                 //创建适配器
-                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MydraftActivity.this, RecyclerView.VERTICAL, false);
-                                rcMydraftDevelopment.setLayoutManager(linearLayoutManager);
-
-                                MyDraftsAdapter myDraftsAdapter = new MyDraftsAdapter(MydraftActivity.this,AllList);
-                                rcMydraftDevelopment.setAdapter(myDraftsAdapter);
+                                Toast.makeText(MydraftActivity.this, "没有更多内容了", Toast.LENGTH_SHORT).show();
                             }else{
                                 sv.setVisibility(View.GONE);
                                 ivNodata.setVisibility(View.VISIBLE);

@@ -102,6 +102,7 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
     int space = 9;
     @BindView(R.id.tv_mygold)
     TextView tvMygold;
+    private Intent intent;
 
     @Override
     protected void getid(View view) {
@@ -180,8 +181,8 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
             //我的金币
             case R.id.ll_my_money:
                 //跳转到金币充值功能
-                Intent intent2 = new Intent(getContext(), RechargeGlodActivity.class);
-                startActivity(intent2);
+                 intent = new Intent(getContext(), RechargeGlodActivity.class);
+                startActivity(intent);
                 break;
             //特权认证
             case R.id.ll_certification:
@@ -190,7 +191,7 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
             //我的二维码
             case R.id.iv_QrCode:
                 //跳转到我的二维码
-                Intent intent = new Intent(getContext(), MyQrCodeActivity.class);
+                intent = new Intent(getContext(), MyQrCodeActivity.class);
                 startActivity(intent);
                 break;
             //复制我的ID
@@ -235,8 +236,8 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
             //草稿箱
             case R.id.ll_caogaoxiang:
                 //跳转到我的草稿箱
-                Intent intent3 = new Intent(getContext(), MydraftActivity.class);
-                startActivity(intent3);
+                intent = new Intent(getContext(), MydraftActivity.class);
+                startActivity(intent);
                 break;
             //收藏
             case R.id.ll_shoucang:

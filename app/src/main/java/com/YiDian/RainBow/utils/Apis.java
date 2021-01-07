@@ -21,6 +21,7 @@ import com.YiDian.RainBow.main.fragment.home.bean.DynamicDetailsBean;
 import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.main.fragment.home.bean.OneCommentBean;
+import com.YiDian.RainBow.main.fragment.mine.bean.LoginUserInfoBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.SelectAllDraftsBean;
 import com.YiDian.RainBow.notice.bean.CleanNoticeBean;
 import com.YiDian.RainBow.notice.bean.ClickNoticeBean;
@@ -249,4 +250,8 @@ public interface Apis {
     //修改密码
     @POST("user/updatePassword")
     Observable<InsertRealBean> doUpdatePwd(@Query("password")String pwd,@Query("userId")int userid);
+
+    //查询用户信息
+    @GET("user/countUserInfo")
+    Observable<LoginUserInfoBean> doGetUserInfo(@Query("userId")int userid);
 }

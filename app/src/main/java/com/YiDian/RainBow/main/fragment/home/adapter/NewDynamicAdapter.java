@@ -183,12 +183,25 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
         Glide.with(context).load(userInfo.getHeadImg()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(holder.ivHeadimg);
         //设置角色
         holder.tvAge.setText(userInfo.getUserRole());
-        //是否认证
-        if (userInfo.getAttestation() == 1) {
-            holder.isattaction.setVisibility(View.VISIBLE);
-        } else {
+
+        int attestation = userInfo.getAttestation();
+
+        //认证等级
+        if (attestation == 0) {
             holder.isattaction.setVisibility(View.GONE);
+        } else if(attestation==1){
+            holder.isattaction.setImageResource(R.mipmap.qingtong);
+        }else if(attestation==2){
+            holder.isattaction.setImageResource(R.mipmap.baiyin);
+        }else if(attestation==3){
+            holder.isattaction.setImageResource(R.mipmap.huangjin);
+        }else if(attestation==4){
+            holder.isattaction.setImageResource(R.mipmap.bojin);
+        }else if (attestation==5){
+            holder.isattaction.setImageResource(R.mipmap.zuanshi);
         }
+
+
         //判断性别是否保密
         String userRole = userInfo.getUserRole();
         if (userRole.equals("保密")) {

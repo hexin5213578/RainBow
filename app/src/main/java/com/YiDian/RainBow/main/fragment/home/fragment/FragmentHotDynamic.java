@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
@@ -84,6 +85,11 @@ public class FragmentHotDynamic extends BaseFragment {
         mTencent = Tencent.createInstance("101906973", getContext());
         KeyBoardUtils.closeKeyboard(getActivity());
 
+        //直接取消动画
+        RecyclerView.ItemAnimator animator = rcNewDynamic.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
         rcNewDynamic.setHasFixedSize(true);
         rcNewDynamic.setItemAnimator(null);
 
@@ -206,6 +212,9 @@ public class FragmentHotDynamic extends BaseFragment {
                                     linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
                                     rcNewDynamic.setLayoutManager(linearLayoutManager);
                                     newDynamicAdapter = new NewDynamicAdapter(getActivity(), alllist,mTencent);
+
+                                    newDynamicAdapter.setHasStableIds(true);
+
                                     rcNewDynamic.setAdapter(newDynamicAdapter);
                                 } else {
                                     if (alllist.size() > 0 && alllist != null) {

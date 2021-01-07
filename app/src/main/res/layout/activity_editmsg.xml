@@ -150,7 +150,7 @@
         android:layout_height="@dimen/dp_38">
         <TextView
             android:layout_width="wrap_content"
-            android:text="年龄"
+            android:text="出生日期"
             android:textSize="@dimen/sp_15"
             android:textColor="@color/color_333333"
             android:layout_centerVertical="true"

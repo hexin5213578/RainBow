@@ -2,6 +2,8 @@ package com.YiDian.RainBow.main.fragment.mine.activity;
 
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.text.Editable;
@@ -10,6 +12,7 @@ import android.text.InputType;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,16 +27,31 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.login.activity.CompleteMsgActivity;
+import com.YiDian.RainBow.utils.BasisTimesUtils;
+import com.YiDian.RainBow.utils.MD5Utils;
+import com.YiDian.RainBow.utils.SPUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.leaf.library.StatusBarUtil;
+import com.qiniu.android.http.ResponseInfo;
+import com.qiniu.android.storage.UpCompletionHandler;
+import com.qiniu.android.storage.UploadManager;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.lym.image.select.PictureSelector;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -71,6 +89,11 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
     RelativeLayout rlGanqingstate;
     private PopupWindow mPopupWindow;
     private PopupWindow mPopupWindow1;
+    private String path;
+    private UploadManager uploadManager;
+    private String token;
+    private static final String serverPath = "http://img.rianbow.cn/";
+    private String url;
 
     @Override
     protected int getResId() {
@@ -90,6 +113,8 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
         rlMyrole.setOnClickListener(this);
         rlGanqingstate.setOnClickListener(this);
         ivBack.setOnClickListener(this);
+
+        token = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.UPTOKEN);
 
         // TODO: 2020/11/26 0026 获取当前用户个人信息展示
 
@@ -111,7 +136,17 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                 break;
             //更换头像
             case R.id.rl_change_headimg:
-
+                PictureSelector
+                        .with(this)
+                        .selectSpec()
+                        .setOpenCamera()
+                        .needCrop()
+                        .setOutputX(200)
+                        .setOutputY(200)
+                        //开启拍照功能一定得设置该属性，为了兼容Android7.0相机拍照问题
+                        //在manifest文件中也需要注册该provider
+                        .setAuthority("com.YiDian.RainBow.utils.MyFileProvider")
+                        .startForResult(100);
                 break;
             //更换昵称
             case R.id.rl_name:
@@ -119,7 +154,21 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                 break;
             //年龄
             case R.id.rl_age:
+                BasisTimesUtils.showDatePickerDialog(EditMsgActivity.this, "请选择年月日", 1998, 1, 1, new BasisTimesUtils.OnDatePickerListener() {
+                    @Override
+                    public void onConfirm(int year, int month, int dayOfMonth) {
+                        tvAge.setText(year + "-" + month + "-" + dayOfMonth);
 
+                        // TODO: 2021/1/7 0007 调用更新用户信息接口更换年龄
+
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+                });
                 break;
             //个性签名
             case R.id.rl_qianming:
@@ -136,7 +185,50 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                 break;
         }
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
+            if (null != data) {
+                //图片单选和多选数据都是以ArrayList的字符串数组返回的。
+                List<String> paths = PictureSelector.obtainPathResult(data);
+                path = paths.get(0);
+                Glide.with(EditMsgActivity.this).load(path).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
 
+                //上传至七牛云
+                // 图片上传到七牛 重用 uploadManager。一般地，只需要创建一个 uploadManager 对象
+                uploadManager = new UploadManager();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+                // 设置名字
+                String s = MD5Utils.string2Md5_16(path);
+                String key = s + sdf.format(new Date()) + ".jpg";
+                uploadManager.put(path, key, token,
+                        new UpCompletionHandler() {
+                            @Override
+                            public void complete(String key, ResponseInfo info, JSONObject res) {
+                                //res 包含 hash、key 等信息，具体字段取决于上传策略的设置
+                                if (info.isOK()) {
+                                    // 七牛返回的文件名
+                                    try {
+                                        String upimg = res.getString("key");
+                                        //将七牛返回图片的文件名添加到list集合中
+                                        url = serverPath + upimg;
+                                        //调起更换头像的接口
+
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    Log.i("xxx", "Upload Fail");
+                                    //如果失败，这里可以把 info 信息上报自己的服务器，便于后面分析上传错误原因
+                                }
+                                Log.i("xxx", url);
+                            }
+                        }, null);
+            }
+        }
+    }
     /**
      * 禁止EditText输入空格
      *
@@ -230,7 +322,6 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
             }
         });
         //popwindow设置属性
-        mPopupWindow.setAnimationStyle(R.style.popwindow_anim_style);
         mPopupWindow.setContentView(view);
         mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
         mPopupWindow.setFocusable(true);
