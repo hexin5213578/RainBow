@@ -34,6 +34,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+//互相喜欢
 public class AllLikeFragment extends BaseFragment {
     @BindView(R.id.rc_alllike)
     RecyclerView rcallLike;

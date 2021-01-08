@@ -15,8 +15,8 @@
             android:src="@mipmap/headimg">
         </ImageView>
         <TextView
-            android:layout_width="@dimen/dp_30"
-            android:text="偏爱"
+            android:layout_width="wrap_content"
+            android:text="何梦洋"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_19"
             android:textSize="@dimen/sp_12"
@@ -33,7 +33,7 @@
             android:id="@+id/tv_last_msg"
             android:textColor="#666666"
             android:layout_marginTop="@dimen/dp_8"
-            android:textSize="@dimen/sp_10"
+            android:textSize="@dimen/sp_12"
             android:layout_toRightOf="@id/iv_headimg"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_height="wrap_content">
@@ -41,9 +41,24 @@
         <TextView
             android:layout_width="wrap_content"
             android:text="2020-10-07"
+            android:layout_marginTop="@dimen/dp_8"
             android:id="@+id/tv_time"
-            android:layout_marginTop="@dimen/dp_19"
+            android:textSize="@dimen/sp_10"
+            android:layout_below="@id/tv_username"
             android:layout_alignParentRight="true"
+            android:layout_height="wrap_content">
+        </TextView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="1"
+            android:id="@+id/weiducount"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/white"
+            android:layout_marginTop="@dimen/dp_19"
+            android:textSize="@dimen/sp_8"
+            android:paddingLeft="@dimen/dp_3"
+            android:paddingRight="@dimen/dp_3"
+            android:background="@drawable/count_bg"
             android:layout_height="wrap_content">
         </TextView>
         <View

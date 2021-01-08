@@ -1,10 +1,7 @@
 package com.YiDian.RainBow.base;
 
 import android.app.Application;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Environment;
 import android.os.Handler;
@@ -13,7 +10,7 @@ import android.text.TextUtils;
 
 import androidx.multidex.MultiDex;
 
-import com.YiDian.RainBow.R;
+import com.YiDian.RainBow.utils.GlobalEventListener;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
@@ -23,11 +20,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.core.decode.BaseImageDecoder;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
-import com.nostra13.universalimageloader.core.process.BitmapProcessor;
-import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
@@ -35,12 +29,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.concurrent.Executor;
 
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.im.android.api.JMessageClient;
-
-import static android.provider.UserDictionary.Words.APP_ID;
 
 
 /**
@@ -89,9 +80,13 @@ public class App extends Application {
         JMessageClient.setDebugMode(true);
         JMessageClient.init(this);
 
+        //注册全局事件监听类
+        JMessageClient.registerEventReceiver(new GlobalEventListener(getApplicationContext()));
         //初始化极光推送
         JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
         JPushInterface.init(this);     		// 初始化 JPush
+
+
     }
 
     private void initWX() {

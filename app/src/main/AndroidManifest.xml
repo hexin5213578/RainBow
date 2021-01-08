@@ -137,6 +137,12 @@
             </intent-filter>
         </receiver>
 
+        <service android:name="cn.jpush.android.service.PushService"
+            android:process=":multiprocess"
+            tools:node="replace" >
+        </service>
+
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.YiDian.RainBow.utils.MyFileProvider"
@@ -348,6 +354,11 @@
         <!-- 点赞通知 -->
         <activity
             android:name=".notice.ClickNoticeActivity"
+            android:screenOrientation="portrait" />
+
+        <!-- 聊天界面 -->
+        <activity
+            android:name=".main.fragment.msg.activity.ImActivity"
             android:screenOrientation="portrait" />
 
         <!-- 实名认证 -->

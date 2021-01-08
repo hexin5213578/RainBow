@@ -5,11 +5,15 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
@@ -43,6 +47,7 @@ import com.YiDian.RainBow.main.fragment.FragmentFind;
 import com.YiDian.RainBow.main.fragment.FragmentHome;
 import com.YiDian.RainBow.main.fragment.FragmentMine;
 import com.YiDian.RainBow.main.fragment.FragmentMsg;
+import com.YiDian.RainBow.main.fragment.msg.activity.ImActivity;
 import com.YiDian.RainBow.service.GrayService;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.YiDian.RainBow.utils.SPUtil;
@@ -52,6 +57,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -61,6 +71,7 @@ import butterknife.ButterKnife;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -116,15 +127,43 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     @Override
     protected void getData() {
 
-        JMessageClient.login("1030", "1030", new BasicCallback() {
+        JMessageClient.login("1038", "1038", new BasicCallback() {
             @Override
             public void gotResult(int i, String s) {
-                Log.d("xxx", "极光登录状态为" + i + "原因为" + s);
+                if (i==0){
+                    Log.d("xxx", "1038 极光登录状态为" + i + "原因为" + s);
 
+                    UserInfo myInfo = JMessageClient.getMyInfo();
+
+                    Log.d("xxx",myInfo.toJson());
+                    Log.d("xxx",myInfo.getAvatarFile().getAbsolutePath());
+
+                    /*Bitmap bitmap=BitmapFactory.decodeResource(getResources(),R.mipmap.headimg,null);//将资源文件转化为bitmap
+
+                    File file = getFile(bitmap);
+
+                    Log.d("xxx",file.getAbsolutePath());
+
+                    JMessageClient.deleteSingleConversation("1038","87ce5706efafab51ddd2be08");
+
+                    JMessageClient.updateUserAvatar(file, new BasicCallback() {
+                        @Override
+                        public void gotResult(int i, String s) {
+                            if (i==0){
+                                Log.d("xxx","1038 头像设置成功");
+                            }else {
+                                Log.d("xxx",s);
+                            }
+                        }
+                    });*/
+                }
             }
         });
+
         //设置别名
-        setAlias();
+        //setAlias();
+
+
         //申请开启内存卡权限
         if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) && (this.checkSelfPermission
                 (Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
@@ -136,7 +175,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
 
         boolean ignoringBatteryOptimizations = isIgnoringBatteryOptimizations(MainActivity.this);
         //判断是否存在于白名单
-        if(!ignoringBatteryOptimizations){
+        if (!ignoringBatteryOptimizations) {
             //不存在加入白名单
             requestIgnoreBatteryOptimizations(MainActivity.this);
         }
@@ -153,8 +192,8 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
                     @Override
                     public void onNext(SaveMsgSuccessBean saveMsgSuccessBean) {
                         String upToken = saveMsgSuccessBean.getUpToken();
-                        SPUtil.getInstance().saveData(MainActivity.this,SPUtil.FILE_NAME,SPUtil.UPTOKEN,upToken);
-                        Log.d("xxx","uptoken存入成功");
+                        SPUtil.getInstance().saveData(MainActivity.this, SPUtil.FILE_NAME, SPUtil.UPTOKEN, upToken);
+                        Log.d("xxx", "uptoken存入成功");
                     }
 
                     @Override
@@ -217,6 +256,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
         MyAdapter myAdapter = new MyAdapter(getSupportFragmentManager());
         vp.setAdapter(myAdapter);
     }
+
     //安卓10.0定位权限
     public void Request() {
         if (Build.VERSION.SDK_INT >= 23) {
@@ -232,36 +272,39 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
 
         }
     }
+
     //判断是否存在白名单
     @RequiresApi(Build.VERSION_CODES.M)
-    public boolean isIgnoringBatteryOptimizations(Context context){
+    public boolean isIgnoringBatteryOptimizations(Context context) {
         boolean isIgnoring = false;
-        if (Build.VERSION.SDK_INT>=23)       {
+        if (Build.VERSION.SDK_INT >= 23) {
             PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 
-            if (powerManager != null){
+            if (powerManager != null) {
                 isIgnoring = powerManager.isIgnoringBatteryOptimizations(getPackageName());
             }
         }
         return isIgnoring;
     }
+
     //加入白名单
-    public void requestIgnoreBatteryOptimizations(Context context){
+    public void requestIgnoreBatteryOptimizations(Context context) {
         try {
             Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
             intent.setData(Uri.parse("package:" + getPackageName()));
             context.startActivity(intent);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     @Override
     protected BasePresenter initPresenter() {
         return null;
     }
 
     public void setAlias() {
-        JPushInterface.setAlias(MainActivity.this, "1030", new TagAliasCallback() {
+        JPushInterface.setAlias(MainActivity.this, "1038", new TagAliasCallback() {
             @Override
             public void gotResult(int i, String s, Set<String> set) {
                 Log.d("xxx", "回调是" + i);
@@ -328,6 +371,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
         }
 
     }
+
     //定义一个变量，来标识是否退出
     private static int isExit = 0;
 
@@ -411,5 +455,25 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
                 Log.e("xxx", result);
             }
         }
+    }
+    //在这里抽取了一个方法   可以封装到自己的工具类中...
+    public File getFile(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+        File file = new File(Environment.getExternalStorageDirectory() + "/temp.jpg");
+        try {
+            file.createNewFile();
+            FileOutputStream fos = new FileOutputStream(file);
+            InputStream is = new ByteArrayInputStream(baos.toByteArray());
+            int x = 0;
+            byte[] b = new byte[1024 * 100];
+            while ((x = is.read(b)) != -1) {
+                fos.write(b, 0, x);
+            }
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return file;
     }
 }

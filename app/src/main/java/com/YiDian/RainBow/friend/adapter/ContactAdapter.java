@@ -16,6 +16,7 @@ import com.YiDian.RainBow.custom.friend.ContactComparator;
 import com.YiDian.RainBow.friend.bean.Contact;
 import com.YiDian.RainBow.friend.bean.FriendBean;
 import com.YiDian.RainBow.main.fragment.find.adapter.AllLikeAdapter;
+import com.YiDian.RainBow.main.fragment.msg.activity.ImActivity;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.user.PersonHomeActivity;
 import com.YiDian.RainBow.utils.Utils;
@@ -121,7 +122,8 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     ((ContactHolder) holder).rlitem.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-
+                            Intent intent = new Intent(mContext, ImActivity.class);
+                            mContext.startActivity(intent);
                         }
                     });
                     int finalI = i;

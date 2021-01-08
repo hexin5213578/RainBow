@@ -254,4 +254,8 @@ public interface Apis {
     //查询用户信息
     @GET("user/countUserInfo")
     Observable<LoginUserInfoBean> doGetUserInfo(@Query("userId")int userid);
+
+    /*//聊天发送通知
+    @GET("user/insertMessage")
+    Observable*/
 }

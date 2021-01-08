@@ -1,22 +1,16 @@
 package com.YiDian.RainBow.main.fragment;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -47,14 +41,13 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.model.Conversation;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -85,6 +78,8 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
     RelativeLayout rlClick;
     @BindView(R.id.sv)
     SpringView sv;
+    @BindView(R.id.rl_nodata)
+    RelativeLayout rlNodata;
     private MsgRecordingAdapter msgRecordingAdapter;
     private Intent intent;
     private int userid;
@@ -93,6 +88,7 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
     protected void getid(View view) {
 
     }
+
     protected int getResId() {
         return R.layout.home_fragment_msg;
     }
@@ -101,7 +97,7 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
         return null;
     }
 
-    Handler handler=new Handler(){//实例化一个Handler，并复写handlerMessage方法
+    Handler handler = new Handler() {//实例化一个Handler，并复写handlerMessage方法
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {//这句就不做说明了，都能看懂
@@ -120,31 +116,17 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
         StatusBarUtil.setGradientColor(getActivity(), toolbar);
         StatusBarUtil.setDarkMode(getActivity());
 
-        Timer timer=new Timer();//实例化一个定时器
+        //设置点击事件监听
+        ivMyBuddy.setOnClickListener(this);
+        rlSystem.setOnClickListener(this);
+        rlFriend.setOnClickListener(this);
+        rlComment.setOnClickListener(this);
+        rlClick.setOnClickListener(this);
 
-        timer.schedule(timerTask,0,1000 * 60);
+        Timer timer = new Timer();//实例化一个定时器
+        timer.schedule(timerTask, 0, 1000 * 60);
 
-        //获取当前登录的用户
-        userid = Integer.valueOf(Common.getUserId());
 
-        //设置下拉
-        sv.setHeader(new AliHeader(getContext()));
-        sv.setListener(new SpringView.OnFreshListener() {
-            @Override
-            public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        sv.onFinishFreshAndLoad();
-                    }
-                },1000);
-            }
-            @Override
-            public void onLoadmore() {
-
-            }
-        });
-        rcMsgRecording.setAdapter(null);
 
         //设置侧滑菜单
         rcMsgRecording.setSwipeMenuCreator(new SwipeMenuCreator() {
@@ -159,28 +141,7 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
             }
         });
 
-        //设置点击事件监听
-        ivMyBuddy.setOnClickListener(this);
-        rlSystem.setOnClickListener(this);
-        rlFriend.setOnClickListener(this);
-        rlComment.setOnClickListener(this);
-        rlClick.setOnClickListener(this);
-
-        //测试聊天记录
-        List<String> list = new ArrayList<>();
-        list.add("何梦洋");
-        list.add("何梦洋");
-        list.add("何梦洋");
-        list.add("何梦洋");
-        list.add("何梦洋");
-        //创建recycleView管理器
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-
-        rcMsgRecording.setLayoutManager(linearLayoutManager);
-
-        //创建适配器
-        msgRecordingAdapter = new MsgRecordingAdapter(getContext(), list);
-        //设置侧滑菜单的点击事件
+        //设置侧滑菜单的删除事件
         rcMsgRecording.setSwipeMenuItemClickListener(new SwipeMenuItemClickListener() {
             @Override
             public void onItemClick(SwipeMenuBridge menuBridge) {
@@ -190,9 +151,8 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
                 int adapterPosition = menuBridge.getAdapterPosition(); // RecyclerView的Item的position。
                 int menuPosition = menuBridge.getPosition(); // 菜单在RecyclerView的Item中的Position。
                 Toast.makeText(getContext(), "删除" + adapterPosition, Toast.LENGTH_SHORT).show();
+                // TODO: 2021/1/8 0008  调用删除单个回话并清空聊天记录
 
-                //删除
-                list.remove(adapterPosition);
                 msgRecordingAdapter.notifyDataSetChanged();
             }
         });
@@ -201,19 +161,78 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
             @Override
             public void onItemClick(View itemView, int position) {
                 Toast.makeText(getContext(), "点击了" + position, Toast.LENGTH_SHORT).show();
+                // TODO: 2021/1/8 0008  跳转至聊天详情页
 
-                //跳转至聊天详情页
+
             }
         });
-        //设置适配器
-        rcMsgRecording.setAdapter(msgRecordingAdapter);
+
+        //获取聊天列表
+        getImList();
+
+
+        //获取当前登录的用户
+        userid = Integer.valueOf(Common.getUserId());
+        //设置下拉
+        sv.setHeader(new AliHeader(getContext()));
+        sv.setListener(new SpringView.OnFreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        getImList();
+                        sv.onFinishFreshAndLoad();
+                    }
+                }, 1000);
+            }
+
+            @Override
+            public void onLoadmore() {
+
+            }
+        });
+
+
+
     }
-    TimerTask timerTask=new TimerTask() {//实例TimerTask,在run函数中向hangdler发送消息
+
+    public void getImList() {
+        //聊天记录
+        List<Conversation> conversationList = JMessageClient.getConversationList();
+
+        if (conversationList.size() > 0  && conversationList!=null) {
+            rlNodata.setVisibility(View.GONE);
+            sv.setVisibility(View.VISIBLE);
+            Log.d("xxx", conversationList.size() + "");
+
+            if (!firstInit){
+                rcMsgRecording.setAdapter(null);
+            }
+
+            //创建recycleView管理器
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+
+            rcMsgRecording.setLayoutManager(linearLayoutManager);
+            //创建适配器
+            msgRecordingAdapter = new MsgRecordingAdapter(getContext());
+
+            msgRecordingAdapter.setData(conversationList);
+            //设置适配器
+            rcMsgRecording.setAdapter(msgRecordingAdapter);
+        }else{
+            rlNodata.setVisibility(View.VISIBLE);
+            sv.setVisibility(View.GONE);
+        }
+
+    }
+
+    TimerTask timerTask = new TimerTask() {//实例TimerTask,在run函数中向hangdler发送消息
 
         @Override
         public void run() {
-            Message message=new Message();
-            message.what=1;
+            Message message = new Message();
+            message.what = 1;
             handler.sendMessage(message);
         }
     };
@@ -221,11 +240,12 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if(isVisibleToUser){
-            Log.d("xxx","fragmentmsg的setUserVisibleHint");
-            if(firstInit){
+        if (isVisibleToUser) {
+            Log.d("xxx", "fragmentmsg的setUserVisibleHint");
+            if (firstInit) {
                 //重新计算通知数量
                 getNoticeCount();
+                getImList();
             }
         }
     }
@@ -233,7 +253,7 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        if(!EventBus.getDefault().isRegistered(this)){
+        if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
     }
@@ -241,16 +261,18 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(!EventBus.getDefault().isRegistered(this)){
+        if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getStr(String str){
-        if (str.equals("重新计算数量")){
+    public void getStr(String str) {
+        if (str.equals("重新计算数量")) {
             getNoticeCount();
         }
     }
+
     //获取通知数量
     public void getNoticeCount() {
         NetUtils.getInstance().getApis().doGetNoticeCount(userid)
