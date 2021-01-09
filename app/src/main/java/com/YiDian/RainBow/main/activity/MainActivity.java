@@ -18,6 +18,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -31,6 +32,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -64,6 +66,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import butterknife.BindView;
@@ -71,6 +74,8 @@ import butterknife.ButterKnife;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.DownloadAvatarCallback;
+import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
 import io.reactivex.Observer;
@@ -127,24 +132,19 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     @Override
     protected void getData() {
 
+
         JMessageClient.login("1038", "1038", new BasicCallback() {
             @Override
             public void gotResult(int i, String s) {
                 if (i==0){
                     Log.d("xxx", "1038 极光登录状态为" + i + "原因为" + s);
 
-                    UserInfo myInfo = JMessageClient.getMyInfo();
 
-                    Log.d("xxx",myInfo.toJson());
-                    Log.d("xxx",myInfo.getAvatarFile().getAbsolutePath());
-
-                    /*Bitmap bitmap=BitmapFactory.decodeResource(getResources(),R.mipmap.headimg,null);//将资源文件转化为bitmap
+               /*     Bitmap bitmap=BitmapFactory.decodeResource(getResources(),R.mipmap.headimg3,null);//将资源文件转化为bitmap
 
                     File file = getFile(bitmap);
 
                     Log.d("xxx",file.getAbsolutePath());
-
-                    JMessageClient.deleteSingleConversation("1038","87ce5706efafab51ddd2be08");
 
                     JMessageClient.updateUserAvatar(file, new BasicCallback() {
                         @Override
@@ -155,14 +155,27 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
                                 Log.d("xxx",s);
                             }
                         }
-                    });*/
+                    });
+*/
+                    UserInfo myInfo = JMessageClient.getMyInfo();
+                    Log.d("xxx","1038信息为"+myInfo.toJson());
+
+
+                    String avatarFile = myInfo.getAvatar();
+                    if (!avatarFile.equals(null)){
+                        Log.d("xxx","存在头像");
+                    }else{
+                        Log.d("xxx","不存在头像");
+                    }
+
+                    //JMessageClient.deleteSingleConversation("1038","87ce5706efafab51ddd2be08");
+
                 }
             }
         });
 
         //设置别名
-        //setAlias();
-
+        //setAlias();n
 
         //申请开启内存卡权限
         if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) && (this.checkSelfPermission

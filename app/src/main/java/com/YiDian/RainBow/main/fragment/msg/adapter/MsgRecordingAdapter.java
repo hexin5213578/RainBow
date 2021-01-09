@@ -1,6 +1,9 @@
 package com.YiDian.RainBow.main.fragment.msg.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -10,22 +13,31 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
+import com.YiDian.RainBow.topic.SaveIntentMsgBean;
+import com.YiDian.RainBow.user.PersonHomeActivity;
+import com.YiDian.RainBow.utils.StringUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
+import com.facebook.drawee.view.SimpleDraweeView;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.model.Conversation;
+import cn.jpush.im.android.api.model.UserInfo;
 
 public class MsgRecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Context context;
     private List<Conversation> list;
+    private Conversation conversation;
 
 
     public MsgRecordingAdapter(Context context) {
@@ -46,20 +58,46 @@ public class MsgRecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Conversation conversation = list.get(position);
+        conversation = list.get(position);
 
-        Glide.with(context).load(R.mipmap.headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder) holder).ivHeadimg);
+        String targetId = conversation.getTargetId();
+        JMessageClient.getUserInfo(targetId, "87ce5706efafab51ddd2be08", new GetUserInfoCallback() {
+            @Override
+            public void gotResult(int i, String s, UserInfo userInfo) {
+                if (i==0){
+                    File avatarFile = userInfo.getAvatarFile();
 
+                    Log.d("xxx","获取用户信息成功,用户头像为"+avatarFile);
+
+                    //加载头像
+                    Glide.with(context).load(avatarFile).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder)holder).ivHeadimg);
+                }
+            }
+        });
+        //跳转到用户信息页
+        ((ViewHolder)holder).ivHeadimg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                conversation = list.get(position);
+
+                Intent intent = new Intent(context, PersonHomeActivity.class);
+                SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
+                saveIntentMsgBean.setId(Integer.parseInt(conversation.getTargetId()));
+                //2标记传入姓名  1标记传入id
+                saveIntentMsgBean.setFlag(1);
+                intent.putExtra("msg",saveIntentMsgBean);
+                context.startActivity(intent);
+            }
+        });
         ((ViewHolder)holder).tvUsername.setText(conversation.getTitle());
 
         ((ViewHolder)holder).tvLastMsg.setText(conversation.getLatestText());
 
         long lastMsgDate = conversation.getLastMsgDate();
-        //设置时间
-        Date date = new Date(lastMsgDate);
-        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String format = sd.format(date);
-        ((ViewHolder)holder).tvTime.setText(format);
+
+        String newChatTime = StringUtil.getNewChatTime(lastMsgDate);
+
+        ((ViewHolder)holder).tvTime.setText(newChatTime);
 
         //设置未读消息数
         int unReadMsgCnt = conversation.getUnReadMsgCnt();

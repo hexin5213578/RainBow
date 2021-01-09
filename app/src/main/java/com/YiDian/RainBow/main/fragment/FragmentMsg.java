@@ -20,6 +20,7 @@ import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.friend.FriendsActivity;
 import com.YiDian.RainBow.main.bean.NoticeCountBean;
+import com.YiDian.RainBow.main.fragment.msg.activity.ImActivity;
 import com.YiDian.RainBow.main.fragment.msg.adapter.MsgRecordingAdapter;
 import com.YiDian.RainBow.notice.ClickNoticeActivity;
 import com.YiDian.RainBow.notice.CommentNoticeActivity;
@@ -84,6 +85,7 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
     private Intent intent;
     private int userid;
     private boolean firstInit = false;
+    private List<Conversation> conversationList;
 
     protected void getid(View view) {
 
@@ -126,7 +128,7 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
         Timer timer = new Timer();//实例化一个定时器
         timer.schedule(timerTask, 0, 1000 * 60);
 
-
+        firstInit  = true;
 
         //设置侧滑菜单
         rcMsgRecording.setSwipeMenuCreator(new SwipeMenuCreator() {
@@ -151,7 +153,7 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
                 int adapterPosition = menuBridge.getAdapterPosition(); // RecyclerView的Item的position。
                 int menuPosition = menuBridge.getPosition(); // 菜单在RecyclerView的Item中的Position。
                 Toast.makeText(getContext(), "删除" + adapterPosition, Toast.LENGTH_SHORT).show();
-                // TODO: 2021/1/8 0008  调用删除单个回话并清空聊天记录
+                // TODO: 2021/1/8 `0008  调用删除单个回话并清空聊天记录
 
                 msgRecordingAdapter.notifyDataSetChanged();
             }
@@ -160,55 +162,37 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
         rcMsgRecording.setSwipeItemClickListener(new SwipeItemClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
-                Toast.makeText(getContext(), "点击了" + position, Toast.LENGTH_SHORT).show();
                 // TODO: 2021/1/8 0008  跳转至聊天详情页
+                Conversation conversation = conversationList.get(position);
 
+                //重置未读消息数
+                conversation.resetUnreadCount();
 
+                //发送到聊天详情页
+                Intent intent = new Intent(getContext(), ImActivity.class);
+                intent.putExtra("userid",conversation.getTargetId());
+                startActivity(intent);
             }
         });
-
         //获取聊天列表
         getImList();
 
-
         //获取当前登录的用户
         userid = Integer.valueOf(Common.getUserId());
-        //设置下拉
-        sv.setHeader(new AliHeader(getContext()));
-        sv.setListener(new SpringView.OnFreshListener() {
-            @Override
-            public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        getImList();
-                        sv.onFinishFreshAndLoad();
-                    }
-                }, 1000);
-            }
-
-            @Override
-            public void onLoadmore() {
-
-            }
-        });
-
-
-
     }
-
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getMsg(String str){
+        if (str.equals("收到了信息")){
+            getImList();
+        }
+    }
     public void getImList() {
         //聊天记录
-        List<Conversation> conversationList = JMessageClient.getConversationList();
-
-        if (conversationList.size() > 0  && conversationList!=null) {
+        conversationList = JMessageClient.getConversationList();
+        if (conversationList.size() > 0  && conversationList !=null) {
             rlNodata.setVisibility(View.GONE);
             sv.setVisibility(View.VISIBLE);
             Log.d("xxx", conversationList.size() + "");
-
-            if (!firstInit){
-                rcMsgRecording.setAdapter(null);
-            }
 
             //创建recycleView管理器
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
@@ -216,7 +200,6 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
             rcMsgRecording.setLayoutManager(linearLayoutManager);
             //创建适配器
             msgRecordingAdapter = new MsgRecordingAdapter(getContext());
-
             msgRecordingAdapter.setData(conversationList);
             //设置适配器
             rcMsgRecording.setAdapter(msgRecordingAdapter);
@@ -244,8 +227,8 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
             Log.d("xxx", "fragmentmsg的setUserVisibleHint");
             if (firstInit) {
                 //重新计算通知数量
-                getNoticeCount();
                 getImList();
+                getNoticeCount();
             }
         }
     }

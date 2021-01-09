@@ -47,6 +47,7 @@ public class SPUtil {
     public static final String IS_PERFECT = "isperfect";
     public static final String HEAD_IMG = "headimg";
     public static final String KEY_PHONE = "phone";
+
     public static final String USER_NAME = "username";
     public static final String USER_ID = "user_id";
 

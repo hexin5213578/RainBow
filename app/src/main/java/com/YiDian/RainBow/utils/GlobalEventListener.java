@@ -44,7 +44,7 @@ public class GlobalEventListener {
             TextContent textContent = (TextContent) msg.getContent();
             String text = textContent.getText();
             Log.i("xxx", "离线消息:" + text);
-            EventBus.getDefault().postSticky(text);
+            EventBus.getDefault().postSticky("收到了信息");
         }
     }
     public void onEvent(MessageEvent event) {
@@ -52,7 +52,7 @@ public class GlobalEventListener {
         TextContent textContent = (TextContent) msg.getContent();
         String text = textContent.getText();
         Log.i("xxx", "在线消息:" + text);
-        EventBus.getDefault().postSticky(text);
+        EventBus.getDefault().postSticky("收到了信息");
         //jumpToActivity(event.getMessage());
 
     }

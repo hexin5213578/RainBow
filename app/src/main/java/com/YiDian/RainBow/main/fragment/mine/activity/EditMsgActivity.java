@@ -49,13 +49,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.lym.image.select.PictureSelector;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import butterknife.BindView;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.DownloadAvatarCallback;
+import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
+import cn.jpush.im.android.api.model.UserInfo;
+import cn.jpush.im.api.BasicCallback;
 
 //编辑资料
 public class EditMsgActivity extends BaseAvtivity implements View.OnClickListener {
@@ -94,6 +101,7 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
     private String token;
     private static final String serverPath = "http://img.rianbow.cn/";
     private String url;
+    private UserInfo userInfo;
 
     @Override
     protected int getResId() {
@@ -121,6 +129,108 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
         //加载圆角图
         Glide.with(this).load(R.mipmap.headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
 
+
+        userInfo = new UserInfo() {
+            @Override
+            public String getNotename() {
+                return null;
+            }
+
+            @Override
+            public String getNoteText() {
+                return null;
+            }
+
+            @Override
+            public long getBirthday() {
+                return 0;
+            }
+
+            @Override
+            public File getAvatarFile() {
+                return null;
+            }
+
+            @Override
+            public void getAvatarFileAsync(DownloadAvatarCallback downloadAvatarCallback) {
+
+            }
+
+            @Override
+            public void getAvatarBitmap(GetAvatarBitmapCallback getAvatarBitmapCallback) {
+
+            }
+
+            @Override
+            public File getBigAvatarFile() {
+                return null;
+            }
+
+            @Override
+            public void getBigAvatarBitmap(GetAvatarBitmapCallback getAvatarBitmapCallback) {
+
+            }
+
+            @Override
+            public int getBlacklist() {
+                return 0;
+            }
+
+            @Override
+            public int getNoDisturb() {
+                return 0;
+            }
+
+            @Override
+            public boolean isFriend() {
+                return false;
+            }
+
+            @Override
+            public String getAppKey() {
+                return null;
+            }
+
+            @Override
+            public void setUserExtras(Map<String, String> map) {
+
+            }
+
+            @Override
+            public void setUserExtras(String s, String s1) {
+
+            }
+
+            @Override
+            public void setBirthday(long l) {
+
+            }
+
+            @Override
+            public void setNoDisturb(int i, BasicCallback basicCallback) {
+
+            }
+
+            @Override
+            public void removeFromFriendList(BasicCallback basicCallback) {
+
+            }
+
+            @Override
+            public void updateNoteName(String s, BasicCallback basicCallback) {
+
+            }
+
+            @Override
+            public void updateNoteText(String s, BasicCallback basicCallback) {
+
+            }
+
+            @Override
+            public String getDisplayName() {
+                return null;
+            }
+        };
     }
 
     @Override
@@ -433,6 +543,23 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                 String s = et_name.getText().toString();
                 if (!TextUtils.isEmpty(s)) {
                     // TODO: 2021/1/6 0006 检测名称是否存在
+
+                    // TODO: 2021/1/9 0009 昵称不存在先设置极光
+                    userInfo.setNickname(s);
+
+                    JMessageClient.updateMyInfo(UserInfo.Field.nickname,userInfo,new BasicCallback() {
+                        @Override
+                        public void gotResult(int i, String s) {
+                            if (i==0){
+                                Log.d("xxx","更换昵称成功");
+
+                                // TODO: 2021/1/9 0009 极光设置成功再存入服务器
+                            }else{
+                                Log.d("xxx","设置失败，原因为"+s);
+                            }
+                        }
+                    });
+
 
                 } else {
                     Toast.makeText(EditMsgActivity.this, "昵称不能为空", Toast.LENGTH_SHORT).show();

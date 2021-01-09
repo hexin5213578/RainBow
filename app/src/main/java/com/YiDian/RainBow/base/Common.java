@@ -61,6 +61,7 @@ public  class Common {
     public static String getUserName(){
         return "何梦阳";
     }
+
     //获取是否已经登录过状态
     public static String getIsLogin() {
         return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.IS_LOGIN);

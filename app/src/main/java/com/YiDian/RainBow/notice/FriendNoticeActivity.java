@@ -207,7 +207,6 @@ public class FriendNoticeActivity extends BaseAvtivity implements View.OnClickLi
                             //创建适配器
                             friendNoticeAdapter = new FriendNoticeAdapter(FriendNoticeActivity.this, allList);
 
-
                             rcNotice.setAdapter(friendNoticeAdapter);
 
                         } else {
