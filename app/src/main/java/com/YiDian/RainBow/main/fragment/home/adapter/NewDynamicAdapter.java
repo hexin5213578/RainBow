@@ -181,8 +181,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
         holder.tvUsername.setText(userInfo.getNickName());
         //加载头像
         Glide.with(context).load(userInfo.getHeadImg()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(holder.ivHeadimg);
-        //设置角色
-        holder.tvAge.setText(userInfo.getUserRole());
+
 
         int attestation = userInfo.getAttestation();
 
@@ -206,6 +205,9 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
         String userRole = userInfo.getUserRole();
         if (userRole.equals("保密")) {
             holder.tvAge.setVisibility(View.GONE);
+        }else{
+            //设置角色
+            holder.tvAge.setText(userRole);
         }
 
         //判断是否点赞

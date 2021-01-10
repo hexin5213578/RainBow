@@ -5,9 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -18,11 +16,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.provider.Settings;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -32,12 +27,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.YiDian.RainBow.R;
@@ -49,7 +41,6 @@ import com.YiDian.RainBow.main.fragment.FragmentFind;
 import com.YiDian.RainBow.main.fragment.FragmentHome;
 import com.YiDian.RainBow.main.fragment.FragmentMine;
 import com.YiDian.RainBow.main.fragment.FragmentMsg;
-import com.YiDian.RainBow.main.fragment.msg.activity.ImActivity;
 import com.YiDian.RainBow.service.GrayService;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.YiDian.RainBow.utils.SPUtil;
@@ -66,16 +57,12 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 import cn.jpush.im.android.api.JMessageClient;
-import cn.jpush.im.android.api.callback.DownloadAvatarCallback;
-import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
 import io.reactivex.Observer;
@@ -175,17 +162,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
         });
 
         //设置别名
-        //setAlias();n
-
-        //申请开启内存卡权限
-        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) && (this.checkSelfPermission
-                (Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
-            //请求权限
-            this.requestPermissions(new String[]{
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-        }
-
+        //setAlias();
         boolean ignoringBatteryOptimizations = isIgnoringBatteryOptimizations(MainActivity.this);
         //判断是否存在于白名单
         if (!ignoringBatteryOptimizations) {
@@ -227,7 +204,6 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
         } else {
             startService(intent);
         }
-        Request();
         rbs[0] = rbHome;
         //rbs[1] = rbIM;
         rbs[1] = rbFind;
@@ -268,22 +244,6 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
 
         MyAdapter myAdapter = new MyAdapter(getSupportFragmentManager());
         vp.setAdapter(myAdapter);
-    }
-
-    //安卓10.0定位权限
-    public void Request() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            int request = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-            if (request != PackageManager.PERMISSION_GRANTED)//缺少权限，进行权限申请
-            {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
-                return;//
-            } else {
-
-            }
-        } else {
-
-        }
     }
 
     //判断是否存在白名单

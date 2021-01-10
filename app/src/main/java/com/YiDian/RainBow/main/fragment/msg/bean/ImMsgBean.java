@@ -6,23 +6,22 @@ public class ImMsgBean {
      * set_from_name : 0
      * d : 0
      * e : 0
-     * f : 0
-     * _id : 14
-     * content : {"text":"健康阿达asasd","booleanExtras":{},"contentType":"text","extras":{},"numExtras":{},"stringExtras":{}}
+     * f : 1608691836842
+     * _id : 3
+     * content : {"text":"奥术大师阿萨德","booleanExtras":{},"contentType":"text","extras":{},"numExtras":{},"stringExtras":{}}
      * contentType : text
-     * createTimeInMillis : 1610172208486
-     * create_time : 1610172208
-     * direct : receive
+     * createTimeInMillis : 1608691836842
+     * create_time : 1608691836
+     * direct : send
      * from_appkey : 87ce5706efafab51ddd2be08
-     * from_id : 15686
-     * from_name : 和豆腐干豆腐干
+     * from_id : 1038
      * from_type : user
      * from_platform : a
      * msg_type : text
-     * serverMessageId : 10000377882
-     * status : receive_success
+     * serverMessageId : 9812468448
+     * status : send_success
      * sui_mtime : 0
-     * targetInfo : {"address":"","appkey":"87ce5706efafab51ddd2be08","avatar":"qiniu/image/a/02E803EC3C6702F371C80003B005A870","birthday":"","blacklist":0,"extras":{},"gender":"0","isFriend":0,"mGender":"unknown","mtime":1610167604,"nickname":"和豆腐干豆腐干","noDisturb":0,"memo_others":"","memo_name":"","region":"","signature":"","star":-1,"uid":662918048,"username":"15686"}
+     * targetInfo : {"address":"","appkey":"87ce5706efafab51ddd2be08","avatar":"qiniu/image/a/1ACC3B74DDE3174F49DDC63C1978F8E3","birthday":"","blacklist":0,"extras":{},"gender":"0","isFriend":0,"mGender":"unknown","mtime":1610088795,"nickname":"何梦洋","noDisturb":0,"memo_others":"","memo_name":"","region":"","signature":"","star":-1,"uid":593215420,"username":"1030"}
      * target_type : single
      * version : 1
      */
@@ -30,16 +29,16 @@ public class ImMsgBean {
     private int set_from_name;
     private int d;
     private int e;
-    private int f;
+    private long f;
     private int _id;
     private ContentBean content;
     private String contentType;
     private long createTimeInMillis;
     private int create_time;
     private String direct;
+    private String from_name;
     private String from_appkey;
     private String from_id;
-    private String from_name;
     private String from_type;
     private String from_platform;
     private String msg_type;
@@ -49,6 +48,14 @@ public class ImMsgBean {
     private TargetInfoBean targetInfo;
     private String target_type;
     private int version;
+
+    public String getFrom_name() {
+        return from_name;
+    }
+
+    public void setFrom_name(String from_name) {
+        this.from_name = from_name;
+    }
 
     public int getSet_from_name() {
         return set_from_name;
@@ -74,11 +81,11 @@ public class ImMsgBean {
         this.e = e;
     }
 
-    public int getF() {
+    public long getF() {
         return f;
     }
 
-    public void setF(int f) {
+    public void setF(long f) {
         this.f = f;
     }
 
@@ -144,14 +151,6 @@ public class ImMsgBean {
 
     public void setFrom_id(String from_id) {
         this.from_id = from_id;
-    }
-
-    public String getFrom_name() {
-        return from_name;
-    }
-
-    public void setFrom_name(String from_name) {
-        this.from_name = from_name;
     }
 
     public String getFrom_type() {
@@ -228,7 +227,7 @@ public class ImMsgBean {
 
     public static class ContentBean {
         /**
-         * text : 健康阿达asasd
+         * text : 奥术大师阿萨德
          * booleanExtras : {}
          * contentType : text
          * extras : {}
@@ -308,23 +307,23 @@ public class ImMsgBean {
         /**
          * address :
          * appkey : 87ce5706efafab51ddd2be08
-         * avatar : qiniu/image/a/02E803EC3C6702F371C80003B005A870
+         * avatar : qiniu/image/a/1ACC3B74DDE3174F49DDC63C1978F8E3
          * birthday :
          * blacklist : 0
          * extras : {}
          * gender : 0
          * isFriend : 0
          * mGender : unknown
-         * mtime : 1610167604
-         * nickname : 和豆腐干豆腐干
+         * mtime : 1610088795
+         * nickname : 何梦洋
          * noDisturb : 0
          * memo_others :
          * memo_name :
          * region :
          * signature :
          * star : -1
-         * uid : 662918048
-         * username : 15686
+         * uid : 593215420
+         * username : 1030
          */
 
         private String address;

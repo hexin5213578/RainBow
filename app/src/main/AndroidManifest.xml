@@ -32,6 +32,8 @@
     <uses-permission android:name="MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.VIBRATE" /> <!-- 华为角标 -->
     <uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE" /> <!-- Required -->
+    <!--录音权限-->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <permission
         android:name="${applicationId}.permission.JPUSH_MESSAGE"
         android:protectionLevel="signature" />
@@ -42,6 +44,7 @@
         android:fitsSystemWindows="true"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -214,6 +217,7 @@
         <!-- 动态详情 -->
         <activity
             android:name=".main.fragment.home.activity.DynamicDetailsActivity"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
 
         <!-- 评论详情 -->
@@ -356,9 +360,10 @@
             android:name=".notice.ClickNoticeActivity"
             android:screenOrientation="portrait" />
 
-        <!-- 聊天界面 -->
+        <!-- 好友聊天 -->
         <activity
-            android:name=".main.fragment.msg.activity.ImActivity"
+            android:name=".main.fragment.msg.activity.FriendImActivity"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
 
         <!-- 实名认证 -->

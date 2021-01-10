@@ -15,13 +15,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
+import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.customDialog.CustomDialogCancleFollow;
 import com.YiDian.RainBow.friend.bean.MyFansBean;
 import com.YiDian.RainBow.main.fragment.find.adapter.MyLikeAdapter;
 import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
+import com.YiDian.RainBow.main.fragment.msg.activity.FriendImActivity;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.user.PersonHomeActivity;
 import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.Utils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
@@ -32,6 +35,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.jpush.im.android.api.model.Conversation;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -192,8 +196,16 @@ public class MyFansAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 bean = list.get(position);
                 if(bean.getIsAttention()==1){
                     // TODO: 2020/12/28 0028 跳转到聊天页
+                    String fansId = String.valueOf(bean.getFansId());
 
+                    Utils.createConversation(fansId);
 
+                    EventBus.getDefault().post("收到了消息");
+
+                    //将聊天对象的id作为参数传入
+                    Intent intent = new Intent(context, FriendImActivity.class);
+                    intent.putExtra("userid",fansId);
+                    context.startActivity(intent);
                 }else{
                     Toast.makeText(context, "请互相关注后再发起聊天哦", Toast.LENGTH_SHORT).show();
                 }

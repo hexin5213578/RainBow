@@ -1,6 +1,9 @@
 package com.YiDian.RainBow.main.fragment;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -11,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,7 +25,7 @@ import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.friend.FriendsActivity;
 import com.YiDian.RainBow.main.bean.NoticeCountBean;
-import com.YiDian.RainBow.main.fragment.msg.activity.ImActivity;
+import com.YiDian.RainBow.main.fragment.msg.activity.FriendImActivity;
 import com.YiDian.RainBow.main.fragment.msg.adapter.MsgRecordingAdapter;
 import com.YiDian.RainBow.notice.ClickNoticeActivity;
 import com.YiDian.RainBow.notice.CommentNoticeActivity;
@@ -28,7 +33,6 @@ import com.YiDian.RainBow.notice.FriendNoticeActivity;
 import com.YiDian.RainBow.notice.SystemNoticeActivity;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.leaf.library.StatusBarUtil;
-import com.liaoinstan.springview.container.AliHeader;
 import com.liaoinstan.springview.widget.SpringView;
 import com.yanzhenjie.recyclerview.swipe.SwipeItemClickListener;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
@@ -130,6 +134,16 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
 
         firstInit  = true;
 
+        //申请开启麦克风权限
+        if (Build.VERSION.SDK_INT >= 23) {
+            int request = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO);
+            if (request != PackageManager.PERMISSION_GRANTED)//缺少权限，进行权限申请
+            {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, 100);
+                return;//
+            }
+        }
+        rcMsgRecording.setAdapter(null);
         //设置侧滑菜单
         rcMsgRecording.setSwipeMenuCreator(new SwipeMenuCreator() {
             @Override
@@ -152,10 +166,15 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
                 int direction = menuBridge.getDirection(); // 左侧还是右侧菜单。0是左，右是1，暂时没有用到
                 int adapterPosition = menuBridge.getAdapterPosition(); // RecyclerView的Item的position。
                 int menuPosition = menuBridge.getPosition(); // 菜单在RecyclerView的Item中的Position。
-                Toast.makeText(getContext(), "删除" + adapterPosition, Toast.LENGTH_SHORT).show();
                 // TODO: 2021/1/8 `0008  调用删除单个回话并清空聊天记录
+                Conversation conversation = conversationList.get(adapterPosition);
+                String targetId = conversation.getTargetId();
 
-                msgRecordingAdapter.notifyDataSetChanged();
+                //删除单个聊天对象
+                JMessageClient.deleteSingleConversation(targetId,Common.get_JG());
+                conversationList.remove(adapterPosition);
+
+                getImList();
             }
         });
         //点击事件
@@ -169,7 +188,7 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
                 conversation.resetUnreadCount();
 
                 //发送到聊天详情页
-                Intent intent = new Intent(getContext(), ImActivity.class);
+                Intent intent = new Intent(getContext(), FriendImActivity.class);
                 intent.putExtra("userid",conversation.getTargetId());
                 startActivity(intent);
             }
@@ -186,6 +205,14 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
             getImList();
         }
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getReLoad(String str){
+        if (str.equals("重新获取消息")){
+            getImList();
+        }
+    }
+
     public void getImList() {
         //聊天记录
         conversationList = JMessageClient.getConversationList();
@@ -239,6 +266,7 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
+        getImList();
     }
 
     @Override

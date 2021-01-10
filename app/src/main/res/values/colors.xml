@@ -42,5 +42,8 @@
     <color name="e6e6e6">#E6E6E6</color>
 
     <color name="color_3C025A">#3C025A</color>
+    <color name="colorLightGray">#CCCCCC</color>
+    <color name="transparent">#00000000</color>
+    <color name="colorBlackWithAlpha">#60000000</color>
 
 </resources>

@@ -378,9 +378,9 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_below="@id/rl_tips"
-                        android:id="@+id/rl_notdata"
                         android:visibility="gone"
-                        android:layout_height="wrap_content">
+                        android:id="@+id/rl_notdata"
+                        android:layout_height="@dimen/dp_280">
                         <ImageView
                             android:layout_width="@dimen/dp_183"
                             android:id="@+id/iv"

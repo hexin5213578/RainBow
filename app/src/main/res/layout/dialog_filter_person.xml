@@ -39,7 +39,8 @@
             android:layout_marginRight="@dimen/dp_28"
             android:layout_height="wrap_content">
             <RadioButton
-                android:layout_width="@dimen/dp_50"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:textColor="@drawable/selector_xingbie_text_color"
                 android:layout_height="@dimen/dp_19"
                 android:text="全部"
@@ -49,7 +50,8 @@
                 android:gravity="center"
                 android:button="@null" />
             <RadioButton
-                android:layout_width="@dimen/dp_50"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:textColor="@drawable/selector_xingbie_text_color"
                 android:layout_height="@dimen/dp_19"
                 android:text="T"
@@ -59,7 +61,8 @@
                 android:gravity="center"
                 android:button="@null" />
             <RadioButton
-                android:layout_width="@dimen/dp_50"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:textColor="@drawable/selector_xingbie_text_color"
                 android:layout_marginLeft="@dimen/dp_12"
                 android:layout_height="@dimen/dp_19"
@@ -69,7 +72,8 @@
                 android:gravity="center"
                 android:button="@null" />
             <RadioButton
-                android:layout_width="@dimen/dp_50"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:textColor="@drawable/selector_xingbie_text_color"
                 android:layout_marginLeft="@dimen/dp_12"
                 android:background="@drawable/radio_bg"
@@ -80,7 +84,8 @@
                 android:gravity="center" />
             <RadioButton
                 android:gravity="center"
-                android:layout_width="@dimen/dp_50"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:textColor="@drawable/selector_xingbie_text_color"
                 android:id="@+id/rb4"
                 android:layout_marginLeft="@dimen/dp_12"
@@ -150,7 +155,8 @@
             android:orientation="horizontal"
             android:layout_height="wrap_content">
             <com.YiDian.RainBow.custom.seekbar.DoubleSlideSeekBar
-                android:layout_width="@dimen/dp_225"
+                android:layout_width="@dimen/dp_215"
+                android:layout_weight="1"
                 app:lineHeight="@dimen/dp_5"
                 app:inColor="#8667E7"
                 android:layout_below="@id/tv4"
@@ -165,7 +171,8 @@
                 android:layout_height="@dimen/dp_30">
             </com.YiDian.RainBow.custom.seekbar.DoubleSlideSeekBar>
             <TextView
-                android:layout_width="@dimen/dp_50"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:text="18-60"
                 android:layout_gravity="center"
                 android:background="@drawable/tenradious_ff_bg"
@@ -199,6 +206,7 @@
             <SeekBar
                 android:progress="49"
                 android:max="49"
+                android:layout_weight="1"
                 android:layout_below="@id/tv1"
                 android:thumb="@mipmap/seekbar_thume"
                 android:maxHeight="@dimen/dp_5"
@@ -207,12 +215,13 @@
                 android:minHeight="@dimen/dp_5"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:progressDrawable="@drawable/progress_bar_bg"
-                android:layout_width="@dimen/dp_232"
+                android:layout_width="@dimen/dp_215"
                 android:layout_height="@dimen/dp_25">
             </SeekBar>
             <TextView
-                android:layout_width="@dimen/dp_50"
+                android:layout_width="0dp"
                 android:text="50km"
+                android:layout_weight="1"
                 android:id="@+id/tv_distance"
                 android:layout_gravity="center"
                 android:background="@drawable/tenradious_ff_bg"

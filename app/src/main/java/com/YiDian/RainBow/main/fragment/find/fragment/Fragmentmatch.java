@@ -1,8 +1,11 @@
 package com.YiDian.RainBow.main.fragment.find.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +14,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
@@ -362,7 +367,21 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
                 });
         // TODO: 2020/11/18 0018 设置给左滑右滑数据源
     }
+    //安卓10.0定位权限
+    public void Request() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            int request = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
+            if (request != PackageManager.PERMISSION_GRANTED)//缺少权限，进行权限申请
+            {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
+                return;//
+            } else {
+                doLocation();
+            }
+        } else {
 
+        }
+    }
     public void doLocation() {
         mlocationClient = new AMapLocationClient(getContext());
         //初始化定位参数
@@ -410,25 +429,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
         }
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Log.d("hmy", "onViewCreated");
-    }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        Log.d("hmy", "onAttach");
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        index = 0;
-        Log.d("hmy", "onStart");
-    }
 
     @Override
     public void onResume() {
@@ -437,24 +438,6 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d("hmy", "onStop");
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.d("hmy", "onDetach");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d("hmy", "onPause");
     }
 
     @Override

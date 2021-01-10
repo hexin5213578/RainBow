@@ -35,6 +35,7 @@ import com.YiDian.RainBow.setup.bean.BlackListBean;
 import com.YiDian.RainBow.setup.bean.GetBindPhoneMsgBean;
 import com.YiDian.RainBow.setup.bean.GetRealDataBean;
 import com.YiDian.RainBow.setup.bean.InsertRealBean;
+import com.YiDian.RainBow.user.bean.UserMsgBean;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
@@ -254,6 +255,12 @@ public interface Apis {
     //查询用户信息
     @GET("user/countUserInfo")
     Observable<LoginUserInfoBean> doGetUserInfo(@Query("userId")int userid);
+
+    //通过id查询用户信息
+    @GET("user/seleteUserOfId")
+    Observable<UserMsgBean> doGetUserMsgById(@Query("userId")int userid,@Query("id")int id);
+
+    //通过昵称查询用户信息
 
     /*//聊天发送通知
     @GET("user/insertMessage")

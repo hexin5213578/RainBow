@@ -24,14 +24,15 @@ import butterknife.ButterKnife;
 import cn.jpush.im.android.api.model.Message;
 
 
-public class ImAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class FriendImAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<ImMsgBean> list;
     private Context context;
     private ImMsgBean imMsgBean;
     private File file;
+    private String newChatTime;
 
-    public ImAdapter(Context context) {
+    public FriendImAdapter(Context context) {
 
         this.context = context;
     }
@@ -59,13 +60,24 @@ public class ImAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         imMsgBean = list.get(position);
+        if (position!=list.size()-1){
+            ImMsgBean imMsgBean = list.get(position + 1);
 
-        String newChatTime = StringUtil.getNewChatTime(imMsgBean.getCreateTimeInMillis());
+            newChatTime = StringUtil.getNewChatTime(this.imMsgBean.getCreateTimeInMillis());
+            String newChatTime2 = StringUtil.getNewChatTime(imMsgBean.getCreateTimeInMillis());
 
+            if (newChatTime.length()<6){
+                if (newChatTime.equals(newChatTime2)){
+                    ((ViewHolder)holder).tvTime.setVisibility(View.GONE);
+                }
+            }
+
+        }
         ((ViewHolder)holder).tvTime.setText(newChatTime);
-        ((ViewHolder)holder).tvMsg.setText(imMsgBean.getContent().getText());
 
-        if (imMsgBean.getDirect().equals("receive")) {
+        ((ViewHolder)holder).tvMsg.setText(this.imMsgBean.getContent().getText());
+
+        if (this.imMsgBean.getDirect().equals("receive")) {
             Glide.with(context).load(file).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder)holder).ivHeadimg);
         } else {
             Glide.with(context).load(R.mipmap.headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder)holder).ivHeadimg);

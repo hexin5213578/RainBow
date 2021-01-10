@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
  * @since 2019/4/1
  */
 public  class Common {
+    private static final String JG_APP_KEY = "87ce5706efafab51ddd2be08";
 
     /**
      * 获取token,不为空内种
@@ -53,7 +54,10 @@ public  class Common {
     public static String getUserId() {
         return "1030";
     }
-
+    //获取极光APO_KEY
+    public static String get_JG() {
+        return JG_APP_KEY;
+    }
     //获取手机号
     public static String getPhone() {
         return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.KEY_PHONE);

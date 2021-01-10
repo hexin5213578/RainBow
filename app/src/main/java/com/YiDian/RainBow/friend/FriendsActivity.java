@@ -21,6 +21,8 @@ import com.YiDian.RainBow.friend.fragment.FragmentFriend;
 import com.YiDian.RainBow.friend.fragment.FragmentGroup;
 import com.leaf.library.StatusBarUtil;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -151,6 +153,7 @@ public class FriendsActivity extends BaseAvtivity implements RadioGroup.OnChecke
             case R.id.ll_back:
                 //返回主页
                 finish();
+                EventBus.getDefault().post("收到了信息");
                 break;
             case R.id.ll_search:
 

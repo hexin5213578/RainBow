@@ -40,19 +40,15 @@ public class GlobalEventListener {
 
     public void onEvent(OfflineMessageEvent event) {
         List<Message> msgs = event.getOfflineMessageList();
-        for (Message msg : msgs) {
-            TextContent textContent = (TextContent) msg.getContent();
-            String text = textContent.getText();
-            Log.i("xxx", "离线消息:" + text);
+
+            Log.i("xxx", "离线消息:" + msgs.size()+"条");
+
             EventBus.getDefault().postSticky("收到了信息");
-        }
     }
     public void onEvent(MessageEvent event) {
+
         Message msg = event.getMessage();
-        TextContent textContent = (TextContent) msg.getContent();
-        String text = textContent.getText();
-        Log.i("xxx", "在线消息:" + text);
-        EventBus.getDefault().postSticky("收到了信息");
+        checkMessage(msg);
         //jumpToActivity(event.getMessage());
 
     }
@@ -63,18 +59,32 @@ public class GlobalEventListener {
                 TextContent textContent = (TextContent) msg.getContent();
                 final String message = textContent.getText();
 
+                Log.d("xxx","收到了文本信息"+message);
+
+                EventBus.getDefault().postSticky("收到了信息");
+
                 break;
             case image:
                 //处理图片消息
                 ImageContent imageContent = (ImageContent) msg.getContent();
                 imageContent.getLocalPath();//图片本地地址
                 imageContent.getLocalThumbnailPath();//图片对应缩略图的本地地址
+
+                Log.d("xxx","收到了图片消息");
+
+                EventBus.getDefault().postSticky("收到了信息");
+
                 break;
             case voice:
                 //处理语音消息
                 VoiceContent voiceContent = (VoiceContent) msg.getContent();
                 voiceContent.getLocalPath();//语音文件本地地址
                 voiceContent.getDuration();//语音文件时长
+
+                Log.d("xxx","收到了语音消息");
+
+                EventBus.getDefault().postSticky("收到了信息");
+
                 break;
             case custom:
                 //处理自定义消息
@@ -82,6 +92,11 @@ public class GlobalEventListener {
                 customContent.getNumberValue("custom_num"); //获取自定义的值
                 customContent.getBooleanValue("custom_boolean");
                 customContent.getStringValue("custom_string");
+
+                Log.d("xxx","自定义消息");
+
+                EventBus.getDefault().postSticky("收到了信息");
+
                 break;
             case eventNotification:
                 //处理事件提醒消息

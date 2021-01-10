@@ -1,12 +1,16 @@
 package com.YiDian.RainBow.utils;
 
 
+import com.YiDian.RainBow.base.Common;
+
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
 import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
+
+import cn.jpush.im.android.api.model.Conversation;
 
 public class Utils {
     public static String getPingYin(String inputString) {
@@ -29,5 +33,16 @@ public class Utils {
             e.printStackTrace();
         }
         return output;
+    }
+    /**
+     * 创建单聊会话
+     * 参数说明
+     * String username 会话对象的username.
+     * String appkey 用户所属应用的appkey,如果填空则默认为本应用的appkey
+     */
+    public static void createConversation(String userName) {
+
+        Conversation singleConversation = Conversation.createSingleConversation(userName, Common.get_JG());
+
     }
 }

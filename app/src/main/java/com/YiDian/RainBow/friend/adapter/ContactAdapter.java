@@ -12,11 +12,12 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
+import com.YiDian.RainBow.base.App;
+import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.friend.ContactComparator;
 import com.YiDian.RainBow.friend.bean.Contact;
 import com.YiDian.RainBow.friend.bean.FriendBean;
-import com.YiDian.RainBow.main.fragment.find.adapter.AllLikeAdapter;
-import com.YiDian.RainBow.main.fragment.msg.activity.ImActivity;
+import com.YiDian.RainBow.main.fragment.msg.activity.FriendImActivity;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.user.PersonHomeActivity;
 import com.YiDian.RainBow.utils.Utils;
@@ -24,12 +25,18 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import cn.jpush.im.android.api.model.Conversation;
+
+import static com.YiDian.RainBow.utils.Utils.createConversation;
 
 public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private LayoutInflater mLayoutInflater;
@@ -118,15 +125,27 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         ((ContactHolder) holder).tv_xingbie.setText(userRole);
 
                     }
+                    int finalI = i;
+
                     // TODO: 2020/12/27 0027 跳转到聊天页
                     ((ContactHolder) holder).rlitem.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent intent = new Intent(mContext, ImActivity.class);
+                            objectBean = mContactNames.get(finalI);
+
+                            String fansId = String.valueOf(objectBean.getFansId());
+
+                            Utils.createConversation(fansId);
+
+                            EventBus.getDefault().post("收到了消息");
+
+                            //将聊天对象的id作为参数传入
+                            Intent intent = new Intent(mContext, FriendImActivity.class);
+                            intent.putExtra("userid",fansId);
                             mContext.startActivity(intent);
                         }
                     });
-                    int finalI = i;
+
                     ((ContactHolder) holder).ivimage.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -165,7 +184,6 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mTextView = (TextView) view.findViewById(R.id.character);
         }
     }
-
     public class ContactHolder extends RecyclerView.ViewHolder {
         ImageView ivimage;
         TextView tv_xingbie;
