@@ -23,6 +23,7 @@
     <uses-permission android:name="android.permission.INTERNET" /> <!-- 网络权限 -->
     <uses-permission android:name="android.permission.VIBRATE" /> <!-- 震动权限 -->
     <uses-permission android:name="android.permission.CAMERA" /> <!-- 摄像头权限 -->
+    <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" /> <!-- 自动聚焦权限 -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
@@ -159,17 +160,19 @@
         <!-- 引导页 -->
         <activity
             android:name=".welcome.WelcomeActivity"
-            android:screenOrientation="portrait" />
-
-        <!-- 主页 -->
-        <activity
-            android:name=".main.activity.MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <!-- 主页 -->
+        <activity
+            android:name=".main.activity.MainActivity"
+            android:screenOrientation="portrait">
+
         </activity>
         <service
             android:name=".service.GrayService"
@@ -363,7 +366,11 @@
         <!-- 好友聊天 -->
         <activity
             android:name=".main.fragment.msg.activity.FriendImActivity"
-            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait" />
+
+        <!-- 拍照录像 -->
+        <activity
+            android:name=".main.fragment.msg.activity.JCameraViewActivity"
             android:screenOrientation="portrait" />
 
         <!-- 实名认证 -->

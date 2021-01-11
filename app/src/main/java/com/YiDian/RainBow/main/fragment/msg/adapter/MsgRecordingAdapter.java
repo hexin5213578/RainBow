@@ -90,8 +90,20 @@ public class MsgRecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             }
         });
         ((ViewHolder)holder).tvUsername.setText(conversation.getTitle());
+        if (conversation.getLatestType().name().equals("voice")){
+            ((ViewHolder)holder).tvLastMsg.setText("[语音消息]");
 
-        ((ViewHolder)holder).tvLastMsg.setText(conversation.getLatestText());
+        }else if (conversation.getLatestType().name().equals("text")){
+
+            ((ViewHolder)holder).tvLastMsg.setText(conversation.getLatestText());
+        }else if(conversation.getLatestType().name().equals("image")){
+
+            ((ViewHolder)holder).tvLastMsg.setText("[图片消息]");
+
+        }else if(conversation.getLatestType().name().equals("video")){
+
+            ((ViewHolder)holder).tvLastMsg.setText("[视频消息]");
+        }
 
         long lastMsgDate = conversation.getLastMsgDate();
 

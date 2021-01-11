@@ -367,21 +367,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
                 });
         // TODO: 2020/11/18 0018 设置给左滑右滑数据源
     }
-    //安卓10.0定位权限
-    public void Request() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            int request = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
-            if (request != PackageManager.PERMISSION_GRANTED)//缺少权限，进行权限申请
-            {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
-                return;//
-            } else {
-                doLocation();
-            }
-        } else {
 
-        }
-    }
     public void doLocation() {
         mlocationClient = new AMapLocationClient(getContext());
         //初始化定位参数

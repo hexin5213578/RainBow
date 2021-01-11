@@ -920,7 +920,7 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                             List<String> imglist = new ArrayList<>();
 
                             for (int i = 0; i < split.length; i++) {
-                                imglist.add(split[i].trim());
+                                imglist.add(split[i].trim()+"?imageView2/0/format/jpg/w/400");
                             }
 
                             rcImage1.setIsShowAll(false); //当传入的图片数超过9张时，是否全部显示
@@ -970,7 +970,7 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                             List<String> imglist = new ArrayList<>();
 
                             for (int i = 0; i < split.length; i++) {
-                                imglist.add(split[i].trim());
+                                imglist.add(split[i].trim()+"?imageView2/0/format/jpg/w/400");
                             }
 
                             rcImage.setIsShowAll(false); //当传入的图片数超过9张时，是否全部显示

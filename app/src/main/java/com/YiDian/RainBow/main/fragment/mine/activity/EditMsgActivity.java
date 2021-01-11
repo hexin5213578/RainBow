@@ -379,8 +379,8 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
     public void showChangeQianming() {
         //创建popwiondow弹出框
         mPopupWindow = new PopupWindow();
-        mPopupWindow.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
-        mPopupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+        mPopupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        mPopupWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_qianming, null);
 
         TextView cancle = view.findViewById(R.id.tv_cancle);

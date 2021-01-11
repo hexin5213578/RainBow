@@ -99,6 +99,7 @@ dependencies {
 
     //相册获取依赖
     //implementation 'com.github.wildma:PictureSelector:2.1.0'
+    implementation 'cjt.library.wheel:camera:1.1.9'
 
     //eventBus依赖
     implementation 'org.greenrobot:eventbus:3.0.0'

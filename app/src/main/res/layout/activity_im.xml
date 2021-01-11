@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:background="#F7F7F7"
+    android:id="@+id/rl_layout"
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
@@ -127,6 +128,7 @@
         android:layout_height="match_parent">
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
+                android:overScrollMode="never"
                 android:id="@+id/rc_imlist"
                 android:layout_height="wrap_content">
             </androidx.recyclerview.widget.RecyclerView>
@@ -137,83 +139,126 @@
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
         android:background="@drawable/bottom_bg"
-        android:layout_height="@dimen/dp_48">
-
+        android:layout_height="wrap_content">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/dp_15"
-            android:id="@+id/rl_sendyuyin"
-            android:visibility="gone"
-            android:layout_toLeftOf="@id/iv_jiahao"
-            android:layout_height="@dimen/dp_30">
-            <ImageView
-                android:layout_width="@dimen/dp_30"
-                android:src="@mipmap/jianpan"
-                android:layout_centerVertical="true"
-                android:id="@+id/iv_keyborad"
-                android:layout_height="@dimen/dp_30">
-            </ImageView>
-            <com.YiDian.RainBow.custom.audiorecord.AudioRecorderButton
-                android:layout_width="match_parent"
-                android:layout_toRightOf="@id/iv_keyborad"
-                android:layout_marginLeft="@dimen/dp_10"
-                android:background="@drawable/send_speech_btn_normal_style"
-                android:text="按住说话"
-                android:id="@+id/bt_luyin"
-                android:layout_height="match_parent">
-            </com.YiDian.RainBow.custom.audiorecord.AudioRecorderButton>
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_marginLeft="@dimen/dp_15"
-            android:layout_centerVertical="true"
-            android:id="@+id/rl_sendmsg"
-            android:layout_toLeftOf="@id/iv_jiahao"
-            android:layout_height="@dimen/dp_30">
-            <ImageView
-                android:layout_width="@dimen/dp_30"
-                android:src="@mipmap/yuyin"
-                android:layout_centerVertical="true"
-                android:id="@+id/iv_yuyin"
-                android:layout_height="@dimen/dp_30">
-            </ImageView>
-            <EditText
+            android:id="@+id/rl1"
+            android:layout_height="@dimen/dp_48">
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_centerVertical="true"
-                android:hint="请输入文字信息"
-                android:id="@+id/et_content"
-                android:layout_marginLeft="@dimen/dp_10"
-                android:layout_toRightOf="@id/iv_yuyin"
-                android:layout_toLeftOf="@id/bt_confirm"
-                android:paddingLeft="@dimen/dp_12"
-                android:textColorHint="@color/color_999999"
-                android:textSize="@dimen/sp_12"
-                android:background="@drawable/home_search_bg"
+                android:layout_marginLeft="@dimen/dp_15"
+                android:id="@+id/rl_sendyuyin"
+                android:visibility="gone"
+                android:layout_toLeftOf="@id/iv_jiahao"
                 android:layout_height="@dimen/dp_30">
-            </EditText>
-            <Button
-                android:layout_width="@dimen/dp_50"
-                android:background="@drawable/content_bt_nodata_bg"
+                <ImageView
+                    android:layout_width="@dimen/dp_30"
+                    android:src="@mipmap/jianpan"
+                    android:layout_centerVertical="true"
+                    android:id="@+id/iv_keyborad"
+                    android:layout_height="@dimen/dp_30">
+                </ImageView>
+                <com.YiDian.RainBow.custom.audiorecord.AudioRecorderButton
+                    android:layout_width="match_parent"
+                    android:layout_toRightOf="@id/iv_keyborad"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:background="@drawable/send_speech_btn_normal_style"
+                    android:text="按住说话"
+                    android:id="@+id/bt_luyin"
+                    android:layout_height="match_parent">
+                </com.YiDian.RainBow.custom.audiorecord.AudioRecorderButton>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_marginLeft="@dimen/dp_15"
                 android:layout_centerVertical="true"
-                android:text="发送"
+                android:id="@+id/rl_sendmsg"
+                android:layout_toLeftOf="@id/iv_jiahao"
+                android:layout_height="@dimen/dp_30">
+                <ImageView
+                    android:layout_width="@dimen/dp_30"
+                    android:src="@mipmap/yuyin"
+                    android:layout_centerVertical="true"
+                    android:id="@+id/iv_yuyin"
+                    android:layout_height="@dimen/dp_30">
+                </ImageView>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_centerVertical="true"
+                    android:hint="请输入文字信息"
+                    android:id="@+id/et_content"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_toRightOf="@id/iv_yuyin"
+                    android:layout_toLeftOf="@id/bt_confirm"
+                    android:paddingLeft="@dimen/dp_12"
+                    android:textColorHint="@color/color_999999"
+                    android:textSize="@dimen/sp_12"
+                    android:background="@null"
+                    android:layout_height="@dimen/dp_30">
+                </EditText>
+                <Button
+                    android:layout_width="@dimen/dp_50"
+                    android:background="@drawable/content_bt_nodata_bg"
+                    android:layout_centerVertical="true"
+                    android:text="发送"
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/bt_confirm"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:textSize="@dimen/sp_12"
+                    android:textColor="@color/white"
+                    android:layout_height="@dimen/dp_32">
+                </Button>
+            </RelativeLayout>
+            <ImageView
+                android:layout_width="@dimen/dp_30"
+                android:src="@mipmap/jiahao"
+                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
-                android:id="@+id/bt_confirm"
+                android:id="@+id/iv_jiahao"
+                android:layout_marginRight="@dimen/dp_15"
                 android:layout_marginLeft="@dimen/dp_10"
-                android:textSize="@dimen/sp_12"
-                android:textColor="@color/white"
-                android:layout_height="@dimen/dp_32">
-            </Button>
+                android:layout_height="@dimen/dp_30">
+            </ImageView>
         </RelativeLayout>
-        <ImageView
-            android:layout_width="@dimen/dp_30"
-            android:src="@mipmap/jiahao"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:id="@+id/iv_jiahao"
-            android:layout_marginRight="@dimen/dp_15"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_height="@dimen/dp_30">
-        </ImageView>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_below="@id/rl1"
+            android:visibility="gone"
+            android:id="@+id/rl_menu"
+            android:layout_height="@dimen/dp_60">
+            <View
+                android:layout_width="match_parent"
+                android:background="@color/color_f7f7f7"
+                android:id="@+id/v1"
+                android:layout_height="@dimen/dp_1">
+            </View>
+            <ImageView
+                android:layout_width="@dimen/dp_33"
+                android:src="@mipmap/paizhao"
+                android:layout_centerVertical="true"
+                android:id="@+id/iv_paizhao"
+                android:layout_marginLeft="@dimen/dp_15"
+                android:layout_height="@dimen/dp_27">
+            </ImageView>
+            <ImageView
+                android:layout_width="@dimen/dp_33"
+                android:src="@mipmap/xiangce"
+                android:layout_centerVertical="true"
+                android:id="@+id/iv_xiangce"
+                android:layout_toRightOf="@id/iv_paizhao"
+                android:layout_marginLeft="@dimen/dp_33"
+                android:layout_height="@dimen/dp_27">
+            </ImageView>
+            <ImageView
+                android:layout_width="@dimen/dp_33"
+                android:src="@mipmap/gift"
+                android:layout_toRightOf="@id/iv_xiangce"
+                android:layout_centerVertical="true"
+                android:id="@+id/iv_liwu"
+                android:layout_marginLeft="@dimen/dp_33"
+                android:layout_height="@dimen/dp_27">
+            </ImageView>
+        </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

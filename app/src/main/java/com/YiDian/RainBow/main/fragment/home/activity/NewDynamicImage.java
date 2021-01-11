@@ -45,7 +45,7 @@ public class NewDynamicImage extends FragmentActivity {
     Toolbar toolbar;
     @BindView(R.id.vp)
     ImageViewer vp;
-
+    String path = "?imageView2/0/format/jpg/w/400";
     private List<String> urls;
     private int index;
 
@@ -71,8 +71,14 @@ public class NewDynamicImage extends FragmentActivity {
         index = intent.getIntExtra("index", 0);
         urls = intent.getStringArrayListExtra("img");
 
+        List<String> url = new ArrayList<>();
+
+        for (int i =0;i<urls.size();i++){
+            url.add(urls.get(i).substring(0,urls.get(i).lastIndexOf("?")));
+        }
+
         vp.overlayStatusBar(false) // ImageViewer 是否会占据 StatusBar 的空间
-                .imageData(urls) // 图片数据
+                .imageData(url) // 图片数据
                 .imageLoader(new PhotoLoader()) // 设置图片加载方式
                 .playEnterAnim(true) // 是否开启进场动画，默认为true
                 .playExitAnim(false) // 是否开启退场动画，默认为true

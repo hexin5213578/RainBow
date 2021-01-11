@@ -1,9 +1,13 @@
 package com.YiDian.RainBow.main.fragment.msg.activity;
 
 import android.Manifest;
+import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -13,38 +17,49 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.YiDian.RainBow.R;
-import com.YiDian.RainBow.base.App;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.audiorecord.AudioRecorderButton;
+import com.YiDian.RainBow.dynamic.activity.DevelopmentDynamicActivity;
+import com.YiDian.RainBow.dynamic.adapter.DevelogmentImgAdapter;
 import com.YiDian.RainBow.main.fragment.msg.adapter.FriendImAdapter;
-import com.YiDian.RainBow.main.fragment.msg.bean.ImMsgBean;
 import com.YiDian.RainBow.user.bean.UserMsgBean;
 import com.YiDian.RainBow.utils.KeyBoardUtils;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.gson.Gson;
+import com.dmcbig.mediapicker.PickerActivity;
+import com.dmcbig.mediapicker.PickerConfig;
+import com.dmcbig.mediapicker.entity.Media;
 import com.leaf.library.StatusBarUtil;
 import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.widget.SpringView;
@@ -134,19 +149,71 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     RelativeLayout rlSendyuyin;
     @BindView(R.id.rl_sendmsg)
     RelativeLayout rlSendmsg;
+    @BindView(R.id.iv_paizhao)
+    ImageView ivPaizhao;
+    @BindView(R.id.iv_xiangce)
+    ImageView ivXiangce;
+    @BindView(R.id.iv_liwu)
+    ImageView ivLiwu;
+    @BindView(R.id.rl_menu)
+    RelativeLayout rlMenu;
+    @BindView(R.id.rl1)
+    RelativeLayout rl1;
+    @BindView(R.id.v1)
+    View v1;
+    @BindView(R.id.rl_layout)
+    RelativeLayout rlLayout;
+    @BindView(R.id.rl_bottom)
+    RelativeLayout rlBottom;
     private String userName;
+    private ArrayList<Media> select;
+    private ArrayList<Media> select1;
     int page = 0;
-    int size = 30;
+    int size = 50;
     private Conversation conversation;
-    private List<ImMsgBean> allList;
+    private List<Message> allList;
     private FriendImAdapter imAdapter;
     private LinearLayoutManager linearLayoutManager;
     private String id;
     private int userid;
+    boolean isfirst = true;
+    private PopupWindow mPopupWindow1;
 
     @Override
     protected int getResId() {
         return R.layout.activity_im;
+    }
+
+    /**
+     * addLayoutListener方法如下
+     *
+     * @param main   根布局
+     * @param scroll 需要显示的最下方View
+     */
+    public void addLayoutListener(final View main, final View scroll) {
+        main.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect rect = new Rect();
+                //1、获取main在窗体的可视区域
+                main.getWindowVisibleDisplayFrame(rect);
+                //2、获取main在窗体的不可视区域高度，在键盘没有弹起时，main.getRootView().getHeight()调节度应该和rect.bottom高度一样
+                int mainInvisibleHeight = main.getRootView().getHeight() - rect.bottom;
+                int screenHeight = main.getRootView().getHeight();//屏幕高度
+                //3、不可见区域大于屏幕本身高度的1/4：说明键盘弹起了
+                if (mainInvisibleHeight > screenHeight / 4) {
+                    int[] location = new int[2];
+                    scroll.getLocationInWindow(location);
+                    // 4､获取Scroll的窗体坐标，算出main需要滚动的高度
+                    int srollHeight = (location[1] + scroll.getHeight()) - rect.bottom;
+                    //5､让界面整体上移键盘的高度
+                    main.scrollTo(0, srollHeight);
+                } else {
+                    //3、不可见区域小于屏幕高度1/4时,说明键盘隐藏了，把界面下移，移回到原有高度
+                    main.scrollTo(0, 0);
+                }
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -161,25 +228,34 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         ivYuyin.setOnClickListener(this);
         ivJiahao.setOnClickListener(this);
         ivKeyborad.setOnClickListener(this);
+        ivPaizhao.setOnClickListener(this);
+        ivXiangce.setOnClickListener(this);
+        ivLiwu.setOnClickListener(this);
+        etContent.setOnClickListener(this);
 
+        select = new ArrayList<>();
+        select1 = new ArrayList<>();
+
+        Request();
+
+        addLayoutListener(rlLayout, rlBottom);
         //直接取消动画
         RecyclerView.ItemAnimator animator = rcImlist.getItemAnimator();
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
-
         //拿到监听
         btLuyin.setAudioFinishRecorderListener(new AudioRecorderButton.AudioFinishRecorderListener() {
             @Override
             public void onFinish(int seconds, String FilePath) {
-                Log.d("xxx","拿到录音回调，路径为"+FilePath);
+                Log.d("xxx", "拿到录音回调，路径为" + FilePath);
 
                 File file = new File(FilePath);
                 int duration = getDuration(file, FriendImActivity.this);
 
-                Log.d("xxx","拿到语音文件的长度为"+duration);
+                Log.d("xxx", "拿到语音文件的长度为" + duration);
 
-                sendYuyinMessage(FriendImActivity.this,file,duration);
+                sendYuyinMessage(FriendImActivity.this, file, duration);
 
             }
         });
@@ -282,7 +358,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         if (str.equals("收到了信息")) {
             allList.clear();
             page = 0;
-            size = 30;
+            size = 50;
             getListFromIm(page, size);
         }
     }
@@ -295,25 +371,19 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
             rlMsgUser.setVisibility(View.GONE);
             sv.setVisibility(View.VISIBLE);
-            this.page += 30;
-            this.size += 30;
+            this.page += 50;
+            this.size += 50;
 
             sv.setHeader(new AliFooter(this));
 
-            for (int i = 0; i < messagesFromNewest.size(); i++) {
-                String s = messagesFromNewest.get(i).toJson();
-                Gson gson = new Gson();
-                ImMsgBean imMsgBean = gson.fromJson(s, ImMsgBean.class);
-
-                allList.add(imMsgBean);
-            }
+            allList.addAll(messagesFromNewest);
 
             Log.d("xxx", "聊天记录长度为" + allList.size() + "");
             Log.d("xxx", "聊天记录第一条为" + messagesFromNewest.get(0).toJson());
 
             linearLayoutManager = new LinearLayoutManager(FriendImActivity.this, RecyclerView.VERTICAL, true);
             rcImlist.setLayoutManager(linearLayoutManager);
-
+            linearLayoutManager.setStackFromEnd(true);
             linearLayoutManager.scrollToPositionWithOffset(0, 0);
 
             imAdapter = new FriendImAdapter(FriendImActivity.this);
@@ -382,8 +452,8 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     }
 
     /**
-     * @param context  上下文
-     * @param text     聊天文本
+     * @param context 上下文
+     * @param text    聊天文本
      */
     public void sendMessage(Context context, String text) {
         Message message = JMessageClient.createSingleTextMessage(id, Common.get_JG(), text);
@@ -393,13 +463,14 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
             public void gotResult(int i, String s) {
                 Log.i("TAG", "register：code：" + i + "  msg：" + s);
                 if (i == 0) {
-                    Toast.makeText(context, "发送成功", Toast.LENGTH_SHORT).show();
+                    Log.d("xxx","发送成功");
+
                     allList.clear();
                     page = 0;
-                    size = 15;
+                    size = 50;
                     getListFromIm(page, size);
                 } else {
-                    Toast.makeText(context, "发送失败", Toast.LENGTH_SHORT).show();
+                    Log.d("xxx","发送失败");
                 }
             }
         });
@@ -415,27 +486,28 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     }
 
     /**
-     *
      * @param context
      * @param RecoderFile
      */
-    public void sendYuyinMessage(Context context, File RecoderFile,int time) {
+    public void sendYuyinMessage(Context context, File RecoderFile, int time) {
         Message message = null;
         try {
-            message = JMessageClient.createSingleVoiceMessage(id, Common.get_JG(), RecoderFile,time);
+            message = JMessageClient.createSingleVoiceMessage(id, Common.get_JG(), RecoderFile, time);
 
             message.setOnSendCompleteCallback(new BasicCallback() {
                 @Override
                 public void gotResult(int i, String s) {
                     Log.i("TAG", "register：code：" + i + "  msg：" + s);
                     if (i == 0) {
-                        Toast.makeText(context, "发送成功", Toast.LENGTH_SHORT).show();
+                        Log.d("xxx","发送成功");
+
                         allList.clear();
                         page = 0;
-                        size = 15;
+                        size = 50;
                         getListFromIm(page, size);
                     } else {
-                        Toast.makeText(context, "发送失败", Toast.LENGTH_SHORT).show();
+                        Log.d("xxx","发送失败");
+
                     }
                 }
             });
@@ -443,7 +515,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
             MessageSendingOptions options = new MessageSendingOptions();
 
             options.setNotificationTitle(userName);
-            options.setNotificationText("语音消息");
+            options.setNotificationText("[语音信息]");
             options.setCustomNotificationEnabled(true);
             options.setRetainOffline(true);
             options.setShowNotification(true);
@@ -453,6 +525,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
             e.printStackTrace();
         }
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -462,30 +535,73 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 break;
             case R.id.ll_more:
                 //跳转到设置页
+
                 break;
             case R.id.bt_confirm:
                 String s = etContent.getText().toString();
 
+                //发送文本信息
                 sendMessage(FriendImActivity.this, s);
                 etContent.setText("");
+                //发送成功关闭键盘
                 KeyBoardUtils.closeKeyboard(etContent);
                 break;
             case R.id.iv_yuyin:
+                //展示语音录入框
                 rlSendmsg.setVisibility(View.GONE);
                 rlSendyuyin.setVisibility(View.VISIBLE);
+
+                rlMenu.setVisibility(View.GONE);
+                //关闭键盘
                 KeyBoardUtils.closeKeyboard(etContent);
                 break;
             case R.id.iv_jiahao:
+                if (isfirst) {
+                    KeyBoardUtils.closeKeyboard(etContent);
+                    rlMenu.setVisibility(View.VISIBLE);
+
+                    linearLayoutManager.setStackFromEnd(true);
+                    linearLayoutManager.scrollToPositionWithOffset(0, 0);
+
+                    isfirst = false;
+                } else {
+
+                    rlMenu.setVisibility(View.GONE);
+                    isfirst = true;
+                }
+                break;
+            //调起相机拍照
+            case R.id.iv_paizhao:
+                //跳转到拍照摄像页
+                int request = ContextCompat.checkSelfPermission(FriendImActivity.this, Manifest.permission.CAMERA);
+                if (request != PackageManager.PERMISSION_GRANTED)//缺少权限，进行权限申请
+                {
+                    Toast.makeText(this, "相机权限未开启", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent(FriendImActivity.this,JCameraViewActivity.class);
+                    startActivity(intent);
+                }
+                break;
+            //调起相册
+            case R.id.iv_xiangce:
+                showSelectImgAndVideo();
+                break;
+            //展示礼物选择框
+            case R.id.iv_liwu:
 
                 break;
             case R.id.iv_keyborad:
                 rlSendmsg.setVisibility(View.VISIBLE);
                 rlSendyuyin.setVisibility(View.GONE);
-                KeyBoardUtils.openKeyBoard(etContent);
+                break;
+            case R.id.et_content:
+                rlMenu.setVisibility(View.GONE);
+
                 break;
         }
     }
-    public static int getDuration(File source,Context context) {
+
+    public static int getDuration(File source, Context context) {
         int duration = 0;
         Uri uri = Uri.fromFile(source);
         MediaPlayer mediaPlayer = new MediaPlayer();
@@ -498,5 +614,150 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         }
         return duration / 1000;
 
+    }
+    //安卓10.0定位权限
+    public void Request() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            int request = ContextCompat.checkSelfPermission(FriendImActivity.this, Manifest.permission.CAMERA);
+            if (request != PackageManager.PERMISSION_GRANTED)//缺少权限，进行权限申请
+            {
+                ActivityCompat.requestPermissions(FriendImActivity.this, new String[]{Manifest.permission.CAMERA}, 100);
+                return;//
+            } else {
+
+            }
+        } else {
+
+        }
+    }
+    //弹出选择图片视频的弹出框
+    public void showSelectImgAndVideo() {
+        //添加成功后处理
+        mPopupWindow1 = new PopupWindow();
+        mPopupWindow1.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        mPopupWindow1.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+        View view = LayoutInflater.from(FriendImActivity.this).inflate(R.layout.dialog_selector_resoues_way, null);
+
+        RelativeLayout rl_img = view.findViewById(R.id.tv_img);
+        RelativeLayout rl_video = view.findViewById(R.id.tv_video);
+        RelativeLayout rl_cancle = view.findViewById(R.id.tv_cancle);
+
+        rl_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //装被选中的文件
+                select.clear();
+
+                Intent intent = new Intent(FriendImActivity.this, PickerActivity.class);
+                intent.putExtra(PickerConfig.SELECT_MODE, PickerConfig.PICKER_IMAGE);//设置选择类型，默认是图片和视频可一起选择(非必填参数)
+                long maxSize = 10485760L;//long long long long类型
+                intent.putExtra(PickerConfig.MAX_SELECT_SIZE, maxSize);
+                intent.putExtra(PickerConfig.MAX_SELECT_COUNT, 9); //最大选择数量，默认40（非必填参数）
+                FriendImActivity.this.startActivityForResult(intent, 201);
+
+                dismiss();
+            }
+        });
+        rl_video.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //装被选中的文件
+                select1.clear();
+
+                Intent intent = new Intent(FriendImActivity.this, PickerActivity.class);
+                intent.putExtra(PickerConfig.SELECT_MODE, PickerConfig.PICKER_VIDEO);//设置选择类型，默认是图片和视频可一起选择(非必填参数)
+                long maxSize = 104857600;//long long long long类型
+                intent.putExtra(PickerConfig.MAX_SELECT_SIZE, maxSize);
+                intent.putExtra(PickerConfig.MAX_SELECT_COUNT, 1); //最大选择数量，默认40（非必填参数）
+                FriendImActivity.this.startActivityForResult(intent, 200);
+                dismiss();
+            }
+        });
+        rl_cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+        //popwindow设置属性
+        mPopupWindow1.setContentView(view);
+        mPopupWindow1.setBackgroundDrawable(new BitmapDrawable());
+        mPopupWindow1.setFocusable(true);
+        mPopupWindow1.setOutsideTouchable(true);
+        mPopupWindow1.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                setWindowAlpa(false);
+            }
+        });
+        show1(view);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (data!=null){
+            if (requestCode == 200 && resultCode == PickerConfig.RESULT_CODE) {
+
+                if (data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT).size() > 0) {
+                    select1 = data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT);
+                }
+                Log.i("select", "视频长度为" + select1.size());
+
+            } else if (requestCode == 201 && resultCode == PickerConfig.RESULT_CODE) {
+
+                if (data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT).size() > 0) {
+                    select = data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT);
+                }
+                Log.i("select", "图片长度为" + select.size());
+
+            }
+        }
+    }
+
+    //设置透明度
+    public void setWindowAlpa(boolean isopen) {
+        if (Build.VERSION.SDK_INT < 11) {
+            return;
+        }
+
+        final Window window = FriendImActivity.this.getWindow();
+        final WindowManager.LayoutParams lp = window.getAttributes();
+        window.setFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND, WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        ValueAnimator animator;
+        if (isopen) {
+            animator = ValueAnimator.ofFloat(1.0f, 0.5f);
+        } else {
+            animator = ValueAnimator.ofFloat(0.5f, 1.0f);
+        }
+        animator.setDuration(400);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float alpha = (float) animation.getAnimatedValue();
+                lp.alpha = alpha;
+                window.setAttributes(lp);
+            }
+        });
+        animator.start();
+    }
+
+    private void show1(View v) {
+        if (mPopupWindow1 != null && !mPopupWindow1.isShowing()) {
+            mPopupWindow1.showAtLocation(v, Gravity.CENTER_HORIZONTAL, 0, 0);
+        }
+        setWindowAlpa(true);
+    }
+
+    /**
+     * 消失PopupWindow
+     */
+    public void dismiss() {
+        if (mPopupWindow1 != null && mPopupWindow1.isShowing()) {
+            mPopupWindow1.dismiss();
+        }
     }
 }

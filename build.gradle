@@ -31,6 +31,9 @@ allprojects {
             name 'Google'
         }
         maven { url "https://dl.bintray.com/albertlii/android-maven/" }
+        maven {
+            url 'https://dl.bintray.com/cjt/maven'
+        }
         // 添加下面的内容
         flatDir {
             dirs 'libs'

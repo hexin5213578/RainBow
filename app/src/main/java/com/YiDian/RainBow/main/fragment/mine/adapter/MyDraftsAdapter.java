@@ -221,7 +221,7 @@ public class MyDraftsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             List<String> imglist = new ArrayList<>();
 
             for (int i = 0; i < split.length; i++) {
-                imglist.add(split[i].trim());
+                imglist.add(split[i].trim()+"?imageView2/0/format/jpg/w/400");
             }
             ((ViewHolder) holder).rcImage.setIsShowAll(false); //当传入的图片数超过9张时，是否全部显示
             ((ViewHolder) holder).rcImage.setSpacing(5); //动态设置图片之间的间隔
@@ -243,7 +243,7 @@ public class MyDraftsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             String[] split = contentImg.split(",");
             List<String> img = new ArrayList<>();
             for (int i = 0; i < split.length; i++) {
-                img.add(split[i].trim());
+                img.add(split[i].trim()+"?imageView2/0/format/jpg/w/400");
             }
             ((ViewHolder) holder).rcImage.setIsShowAll(false); //当传入的图片数超过9张时，是否全部显示
             ((ViewHolder) holder).rcImage.setSpacing(5); //动态设置图片之间的间隔
