@@ -25,6 +25,8 @@ import org.greenrobot.eventbus.ThreadMode;
 public class WelcomeActivity extends BaseAvtivity{
 
 
+    private Handler handler;
+
     @Override
     protected int getResId() {
         return R.layout.activity_welcome;
@@ -39,13 +41,11 @@ public class WelcomeActivity extends BaseAvtivity{
             window.setStatusBarColor(WelcomeActivity.this.getResources().getColor(R.color.white));
         }
         Request();
-        Handler handler = new Handler();
+        handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+
                /* String isLogin = Common.getIsLogin();
                 if(isLogin!=null){
                     if(isLogin.equals("0")){
@@ -74,6 +74,9 @@ public class WelcomeActivity extends BaseAvtivity{
                 ActivityCompat.requestPermissions(WelcomeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
                 return;//
             } else {
+                        Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
             }
         } else {
 
@@ -82,5 +85,24 @@ public class WelcomeActivity extends BaseAvtivity{
     @Override
     protected BasePresenter initPresenter() {
         return null;
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == 100) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    //如果拒绝授予权限,且勾选了再也不提醒
+                    if (!shouldShowRequestPermissionRationale(permissions[0])) {
+
+                    } else {
+                    }
+                }
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

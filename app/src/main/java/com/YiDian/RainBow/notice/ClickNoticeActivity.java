@@ -90,6 +90,7 @@ public class ClickNoticeActivity extends BaseAvtivity implements View.OnClickLis
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        allList.clear();
                         page=  1;
                         getNotice(page,size);
                         sv.onFinishFreshAndLoad();

@@ -122,9 +122,25 @@ public class AudioManage {
      * 释放资源
      */
     public void release() {
-        mMediaRecorder.stop();
-        mMediaRecorder.release();
-        mMediaRecorder = null;
+       /* if (mMediaRecorder!=null){
+            mMediaRecorder.stop();
+            mMediaRecorder.release();
+            mMediaRecorder = null;
+        }*/
+
+        if (mMediaRecorder != null) {
+            try {
+                mMediaRecorder.stop();
+            } catch (IllegalStateException e) {
+                // TODO 如果当前java状态和jni里面的状态不一致，
+                //e.printStackTrace();
+                mMediaRecorder = null;
+                mMediaRecorder = new MediaRecorder();
+            }
+            mMediaRecorder.release();
+            mMediaRecorder = null;
+        }
+
     }
 
     /**

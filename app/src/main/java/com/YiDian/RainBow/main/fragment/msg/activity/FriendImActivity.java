@@ -238,6 +238,21 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
         Request();
 
+        if (Build.VERSION.SDK_INT >= 23) {
+            int REQUEST_CODE_CONTACT = 101;
+            String[] permissions = {
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            //验证是否许可权限
+            for (String str : permissions) {
+                if (FriendImActivity.this.checkSelfPermission(str) != PackageManager.PERMISSION_GRANTED) {
+                    //申请权限
+                    FriendImActivity.this.requestPermissions(permissions, REQUEST_CODE_CONTACT);
+                    return;
+                } else {
+                    //这里就是权限打开之后自己要操作的逻辑
+                }
+            }
+        }
         addLayoutListener(rlLayout, rlBottom);
         //直接取消动画
         RecyclerView.ItemAnimator animator = rcImlist.getItemAnimator();
@@ -559,9 +574,6 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 if (isfirst) {
                     KeyBoardUtils.closeKeyboard(etContent);
                     rlMenu.setVisibility(View.VISIBLE);
-
-                    linearLayoutManager.setStackFromEnd(true);
-                    linearLayoutManager.scrollToPositionWithOffset(0, 0);
 
                     isfirst = false;
                 } else {

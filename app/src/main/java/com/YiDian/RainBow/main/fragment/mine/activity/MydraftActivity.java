@@ -220,7 +220,7 @@ public class MydraftActivity extends BaseAvtivity implements View.OnClickListene
                                 sv.setFooter(new AliFooter(MydraftActivity.this));
                             }
                         }else{
-                            if(AllList.size()>=0 && AllList!=null){
+                            if(AllList.size()>0 && AllList!=null){
                                 //创建适配器
                                 Toast.makeText(MydraftActivity.this, "没有更多内容了", Toast.LENGTH_SHORT).show();
                             }else{
