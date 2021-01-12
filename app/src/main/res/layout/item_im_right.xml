@@ -17,7 +17,6 @@
         </TextView>
         <ImageView
             android:layout_width="@dimen/dp_30"
-            android:src="@mipmap/headimg"
             android:id="@+id/iv_headimg"
             android:layout_marginTop="@dimen/dp_12"
             android:layout_alignParentRight="true"

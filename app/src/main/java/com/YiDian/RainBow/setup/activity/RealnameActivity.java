@@ -32,6 +32,7 @@ import com.YiDian.RainBow.utils.MD5Utils;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.YiDian.RainBow.utils.SPUtil;
 import com.YiDian.RainBow.utils.StringUtil;
+import com.bumptech.glide.Glide;
 import com.huawei.hms.mlplugin.card.icr.cn.MLCnIcrCapture;
 import com.huawei.hms.mlplugin.card.icr.cn.MLCnIcrCaptureConfig;
 import com.huawei.hms.mlplugin.card.icr.cn.MLCnIcrCaptureFactory;
@@ -119,6 +120,8 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
 
                 file1 = getFile(idCardResult.cardBitmap);
 
+
+
                 Username = idCardResult.name;
                 num = idCardResult.idNum;
 
@@ -153,6 +156,7 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
             } else if (idCardResult.sideType == 2) {
                 ivFanm.setVisibility(View.VISIBLE);
                 rlFanmian.setVisibility(View.GONE);
+
                 ivFanm.setImageBitmap(idCardResult.cardBitmap);
 
                 file2 = getFile(idCardResult.cardBitmap);
@@ -400,18 +404,22 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
         File file = new File(Environment.getExternalStorageDirectory() + "/temp.jpg");
-        try {
-            file.createNewFile();
-            FileOutputStream fos = new FileOutputStream(file);
-            InputStream is = new ByteArrayInputStream(baos.toByteArray());
-            int x = 0;
-            byte[] b = new byte[1024 * 100];
-            while ((x = is.read(b)) != -1) {
-                fos.write(b, 0, x);
+        if (file.exists()){
+            file.delete();
+        }else{
+            try {
+                file.createNewFile();
+                FileOutputStream fos = new FileOutputStream(file);
+                InputStream is = new ByteArrayInputStream(baos.toByteArray());
+                int x = 0;
+                byte[] b = new byte[1024 * 100];
+                while ((x = is.read(b)) != -1) {
+                    fos.write(b, 0, x);
+                }
+                fos.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            fos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return file;
     }

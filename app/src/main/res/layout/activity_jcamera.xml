@@ -6,8 +6,8 @@
     <com.cjt2325.cameralibrary.JCameraView
         android:id="@+id/cameraview"
         android:layout_width="match_parent"
-        app:iconSrc="@mipmap/qiehuan"
         app:duration_max="10000"
+        app:iconSrc="@mipmap/qiehuan"
         android:layout_height="match_parent"
         />
 </RelativeLayout>

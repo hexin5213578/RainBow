@@ -1,22 +1,25 @@
 package com.YiDian.RainBow.main.fragment.msg.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioManager;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
-import com.YiDian.RainBow.main.fragment.home.adapter.ViewHolder;
+import com.YiDian.RainBow.custom.videoplayer.SampleCoverVideo;
+import com.YiDian.RainBow.main.fragment.activity.SimplePlayerActivity;
+import com.YiDian.RainBow.main.fragment.home.activity.NewDynamicImage;
+import com.YiDian.RainBow.main.fragment.msg.bean.ImImageBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.ImMsgBean;
+import com.YiDian.RainBow.main.fragment.msg.bean.ImVideoBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.ImVocieBean;
 import com.YiDian.RainBow.utils.StringUtil;
 import com.bumptech.glide.Glide;
@@ -24,16 +27,17 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import cn.jpush.im.android.api.model.Message;
-
-import static cn.jpush.im.android.api.jmrtc.JMRTCInternalUse.getApplicationContext;
 
 
 public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
@@ -47,6 +51,10 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
     private Gson gson;
     private MediaPlayer mediaPlayer;
     private ImViewHolder viewHolder;
+    String flag = "emulated";
+    private ArrayList<String> imgUrl;
+    private Intent intent;
+    public static final String TAG = "IMAdapter";
 
     public FriendImAdapter(Context context) {
 
@@ -68,7 +76,7 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
     public ImViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == 0) {
             //接收纯文本
-            viewHolder =ImViewHolder.createViewHolder(context, parent, R.layout.item_im_left);
+            viewHolder = ImViewHolder.createViewHolder(context, parent, R.layout.item_im_left);
             return viewHolder;
         }
         if (viewType == 1) {
@@ -78,25 +86,33 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
         }
         if (viewType == 2) {
             //接收图片
+            viewHolder = ImViewHolder.createViewHolder(context, parent, R.layout.item_im_left_image);
+            return viewHolder;
         }
         if (viewType == 3) {
             //接收视频
+            viewHolder = ImViewHolder.createViewHolder(context, parent, R.layout.item_im_left_video);
+            return viewHolder;
         }
         if (viewType == 4) {
             //发送文本
-            viewHolder  =ImViewHolder.createViewHolder(context, parent, R.layout.item_im_right);
+            viewHolder = ImViewHolder.createViewHolder(context, parent, R.layout.item_im_right);
             return viewHolder;
         }
         if (viewType == 5) {
             //发送语音
-            viewHolder= ImViewHolder.createViewHolder(context, parent, R.layout.item_im_right_voice);
+            viewHolder = ImViewHolder.createViewHolder(context, parent, R.layout.item_im_right_voice);
             return viewHolder;
         }
         if (viewType == 6) {
             //发送图片
+            viewHolder = ImViewHolder.createViewHolder(context, parent, R.layout.item_im_right_image);
+            return viewHolder;
         }
         if (viewType == 7) {
             //发送视频
+            viewHolder = ImViewHolder.createViewHolder(context, parent, R.layout.item_im_right_video);
+            return viewHolder;
         }
         return null;
     }
@@ -106,6 +122,8 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
 
         message = list.get(position);
         mediaPlayer = new MediaPlayer();
+
+        imgUrl = new ArrayList<>();
 
         if (position != list.size() - 1) {
             Message imMsgBean = list.get(position + 1);
@@ -117,9 +135,9 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                 String[] split = newChatTime.split(":");
                 String[] split1 = newChatTime2.split(":");
 
-                if (split1[1].equals(split[1]) || split1[1].equals((Integer.valueOf(split[0])-1)) || split1[1].equals((Integer.valueOf(split[0])+1))) {
+                if (split1[1].equals(split[1]) || split1[1].equals((Integer.valueOf(split[0]) - 1)) || split1[1].equals((Integer.valueOf(split[0]) + 1))) {
                     holder.tvTime.setVisibility(View.GONE);
-                }else{
+                } else {
                     holder.tvTime.setVisibility(View.VISIBLE);
                     holder.tvTime.setText(newChatTime);
                 }
@@ -132,44 +150,263 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
         } else {
             Glide.with(context).load(R.mipmap.headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(holder.ivHeadimg);
         }
-
-
         gson = new Gson();
-        if (message.getContentType().name().equals("voice")) {
-            ImVocieBean imVocieBean = gson.fromJson(message.toJson(), ImVocieBean.class);
-            holder.tvDuration.setText(imVocieBean.getContent().getDuration()+"'");
-            holder.llVocie.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mediaPlayer.isPlaying()){
-                        mediaPlayer.stop();
-                    }else{
+        if (message.getDirect().name().equals("send")) {
+
+
+            if (message.getContentType().name().equals("voice")) {
+
+                message = list.get(position);
+
+                ImVocieBean imVocieBean = gson.fromJson(message.toJson(), ImVocieBean.class);
+                holder.tvDuration.setText(imVocieBean.getContent().getDuration() + "'");
+                holder.llVocie.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        mediaPlayer.reset();
                         //播放声音
                         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                         try {
-                            mediaPlayer.setDataSource(getApplicationContext(), Uri.parse(imVocieBean.getContent().getLocal_path()));
+                            File file = new File(imVocieBean.getContent().getLocal_path());
+                            FileInputStream fis = new FileInputStream(file);
+                            mediaPlayer.setDataSource(fis.getFD());
                             mediaPlayer.prepare();
+
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                         mediaPlayer.start();
+
+                        holder.ivAnim.setImageResource(R.drawable.play_animation);
+                        AnimationDrawable animationDrawabl = (AnimationDrawable) holder.ivAnim.getDrawable();
+
+                        animationDrawabl.start();
+
+                        EventBus.getDefault().post(mediaPlayer);
+                        EventBus.getDefault().post(animationDrawabl);
+
+                        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+                                animationDrawabl.stop();
+                                holder.ivAnim.setImageResource(R.drawable.player4);
+
+                            }
+                        });
+                    }
+                });
+            } else if (message.getContentType().name().equals("text")) {
+                message = list.get(position);
+                ImMsgBean imMsgBean = gson.fromJson(message.toJson(), ImMsgBean.class);
+
+                //获取文本内容
+                holder.tvMsg.setText(imMsgBean.getContent().getText());
+
+            } else if (message.getContentType().name().equals("image")) {
+                message = list.get(position);
+                ImImageBean imImageBean = gson.fromJson(message.toJson(), ImImageBean.class);
+
+                String local_path = imImageBean.getContent().getLocal_path();
+                String localThumbnailPath = imImageBean.getContent().getLocalThumbnailPath();
+                if (local_path.contains(flag)) {
+                    Glide.with(context).load(localThumbnailPath).into(holder.ivImg);
+                } else {
+                    Glide.with(context).load(local_path).into(holder.ivImg);
+                }
+
+                holder.ivImg.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //先清空再添加
+                        imgUrl.clear();
+                        intent = new Intent(context, NewDynamicImage.class);
+
+                        if (local_path.contains(flag)) {
+                            imgUrl.add(localThumbnailPath);
+                        } else {
+                            imgUrl.add(local_path);
+                        }
+                        intent.putStringArrayListExtra("img", imgUrl);
+                        context.startActivity(intent);
+
+                    }
+                });
+            } else if (message.getContentType().name().equals("video")) {
+                message = list.get(position);
+                ImVideoBean imVideoBean = gson.fromJson(message.toJson(), ImVideoBean.class);
+
+                String local_path = imVideoBean.getContent().getVideo().getLocal_path();
+
+                Bitmap netVideoBitmap = getNetVideoBitmap(local_path);
+                //设置封面
+                holder.videoPlayer.loadCoverImage(local_path, netVideoBitmap);
+                int duration = imVideoBean.getContent().getDuration();
+                if (duration<10){
+                    holder.videoPlayer.setDuration("00:0"+duration);
+                }else if(duration<60){
+                    holder.videoPlayer.setDuration("00:"+duration);
+                }else{
+                    int second = duration / 60;
+                    int minute = duration % 60;
+
+                    if (minute==0){
+                        holder.videoPlayer.setDuration(second+":00");
+                    }else{
+                        holder.videoPlayer.setDuration(second+":"+minute);
                     }
                 }
-            });
-        } else if (message.getContentType().name().equals("text")) {
 
-            ImMsgBean imMsgBean = gson.fromJson(message.toJson(), ImMsgBean.class);
+                holder.videoPlayer.setUpLazy(local_path, true, null, null, "");
 
-            //获取文本内容
-            holder.tvMsg.setText(imMsgBean.getContent().getText());
+                //防止错位设置
+                holder.videoPlayer.setPlayTag(TAG);
+                holder.videoPlayer.setLockLand(true);
+                holder.videoPlayer.setPlayPosition(position);
+                //是否根据视频尺寸，自动选择竖屏全屏或者横屏全屏，这个标志为和 setLockLand 冲突，需要和 orientationUtils 使用
+                holder.videoPlayer.setAutoFullWithSize(false);
+                //音频焦点冲突时是否释放
+                holder.videoPlayer.setReleaseWhenLossAudio(false);
+                //全屏动画
+                holder.videoPlayer.setShowFullAnimation(true);
+                //小屏时不触摸滑动
+                holder.videoPlayer.setIsTouchWiget(false);
 
-        } else if (message.getContentType().name().equals("image")) {
+                holder.videoPlayer.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        intent = new Intent(context, SimplePlayerActivity.class);
+                        intent.putExtra("url",imVideoBean.getContent().getThumb().getLocal_path());
+                    }
+                });
+            }
+        } else {
+            if (message.getContentType().name().equals("voice")) {
+                message = list.get(position);
+                ImVocieBean imVocieBean = gson.fromJson(message.toJson(), ImVocieBean.class);
+                holder.tvDuration.setText(imVocieBean.getContent().getDuration() + "'");
+                holder.llVocie.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-        } else if (message.getContentType().name().equals("video")) {
+                        mediaPlayer.reset();
+                        //播放声音
+                        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                        try {
+                            File file = new File(imVocieBean.getContent().getLocal_path());
+                            FileInputStream fis = new FileInputStream(file);
+                            mediaPlayer.setDataSource(fis.getFD());
+                            mediaPlayer.prepare();
 
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        mediaPlayer.start();
+
+                        holder.ivAnim.setImageResource(R.drawable.play_animation1);
+                        AnimationDrawable animationDrawabl = (AnimationDrawable) holder.ivAnim.getDrawable();
+
+                        animationDrawabl.start();
+
+                        EventBus.getDefault().post(mediaPlayer);
+                        EventBus.getDefault().post(animationDrawabl);
+
+                        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+                                animationDrawabl.stop();
+                                holder.ivAnim.setImageResource(R.drawable.play4);
+                            }
+                        });
+                    }
+                });
+            } else if (message.getContentType().name().equals("text")) {
+                message = list.get(position);
+                ImMsgBean imMsgBean = gson.fromJson(message.toJson(), ImMsgBean.class);
+
+                //获取文本内容
+                holder.tvMsg.setText(imMsgBean.getContent().getText());
+
+            } else if (message.getContentType().name().equals("image")) {
+                message = list.get(position);
+                ImImageBean imImageBean = gson.fromJson(message.toJson(), ImImageBean.class);
+
+                String local_path = imImageBean.getContent().getLocal_path();
+                String localThumbnailPath = imImageBean.getContent().getLocalThumbnailPath();
+
+                if (local_path.contains(flag)) {
+                    Glide.with(context).load(localThumbnailPath).into(holder.ivImg);
+                } else {
+                    Glide.with(context).load(local_path).into(holder.ivImg);
+                }
+
+
+                holder.ivImg.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //先清空再添加
+                        imgUrl.clear();
+                        intent = new Intent(context, NewDynamicImage.class);
+
+                        if (local_path.contains(flag)) {
+                            imgUrl.add(localThumbnailPath);
+                        } else {
+                            imgUrl.add(local_path);
+                        }
+                        intent.putStringArrayListExtra("img", imgUrl);
+                        context.startActivity(intent);
+                    }
+                });
+
+            } else if (message.getContentType().name().equals("video")) {
+                message = list.get(position);
+                ImVideoBean imVideoBean = gson.fromJson(message.toJson(), ImVideoBean.class);
+
+                String local_path = imVideoBean.getContent().getVideo().getLocal_path();
+
+                Bitmap netVideoBitmap = getNetVideoBitmap(local_path);
+                //设置封面
+                holder.videoPlayer.loadCoverImage(local_path, netVideoBitmap);
+                int duration = imVideoBean.getContent().getDuration();
+                if (duration<10){
+                    holder.videoPlayer.setDuration("00:0"+duration);
+                }else if(duration<60){
+                    holder.videoPlayer.setDuration("00:"+duration);
+                }else{
+                    int second = duration / 60;
+                    int minute = duration % 60;
+
+                    if (minute==0){
+                        holder.videoPlayer.setDuration(second+":00");
+                    }else{
+                        holder.videoPlayer.setDuration(second+":"+minute);
+                    }
+                }
+                holder.videoPlayer.setUpLazy(local_path, true, null, null, "");
+
+                //防止错位设置
+                holder.videoPlayer.setPlayTag(TAG);
+                holder.videoPlayer.setLockLand(true);
+                holder.videoPlayer.setPlayPosition(position);
+                //是否根据视频尺寸，自动选择竖屏全屏或者横屏全屏，这个标志为和 setLockLand 冲突，需要和 orientationUtils 使用
+                holder.videoPlayer.setAutoFullWithSize(false);
+                //音频焦点冲突时是否释放
+                holder.videoPlayer.setReleaseWhenLossAudio(false);
+                //全屏动画
+                holder.videoPlayer.setShowFullAnimation(true);
+                //小屏时不触摸滑动
+                holder.videoPlayer.setIsTouchWiget(false);
+                holder.videoPlayer.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        intent = new Intent(context, SimplePlayerActivity.class);
+                        intent.putExtra("url",imVideoBean.getContent().getThumb().getLocal_path());
+                    }
+                });
+            }
         }
-
     }
+
     @Override
     public int getItemCount() {
         return list.size();
@@ -201,5 +438,23 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
             }
         }
         return 8;
+    }
+    public static Bitmap getNetVideoBitmap(String videoUrl) {
+        Bitmap bitmap = null;
+
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        try {
+            FileInputStream inputStream = new FileInputStream(new File(videoUrl).getAbsolutePath());
+            retriever.setDataSource(inputStream.getFD());
+            //获得第一帧图片
+            bitmap = retriever.getFrameAtTime();
+        } catch (IllegalArgumentException | FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            retriever.release();
+        }
+        return bitmap;
     }
 }

@@ -3,7 +3,7 @@
     <!-- 连框颜色值 -->
     <item android:width="@dimen/dp_45" android:gravity="center">
         <shape>
-            <solid android:color="#3A005A" />
+            <solid android:color="@color/color_8867E7" />
         </shape>
     </item>
     <!-- 主体背景颜色值 -->

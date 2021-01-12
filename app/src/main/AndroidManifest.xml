@@ -370,6 +370,7 @@
             android:name=".main.fragment.msg.activity.FriendImActivity"
             android:screenOrientation="portrait" />
 
+
         <!-- 拍照录像 -->
         <activity
             android:name=".main.fragment.msg.activity.JCameraViewActivity"

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -21,6 +22,10 @@ import com.YiDian.RainBow.regist.activity.RegistActivity;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.model.UserInfo;
+import cn.jpush.im.api.BasicCallback;
 
 public class WelcomeActivity extends BaseAvtivity{
 
@@ -42,6 +47,48 @@ public class WelcomeActivity extends BaseAvtivity{
         }
         Request();
         handler = new Handler();
+
+        JMessageClient.login("1031", "1031", new BasicCallback() {
+            @Override
+            public void gotResult(int i, String s) {
+                if (i==0){
+                    Log.d("xxx", "1031 极光登录状态为" + i + "原因为" + s);
+
+
+               /*     Bitmap bitmap=BitmapFactory.decodeResource(getResources(),R.mipmap.headimg3,null);//将资源文件转化为bitmap
+
+                    File file = getFile(bitmap);
+
+                    Log.d("xxx",file.getAbsolutePath());
+
+                    JMessageClient.updateUserAvatar(file, new BasicCallback() {
+                        @Override
+                        public void gotResult(int i, String s) {
+                            if (i==0){
+                                Log.d("xxx","1031 头像设置成功");
+                            }else {
+                                Log.d("xxx",s);
+                            }
+                        }
+                    });
+*/
+                    UserInfo myInfo = JMessageClient.getMyInfo();
+                    Log.d("xxx","1031信息为"+myInfo.toJson());
+
+
+                    String avatarFile = myInfo.getAvatar();
+                    if (!avatarFile.equals(null)){
+                        Log.d("xxx","存在头像");
+                    }else{
+                        Log.d("xxx","不存在头像");
+                    }
+
+                    //JMessageClient.deleteSingleConversation("1031","87ce5706efafab51ddd2be08");
+
+                }
+            }
+        });
+
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {

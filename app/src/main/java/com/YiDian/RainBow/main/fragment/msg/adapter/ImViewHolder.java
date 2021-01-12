@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.YiDian.RainBow.R;
+import com.YiDian.RainBow.custom.videoplayer.SampleCoverVideo;
+import com.YiDian.RainBow.custom.videoplayer.SampleCoverVideoNoOpen;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,7 +40,15 @@ public class ImViewHolder extends RecyclerView.ViewHolder {
     @Nullable
     @BindView(R.id.ll_vocie)
     LinearLayout llVocie;
-
+    @Nullable
+    @BindView(R.id.iv_anim)
+    ImageView ivAnim;
+    @Nullable
+    @BindView(R.id.iv_img)
+    ImageView ivImg;
+    @Nullable
+    @BindView(R.id.video_player)
+    SampleCoverVideoNoOpen videoPlayer;
     public static ImViewHolder createViewHolder(Context context,
                                               ViewGroup parent, int layoutId) {
         View itemView = LayoutInflater.from(context).inflate(layoutId, parent,

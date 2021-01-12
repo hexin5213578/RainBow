@@ -6,8 +6,11 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -52,6 +55,7 @@ import com.YiDian.RainBow.dynamic.activity.DevelopmentDynamicActivity;
 import com.YiDian.RainBow.dynamic.adapter.DevelogmentImgAdapter;
 import com.YiDian.RainBow.main.fragment.msg.adapter.FriendImAdapter;
 import com.YiDian.RainBow.user.bean.UserMsgBean;
+import com.YiDian.RainBow.utils.BitmapUtil;
 import com.YiDian.RainBow.utils.KeyBoardUtils;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.bumptech.glide.Glide;
@@ -63,15 +67,18 @@ import com.dmcbig.mediapicker.entity.Media;
 import com.leaf.library.StatusBarUtil;
 import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.widget.SpringView;
+import com.shuyu.gsyvideoplayer.GSYVideoManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -178,6 +185,8 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     private int userid;
     boolean isfirst = true;
     private PopupWindow mPopupWindow1;
+    private MediaPlayer mediaPlayer1;
+    private AnimationDrawable animationDrawable;
 
     @Override
     protected int getResId() {
@@ -238,6 +247,8 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
         Request();
 
+        mediaPlayer1 = new MediaPlayer();
+        animationDrawable = new AnimationDrawable();
         if (Build.VERSION.SDK_INT >= 23) {
             int REQUEST_CODE_CONTACT = 101;
             String[] permissions = {
@@ -266,7 +277,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 Log.d("xxx", "拿到录音回调，路径为" + FilePath);
 
                 File file = new File(FilePath);
-                int duration = getDuration(file, FriendImActivity.this);
+                int duration = BitmapUtil.getDuration(file, FriendImActivity.this);
 
                 Log.d("xxx", "拿到语音文件的长度为" + duration);
 
@@ -357,6 +368,8 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
+        GSYVideoManager.onResume();
+
     }
 
     @Override
@@ -365,6 +378,15 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
+        //界面销毁 销毁播放音频
+        if (mediaPlayer1.isPlaying()){
+            mediaPlayer1.stop();
+            mediaPlayer1.release();
+            mediaPlayer1= null;
+        }
+        GSYVideoManager.releaseAllVideos();
+
+        animationDrawable.stop();
     }
 
     //收到消息 刷新聊天记录
@@ -478,14 +500,14 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
             public void gotResult(int i, String s) {
                 Log.i("TAG", "register：code：" + i + "  msg：" + s);
                 if (i == 0) {
-                    Log.d("xxx","发送成功");
+                    Log.d("xxx","文本发送成功");
 
                     allList.clear();
                     page = 0;
                     size = 50;
                     getListFromIm(page, size);
                 } else {
-                    Log.d("xxx","发送失败");
+                    Log.d("xxx","文本发送失败");
                 }
             }
         });
@@ -514,14 +536,14 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 public void gotResult(int i, String s) {
                     Log.i("TAG", "register：code：" + i + "  msg：" + s);
                     if (i == 0) {
-                        Log.d("xxx","发送成功");
+                        Log.d("xxx","语音发送成功");
 
                         allList.clear();
                         page = 0;
                         size = 50;
                         getListFromIm(page, size);
                     } else {
-                        Log.d("xxx","发送失败");
+                        Log.d("xxx","语音发送失败");
 
                     }
                 }
@@ -541,12 +563,94 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         }
     }
 
+    /**
+     *
+     * @param context
+     * @param imageFile  图片路径
+     */
+    public void SendImgMessage(Context context,File imageFile){
+        try {
+            Message message = JMessageClient.createSingleImageMessage(id, Common.get_JG(), imageFile);
+
+            message.setOnSendCompleteCallback(new BasicCallback() {
+                @Override
+                public void gotResult(int i, String s) {
+                    Log.i("TAG", "register：code：" + i + "  msg：" + s);
+                    if (i == 0) {
+                        Log.d("xxx","图片发送成功");
+
+                        allList.clear();
+                        page = 0;
+                        size = 50;
+                        getListFromIm(page, size);
+                    } else {
+                        Log.d("xxx","图片发送失败");
+
+                    }
+                }
+            });
+            MessageSendingOptions options = new MessageSendingOptions();
+
+            options.setNotificationTitle(userName);
+            options.setNotificationText("[图片信息]");
+            options.setCustomNotificationEnabled(true);
+            options.setRetainOffline(true);
+            options.setShowNotification(true);
+            JMessageClient.sendMessage(message, options);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     *
+     * @param context
+     * @param VideoFile  视频文件
+     * @param thumbImage 视频缩略图
+     * @param thumbFormat 缩略图格式
+     * @param duration 时长
+     */
+    public void SendVideoMessage(Context context, File VideoFile, Bitmap thumbImage, String thumbFormat,int duration){
+        try {
+            Message message = JMessageClient.createSingleVideoMessage(id, Common.get_JG(),thumbImage,thumbFormat, VideoFile,"",duration);
+
+            message.setOnSendCompleteCallback(new BasicCallback() {
+                @Override
+                public void gotResult(int i, String s) {
+                    Log.i("TAG", "register：code：" + i + "  msg：" + s);
+                    if (i == 0) {
+                        Log.d("xxx","视频发送成功");
+
+                        allList.clear();
+                        page = 0;
+                        size = 50;
+                        getListFromIm(page, size);
+                    } else {
+                        Log.d("xxx","视频发送失败");
+
+                    }
+                }
+            });
+            MessageSendingOptions options = new MessageSendingOptions();
+
+            options.setNotificationTitle(userName);
+            options.setNotificationText("[视频信息]");
+            options.setCustomNotificationEnabled(true);
+            options.setRetainOffline(true);
+            options.setShowNotification(true);
+            JMessageClient.sendMessage(message, options);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_back:
                 finish();
                 EventBus.getDefault().post("收到了信息");
+                //退出此会话
+                JMessageClient.exitConversation();
                 break;
             case R.id.ll_more:
                 //跳转到设置页
@@ -574,7 +678,10 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 if (isfirst) {
                     KeyBoardUtils.closeKeyboard(etContent);
                     rlMenu.setVisibility(View.VISIBLE);
-
+                    if (allList.size()>0){
+                        linearLayoutManager.setStackFromEnd(true);
+                        linearLayoutManager.scrollToPositionWithOffset(0, 0);
+                    }
                     isfirst = false;
                 } else {
 
@@ -591,6 +698,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                     Toast.makeText(this, "相机权限未开启", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(FriendImActivity.this,JCameraViewActivity.class);
+                    intent.putExtra("userid",id);
                     startActivity(intent);
                 }
                 break;
@@ -613,19 +721,14 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         }
     }
 
-    public static int getDuration(File source, Context context) {
-        int duration = 0;
-        Uri uri = Uri.fromFile(source);
-        MediaPlayer mediaPlayer = new MediaPlayer();
-        try {
-            mediaPlayer.setDataSource(context, uri);
-            mediaPlayer.prepare();
-            duration = mediaPlayer.getDuration();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return duration / 1000;
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getAnim(AnimationDrawable drawable){
+        animationDrawable = drawable;
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getMedia(MediaPlayer mediaPlayer){
+        mediaPlayer1 = mediaPlayer;
     }
     //安卓10.0定位权限
     public void Request() {
@@ -704,7 +807,24 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         });
         show1(view);
     }
+    public static Bitmap getNetVideoBitmap(String videoUrl) {
+        Bitmap bitmap = null;
 
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        try {
+            FileInputStream inputStream = new FileInputStream(new File(videoUrl).getAbsolutePath());
+            retriever.setDataSource(inputStream.getFD());
+            //获得第一帧图片
+            bitmap = retriever.getFrameAtTime();
+        } catch (IllegalArgumentException | FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            retriever.release();
+        }
+        return bitmap;
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -714,13 +834,41 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
                 if (data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT).size() > 0) {
                     select1 = data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT);
+
+                    Log.d("xxx","获取到"+select1.size()+"条视频");
+                    String path = select1.get(0).path;
+                    Log.d("xxx",select1.get(0).path);
+                    //获取视频缩略图
+                    Bitmap netVideoBitmap = getNetVideoBitmap(path);
+
+                    //视频文件
+                    File file = new File(path);
+                    //视频时长
+                    MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                    retriever.setDataSource(path);
+                    String time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                    Log.d("xxx","视频时长为"+Integer.parseInt(time)/1000);
+                    //发送一条视频文件
+                    SendVideoMessage(FriendImActivity.this,file,netVideoBitmap,"mp4", Integer.parseInt(time)/1000);
                 }
-                Log.i("select", "视频长度为" + select1.size());
 
             } else if (requestCode == 201 && resultCode == PickerConfig.RESULT_CODE) {
 
                 if (data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT).size() > 0) {
                     select = data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT);
+
+                    if (select.size()>1){
+                        for (int i =0;i<select.size();i++){
+                            //发送多张图片
+                            File file = new File(select.get(i).path);
+                            SendImgMessage(FriendImActivity.this,file);
+                        }
+                    }else{
+                        //发送单张图片
+                        File file = new File(select.get(0).path);
+                        SendImgMessage(FriendImActivity.this,file);
+                    }
+
                 }
                 Log.i("select", "图片长度为" + select.size());
 

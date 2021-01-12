@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:roundiv="http://schemas.android.com/apk/res-auto"
+    android:background="@color/color_f7f7f7"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="2020年10月08号 21:36"
+            android:id="@+id/tv_time"
+            android:layout_marginTop="@dimen/dp_15"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_10"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content">
+        </TextView>
+        <ImageView
+            android:layout_width="@dimen/dp_30"
+            android:src="@mipmap/headimg"
+            android:id="@+id/iv_headimg"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_below="@id/tv_time"
+            android:layout_height="@dimen/dp_30">
+        </ImageView>
+        <com.YiDian.RainBow.custom.videoplayer.SampleCoverVideoNoOpen
+            android:layout_width="@dimen/dp_100"
+            android:id="@+id/video_player"
+            android:layout_toRightOf="@id/iv_headimg"
+            android:layout_below="@id/tv_time"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_height="@dimen/dp_130">
+        </com.YiDian.RainBow.custom.videoplayer.SampleCoverVideoNoOpen>
+    </RelativeLayout>
+</RelativeLayout>

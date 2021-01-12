@@ -12,7 +12,6 @@
             android:layout_width="@dimen/dp_45"
             android:layout_height="@dimen/dp_45"
             android:id="@+id/iv_headimg"
-            android:src="@mipmap/headimg2"
             android:layout_marginTop="@dimen/dp_12"
             >
         </ImageView>

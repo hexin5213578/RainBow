@@ -73,18 +73,29 @@ public class NewDynamicImage extends FragmentActivity {
 
         List<String> url = new ArrayList<>();
 
-        for (int i =0;i<urls.size();i++){
-            url.add(urls.get(i).substring(0,urls.get(i).lastIndexOf("?")));
+        if (urls.get(0).contains(path)){
+            for (int i =0;i<urls.size();i++){
+                url.add(urls.get(i).substring(0,urls.get(i).lastIndexOf("?")));
+            }
+            vp.overlayStatusBar(false) // ImageViewer 是否会占据 StatusBar 的空间
+                    .imageData(url) // 图片数据
+                    .imageLoader(new PhotoLoader()) // 设置图片加载方式
+                    .playEnterAnim(true) // 是否开启进场动画，默认为true
+                    .playExitAnim(false) // 是否开启退场动画，默认为true
+                    .draggable(false)
+                    .showIndex(true) // 是否显示图片索引，默认为true
+                    .watch(index); // 开启浏览
+        }else{
+            vp.overlayStatusBar(false) // ImageViewer 是否会占据 StatusBar 的空间
+                    .imageData(urls) // 图片数据
+                    .imageLoader(new PhotoLoader()) // 设置图片加载方式
+                    .playEnterAnim(true) // 是否开启进场动画，默认为true
+                    .playExitAnim(false) // 是否开启退场动画，默认为true
+                    .draggable(false)
+                    .showIndex(true)
+                    .watch(index); // 是否显示图片索引，默认为true
         }
 
-        vp.overlayStatusBar(false) // ImageViewer 是否会占据 StatusBar 的空间
-                .imageData(url) // 图片数据
-                .imageLoader(new PhotoLoader()) // 设置图片加载方式
-                .playEnterAnim(true) // 是否开启进场动画，默认为true
-                .playExitAnim(false) // 是否开启退场动画，默认为true
-                .draggable(false)
-                .showIndex(true) // 是否显示图片索引，默认为true
-                .watch(index); // 开启浏览
         vp.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public boolean onItemClick(int position, ImageView imageView) {

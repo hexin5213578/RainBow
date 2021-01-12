@@ -120,46 +120,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     protected void getData() {
 
 
-        JMessageClient.login("1038", "1038", new BasicCallback() {
-            @Override
-            public void gotResult(int i, String s) {
-                if (i==0){
-                    Log.d("xxx", "1038 极光登录状态为" + i + "原因为" + s);
 
-
-               /*     Bitmap bitmap=BitmapFactory.decodeResource(getResources(),R.mipmap.headimg3,null);//将资源文件转化为bitmap
-
-                    File file = getFile(bitmap);
-
-                    Log.d("xxx",file.getAbsolutePath());
-
-                    JMessageClient.updateUserAvatar(file, new BasicCallback() {
-                        @Override
-                        public void gotResult(int i, String s) {
-                            if (i==0){
-                                Log.d("xxx","1038 头像设置成功");
-                            }else {
-                                Log.d("xxx",s);
-                            }
-                        }
-                    });
-*/
-                    UserInfo myInfo = JMessageClient.getMyInfo();
-                    Log.d("xxx","1038信息为"+myInfo.toJson());
-
-
-                    String avatarFile = myInfo.getAvatar();
-                    if (!avatarFile.equals(null)){
-                        Log.d("xxx","存在头像");
-                    }else{
-                        Log.d("xxx","不存在头像");
-                    }
-
-                    //JMessageClient.deleteSingleConversation("1038","87ce5706efafab51ddd2be08");
-
-                }
-            }
-        });
 
         //设置别名
         //setAlias();

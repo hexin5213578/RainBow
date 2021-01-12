@@ -10,6 +10,8 @@ import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
+import android.media.MediaPlayer;
+import android.os.Environment;
 import android.util.Base64;
 import android.webkit.WebView;
 import android.widget.ImageView;
@@ -26,11 +28,16 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class BitmapUtil {
 
@@ -296,21 +303,42 @@ public class BitmapUtil {
     }
 
     /**
+     *  获取资源时长
+     * @param source
+     * @param context
+     * @return
+     */
+    public static int getDuration(File source, Context context) {
+        int duration = 0;
+        MediaPlayer mediaPlayer = new MediaPlayer();
+        try {
+            FileInputStream fis = new FileInputStream(source);
+            mediaPlayer.setDataSource(fis.getFD());
+            mediaPlayer.prepare();
+
+            duration = mediaPlayer.getDuration();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return duration / 1000;
+
+    }
+    /**
      * 保存Bitmap为文件
      *
      * @param bitmap
-     * @param path
-     * @param fileName
      * @return
      */
-    public static File saveBitmap(Bitmap bitmap, String path, String fileName) {
+    public static File saveBitmap(Bitmap bitmap) {
         FileOutputStream outputStream = null;
         try {
-            File mFolder = new File(path);
+            SimpleDateFormat sdf = new SimpleDateFormat("HHmmss");
+
+            File mFolder = new File(Environment.getExternalStorageDirectory() + "/temp.jpg");
             if (!mFolder.exists()) {
                 mFolder.mkdirs();
             }
-            File file = new File(mFolder, fileName);
+            File file = new File(mFolder, sdf.format(new Date()));
             outputStream = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
             outputStream.flush();
@@ -374,7 +402,7 @@ public class BitmapUtil {
         Bitmap bitmap = BitmapUtil.zipBitmapWithReq(photoPath, reqWidth, reqHeight);
         // 旋转图片
         bitmap = BitmapUtil.rotateBitmap(bitmap, BitmapUtil.getPictureDegree(photoPath));
-        return BitmapUtil.saveBitmap(bitmap, saveFilePath, fileName);
+        return BitmapUtil.saveBitmap(bitmap);
     }
 
     /**
@@ -395,7 +423,7 @@ public class BitmapUtil {
         bit = zipBitmapWithQuality(bit, quality);
         // 旋转图片
         bit = BitmapUtil.rotateBitmap(bit, BitmapUtil.getPictureDegree(photoPath));
-        return BitmapUtil.saveBitmap(bit, saveFilePath, fileName);
+        return BitmapUtil.saveBitmap(bit);
     }
 
     /**

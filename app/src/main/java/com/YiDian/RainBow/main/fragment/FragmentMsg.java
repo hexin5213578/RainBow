@@ -184,8 +184,8 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
                 // TODO: 2021/1/8 0008  跳转至聊天详情页
                 Conversation conversation = conversationList.get(position);
 
-                //重置未读消息数
-                conversation.resetUnreadCount();
+                //进入会话
+                JMessageClient.enterSingleConversation(conversation.getTargetId());
 
                 //发送到聊天详情页
                 Intent intent = new Intent(getContext(), FriendImActivity.class);
@@ -266,7 +266,6 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-        getImList();
     }
 
     @Override
