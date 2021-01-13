@@ -90,7 +90,6 @@ public class NetUtils {
             builder.addFormDataPart(entry.getKey(),entry.getValue()+"");
         }
 
-
         builder.addFormDataPart("doorPrint",files.get(0).getName(),RequestBody.create(MediaType.parse("image/jepg"),files.get(0)));
 
         return builder.build();

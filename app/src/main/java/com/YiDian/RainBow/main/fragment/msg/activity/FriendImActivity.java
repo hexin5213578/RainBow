@@ -792,6 +792,8 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
                     @Override
                     public void onError(Throwable e) {
+                        hideDialog();
+                        Toast.makeText(FriendImActivity.this, "获取礼物列表失败", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
