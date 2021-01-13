@@ -371,6 +371,11 @@
             android:screenOrientation="portrait" />
 
 
+        <!-- 聊天设置 -->
+        <activity
+            android:name=".main.fragment.msg.activity.ImSetUpActivity"
+            android:screenOrientation="portrait" />
+
         <!-- 拍照录像 -->
         <activity
             android:name=".main.fragment.msg.activity.JCameraViewActivity"

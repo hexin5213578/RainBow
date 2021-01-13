@@ -72,7 +72,43 @@
             android:layout_height="wrap_content">
         </TextView>
     </LinearLayout>
-    
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:id="@+id/rg"
+        android:visibility="gone"
+        android:layout_height="wrap_content">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:id="@+id/rb1"
+            android:layout_height="wrap_content">
+        </RadioButton>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:id="@+id/rb2"
+            android:layout_height="wrap_content">
+        </RadioButton>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:id="@+id/rb3"
+            android:layout_height="wrap_content">
+        </RadioButton>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:id="@+id/rb4"
+            android:layout_height="wrap_content">
+        </RadioButton>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:id="@+id/rb5"
+            android:layout_height="wrap_content">
+        </RadioButton>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:id="@+id/rb6"
+            android:layout_height="wrap_content">
+        </RadioButton>
+    </RadioGroup>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_below="@id/ll_balance"
@@ -107,16 +143,15 @@
                     android:layout_height="wrap_content">
                 </TextView>
             </LinearLayout>
-            <RadioButton
+            <TextView
                 android:layout_width="match_parent"
-                android:button="@null"
                 android:text="¥6.00"
-                android:checked="true"
-                android:id="@+id/rb1"
-                android:background="@drawable/selector_money_bg"
+                android:textColor="@color/white"
+                android:id="@+id/tv1"
+                android:background="@drawable/select_glod_xuanzhong"
                 android:gravity="center"
                 android:layout_height="match_parent">
-            </RadioButton>
+            </TextView>
         </LinearLayout>
         <LinearLayout
             android:layout_width="0dp"
@@ -145,15 +180,15 @@
                     android:layout_height="wrap_content">
                 </TextView>
             </LinearLayout>
-            <RadioButton
+            <TextView
                 android:layout_width="match_parent"
-                android:button="@null"
                 android:text="¥12.00"
-                android:id="@+id/rb2"
-                android:background="@drawable/selector_money_bg"
+                android:id="@+id/tv2"
+                android:textColor="@color/white"
+                android:background="@drawable/select_glod_weixuanzhong"
                 android:gravity="center"
                 android:layout_height="match_parent">
-            </RadioButton>
+            </TextView>
         </LinearLayout>
         <LinearLayout
             android:layout_width="0dp"
@@ -182,15 +217,15 @@
                     android:layout_height="wrap_content">
                 </TextView>
             </LinearLayout>
-            <RadioButton
+            <TextView
                 android:layout_width="match_parent"
-                android:button="@null"
                 android:text="¥45.00"
-                android:id="@+id/rb3"
-                android:background="@drawable/selector_money_bg"
+                android:id="@+id/tv3"
+                android:textColor="@color/white"
+                android:background="@drawable/select_glod_weixuanzhong"
                 android:gravity="center"
                 android:layout_height="match_parent">
-            </RadioButton>
+            </TextView>
         </LinearLayout>
 
     </LinearLayout>
@@ -228,15 +263,15 @@
                     android:layout_height="wrap_content">
                 </TextView>
             </LinearLayout>
-            <RadioButton
+            <TextView
                 android:layout_width="match_parent"
-                android:button="@null"
                 android:text="¥68.00"
-                android:id="@+id/rb4"
-                android:background="@drawable/selector_money_bg"
+                android:id="@+id/tv4"
+                android:textColor="@color/white"
+                android:background="@drawable/select_glod_weixuanzhong"
                 android:gravity="center"
                 android:layout_height="match_parent">
-            </RadioButton>
+            </TextView>
         </LinearLayout>
         <LinearLayout
             android:layout_width="0dp"
@@ -265,15 +300,15 @@
                     android:layout_height="wrap_content">
                 </TextView>
             </LinearLayout>
-            <RadioButton
+            <TextView
                 android:layout_width="match_parent"
-                android:button="@null"
                 android:text="¥118.00"
-                android:id="@+id/rb5"
-                android:background="@drawable/selector_money_bg"
+                android:id="@+id/tv5"
+                android:textColor="@color/white"
+                android:background="@drawable/select_glod_weixuanzhong"
                 android:gravity="center"
                 android:layout_height="match_parent">
-            </RadioButton>
+            </TextView>
         </LinearLayout>
         <LinearLayout
             android:layout_width="0dp"
@@ -302,15 +337,15 @@
                     android:layout_height="wrap_content">
                 </TextView>
             </LinearLayout>
-            <RadioButton
+            <TextView
                 android:layout_width="match_parent"
-                android:button="@null"
                 android:text="¥648.00"
-                android:id="@+id/rb6"
-                android:background="@drawable/selector_money_bg"
+                android:id="@+id/tv6"
+                android:textColor="@color/white"
+                android:background="@drawable/select_glod_weixuanzhong"
                 android:gravity="center"
                 android:layout_height="match_parent">
-            </RadioButton>
+            </TextView>
         </LinearLayout>
     </LinearLayout>
     <LinearLayout

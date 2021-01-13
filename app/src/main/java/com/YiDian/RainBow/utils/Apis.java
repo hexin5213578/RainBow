@@ -232,6 +232,10 @@ public interface Apis {
     @GET("idCardCheck/selectIdCardMsgByUserId")
     Observable<GetRealDataBean> doGetRealMsg(@Query("userId")int userid);
 
+    //加入黑名单
+    @POST("blackList/insertUser")
+    Observable<InsertRealBean> doInsertBlackFriend(@Query("userId")int userid,@Query("beUserId")int beuserid);
+
     //查询我的黑名单
     @GET("blackList/selectUser")
     Observable<BlackListBean> doGetBlackFriend(@Query("userId")int userid,@Query("page")int page,@Query("pageSize")int size);

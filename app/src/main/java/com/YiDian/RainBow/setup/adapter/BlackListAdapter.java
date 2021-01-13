@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,10 +25,13 @@ import com.bumptech.glide.request.RequestOptions;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.api.BasicCallback;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -81,7 +85,17 @@ public class BlackListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                     public void onNext(InsertRealBean insertRealBean) {
                                         dialog.dismiss();
                                         if (insertRealBean.getMsg().equals("移出成功")){
-                                            EventBus.getDefault().post("刷新界面");
+                                            List<String> list = new ArrayList<>();
+                                            list.add(String.valueOf(listBean.getBeUserId()));
+                                            JMessageClient.delUsersFromBlacklist(list, new BasicCallback() {
+                                                @Override
+                                                public void gotResult(int i, String s) {
+                                                    if (i==0){
+                                                        Toast.makeText(context, "移出成功", Toast.LENGTH_SHORT).show();
+                                                        EventBus.getDefault().post("刷新界面");
+                                                    }
+                                                }
+                                            });
                                         }
                                     }
 

@@ -187,6 +187,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     private PopupWindow mPopupWindow1;
     private MediaPlayer mediaPlayer1;
     private AnimationDrawable animationDrawable;
+    private Intent intent;
 
     @Override
     protected int getResId() {
@@ -654,7 +655,15 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 break;
             case R.id.ll_more:
                 //跳转到设置页
+                intent = new Intent(FriendImActivity.this,ImSetUpActivity.class);
+                File avatarFile = conversation.getAvatarFile();
+                String title = conversation.getTitle();
 
+                intent.putExtra("imgfile",avatarFile.toString());
+                intent.putExtra("name",title);
+                intent.putExtra("userid",conversation.getTargetId());
+
+                startActivity(intent);
                 break;
             case R.id.bt_confirm:
                 String s = etContent.getText().toString();
@@ -697,7 +706,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 {
                     Toast.makeText(this, "相机权限未开启", Toast.LENGTH_SHORT).show();
                 } else {
-                    Intent intent = new Intent(FriendImActivity.this,JCameraViewActivity.class);
+                    intent = new Intent(FriendImActivity.this,JCameraViewActivity.class);
                     intent.putExtra("userid",id);
                     startActivity(intent);
                 }
@@ -716,7 +725,6 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 break;
             case R.id.et_content:
                 rlMenu.setVisibility(View.GONE);
-
                 break;
         }
     }
