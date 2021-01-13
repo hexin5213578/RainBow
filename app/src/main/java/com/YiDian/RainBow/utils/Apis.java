@@ -23,6 +23,7 @@ import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.main.fragment.home.bean.OneCommentBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.LoginUserInfoBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.SelectAllDraftsBean;
+import com.YiDian.RainBow.main.fragment.msg.bean.GiftMsgBean;
 import com.YiDian.RainBow.notice.bean.CleanNoticeBean;
 import com.YiDian.RainBow.notice.bean.ClickNoticeBean;
 import com.YiDian.RainBow.notice.bean.CommentNoticeBean;
@@ -263,6 +264,10 @@ public interface Apis {
     //通过id查询用户信息
     @GET("user/seleteUserOfId")
     Observable<UserMsgBean> doGetUserMsgById(@Query("userId")int userid,@Query("id")int id);
+
+    //查询所有礼物
+    @GET("gift/selectGifts")
+    Observable<GiftMsgBean> doGetAllGiftMsg();
 
     //通过昵称查询用户信息
 

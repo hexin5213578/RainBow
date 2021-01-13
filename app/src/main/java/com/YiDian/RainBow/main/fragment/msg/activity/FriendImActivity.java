@@ -27,8 +27,10 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -45,6 +47,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
+import androidx.viewpager.widget.ViewPager;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
@@ -54,6 +57,9 @@ import com.YiDian.RainBow.custom.audiorecord.AudioRecorderButton;
 import com.YiDian.RainBow.dynamic.activity.DevelopmentDynamicActivity;
 import com.YiDian.RainBow.dynamic.adapter.DevelogmentImgAdapter;
 import com.YiDian.RainBow.main.fragment.msg.adapter.FriendImAdapter;
+import com.YiDian.RainBow.main.fragment.msg.adapter.GridViewAdapter;
+import com.YiDian.RainBow.main.fragment.msg.adapter.ViewPagerAdapter;
+import com.YiDian.RainBow.main.fragment.msg.bean.GiftMsgBean;
 import com.YiDian.RainBow.user.bean.UserMsgBean;
 import com.YiDian.RainBow.utils.BitmapUtil;
 import com.YiDian.RainBow.utils.KeyBoardUtils;
@@ -188,7 +194,14 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     private MediaPlayer mediaPlayer1;
     private AnimationDrawable animationDrawable;
     private Intent intent;
-
+    private List<GiftMsgBean.ObjectBean> list;
+    private LayoutInflater inflater;
+    private ViewPager vp;
+    private LinearLayout lldot;
+    private int pageCount;
+    private GridViewAdapter[] arr;
+    /*当前显示的是第几页*/
+    private int curIndex = 0;
     @Override
     protected int getResId() {
         return R.layout.activity_im;
@@ -717,6 +730,8 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 break;
             //展示礼物选择框
             case R.id.iv_liwu:
+                // TODO: 2021/1/13 0013 展示选择礼物框
+                getGiftMsg();
 
                 break;
             case R.id.iv_keyborad:
@@ -753,6 +768,143 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
         }
     }
+    public  void getGiftMsg(){
+        showDialog();
+        NetUtils.getInstance().getApis()
+                .doGetAllGiftMsg()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GiftMsgBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(GiftMsgBean giftMsgBean) {
+                        hideDialog();
+                        if (giftMsgBean.getMsg().equals("查询成功")){
+                            list = giftMsgBean.getObject();
+                            showSelectGift();
+
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+    //弹出选择礼物列表弹出框
+    public void showSelectGift() {
+        //添加成功后处理  63 50
+        mPopupWindow1 = new PopupWindow();
+        mPopupWindow1.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        mPopupWindow1.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+        View view = LayoutInflater.from(FriendImActivity.this).inflate(R.layout.dialog_sendgift, null);
+
+        vp = view.findViewById(R.id.vp);
+        lldot = view.findViewById(R.id.ll_dot);
+        LinearLayout llrecharge= view.findViewById(R.id.ll_recharge);
+        TextView tv_balance = view.findViewById(R.id.tv_balance);
+        TextView tv_send = view.findViewById(R.id.tv_send);
+
+        //总的页数=总数/每页数量，并取整
+        pageCount = (int) Math.ceil(list.size() * 1.0 / 8);
+        inflater = LayoutInflater.from(FriendImActivity.this);
+
+        //页面集合
+        List<View> mPagerList= new ArrayList<>();
+        arr = new GridViewAdapter[pageCount];
+
+
+        for (int j = 0; j < pageCount; j++) {
+            final GridView gridview = (GridView) inflater.inflate(R.layout.bottom_vp_gridview, vp, false);
+            final GridViewAdapter gridAdapter = new GridViewAdapter(FriendImActivity.this, list, j);
+            gridview.setAdapter(gridAdapter);
+            arr[j] = gridAdapter;
+            gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Toast.makeText(FriendImActivity.this, "点击位置position：" + position + "..id:" + id, Toast.LENGTH_SHORT).show();
+                    for (int i = 0; i < list.size(); i++) {
+                        GiftMsgBean.ObjectBean model = list.get(i);
+                        if (i == id) {
+                            if (model.isSelected()) {
+                                model.setSelected(false);
+                            } else {
+                                model.setSelected(true);
+                            }
+                            Log.i("tag", "==点击位置：" + i + "..id:" + id);
+                        } else {
+                            model.setSelected(false);
+//                            Log.i("tag","==位置2："+i+"..id:"+id);
+                        }
+                    }
+                    Log.i("tag", "状态：" + list.toString());
+                    gridAdapter.notifyDataSetChanged();
+                }
+            });
+            mPagerList.add(gridview);
+        }
+        vp.setAdapter(new ViewPagerAdapter(mPagerList, FriendImActivity.this));
+
+        setOvalLayout();
+        //popwindow设置属性
+        mPopupWindow1.setAnimationStyle(R.style.popwindow_anim_style);
+        mPopupWindow1.setContentView(view);
+        mPopupWindow1.setBackgroundDrawable(new BitmapDrawable());
+        mPopupWindow1.setFocusable(true);
+        mPopupWindow1.setOutsideTouchable(true);
+        mPopupWindow1.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                setWindowAlpa(false);
+            }
+        });
+        show(view);
+    }
+    /**
+     * 设置圆点
+     */
+    public void setOvalLayout() {
+        for (int i = 0; i < pageCount; i++) {
+            lldot.addView(inflater.inflate(R.layout.dot, null));
+        }
+        // 默认显示第一页
+        lldot.getChildAt(0).findViewById(R.id.v_dot)
+                .setBackgroundResource(R.drawable.dot_selected);
+        vp.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            public void onPageSelected(int position) {
+                arr[0].notifyDataSetChanged();
+                arr[1].notifyDataSetChanged();
+                arr[2].notifyDataSetChanged();
+
+                // 取消圆点选中
+                lldot.getChildAt(curIndex)
+                        .findViewById(R.id.v_dot)
+                        .setBackgroundResource(R.drawable.dot_normal);
+                // 圆点选中
+                lldot.getChildAt(position)
+                        .findViewById(R.id.v_dot)
+                        .setBackgroundResource(R.drawable.dot_selected);
+                curIndex = position;
+            }
+
+            public void onPageScrolled(int arg0, float arg1, int arg2) {
+            }
+
+            public void onPageScrollStateChanged(int arg0) {
+            }
+        });
+    }
+
     //弹出选择图片视频的弹出框
     public void showSelectImgAndVideo() {
         //添加成功后处理
@@ -920,6 +1072,12 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         setWindowAlpa(true);
     }
 
+    private void show(View v) {
+        if (mPopupWindow1 != null && !mPopupWindow1.isShowing()) {
+            mPopupWindow1.showAtLocation(v, Gravity.BOTTOM, 0, 0);
+        }
+        setWindowAlpa(true);
+    }
     /**
      * 消失PopupWindow
      */

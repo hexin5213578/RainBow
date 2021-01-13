@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_layout"
+    android:layout_width="@dimen/dp_83"
+    android:layout_height="@dimen/dp_103"
+    android:layout_margin="4dp">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="@dimen/dp_63"
+        android:layout_height="@dimen/dp_50"
+        android:layout_marginTop="@dimen/dp_3"
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/headimg2"/>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:textStyle="bold"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
+        android:layout_marginTop="@dimen/dp_9"
+        android:text="520"
+        android:textSize="12dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_below="@id/textView"
+        android:layout_centerHorizontal="true"
+        android:text="30金币"
+        android:id="@+id/tv_glod"
+        android:textColor="#d9d9d9"
+        android:layout_marginTop="@dimen/dp_6"
+        android:textSize="@dimen/sp_10"
+        android:layout_height="wrap_content">
+    </TextView>
+</RelativeLayout>
