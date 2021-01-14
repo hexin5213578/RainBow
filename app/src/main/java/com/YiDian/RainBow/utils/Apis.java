@@ -4,6 +4,8 @@ package com.YiDian.RainBow.utils;
 import com.YiDian.RainBow.friend.bean.FriendBean;
 import com.YiDian.RainBow.friend.bean.MyFansBean;
 import com.YiDian.RainBow.friend.bean.MyfollowBean;
+import com.YiDian.RainBow.imgroup.bean.MyCreateGroupMsgBean;
+import com.YiDian.RainBow.imgroup.bean.MyJoinGroupMsgBean;
 import com.YiDian.RainBow.main.bean.NoticeCountBean;
 import com.YiDian.RainBow.main.fragment.find.bean.AllLikeBean;
 import com.YiDian.RainBow.main.fragment.find.bean.AllUserInfoBean;
@@ -269,7 +271,7 @@ public interface Apis {
     //通过昵称查询用户信息
     @GET("user/seleteUserOfName")
     Observable<UserMsgBean> doGetUserMsgByName(@Query("userId")int userid,@Query("nickName")String name);
-//1232132132
+
     //查询所有礼物
     @GET("gift/selectGifts")
     Observable<GiftMsgBean> doGetAllGiftMsg();
@@ -278,8 +280,19 @@ public interface Apis {
     @GET("gold/selectGoldNumByUserId")
     Observable<GlodNumBean> dogetGldNum(@Query("userId")int userid);
 
-    //1321245444
     //赠送礼物
     @POST("giftMarkVO/insertGiftMark")
     Observable<InsertRealBean> doSendGift(@Query("inUserId")int reciveuserid,@Query("outUserId") int senduserid,@Query("giftId") int giftid);
+
+    //创建群聊
+    @POST("groupInfo/addGroupInfo")
+    Observable<InsertRealBean> doCreatGroup(@Query("holderId") int userid,@Query("groupName")String name);
+
+    //我创建的群聊
+    @GET("groupInfo/selectGroupInfoByGroupId")
+    Observable<MyCreateGroupMsgBean> dogetMyJoinGroup(@Query("holderId")int userid);
+
+    //我加入的群聊
+    @GET("group/selectGroupInfo")
+    Observable<MyJoinGroupMsgBean> dogetMyCreateGroup(@Query("userId")int userid);
 }

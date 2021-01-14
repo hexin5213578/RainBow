@@ -1,5 +1,7 @@
 package com.YiDian.RainBow.friend;
 
+import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -19,6 +21,8 @@ import com.YiDian.RainBow.friend.fragment.FragmentFollow;
 import com.YiDian.RainBow.friend.fragment.FragmentFans;
 import com.YiDian.RainBow.friend.fragment.FragmentFriend;
 import com.YiDian.RainBow.friend.fragment.FragmentGroup;
+import com.YiDian.RainBow.imgroup.CreateGroupActivity;
+import com.YiDian.RainBow.main.fragment.msg.activity.FriendImActivity;
 import com.leaf.library.StatusBarUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -55,7 +59,7 @@ public class FriendsActivity extends BaseAvtivity implements RadioGroup.OnChecke
 
     RadioButton[] rbs = new RadioButton[4];
     private List<Fragment> list;
-
+    String TAG = "xxx";
 
     /**
      * 创建Fragment实例
@@ -111,6 +115,7 @@ public class FriendsActivity extends BaseAvtivity implements RadioGroup.OnChecke
         rbfriend.setTextAppearance(FriendsActivity.this, R.style.txt_bold);
 
 
+
         vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -161,9 +166,17 @@ public class FriendsActivity extends BaseAvtivity implements RadioGroup.OnChecke
 
                 break;
             case R.id.ll_addgroup:
-
+                //跳转至创建群聊页
+                Intent intent = new Intent(FriendsActivity.this, CreateGroupActivity.class);
+                startActivity(intent);
                 break;
         }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        EventBus.getDefault().post("重新获取群组列表");
     }
 
     public class MyAdapter extends FragmentPagerAdapter{
