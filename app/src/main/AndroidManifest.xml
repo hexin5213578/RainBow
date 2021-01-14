@@ -345,6 +345,11 @@
             android:name=".friend.FriendsActivity"
             android:screenOrientation="portrait" />
 
+        <!-- 创建群组 -->
+        <activity
+            android:name=".imgroup.CreateGroupActivity"
+            android:screenOrientation="portrait" />
+
         <!-- 系统通知 -->
         <activity
             android:name=".notice.SystemNoticeActivity"
