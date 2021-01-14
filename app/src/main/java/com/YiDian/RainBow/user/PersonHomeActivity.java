@@ -6,7 +6,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,8 +24,6 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.leaf.library.StatusBarUtil;
 import com.liaoinstan.springview.widget.SpringView;
-
-import java.util.concurrent.BlockingDeque;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,6 +78,10 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
     TextView tvLiwuC;
     @BindView(R.id.tv_liwu)
     TextView tvLiwu;
+    @BindView(R.id.r0)
+    RelativeLayout r0;
+    @BindView(R.id.v1)
+    View v1;
 
 
     //================================================================================//
@@ -110,7 +114,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                 isotherpage();
             }
             Log.d("xxx", "getData: 自己的主页");
-            bandpageinfo(myId,name);
+            bandpageinfo(myId, name);
 
             Log.d("xxx", "传过来的姓名为" + name);
 
@@ -120,7 +124,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                 isotherpage();
             }
             Log.d("xxx", "getData: 自己的主页");
-            bandpageinfo(myId,thePageuserId);
+            bandpageinfo(myId, thePageuserId);
 
 
             Log.d("xxx", "传过来的id为" + thePageuserId);
@@ -133,9 +137,6 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
         llCandian.setOnClickListener(this);
 
 
-
-
-
         //设置背景透明
         StatusBarUtil.setTransparentForWindow(this);
         //设置状态栏字体黑色
@@ -144,8 +145,9 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
         Log.d("xxx", "进入getdata");
 
     }
+
     //获取用户（好友或自己）信息 并绑定的到页面
-    public void bandpageinfo(int myId,int thePageuserId){
+    public void bandpageinfo(int myId, int thePageuserId) {
         //自己id   要查询id   并绑定到标签上面
         NetUtils.getInstance().getApis().doGetUserMsgById(myId, thePageuserId)
                 .subscribeOn(Schedulers.io())
@@ -165,19 +167,30 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             UserMsgBean.ObjectBean object = userMsgBean.getObject();
                             UserMsgBean.ObjectBean.UserInfoBean userInfo = userMsgBean.getObject().getUserInfo();
 
-                            String fenSiCount = object.getCountFansNum()+"";
-                            String guanzhu = object.getCountFavoriteNum()+"";
+                            String fenSiCount = object.getCountFansNum() + "";
+                            String guanzhu = object.getCountFavoriteNum() + "";
                             String liwu = object.getCountGiftNum() + "";
 
                             String backImg = userInfo.getBackImg();
                             int friendAge = userInfo.getAge();
-                            String userRoleAge = userInfo.getUserRole()+" "+friendAge;
-                            String friendname = userInfo.getNickName();
-                            String headImg = userInfo.getHeadImg();
-                            String gxQianMing = "个性签名："+userInfo.getExplains();//个性签名
+
+                            String userRole = userInfo.getUserRole();// 用户真实名
+                            String userRoleAge = null;     //用户真实名   + 年龄
+                            String friendname = userInfo.getNickName();//昵称
+                            String headImg = userInfo.getHeadImg();//头像
+                            String gxQianMing = "个性签名：" + userInfo.getExplains();//个性签名
+
+                            if (userRole == null) {
+                                userRoleAge = friendAge + "";
+                            } else if (userRole.equals("保密")) {
+                                userRoleAge = friendAge + "";
+                            } else {
+                                userRoleAge = userRole + friendAge;
+                            }
+
 
                             Glide.with(PersonHomeActivity.this).load(headImg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivUserimg);
-                            if(backImg==null)
+                            if (backImg == null)
                                 IvBeijing.setBackgroundColor(PersonHomeActivity.this.getResources().getColor(R.color.color_8867E7));
                             else {
                                 Glide.with(PersonHomeActivity.this).load(backImg).into(IvBeijing);
@@ -188,7 +201,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             tvFensiC.setText(fenSiCount);//粉丝数
                             tvGuanzhuC.setText(guanzhu);//关注数
                             tvLiwuC.setText(liwu);//礼物数
-                            tvUsername.setText(friendname);
+                            tvUsername.setText(friendname);//设置昵称
                             tvGxqianming.setText(gxQianMing);
 
                         }
@@ -207,7 +220,8 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                     }
                 });
     }
-    public void bandpageinfo(int myId,String name){
+
+    public void bandpageinfo(int myId, String name) {
 //        doGetUserMsgByName
         NetUtils.getInstance().getApis().doGetUserMsgByName(myId, name)
                 .subscribeOn(Schedulers.io())
@@ -227,19 +241,19 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             UserMsgBean.ObjectBean object = userMsgBean.getObject();
                             UserMsgBean.ObjectBean.UserInfoBean userInfo = userMsgBean.getObject().getUserInfo();
 
-                            String fenSiCount = object.getCountFansNum()+"";
-                            String guanzhu = object.getCountFavoriteNum()+"";
+                            String fenSiCount = object.getCountFansNum() + "";
+                            String guanzhu = object.getCountFavoriteNum() + "";
                             String liwu = object.getCountGiftNum() + "";
 
                             String backImg = userInfo.getBackImg();
                             int friendAge = userInfo.getAge();
-                            String userRoleAge = userInfo.getUserRole()+" "+friendAge;
+                            String userRoleAge = userInfo.getUserRole() + " " + friendAge;
                             String friendname = userInfo.getNickName();
                             String headImg = userInfo.getHeadImg();
-                            String gxQianMing = "个性签名："+userInfo.getExplains();//个性签名
+                            String gxQianMing = "个性签名：" + userInfo.getExplains();//个性签名
 
                             Glide.with(PersonHomeActivity.this).load(headImg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivUserimg);
-                            if(backImg==null)
+                            if (backImg == null)
                                 IvBeijing.setBackgroundColor(PersonHomeActivity.this.getResources().getColor(R.color.color_8867E7));
                             else {
                                 Glide.with(PersonHomeActivity.this).load(backImg).into(IvBeijing);
@@ -297,6 +311,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
         super.onDestroy();
     }
 
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -317,8 +332,15 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
             case R.id.ll_candian:
 
                 break;
+            case R.id.Iv_beijing:
+//                showSelectImgAndVideo();
+
+                Toast.makeText(this, "更换背景", Toast.LENGTH_SHORT).show();
+                break;
+
 
         }
+
 
     }
 }
