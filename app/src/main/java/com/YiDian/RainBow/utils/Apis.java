@@ -278,6 +278,7 @@ public interface Apis {
     @GET("gold/selectGoldNumByUserId")
     Observable<GlodNumBean> dogetGldNum(@Query("userId")int userid);
 
+    //123456
     //赠送礼物
     @POST("giftMarkVO/insertGiftMark")
     Observable<InsertRealBean> doSendGift(@Query("inUserId")int reciveuserid,@Query("outUserId") int senduserid,@Query("giftId") int giftid);
