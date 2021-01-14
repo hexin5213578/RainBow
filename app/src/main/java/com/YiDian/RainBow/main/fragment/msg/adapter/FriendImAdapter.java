@@ -394,11 +394,13 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                 message = list.get(position);
                 ImVideoBean imVideoBean = gson.fromJson(message.toJson(), ImVideoBean.class);
 
-                String media_id = imVideoBean.getContent().getVideo().getMedia_id();
+                String media_id = imVideoBean.getContent().getThumb().getLocal_path();
 
                 Bitmap netVideoBitmap = getNetVideoBitmap(media_id);
                 //设置封面
                 holder.videoPlayer.loadCoverImage(media_id, netVideoBitmap);
+
+
                 int duration = imVideoBean.getContent().getDuration();
                 if (duration<10){
                     holder.videoPlayer.setDuration("00:0"+duration);

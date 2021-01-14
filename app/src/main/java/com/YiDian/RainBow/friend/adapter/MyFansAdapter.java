@@ -96,7 +96,7 @@ public class MyFansAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 ((ViewHolder)holder).tvXingbie.setText(userRole);
             }
         }else{
-            ((MyFollowAdapter.ViewHolder)holder).tvXingbie.setVisibility(View.GONE);
+            ((ViewHolder)holder).tvXingbie.setVisibility(View.GONE);
         }
         //判断是否关注
         if (bean.getIsAttention()==0){
