@@ -24,6 +24,7 @@ import com.YiDian.RainBow.main.fragment.home.bean.OneCommentBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.LoginUserInfoBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.SelectAllDraftsBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.GiftMsgBean;
+import com.YiDian.RainBow.main.fragment.msg.bean.GlodNumBean;
 import com.YiDian.RainBow.notice.bean.CleanNoticeBean;
 import com.YiDian.RainBow.notice.bean.ClickNoticeBean;
 import com.YiDian.RainBow.notice.bean.CommentNoticeBean;
@@ -257,7 +258,7 @@ public interface Apis {
     @POST("user/updatePassword")
     Observable<InsertRealBean> doUpdatePwd(@Query("password")String pwd,@Query("userId")int userid);
 
-    //查询用户信息
+    //查询我的首页详情
     @GET("user/countUserInfo")
     Observable<LoginUserInfoBean> doGetUserInfo(@Query("userId")int userid);
 
@@ -265,16 +266,19 @@ public interface Apis {
     @GET("user/seleteUserOfId")
     Observable<UserMsgBean> doGetUserMsgById(@Query("userId")int userid,@Query("id")int id);
 
+    //通过昵称查询用户信息
+    @GET("user/seleteUserOfName")
+    Observable<UserMsgBean> doGetUserMsgByName(@Query("userId")int userid,@Query("nickName")String name);
+
     //查询所有礼物
     @GET("gift/selectGifts")
     Observable<GiftMsgBean> doGetAllGiftMsg();
 
-    //通过昵称查询用户信息
+    //获取我的金币数量
+    @GET("gold/selectGoldNumByUserId")
+    Observable<GlodNumBean> dogetGldNum(@Query("userId")int userid);
 
-    /*//聊天发送通知
-    @GET("user/insertMessage")
-    Observable*/
-
-
-
+    //赠送礼物
+    @POST("giftMarkVO/insertGiftMark")
+    Observable<InsertRealBean> doSendGift(@Query("inUserId")int reciveuserid,@Query("outUserId") int senduserid,@Query("giftId") int giftid);
 }

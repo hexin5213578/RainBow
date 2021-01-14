@@ -202,6 +202,9 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     private GridViewAdapter[] arr;
     /*当前显示的是第几页*/
     private int curIndex = 0;
+
+    private int selectnum=0;
+
     @Override
     protected int getResId() {
         return R.layout.activity_im;
@@ -813,6 +816,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         vp = view.findViewById(R.id.vp);
         lldot = view.findViewById(R.id.ll_dot);
         LinearLayout llrecharge= view.findViewById(R.id.ll_recharge);
+        RelativeLayout ll_close = view.findViewById(R.id.ll_close);
         TextView tv_balance = view.findViewById(R.id.tv_balance);
         TextView tv_send = view.findViewById(R.id.tv_send);
 
@@ -824,7 +828,6 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         List<View> mPagerList= new ArrayList<>();
         arr = new GridViewAdapter[pageCount];
 
-
         for (int j = 0; j < pageCount; j++) {
             final GridView gridview = (GridView) inflater.inflate(R.layout.bottom_vp_gridview, vp, false);
             final GridViewAdapter gridAdapter = new GridViewAdapter(FriendImActivity.this, list, j);
@@ -834,6 +837,9 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                    selectnum = (int) id;
+
                     Toast.makeText(FriendImActivity.this, "点击位置position：" + position + "..id:" + id, Toast.LENGTH_SHORT).show();
                     for (int i = 0; i < list.size(); i++) {
                         GiftMsgBean.ObjectBean model = list.get(i);
@@ -843,13 +849,11 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                             } else {
                                 model.setSelected(true);
                             }
-                            Log.i("tag", "==点击位置：" + i + "..id:" + id);
                         } else {
                             model.setSelected(false);
 //                            Log.i("tag","==位置2："+i+"..id:"+id);
                         }
                     }
-                    Log.i("tag", "状态：" + list.toString());
                     gridAdapter.notifyDataSetChanged();
                 }
             });
@@ -858,6 +862,33 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         vp.setAdapter(new ViewPagerAdapter(mPagerList, FriendImActivity.this));
 
         setOvalLayout();
+
+        tv_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //送出当前选中的礼物
+                GiftMsgBean.ObjectBean giftbean = list.get(selectnum);
+                Log.d("xxx","当前选中为"+selectnum);
+
+
+
+            }
+        });
+
+
+        ll_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+        llrecharge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //去充值
+            }
+        });
+
         //popwindow设置属性
         mPopupWindow1.setAnimationStyle(R.style.popwindow_anim_style);
         mPopupWindow1.setContentView(view);
