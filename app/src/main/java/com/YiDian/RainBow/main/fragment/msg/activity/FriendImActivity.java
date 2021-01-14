@@ -203,7 +203,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     /*当前显示的是第几页*/
     private int curIndex = 0;
 
-    private int selectnum=0;
+    private int selectnum=-1;
 
     @Override
     protected int getResId() {
@@ -818,7 +818,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         LinearLayout llrecharge= view.findViewById(R.id.ll_recharge);
         RelativeLayout ll_close = view.findViewById(R.id.ll_close);
         TextView tv_balance = view.findViewById(R.id.tv_balance);
-        TextView tv_send = view.findViewById(R.id.tv_send);
+        RelativeLayout rl_send = view.findViewById(R.id.rl_send);
 
         //总的页数=总数/每页数量，并取整
         pageCount = (int) Math.ceil(list.size() * 1.0 / 8);
@@ -846,6 +846,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                         if (i == id) {
                             if (model.isSelected()) {
                                 model.setSelected(false);
+                                selectnum = -1;
                             } else {
                                 model.setSelected(true);
                             }
@@ -863,14 +864,16 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
         setOvalLayout();
 
-        tv_send.setOnClickListener(new View.OnClickListener() {
+        rl_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //送出当前选中的礼物
-                GiftMsgBean.ObjectBean giftbean = list.get(selectnum);
-                Log.d("xxx","当前选中为"+selectnum);
-
-
+                if (selectnum==-1){
+                    Toast.makeText(FriendImActivity.this, "请先选择礼物", Toast.LENGTH_SHORT).show();
+                }else{
+                    GiftMsgBean.ObjectBean giftbean = list.get(selectnum);
+                    Log.d("xxx","当前选中为"+selectnum);
+                }
 
             }
         });
