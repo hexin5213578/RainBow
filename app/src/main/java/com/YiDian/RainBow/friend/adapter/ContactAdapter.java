@@ -116,14 +116,23 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     //设置头像
                     Glide.with(mContext).load(objectBean.getHeadImg()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ContactHolder) holder).ivimage);
                     //设置签名
-                    ((ContactHolder) holder).tv_autograph.setText(objectBean.getExplains());
+                    if (objectBean.getExplains()!=null){
+                        ((ContactHolder) holder).tv_autograph.setText(objectBean.getExplains());
+                    }else{
+                        ((ContactHolder) holder).tv_autograph.setText("");
+
+                    }
                     //设置性别
                     String userRole = objectBean.getUserRole();
-                    if(userRole.equals("保密")){
-                        ((ContactHolder) holder).tv_xingbie.setVisibility(View.GONE);
+                    if (userRole!=null){
+                        if(userRole.equals("保密")){
+                            ((ContactHolder) holder).tv_xingbie.setVisibility(View.GONE);
+                        }else{
+                            ((ContactHolder) holder).tv_xingbie.setVisibility(View.VISIBLE);
+                            ((ContactHolder) holder).tv_xingbie.setText(userRole);
+                        }
                     }else{
-                        ((ContactHolder) holder).tv_xingbie.setText(userRole);
-
+                        ((MyFollowAdapter.ViewHolder)holder).tvXingbie.setVisibility(View.GONE);
                     }
                     int finalI = i;
 

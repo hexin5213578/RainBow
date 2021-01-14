@@ -3,8 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+
     <RelativeLayout
         android:layout_width="match_parent"
+        android:alpha="0"
+        android:background="@color/color_999999"
+        android:layout_above="@id/rl_bottom"
+        android:layout_height="match_parent">
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/rl_bottom"
         android:background="@drawable/sendgift_bg"
         android:layout_alignParentBottom="true"
         android:layout_height="@dimen/dp_304">
@@ -114,7 +124,15 @@
                     android:layout_height="@dimen/dp_17">
                 </TextView>
             </RelativeLayout>
-
         </RelativeLayout>
     </RelativeLayout>
+    <ImageView
+        android:id="@+id/iv_anim"
+        android:layout_width="@dimen/dp_83"
+        android:layout_height="@dimen/dp_70"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/dp_3"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:src="@mipmap/headimg2"/>
 </RelativeLayout>

@@ -48,11 +48,11 @@ public class WelcomeActivity extends BaseAvtivity{
         Request();
         handler = new Handler();
 
-        JMessageClient.login("1031", "1031", new BasicCallback() {
+        JMessageClient.login("15686", "15686", new BasicCallback() {
             @Override
             public void gotResult(int i, String s) {
                 if (i==0){
-                    Log.d("xxx", "1031 极光登录状态为" + i + "原因为" + s);
+                    Log.d("xxx", "15686 极光登录状态为" + i + "原因为" + s);
 
 
                /*     Bitmap bitmap=BitmapFactory.decodeResource(getResources(),R.mipmap.headimg3,null);//将资源文件转化为bitmap
@@ -65,7 +65,7 @@ public class WelcomeActivity extends BaseAvtivity{
                         @Override
                         public void gotResult(int i, String s) {
                             if (i==0){
-                                Log.d("xxx","1031 头像设置成功");
+                                Log.d("xxx","15686 头像设置成功");
                             }else {
                                 Log.d("xxx",s);
                             }
@@ -73,8 +73,7 @@ public class WelcomeActivity extends BaseAvtivity{
                     });
 */
                     UserInfo myInfo = JMessageClient.getMyInfo();
-                    Log.d("xxx","1031信息为"+myInfo.toJson());
-
+                    Log.d("xxx","15686信息为"+myInfo.toJson());
 
                     String avatarFile = myInfo.getAvatar();
                     if (!avatarFile.equals(null)){
@@ -83,7 +82,7 @@ public class WelcomeActivity extends BaseAvtivity{
                         Log.d("xxx","不存在头像");
                     }
 
-                    //JMessageClient.deleteSingleConversation("1031","87ce5706efafab51ddd2be08");
+                    //JMessageClient.deleteSingleConversation("15686","87ce5706efafab51ddd2be08");
 
                 }
             }

@@ -19,9 +19,9 @@ import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.customDialog.CustomDialogCleanNotice;
 import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
-import com.YiDian.RainBow.notice.ClickNoticeActivity;
-import com.YiDian.RainBow.notice.bean.CleanNoticeBean;
 import com.YiDian.RainBow.setup.bean.InsertRealBean;
+import com.YiDian.RainBow.topic.SaveIntentMsgBean;
+import com.YiDian.RainBow.user.PersonHomeActivity;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
@@ -30,7 +30,6 @@ import com.leaf.library.StatusBarUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,6 +60,8 @@ public class ImSetUpActivity extends BaseAvtivity implements View.OnClickListene
     RelativeLayout l4;
     @BindView(R.id.l5)
     RelativeLayout l5;
+    @BindView(R.id.l1)
+    RelativeLayout l1;
     private Conversation conversation;
     private String id;
     private CustomDialogCleanNotice.Builder builder;
@@ -73,12 +74,13 @@ public class ImSetUpActivity extends BaseAvtivity implements View.OnClickListene
 
     @Override
     protected void getData() {
-        StatusBarUtil.setGradientColor(ImSetUpActivity.this,toolbar);
+        StatusBarUtil.setGradientColor(ImSetUpActivity.this, toolbar);
         StatusBarUtil.setDarkMode(ImSetUpActivity.this);
 
         userid = Integer.valueOf(Common.getUserId());
 
         ivBack.setOnClickListener(this);
+        l1.setOnClickListener(this);
         l2.setOnClickListener(this);
         l3.setOnClickListener(this);
         l4.setOnClickListener(this);
@@ -103,12 +105,23 @@ public class ImSetUpActivity extends BaseAvtivity implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.iv_back:
                 EventBus.getDefault().post("收到了信息");
                 finish();
                 break;
-                //取消关注
+            //跳转到用户主页
+            case R.id.l1:
+                //跳转到用户信息页
+                Intent intent = new Intent(ImSetUpActivity.this, PersonHomeActivity.class);
+                SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
+                saveIntentMsgBean.setId(Integer.parseInt(id));
+                //2标记传入姓名  1标记传入id
+                saveIntentMsgBean.setFlag(1);
+                intent.putExtra("msg", saveIntentMsgBean);
+                startActivity(intent);
+                break;
+            //取消关注
             case R.id.l2:
                 builder = new CustomDialogCleanNotice.Builder(ImSetUpActivity.this);
                 builder.setMessage("确定取消关注该用户?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -126,7 +139,7 @@ public class ImSetUpActivity extends BaseAvtivity implements View.OnClickListene
                                     @Override
                                     public void onNext(FollowBean followBean) {
                                         dialog.dismiss();
-                                        Toast.makeText(ImSetUpActivity.this, ""+followBean.getMsg(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ImSetUpActivity.this, "" + followBean.getMsg(), Toast.LENGTH_SHORT).show();
                                     }
 
                                     @Override
@@ -142,14 +155,14 @@ public class ImSetUpActivity extends BaseAvtivity implements View.OnClickListene
                     }
                 });
                 builder.setNegativeButton("取消",
-                        new android.content.DialogInterface.OnClickListener() {
+                        new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
                         });
                 builder.create().show();
                 break;
-                //加入黑名单
+            //加入黑名单
             case R.id.l3:
                 builder = new CustomDialogCleanNotice.Builder(ImSetUpActivity.this);
                 builder.setMessage("确定加入黑名单?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -166,7 +179,7 @@ public class ImSetUpActivity extends BaseAvtivity implements View.OnClickListene
 
                                     @Override
                                     public void onNext(InsertRealBean insertRealBean) {
-                                        if (insertRealBean.getMsg().equals("增加成功")){
+                                        if (insertRealBean.getMsg().equals("增加成功")) {
                                             List<String> list = new ArrayList<>();
 
                                             list.add(id);
@@ -174,12 +187,12 @@ public class ImSetUpActivity extends BaseAvtivity implements View.OnClickListene
                                             JMessageClient.addUsersToBlacklist(list, new BasicCallback() {
                                                 @Override
                                                 public void gotResult(int i, String s) {
-                                                    if (i==0){
+                                                    if (i == 0) {
                                                         Toast.makeText(ImSetUpActivity.this, "加入黑名单成功", Toast.LENGTH_SHORT).show();
                                                         dialog.dismiss();
-                                                    }else{
+                                                    } else {
                                                         dialog.dismiss();
-                                                        Log.d("xxx","错误码为"+i+"原因为"+s);
+                                                        Log.d("xxx", "错误码为" + i + "原因为" + s);
                                                     }
                                                 }
                                             });
@@ -199,14 +212,14 @@ public class ImSetUpActivity extends BaseAvtivity implements View.OnClickListene
                     }
                 });
                 builder.setNegativeButton("取消",
-                        new android.content.DialogInterface.OnClickListener() {
+                        new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
                         });
                 builder.create().show();
                 break;
-                //清空聊天记录
+            //清空聊天记录
             case R.id.l4:
                 builder = new CustomDialogCleanNotice.Builder(ImSetUpActivity.this);
                 builder.setMessage("确定清空所有聊天记录?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -216,17 +229,24 @@ public class ImSetUpActivity extends BaseAvtivity implements View.OnClickListene
                     }
                 });
                 builder.setNegativeButton("取消",
-                        new android.content.DialogInterface.OnClickListener() {
+                        new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
                         });
                 builder.create().show();
                 break;
-                //举报
+            //举报
             case R.id.l5:
 
                 break;
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }

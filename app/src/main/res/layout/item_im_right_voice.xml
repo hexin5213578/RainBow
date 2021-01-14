@@ -36,7 +36,6 @@
             android:textSize="@dimen/sp_10"
             android:textColor="@color/white"
             android:paddingTop="@dimen/dp_10"
-            android:maxWidth="@dimen/dp_170"
             android:background="@mipmap/imright"
             android:paddingBottom="@dimen/dp_10"
             android:layout_height="@dimen/dp_35">
@@ -56,7 +55,7 @@
                 android:layout_gravity="center"
                 android:id="@+id/tv_duration"
 
-                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_10"
                 android:textColor="@color/white"
                 android:layout_height="wrap_content">
             </TextView>

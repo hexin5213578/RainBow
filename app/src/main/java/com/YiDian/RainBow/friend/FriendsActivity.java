@@ -116,7 +116,6 @@ public class FriendsActivity extends BaseAvtivity implements RadioGroup.OnChecke
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
             }
-
             @Override
             public void onPageSelected(int position) {
                 switch (position){
