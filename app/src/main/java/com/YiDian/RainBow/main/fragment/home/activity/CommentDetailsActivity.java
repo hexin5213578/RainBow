@@ -1,12 +1,14 @@
 package com.YiDian.RainBow.main.fragment.home.activity;
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -102,6 +104,8 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
     RelativeLayout rlMiddle;
     @BindView(R.id.rl_notdata)
     RelativeLayout rlNotdata;
+    @BindView(R.id.rl_item)
+    RelativeLayout rlItem;
     private int commentId;
     private int userId;
     int page = 1;
@@ -111,6 +115,38 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
     private OneCommentBean.ObjectBean bean;
     File f = new File(
             "/data/data/com.YiDian.RainBow/shared_prefs/comment.xml");
+
+    /**
+     * addLayoutListener方法如下
+     *
+     * @param main   根布局
+     * @param scroll 需要显示的最下方View
+     */
+    public void addLayoutListener(final View main, final View scroll) {
+        main.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect rect = new Rect();
+                //1、获取main在窗体的可视区域
+                main.getWindowVisibleDisplayFrame(rect);
+                //2、获取main在窗体的不可视区域高度，在键盘没有弹起时，main.getRootView().getHeight()调节度应该和rect.bottom高度一样
+                int mainInvisibleHeight = main.getRootView().getHeight() - rect.bottom;
+                int screenHeight = main.getRootView().getHeight();//屏幕高度
+                //3、不可见区域大于屏幕本身高度的1/4：说明键盘弹起了
+                if (mainInvisibleHeight > screenHeight / 4) {
+                    int[] location = new int[2];
+                    scroll.getLocationInWindow(location);
+                    // 4､获取Scroll的窗体坐标，算出main需要滚动的高度
+                    int srollHeight = (location[1] + scroll.getHeight()) - rect.bottom;
+                    //5､让界面整体上移键盘的高度
+                    main.scrollTo(0, srollHeight);
+                } else {
+                    //3、不可见区域小于屏幕高度1/4时,说明键盘隐藏了，把界面下移，移回到原有高度
+                    main.scrollTo(0, 0);
+                }
+            }
+        });
+    }
 
     @Override
     protected int getResId() {
@@ -131,6 +167,7 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
         commentId = intent.getIntExtra("id", 0);
         userId = Integer.valueOf(Common.getUserId());
 
+        addLayoutListener(rlItem,rlSend);
 
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
@@ -395,7 +432,7 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
                         } else {
                             if (AllList.size() > 0 && AllList != null) {
                                 Toast.makeText(CommentDetailsActivity.this, "没有更多内容了", Toast.LENGTH_SHORT).show();
-                            }else{
+                            } else {
                                 rlNotdata.setVisibility(View.VISIBLE);
                                 sv.setVisibility(View.GONE);
                             }
@@ -418,6 +455,7 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
                     }
                 });
     }
+
     public void InitData() {
         NetUtils.getInstance().getApis()
                 .doGetCommentbyId(commentId, userId)

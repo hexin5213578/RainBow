@@ -109,6 +109,8 @@
             android:layout_height="wrap_content">
         </RadioButton>
     </RadioGroup>
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_below="@id/ll_balance"
@@ -416,8 +418,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@null"
-                android:checked="true"
                 android:layout_marginRight="@dimen/dp_32"
+                android:checked="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:button="@drawable/check_button_bg"

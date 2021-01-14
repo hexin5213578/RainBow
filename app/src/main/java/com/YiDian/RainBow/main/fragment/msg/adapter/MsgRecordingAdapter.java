@@ -68,9 +68,12 @@ public class MsgRecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     File avatarFile = userInfo.getAvatarFile();
 
                     Log.d("xxx","获取用户信息成功,用户头像为"+avatarFile);
-
-                    //加载头像
-                    Glide.with(context).load(avatarFile).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder)holder).ivHeadimg);
+                    // TODO: 2021/1/14 0014 头像为空加载默认
+                    if (avatarFile==null){
+                        Glide.with(context).load(R.mipmap.headimg3).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder)holder).ivHeadimg);
+                    }else{
+                        Glide.with(context).load(avatarFile).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder)holder).ivHeadimg);
+                    }
                 }
             }
         });

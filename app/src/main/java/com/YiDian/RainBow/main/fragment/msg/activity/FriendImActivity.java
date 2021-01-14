@@ -27,6 +27,9 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -60,6 +63,8 @@ import com.YiDian.RainBow.main.fragment.msg.adapter.FriendImAdapter;
 import com.YiDian.RainBow.main.fragment.msg.adapter.GridViewAdapter;
 import com.YiDian.RainBow.main.fragment.msg.adapter.ViewPagerAdapter;
 import com.YiDian.RainBow.main.fragment.msg.bean.GiftMsgBean;
+import com.YiDian.RainBow.main.fragment.msg.bean.GlodNumBean;
+import com.YiDian.RainBow.setup.bean.InsertRealBean;
 import com.YiDian.RainBow.user.bean.UserMsgBean;
 import com.YiDian.RainBow.utils.BitmapUtil;
 import com.YiDian.RainBow.utils.KeyBoardUtils;
@@ -70,6 +75,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.dmcbig.mediapicker.PickerActivity;
 import com.dmcbig.mediapicker.PickerConfig;
 import com.dmcbig.mediapicker.entity.Media;
+import com.dmcbig.mediapicker.utils.ScreenUtils;
 import com.leaf.library.StatusBarUtil;
 import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.widget.SpringView;
@@ -98,6 +104,8 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+
+import static android.view.animation.Animation.ABSOLUTE;
 //                       _oo0oo_
 //                      o8888888o
 //                      88" . "88
@@ -204,6 +212,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     private int curIndex = 0;
 
     private int selectnum=-1;
+    private TextView tv_balance;
 
     @Override
     protected int getResId() {
@@ -674,8 +683,13 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 intent = new Intent(FriendImActivity.this,ImSetUpActivity.class);
                 File avatarFile = conversation.getAvatarFile();
                 String title = conversation.getTitle();
+                if (avatarFile==null){
+                    intent.putExtra("imgfile","http://img.rianbow.cn/20210113103522202909.png");
+                }else{
+                    intent.putExtra("imgfile",avatarFile.toString());
 
-                intent.putExtra("imgfile",avatarFile.toString());
+                }
+
                 intent.putExtra("name",title);
                 intent.putExtra("userid",conversation.getTargetId());
 
@@ -789,7 +803,6 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                         if (giftMsgBean.getMsg().equals("查询成功")){
                             list = giftMsgBean.getObject();
                             showSelectGift();
-
                         }
                     }
 
@@ -805,6 +818,37 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                     }
                 });
     }
+    //获取金币数
+    public void  getGlodNum(){
+        NetUtils.getInstance().getApis()
+                .dogetGldNum(userid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GlodNumBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(GlodNumBean glodNumBean) {
+                        if (glodNumBean.getMsg().equals("查询成功")){
+                            tv_balance.setText(glodNumBean.getObject().getGoldAll()+"");
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(FriendImActivity.this, "获取余额失败", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
     //弹出选择礼物列表弹出框
     public void showSelectGift() {
         //添加成功后处理  63 50
@@ -817,8 +861,13 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         lldot = view.findViewById(R.id.ll_dot);
         LinearLayout llrecharge= view.findViewById(R.id.ll_recharge);
         RelativeLayout ll_close = view.findViewById(R.id.ll_close);
-        TextView tv_balance = view.findViewById(R.id.tv_balance);
+        ImageView iv_anim = view.findViewById(R.id.iv_anim);
+        tv_balance = view.findViewById(R.id.tv_balance);
         RelativeLayout rl_send = view.findViewById(R.id.rl_send);
+
+
+        //获取金币数
+        getGlodNum();
 
         //总的页数=总数/每页数量，并取整
         pageCount = (int) Math.ceil(list.size() * 1.0 / 8);
@@ -840,7 +889,6 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
                     selectnum = (int) id;
 
-                    Toast.makeText(FriendImActivity.this, "点击位置position：" + position + "..id:" + id, Toast.LENGTH_SHORT).show();
                     for (int i = 0; i < list.size(); i++) {
                         GiftMsgBean.ObjectBean model = list.get(i);
                         if (i == id) {
@@ -873,8 +921,72 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 }else{
                     GiftMsgBean.ObjectBean giftbean = list.get(selectnum);
                     Log.d("xxx","当前选中为"+selectnum);
-                }
 
+                    //展示动画
+                    iv_anim.setVisibility(View.VISIBLE);
+                    Glide.with(FriendImActivity.this).load(giftbean.getGiftImg()).into(iv_anim);
+
+                    int screenWidth = ScreenUtils.getScreenHeight(FriendImActivity.this);//获取屏幕宽度
+                    Log.d("xxx","屏幕高度为"+screenWidth);
+
+                    Animation translateAnimation = AnimationUtils.loadAnimation(FriendImActivity.this, R.anim.gift_anim);
+
+                    translateAnimation.setDuration(2000);//动画持续的时间为10s
+                    translateAnimation.setFillEnabled(true);//使其可以填充效果从而不回到原地
+                    translateAnimation.setFillAfter(true);//不回到起始位置
+                    //如果不添加setFillEnabled和setFillAfter则动画执行结束后会自动回到远点
+                    iv_anim.setAnimation(translateAnimation);//给imageView添加的动画效果
+                    translateAnimation.startNow();//动画开始执行 放在最后即可
+
+                    //动画监听
+                    translateAnimation.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            translateAnimation.cancel();
+                            iv_anim.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+
+                        }
+                    });
+                    //发起赠送礼物的接口
+                    NetUtils.getInstance().getApis()
+                            .doSendGift(Integer.parseInt(conversation.getTargetId()),userid,giftbean.getId())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Observer<InsertRealBean>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
+
+                                }
+
+                                @Override
+                                public void onNext(InsertRealBean insertRealBean) {
+                                    if (insertRealBean.getMsg().equals("送出成功")){
+                                        //送出成功 刷新余额
+                                        getGlodNum();
+                                        Toast.makeText(FriendImActivity.this, "赠送礼物成功", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+
+                                }
+                            });
+                }
             }
         });
 
@@ -889,6 +1001,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
             @Override
             public void onClick(View v) {
                 //去充值
+                Toast.makeText(FriendImActivity.this, "充值通道未开启，请关注后续通知哦", Toast.LENGTH_SHORT).show();
             }
         });
 

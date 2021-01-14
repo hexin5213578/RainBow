@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@color/color_f7f7f7" android:layout_height="wrap_content">
+    android:background="@color/color_f7f7f7"
+    android:layout_height="wrap_content">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -29,33 +30,34 @@
             android:layout_toRightOf="@id/iv_headimg"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_below="@id/tv_time"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:id="@+id/ll_vocie"
             android:orientation="horizontal"
+            android:id="@+id/ll_vocie"
+            android:layout_marginLeft="@dimen/dp_10"
             android:textSize="@dimen/sp_10"
-            android:textColor="@color/color_666666"
-            android:maxWidth="@dimen/dp_170"
+            android:textColor="@color/white"
+            android:paddingTop="@dimen/dp_10"
             android:background="@mipmap/imleft"
+            android:paddingBottom="@dimen/dp_10"
             android:layout_height="@dimen/dp_35">
+            <ImageView
+                android:layout_width="@dimen/dp_20"
+                android:src="@drawable/play4"
+                android:id="@+id/iv_anim"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content">
+            </ImageView>
             <TextView
                 android:layout_width="wrap_content"
                 android:text="111'"
+                android:layout_marginLeft="@dimen/dp_6"
                 android:textSize="@dimen/sp_10"
-                android:layout_marginLeft="@dimen/dp_10"
                 android:layout_gravity="center"
                 android:id="@+id/tv_duration"
+                android:layout_marginRight="@dimen/dp_10"
                 android:textColor="@color/color_8867E7"
                 android:layout_height="wrap_content">
             </TextView>
-            <ImageView
-                android:layout_width="@dimen/dp_20"
-                android:layout_gravity="center"
-                android:src="@mipmap/vocie_left"
-                android:id="@+id/iv_anim"
-                android:layout_marginRight="@dimen/dp_10"
-                android:layout_marginLeft="@dimen/dp_6"
-                android:layout_height="wrap_content">
-            </ImageView>
         </LinearLayout>
     </RelativeLayout>
 </RelativeLayout>
