@@ -3,9 +3,9 @@ package com.YiDian.RainBow.topic;
 import java.io.Serializable;
 
 public class SaveIntentMsgBean implements Serializable {
-    private String msg;
-    private int flag;
-    private int id;
+    private String msg;//
+    private int flag;//用户是自己还是别人
+    private int id;//用户的id
 
     public int getId() {
         return id;
