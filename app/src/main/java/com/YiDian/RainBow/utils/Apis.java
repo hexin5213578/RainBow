@@ -269,7 +269,7 @@ public interface Apis {
     //通过昵称查询用户信息
     @GET("user/seleteUserOfName")
     Observable<UserMsgBean> doGetUserMsgByName(@Query("userId")int userid,@Query("nickName")String name);
-
+//1232132132
     //查询所有礼物
     @GET("gift/selectGifts")
     Observable<GiftMsgBean> doGetAllGiftMsg();
