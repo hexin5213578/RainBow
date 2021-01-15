@@ -81,6 +81,11 @@ public class FriendsActivity extends BaseAvtivity implements RadioGroup.OnChecke
         //创建集合存入fragment
         list = new ArrayList<>();
 
+        Intent intent = getIntent();
+        int flag = intent.getIntExtra("flag", 0);
+
+
+
         llBack.setOnClickListener(this);
         llAddfriend.setOnClickListener(this);
         llAddgroup.setOnClickListener(this);
@@ -106,16 +111,43 @@ public class FriendsActivity extends BaseAvtivity implements RadioGroup.OnChecke
         MyAdapter myAdapter = new MyAdapter(getSupportFragmentManager());
         vp.setAdapter(myAdapter);
 
-        /**
-         * 首次进入加载第一个界面
-         */
-        rbfriend.setChecked(true);
-        vp.setCurrentItem(0);
-        rbfriend.setTextSize(15);
-        rbfriend.setTextAppearance(FriendsActivity.this, R.style.txt_bold);
+        if (flag==1){
+            vp.setCurrentItem(0);
+            rbfriend.setChecked(true);
 
+            rbfriend.setTextSize(15);
+            rbfriend.setTextAppearance(FriendsActivity.this, R.style.txt_bold);
+        }else if (flag==2){
+            vp.setCurrentItem(1);
 
+            rbfans.setChecked(true);
 
+            llAddgroup.setVisibility(View.GONE);
+            llAddfriend.setVisibility(View.VISIBLE);
+
+            rbfans.setTextSize(15);
+            rbfans.setTextAppearance(FriendsActivity.this, R.style.txt_bold);
+        }else if (flag==3){
+            vp.setCurrentItem(2);
+            rbgroup.setChecked(true);
+
+            llAddgroup.setVisibility(View.VISIBLE);
+            llAddfriend.setVisibility(View.GONE);
+
+            rbgroup.setTextSize(15);
+            rbgroup.setTextAppearance(FriendsActivity.this, R.style.txt_bold);
+
+        }else {
+            vp.setCurrentItem(3);
+            rbatt.setChecked(true);
+
+            llAddgroup.setVisibility(View.GONE);
+            llAddfriend.setVisibility(View.VISIBLE);
+
+            rbatt.setTextSize(15);
+            rbatt.setTextAppearance(FriendsActivity.this, R.style.txt_bold);
+
+        }
         vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

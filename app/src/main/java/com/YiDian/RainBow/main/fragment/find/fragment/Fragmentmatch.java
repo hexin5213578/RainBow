@@ -150,7 +150,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
                                         rlNodata.setVisibility(View.GONE);
                                         container.setVisibility(View.VISIBLE);
 
-                                        for (int i = 1; i < list.size() - 1; i++) {
+                                        for (int i = 1; i < list.size(); i++) {
                                             cardsDataAdapter.add(list.get(i));
                                             Alllist.add(list.get(i));
                                         }

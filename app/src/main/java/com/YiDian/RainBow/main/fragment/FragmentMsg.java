@@ -182,6 +182,7 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
             @Override
             public void onItemClick(View itemView, int position) {
                 // TODO: 2021/1/8 0008  跳转至聊天详情页
+
                 Conversation conversation = conversationList.get(position);
 
                 //进入会话
@@ -355,6 +356,7 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
             case R.id.iv_my_buddy:
                 //跳转到我的好友页
                 intent = new Intent(getContext(), FriendsActivity.class);
+                intent.putExtra("flag",1);
                 startActivity(intent);
                 break;
             //系统通知

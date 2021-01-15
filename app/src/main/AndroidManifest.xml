@@ -32,6 +32,9 @@
     <uses-permission
         android:name="android.permission.WRITE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
+
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+
     <uses-permission android:name="MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.VIBRATE" /> <!-- 华为角标 -->
     <uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE" /> <!-- Required -->
@@ -298,6 +301,11 @@
         <!-- 扫描二维码 -->
         <activity
             android:name=".custom.zbar.CaptureActivity"
+            android:screenOrientation="portrait" />
+
+        <!-- 我的访客 -->
+        <activity
+            android:name=".main.fragment.mine.activity.FangkerecordActivity"
             android:screenOrientation="portrait" />
 
         <!-- 测试选择视频压缩 -->

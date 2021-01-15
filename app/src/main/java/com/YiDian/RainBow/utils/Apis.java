@@ -23,6 +23,7 @@ import com.YiDian.RainBow.main.fragment.home.bean.DynamicDetailsBean;
 import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.main.fragment.home.bean.OneCommentBean;
+import com.YiDian.RainBow.main.fragment.mine.bean.FangkeMsgBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.LoginUserInfoBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.SelectAllDraftsBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.GiftMsgBean;
@@ -263,6 +264,13 @@ public interface Apis {
     //查询我的首页详情
     @GET("user/countUserInfo")
     Observable<LoginUserInfoBean> doGetUserInfo(@Query("userId")int userid);
+
+    //查询我的访客
+    @GET("meet/selectUser")
+    Observable<FangkeMsgBean> dogetMyFangke(@Query("beUserId")int userid,@Query("page")int page,@Query("pageSize")int size);
+
+    @GET("meet/addUser")
+    Observable<InsertRealBean> doInsertFangke(@Query("beUser")int beuserid,@Query("userId")int userid);
 
     //通过id查询用户信息
     @GET("user/seleteUserOfId")

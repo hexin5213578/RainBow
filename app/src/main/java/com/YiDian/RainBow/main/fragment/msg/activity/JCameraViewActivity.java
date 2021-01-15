@@ -1,6 +1,7 @@
 package com.YiDian.RainBow.main.fragment.msg.activity;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
@@ -242,8 +243,12 @@ public class JCameraViewActivity extends BaseAvtivity {
     public File getFile(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        File file = new File(Environment.getExternalStorageDirectory()+"/temp.jpg");
-            try {
+
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        File directory = cw.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+        File file = new File(directory+"/temp.jpg");
+
+        try {
                 file.createNewFile();
                 FileOutputStream fos = new FileOutputStream(file);
                 InputStream is = new ByteArrayInputStream(baos.toByteArray());

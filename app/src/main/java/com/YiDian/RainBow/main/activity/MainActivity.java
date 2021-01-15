@@ -87,7 +87,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     RelativeLayout rlMain;
     @BindView(R.id.vp)
     ViewPager vp;
-
+    String TAG = "xxx";
     /**
      * 创建Fragment实例
      */
@@ -118,9 +118,6 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void getData() {
-
-
-
 
         //设置别名
         //setAlias();
@@ -390,6 +387,14 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
             }
         }
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "MainActivity的onRestart执行了");
+        EventBus.getDefault().post("重新获取我的基本信息");
+    }
+
     //在这里抽取了一个方法   可以封装到自己的工具类中...
     public File getFile(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

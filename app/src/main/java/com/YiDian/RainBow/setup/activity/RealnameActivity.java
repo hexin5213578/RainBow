@@ -1,6 +1,7 @@
 package com.YiDian.RainBow.setup.activity;
 
 import android.Manifest;
+import android.content.ContextWrapper;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -403,7 +404,11 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
     public File getFile(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-        File file = new File(Environment.getExternalStorageDirectory() + "/temp.jpg");
+
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        File directory = cw.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+        File file = new File(directory+"/temp.jpg");
+
         if (file.exists()){
             file.delete();
         }else{

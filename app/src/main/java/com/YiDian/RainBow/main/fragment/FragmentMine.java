@@ -21,23 +21,37 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.customrecycle.SpacesItemDecoration;
 import com.YiDian.RainBow.custom.zbar.CaptureActivity;
+import com.YiDian.RainBow.friend.FriendsActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.EditMsgActivity;
+import com.YiDian.RainBow.main.fragment.mine.activity.FangkerecordActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.MyQrCodeActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.MydraftActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.RechargeGlodActivity;
 import com.YiDian.RainBow.main.fragment.mine.adapter.HobbyAdapter;
+import com.YiDian.RainBow.main.fragment.mine.bean.LoginUserInfoBean;
 import com.YiDian.RainBow.setup.activity.SetupActivity;
+import com.YiDian.RainBow.utils.NetUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.leaf.library.StatusBarUtil;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
 import butterknife.BindView;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 //我的
 public class FragmentMine extends BaseFragment implements View.OnClickListener {
@@ -53,18 +67,16 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
     ImageView ivHeadimg;
     @BindView(R.id.tv_username)
     TextView tvUsername;
-    @BindView(R.id.iv_type)
-    ImageView ivType;
     @BindView(R.id.tv_age)
     TextView tvAge;
     @BindView(R.id.tv_userId)
     TextView tvUserId;
     @BindView(R.id.tv_copy)
     TextView tvCopy;
-    @BindView(R.id.tv_count_great)
-    TextView tvCountGreat;
-    @BindView(R.id.ll_great)
-    LinearLayout llGreat;
+    @BindView(R.id.tv_fangke_count)
+    TextView tvCountFangke;
+    @BindView(R.id.ll_fangke)
+    LinearLayout llFangke;
     @BindView(R.id.tv_count_haoyou)
     TextView tvCountHaoyou;
     @BindView(R.id.ll_haoyou)
@@ -103,6 +115,7 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
     @BindView(R.id.tv_mygold)
     TextView tvMygold;
     private Intent intent;
+    private int userid;
 
     @Override
     protected void getid(View view) {
@@ -128,13 +141,12 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
         llMyMoney.setOnClickListener(this);
         ivQrCode.setOnClickListener(this);
         llCertification.setOnClickListener(this);
-        llGreat.setOnClickListener(this);
+        llFangke.setOnClickListener(this);
         tvCopy.setOnClickListener(this);
         llHaoyou.setOnClickListener(this);
         llFensi.setOnClickListener(this);
         llGuanzhu.setOnClickListener(this);
         llQunzu.setOnClickListener(this);
-        tvSignature.setOnClickListener(this);
         llDongtai.setOnClickListener(this);
         llCaogaoxiang.setOnClickListener(this);
         llShoucang.setOnClickListener(this);
@@ -155,26 +167,95 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
                     Manifest.permission.CAMERA}, 1);
         }
 
+        userid = Integer.valueOf(Common.getUserId());
 
-        //加载一张圆角头像
-        Glide.with(getContext()).load(R.mipmap.headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+        getUserInfo();
+    }
+    //获取我的信息
+    public void getUserInfo(){
+        NetUtils.getInstance()
+                .getApis().doGetUserInfo(userid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<LoginUserInfoBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-        //数量赋值
-        tvCountHaoyou.setText("30");
-        tvCountFensi.setText("50");
-        tvCountGuanzhu.setText("100");
-        tvCountQunzu.setText("5");
+                    }
 
-        //点赞数赋值
-        tvCountGreat.setText("1168");
-        //用户名赋值
-        tvUsername.setText("何梦洋");
-        //ID赋值
-        tvUserId.setText("12346789");
-        //年龄赋值
-        tvAge.setText("35");
+                    @Override
+                    public void onNext(LoginUserInfoBean loginUserInfoBean) {
+                        LoginUserInfoBean.ObjectBean bean = loginUserInfoBean.getObject();
+                        LoginUserInfoBean.ObjectBean.UserInfoBean info = bean.getUserInfo();
+
+                        //加载一张圆角头像
+                        Glide.with(getContext()).load(info.getHeadImg()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+
+                        //数量赋值
+                        tvCountHaoyou.setText(bean.getCountFriendNum()+"");
+                        tvCountFensi.setText(bean.getCountFansNum()+"");
+                        tvCountGuanzhu.setText(bean.getCountFollowNum()+"");
+                        tvCountQunzu.setText(bean.getCountGroupNum()+"");
+
+                        //访客
+                        tvCountFangke.setText(bean.getCountVisitorNum()+"");
+                        //用户名赋值
+                        tvUsername.setText(info.getNickName());
+                        //ID赋值
+                        tvUserId.setText(info.getId()+"");
+
+                        //年龄赋值
+                        String userRole = info.getUserRole();
+                        if (userRole!=null){
+                            if (userRole.equals("保密")){
+                                tvAge.setText(info.getAge()+"");
+                            }else{
+                                tvAge.setText(info.getAge()+" "+userRole);
+                            }
+                        }else{
+                            tvAge.setText(info.getAge()+"");
+                        }
+
+                        //设置我的金币剩余数
+                        tvMygold.setText(bean.getCountGoldNum()+"");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getString(String str){
+        if (str.equals("重新获取我的基本信息")){
+            userid = Integer.valueOf(Common.getUserId());
+
+            getUserInfo();
+
+        }
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -206,28 +287,34 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
                 cm.setPrimaryClip(mClipData);
                 Toast.makeText(getContext(), "已复制到剪切板", Toast.LENGTH_SHORT).show();
                 break;
-            //查看点赞详情
-            case R.id.ll_great:
-
+            //查看访客详情
+            case R.id.ll_fangke:
+                intent = new Intent(getContext(), FangkerecordActivity.class);
+                startActivity(intent);
                 break;
             //好友
             case R.id.ll_haoyou:
-
+                intent = new Intent(getContext(), FriendsActivity.class);
+                intent.putExtra("flag",1);
+                startActivity(intent);
                 break;
             //粉丝
             case R.id.ll_fensi:
-
+                intent = new Intent(getContext(), FriendsActivity.class);
+                intent.putExtra("flag",2);
+                startActivity(intent);
                 break;
             //关注
             case R.id.ll_guanzhu:
-
+                intent = new Intent(getContext(), FriendsActivity.class);
+                intent.putExtra("flag",4);
+                startActivity(intent);
                 break;
             //群组
             case R.id.ll_qunzu:
-
-                break;
-            //编辑个性签名
-            case R.id.tv_signature:
+                intent = new Intent(getContext(), FriendsActivity.class);
+                intent.putExtra("flag",3);
+                startActivity(intent);
                 break;
             //发布的动态
             case R.id.ll_dongtai:

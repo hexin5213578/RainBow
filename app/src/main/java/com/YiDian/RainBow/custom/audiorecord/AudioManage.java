@@ -1,12 +1,16 @@
 package com.YiDian.RainBow.custom.audiorecord;
 
+import android.content.ContextWrapper;
 import android.media.MediaRecorder;
+import android.os.Environment;
 import android.os.Handler;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static cn.jpush.im.android.api.jmrtc.JMRTCInternalUse.getApplicationContext;
 
 /**
  * Audio管理类
@@ -76,8 +80,13 @@ public class AudioManage {
                 dir.mkdirs();
             }
 
+
+            ContextWrapper cw = new ContextWrapper(getApplicationContext());
+            File directory = cw.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+
             String fileName = GenerateFileName(); // 文件名字
-            File file = new File(dir, fileName);  // 路径+文件名字
+
+            File file = new File(directory+"/"+fileName+".mp3");  // 路径+文件名字
 
             //MediaRecorder可以实现录音和录像。需要严格遵守API说明中的函数调用先后顺序.
             mMediaRecorder = new MediaRecorder();
@@ -114,7 +123,7 @@ public class AudioManage {
         // TODO Auto-generated method stub
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// HH:mm:ss
         Date date = new Date(System.currentTimeMillis());
-        return simpleDateFormat.format(date) + ".aac";     // 生成带有时间的名字
+        return simpleDateFormat.format(date).trim() + ".aac";     // 生成带有时间的名字
 
     }
 

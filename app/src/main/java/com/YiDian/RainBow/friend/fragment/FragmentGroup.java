@@ -113,6 +113,9 @@ public class FragmentGroup extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getString(String str) {
         if (str.equals("重新获取群组列表")) {
+            userid = Integer.valueOf(Common.getUserId());
+
+
             getMyJoinGroup();
             getMyCreateGroup();
         }
