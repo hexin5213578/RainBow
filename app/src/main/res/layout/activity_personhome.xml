@@ -10,17 +10,14 @@
         android:id="@+id/sv"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
             <LinearLayout
                 android:id="@+id/ll_globe"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-
                 <RelativeLayout
                     android:id="@+id/r0"
                     android:layout_width="match_parent"
@@ -42,6 +39,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
                         android:layout_marginBottom="@dimen/dp_25"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/sp_12"
                         android:layout_centerInParent="true"
                         android:text="个性签名">
@@ -63,10 +61,9 @@
                             android:layout_height="wrap_content"
                             android:paddingLeft="@dimen/dp_8"
                             android:paddingRight="@dimen/dp_9"
+                            android:textColor="@color/white"
                             android:paddingTop="@dimen/dp_2"
                             android:paddingBottom="@dimen/dp_2"
-
-
                             android:background="@drawable/background_homepage"
                             android:textSize="@dimen/sp_12"
                             android:text="H 22"
@@ -83,6 +80,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dp_12"
                         android:layout_above="@+id/ll_tag"
+                        android:textColor="@color/white"
                         android:layout_centerHorizontal="true"
                         android:textSize="@dimen/sp_15"
                         android:text="偏爱">
@@ -250,11 +248,30 @@
                     android:id="@+id/rc_dynamic"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-
                 </androidx.recyclerview.widget.RecyclerView>
-
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:id="@+id/rl_nodata"
+                    android:visibility="gone"
+                    android:layout_height="@dimen/dp_300">
+                    <ImageView
+                        android:layout_width="@dimen/dp_153"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/dp_66"
+                        android:id="@+id/iv"
+                        android:src="@mipmap/nodynamic"
+                        android:layout_height="@dimen/dp_136">
+                    </ImageView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text="该用户暂未发布过动态"
+                        android:layout_below="@id/iv"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/dp_29"
+                        android:layout_height="wrap_content">
+                    </TextView>
+                </RelativeLayout>
             </LinearLayout>
-
         </androidx.core.widget.NestedScrollView>
     </com.liaoinstan.springview.widget.SpringView>
 

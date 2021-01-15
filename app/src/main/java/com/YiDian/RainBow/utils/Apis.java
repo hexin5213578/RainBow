@@ -37,6 +37,7 @@ import com.YiDian.RainBow.regist.bean.RegistBean;
 import com.YiDian.RainBow.remember.bean.RememberPwdBean;
 import com.YiDian.RainBow.setpwd.bean.GetPhoneCodeBean;
 import com.YiDian.RainBow.setup.bean.BlackListBean;
+import com.YiDian.RainBow.setup.bean.CheckNickNameBean;
 import com.YiDian.RainBow.setup.bean.GetBindPhoneMsgBean;
 import com.YiDian.RainBow.setup.bean.GetRealDataBean;
 import com.YiDian.RainBow.setup.bean.InsertRealBean;
@@ -84,9 +85,25 @@ public interface Apis {
     @GET("user/userLogin")
     Observable<LoginBean> doWechatLogin(@Query("accountType") int type,@Query("weChatOpenId")String wechatId,@Query("lng")double lng,@Query("lat")double lat);
 
-    //完善资料
-    @GET("user/updateUserInfo")
-    Observable<ComPleteMsgBean> doComPleteMsg(@Query("nickName")String username,@Query("headImg")String headImg,@Query("birthday")String birthday,@Query("userRole")String gender,@Query("isSingle")int isSingle,@Query("id")int userid);
+    //修改背景图
+    @POST("user/updateUserInfo")
+    Observable<ComPleteMsgBean> doComPleteBackImg(@Query("id")int userid,@Query("backImg")String backImg);
+
+    //修改用户名
+    @POST("user/updateUserInfo")
+    Observable<ComPleteMsgBean> doComPleteName(@Query("id")int userid,@Query("nickName")String name);
+
+    //修改签名
+    @POST("user/updateUserInfo")
+    Observable<ComPleteMsgBean> doComPleteQM(@Query("id")int userid,@Query("explains")String explains);
+
+    //修改签名
+    @POST("user/updateUserInfo")
+    Observable<ComPleteMsgBean> doComPleteAge(@Query("id")int userid,@Query("birthday")String birthday);
+
+    //用户名判重
+    @GET("user/selectNickName")
+    Observable<CheckNickNameBean> doCheckName(@Query("nickName")String name);
 
     //修改 忘记密码
     @GET("user/updatePassword")
@@ -169,9 +186,14 @@ public interface Apis {
     @POST("favorite/insertUser")
     Observable<LikeUserBean> doLikeUser(@Query("userId")int userid,@Query("bUserId")int buserid,@Query("likeType")int type);
 
-    //获取某用户发布的动态
+    //通过id获取某用户发布的动态
     @GET("content/getContentByUserId")
     Observable<NewDynamicBean> doGetDynamicByUserid(@Query("userId")int byId,@Query("currUserId")int userid,@Query("page")int page,@Query("pageSize")int size);
+
+
+    //通过姓名获取某用户发布的动态
+    @GET("content/getContentByUserId")
+    Observable<NewDynamicBean> doGetDynamicByName(@Query("nickName")String name,@Query("currUserId")int userid,@Query("page")int page,@Query("pageSize")int size);
 
     //我喜欢的
     @GET("favorite/selectUserIdS")
@@ -269,8 +291,9 @@ public interface Apis {
     @GET("meet/selectUser")
     Observable<FangkeMsgBean> dogetMyFangke(@Query("beUserId")int userid,@Query("page")int page,@Query("pageSize")int size);
 
+    //增加访客
     @GET("meet/addUser")
-    Observable<InsertRealBean> doInsertFangke(@Query("beUser")int beuserid,@Query("userId")int userid);
+    Observable<InsertRealBean> doInsertFangke(@Query("beUser")String beuserid,@Query("userId")int userid);
 
     //通过id查询用户信息
     @GET("user/seleteUserOfId")

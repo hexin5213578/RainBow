@@ -190,6 +190,7 @@ public class WelcomeActivity extends BaseAvtivity{
         if (requestCode == 100) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
                     JMessageClient.login("15686", "15686", new BasicCallback() {
                         @Override
                         public void gotResult(int i, String s) {

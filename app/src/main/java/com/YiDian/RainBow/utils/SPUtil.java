@@ -49,6 +49,11 @@ public class SPUtil {
     public static final String KEY_PHONE = "phone";
 
     public static final String USER_NAME = "username";
+    public static final String BIRTHDAY = "birthday";
+    public static final String QIANMING = "qianming";
+    public static final String ROLE = "role";
+    public static final String ISSINGLE = "isingle";
+
     public static final String USER_ID = "user_id";
 
     public static  final String UPTOKEN = "upToken";

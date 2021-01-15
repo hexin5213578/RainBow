@@ -424,6 +424,11 @@
             android:name=".setup.activity.BlackListActivity"
             android:screenOrientation="portrait" />
 
+        <!-- 黑名单 -->
+        <activity
+            android:name=".setup.activity.MyGiftActivity"
+            android:screenOrientation="portrait" />
+
         <!-- 用户协议 -->
         <activity
             android:name=".agreement.YonghuActivity"

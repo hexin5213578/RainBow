@@ -33,9 +33,13 @@ import androidx.appcompat.widget.Toolbar;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.login.activity.CompleteMsgActivity;
+import com.YiDian.RainBow.login.bean.ComPleteMsgBean;
+import com.YiDian.RainBow.setup.bean.CheckNickNameBean;
 import com.YiDian.RainBow.utils.BasisTimesUtils;
 import com.YiDian.RainBow.utils.MD5Utils;
+import com.YiDian.RainBow.utils.NetUtils;
 import com.YiDian.RainBow.utils.SPUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
@@ -63,6 +67,10 @@ import cn.jpush.im.android.api.callback.DownloadAvatarCallback;
 import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 //编辑资料
 public class EditMsgActivity extends BaseAvtivity implements View.OnClickListener {
@@ -102,6 +110,11 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
     private static final String serverPath = "http://img.rianbow.cn/";
     private String url;
     private UserInfo userInfo;
+    private int userid;
+    private String username;
+    private String qm;
+    String time = "";
+    private String birthday;
 
     @Override
     protected int getResId() {
@@ -122,13 +135,20 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
         rlGanqingstate.setOnClickListener(this);
         ivBack.setOnClickListener(this);
 
+        userid = Integer.parseInt(Common.getUserId());
         token = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.UPTOKEN);
-
+        username = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME);
+        qm = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.QIANMING);
+        birthday = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.BIRTHDAY);
         // TODO: 2020/11/26 0026 获取当前用户个人信息展示
+
+        tvName.setText(username);
+        tvQianming.setText(qm);
+        tvAge.setText(birthday);
+
 
         //加载圆角图
         Glide.with(this).load(R.mipmap.headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
-
 
         userInfo = new UserInfo() {
             @Override
@@ -267,10 +287,42 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                 BasisTimesUtils.showDatePickerDialog(EditMsgActivity.this, "请选择年月日", 1998, 1, 1, new BasisTimesUtils.OnDatePickerListener() {
                     @Override
                     public void onConfirm(int year, int month, int dayOfMonth) {
-                        tvAge.setText(year + "-" + month + "-" + dayOfMonth);
+                         if(month<10){
+                            time = year + "-0" + month + "-" + dayOfMonth;
+                        }else{
+                            time = year + "-" + month + "-" + dayOfMonth;
+                        }
 
                         // TODO: 2021/1/7 0007 调用更新用户信息接口更换年龄
+                        NetUtils.getInstance()
+                                .getApis()
+                                .doComPleteAge(userid,time)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Observer<ComPleteMsgBean>() {
+                                    @Override
+                                    public void onSubscribe(Disposable d) {
 
+                                    }
+
+                                    @Override
+                                    public void onNext(ComPleteMsgBean comPleteMsgBean) {
+                                        if (comPleteMsgBean.getMsg().equals("数据修改成功！")){
+                                            tvAge.setText(time);
+                                            SPUtil.getInstance().saveData(EditMsgActivity.this,SPUtil.FILE_NAME,SPUtil.BIRTHDAY,time);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+
+                                    }
+
+                                    @Override
+                                    public void onComplete() {
+
+                                    }
+                                });
 
                     }
 
@@ -399,6 +451,36 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                 // TODO: 2020/11/26 0026  调用更换签名的接口
                 String str = text.getText().toString();
 
+                NetUtils.getInstance().getApis()
+                        .doComPleteQM(userid,str)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<ComPleteMsgBean>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(ComPleteMsgBean comPleteMsgBean) {
+                                if (comPleteMsgBean.getMsg().equals("数据修改成功！")){
+                                    dismiss();
+                                    SPUtil.getInstance().saveData(EditMsgActivity.this,SPUtil.FILE_NAME,SPUtil.QIANMING,str);
+                                    tvQianming.setText(str);
+                                    Toast.makeText(EditMsgActivity.this, "签名修改成功", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
 
                 tvQianming.setText(str);
                 //更换成功隐藏弹出框
@@ -524,17 +606,29 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                if (!TextUtils.isEmpty(s)){
+                    tv_jiance.setBackground(EditMsgActivity.this.getResources().getDrawable(R.drawable.name_jiance_bg));
+                    tv_jiance.setEnabled(true);
+                }else{
+                    tv_jiance.setBackground(EditMsgActivity.this.getResources().getDrawable(R.color.color_999999));
+                    tv_jiance.setEnabled(false);
+                }
             }
-
             @Override
             public void afterTextChanged(Editable s) {
                 //文本输入结束后 获取长度赋值给长度计算
                 int length = et_name.getText().length();
                 tv_rem.setText(length + "/10");
+
+                if (length>0){
+                    tv_jiance.setBackground(EditMsgActivity.this.getResources().getDrawable(R.drawable.name_jiance_bg));
+                    tv_jiance.setEnabled(true);
+                }else{
+                    tv_jiance.setBackground(EditMsgActivity.this.getResources().getDrawable(R.color.color_999999));
+                    tv_jiance.setEnabled(false);
+                }
             }
         });
         tv_jiance.setOnClickListener(new View.OnClickListener() {
@@ -543,24 +637,37 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                 String s = et_name.getText().toString();
                 if (!TextUtils.isEmpty(s)) {
                     // TODO: 2021/1/6 0006 检测名称是否存在
+                    NetUtils.getInstance().getApis()
+                            .doCheckName(s)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Observer<CheckNickNameBean>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
 
-                    // TODO: 2021/1/9 0009 昵称不存在先设置极光
-                    userInfo.setNickname(s);
+                                }
 
-                    JMessageClient.updateMyInfo(UserInfo.Field.nickname,userInfo,new BasicCallback() {
-                        @Override
-                        public void gotResult(int i, String s) {
-                            if (i==0){
-                                Log.d("xxx","更换昵称成功");
+                                @Override
+                                public void onNext(CheckNickNameBean checkNickNameBean) {
+                                    if (checkNickNameBean.getMsg().equals("用户名已存在！")){
+                                        Toast.makeText(EditMsgActivity.this, "用户名重复 换一个试试吧", Toast.LENGTH_SHORT).show();
+                                        tv_confirm.setEnabled(false);
+                                    }else if (checkNickNameBean.getMsg().equals("用户名可用")){
+                                        Toast.makeText(EditMsgActivity.this, "用户名可用", Toast.LENGTH_SHORT).show();
+                                        tv_confirm.setEnabled(true);
+                                    }
+                                }
 
-                                // TODO: 2021/1/9 0009 极光设置成功再存入服务器
-                            }else{
-                                Log.d("xxx","设置失败，原因为"+s);
-                            }
-                        }
-                    });
+                                @Override
+                                public void onError(Throwable e) {
 
+                                }
 
+                                @Override
+                                public void onComplete() {
+
+                                }
+                            });
                 } else {
                     Toast.makeText(EditMsgActivity.this, "昵称不能为空", Toast.LENGTH_SHORT).show();
                 }
@@ -574,15 +681,58 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                 dismiss1();
             }
         });
+
+
         tv_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //获取输入框文本  判空发起更换昵称的网络请求  请求成功关闭弹出框
-                String s = et_name.getText().toString();
-                if (!TextUtils.isEmpty(s)) {
-                    // TODO: 2020/10/28 0028 调用修改昵称的接口
+                String name = et_name.getText().toString();
+                if (!TextUtils.isEmpty(name)) {
 
+                    //更换极光当前登录用户的用户名
+                    userInfo.setNickname(name);
+                    JMessageClient.updateMyInfo(UserInfo.Field.nickname,userInfo,new BasicCallback() {
+                        @Override
+                        public void gotResult(int i, String s) {
+                            if (i==0){
+                                Log.d("xxx","极光更换昵称成功");
+                                //极光更换成功调用 上传到服务器
+                                NetUtils.getInstance().getApis()
+                                        .doComPleteName(userid,name)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new Observer<ComPleteMsgBean>() {
+                                            @Override
+                                            public void onSubscribe(Disposable d) {
 
+                                            }
+
+                                            @Override
+                                            public void onNext(ComPleteMsgBean comPleteMsgBean) {
+                                                if (comPleteMsgBean.getMsg().equals("数据修改成功！")){
+                                                    //存入sp
+                                                    tvName.setText(name+"");
+                                                    dismiss1();
+                                                    SPUtil.getInstance().saveData(EditMsgActivity.this,SPUtil.FILE_NAME,SPUtil.USER_NAME,name);
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onError(Throwable e) {
+
+                                            }
+
+                                            @Override
+                                            public void onComplete() {
+
+                                            }
+                                        });
+                            }else{
+                                Log.d("xxx","设置失败，原因为"+s);
+                            }
+                        }
+                    });
                 } else {
                     Toast.makeText(EditMsgActivity.this, "昵称不能为空", Toast.LENGTH_SHORT).show();
                 }

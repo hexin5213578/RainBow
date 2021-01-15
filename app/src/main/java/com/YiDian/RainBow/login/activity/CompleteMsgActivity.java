@@ -177,34 +177,6 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
                         if(str.equals("保密")){
                             str="";
                         }
-                        NetUtils.getInstance().getApis().doComPleteMsg(name,path,birth,str,0,userId)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Observer<ComPleteMsgBean>() {
-                                    @Override
-                                    public void onSubscribe(Disposable d) {
-
-                                    }
-
-                                    @Override
-                                    public void onNext(ComPleteMsgBean comPleteMsgBean) {
-                                        if (comPleteMsgBean.getType().equals("OK")){
-                                            startActivity(new Intent(CompleteMsgActivity.this, MainActivity.class));
-
-                                            SPUtil.getInstance().saveData(CompleteMsgActivity.this, SPUtil.FILE_NAME, SPUtil.IS_PERFECT, "0");
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onError(Throwable e) {
-
-                                    }
-
-                                    @Override
-                                    public void onComplete() {
-
-                                    }
-                                });
                     }
                 }
                 break;

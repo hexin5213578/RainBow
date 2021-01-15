@@ -99,13 +99,14 @@ public class FragmentHotDynamic extends BaseFragment {
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {
+                alllist.clear();
+                page = 1;
+                getDynamic(page, size);
+
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        alllist.clear();
-                        page = 1;
                         sv.onFinishFreshAndLoad();
-                        getDynamic(page, size);
                         GSYVideoManager.releaseAllVideos();
                     }
                 }, 1000);
@@ -113,12 +114,14 @@ public class FragmentHotDynamic extends BaseFragment {
 
             @Override
             public void onLoadmore() {
+
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         page++;
-                        sv.onFinishFreshAndLoad();
                         getDynamic(page, size);
+
+                        sv.onFinishFreshAndLoad();
                     }
                 }, 1000);
             }

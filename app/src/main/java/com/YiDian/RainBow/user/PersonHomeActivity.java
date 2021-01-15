@@ -1,10 +1,8 @@
 package com.YiDian.RainBow.user;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,24 +12,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
-import com.YiDian.RainBow.main.fragment.home.activity.DynamicDetailsActivity;
+import com.YiDian.RainBow.friend.FriendsActivity;
+import com.YiDian.RainBow.login.bean.ComPleteMsgBean;
 import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
-import com.YiDian.RainBow.main.fragment.home.adapter.TopicsAdapter;
-import com.YiDian.RainBow.main.fragment.home.bean.DynamicDetailsBean;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
-import com.YiDian.RainBow.main.fragment.msg.activity.FriendImActivity;
-import com.YiDian.RainBow.setup.activity.RealnameActivity;
+import com.YiDian.RainBow.setup.activity.MyGiftActivity;
+import com.YiDian.RainBow.setup.bean.InsertRealBean;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.user.bean.UserMsgBean;
 import com.YiDian.RainBow.utils.MD5Utils;
 import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.SPUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
@@ -39,11 +37,13 @@ import com.dmcbig.mediapicker.PickerActivity;
 import com.dmcbig.mediapicker.PickerConfig;
 import com.dmcbig.mediapicker.entity.Media;
 import com.leaf.library.StatusBarUtil;
+import com.liaoinstan.springview.container.AliFooter;
+import com.liaoinstan.springview.container.AliHeader;
 import com.liaoinstan.springview.widget.SpringView;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UploadManager;
-import com.tencent.bugly.proguard.A;
+import com.tencent.tauth.Tencent;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,7 +53,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.BlockingDeque;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,66 +62,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 //-----------------------------------------------------
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import com.YiDian.RainBow.R;
-import com.YiDian.RainBow.base.BaseAvtivity;
-import com.YiDian.RainBow.base.BasePresenter;
-import com.YiDian.RainBow.base.Common;
-import com.YiDian.RainBow.setup.bean.GetRealDataBean;
-import com.YiDian.RainBow.setup.bean.InsertRealBean;
-import com.YiDian.RainBow.utils.MD5Utils;
-import com.YiDian.RainBow.utils.NetUtils;
-import com.YiDian.RainBow.utils.SPUtil;
-import com.YiDian.RainBow.utils.StringUtil;
-import com.bumptech.glide.Glide;
-import com.huawei.hms.mlplugin.card.icr.cn.MLCnIcrCapture;
-import com.huawei.hms.mlplugin.card.icr.cn.MLCnIcrCaptureConfig;
-import com.huawei.hms.mlplugin.card.icr.cn.MLCnIcrCaptureFactory;
-import com.huawei.hms.mlplugin.card.icr.cn.MLCnIcrCaptureResult;
-import com.leaf.library.StatusBarUtil;
-import com.qiniu.android.http.ResponseInfo;
-import com.qiniu.android.storage.UpCompletionHandler;
-import com.qiniu.android.storage.UploadManager;
-import com.tencent.tauth.Tencent;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 
 //用户主页  头像点击进入
@@ -135,9 +74,6 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
     ImageView IvBeijing;
     @BindView(R.id.tv_gxqianming)
     TextView tvGxqianming;
-
-    @BindView(R.id.ll_tag)
-    LinearLayout llTag;
     @BindView(R.id.tv_username)
     TextView tvUsername;
     @BindView(R.id.iv_userimg)
@@ -152,37 +88,28 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
     LinearLayout llGuanzhu;
     @BindView(R.id.ll_liwu)
     LinearLayout llLiwu;
-    @BindView(R.id.ll_fenguanli)
-    LinearLayout llFenguanli;
     @BindView(R.id.rc_dynamic)
     RecyclerView rcDynamic;
-    @BindView(R.id.ll_globe)
-    LinearLayout llGlobe;
     @BindView(R.id.sv)
     SpringView sv;
     @BindView(R.id.tv_age)
     TextView tvAge;
     @BindView(R.id.tv_fensi_c)
     TextView tvFensiC;
-    @BindView(R.id.tv_fensi)
-    TextView tvFensi;
-
     @BindView(R.id.tv_guanzhu_c)
     TextView tvGuanzhuC;
-    @BindView(R.id.tv_guanzhu)
-    TextView tvGuanzhu;
     @BindView(R.id.tv_liwu_c)
     TextView tvLiwuC;
-    @BindView(R.id.tv_liwu)
-    TextView tvLiwu;
-    @BindView(R.id.r0)
-    RelativeLayout r0;
     @BindView(R.id.v1)
     View v1;
+    @BindView(R.id.rl_nodata)
+    RelativeLayout rlNodata;
     private String img1;
-
-    //================================================================================//
-    private ArrayList<Media> select1;
+    private int myId;
+    private Intent intent;
+    int page  =1;
+    List<NewDynamicBean.ObjectBean.ListBean> allList ;
+    private Tencent mTencent;
 
     @Override
     protected int getResId() {
@@ -191,6 +118,8 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
     @Override
     protected void getData() {
+        //腾讯AppId(替换你自己App Id)、上下文
+        mTencent = Tencent.createInstance("101906973", PersonHomeActivity.this);
 
         llBack.setOnClickListener(this);
         llFensi.setOnClickListener(this);
@@ -199,89 +128,134 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
         llCandian.setOnClickListener(this);
         IvBeijing.setOnClickListener(this);
 
-
+        allList = new ArrayList<>();
         //设置背景透明
         StatusBarUtil.setTransparentForWindow(this);
         //设置状态栏字体黑色
         StatusBarUtil.setLightMode(this);
 
-
         Intent intent =
                 getIntent();
         SaveIntentMsgBean msg = (SaveIntentMsgBean) intent.getSerializableExtra("msg");
         int flag = msg.getFlag();
-        //获取这个人的信息id
+        //接收到的id
         int thePageuserId = msg.getId();
+        //接收到的name
+        String name = msg.getMsg();
 
-        int myId = Integer.parseInt(Common.getUserId());
+        sv.setHeader(new AliHeader(this));
+
+        myId = Integer.parseInt(Common.getUserId());
         String myName = Common.getUserName();
 
         //2标记传入姓名  1标记传入id
         if (flag == 2) {
-            String name = msg.getMsg();
-//            llBack.setOnClickListener(this);
+            //获取用户信息
+            Log.d("xxx", "传过来的姓名为" + name);
+            bandpageinfo(myId, name);
+            dogetDynamicByName(page,name);
+
             if (!name.equals(myName)) {
                 Log.d("xxx", "getData: 不是自己的主页");
-                isotherpage();
-
+                isotherpage(false);
                 //增加访问量
+                doInsert(name);
 
-
-
-            }else{
+            } else {
+                isotherpage(true);
                 Log.d("xxx", "getData: 自己的主页");
             }
 
-            bandpageinfo(myId, name);
+            sv.setListener(new SpringView.OnFreshListener() {
+                @Override
+                public void onRefresh() {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            bandpageinfo(myId, name);
+                            allList.clear();
+                            page = 1;
+                            dogetDynamicByName(page,name);
+                            sv.onFinishFreshAndLoad();
+                        }
+                    },2500);
+                }
 
-            Log.d("xxx", "传过来的姓名为" + name);
-
+                @Override
+                public void onLoadmore() {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            page++;
+                            dogetDynamicByName(page,name);
+                            sv.onFinishFreshAndLoad();
+                        }
+                    },2500);
+                }
+            });
         } else {
+            //获取用户信息
+            Log.d("xxx", "传过来的id为" + thePageuserId);
+            bandpageinfo(myId, thePageuserId);
+
+            dogetDynamicById(page,thePageuserId);
+
             if (!(thePageuserId == myId)) {
                 Log.d("xxx", "getData: 不是自己的主页");
-                isotherpage();//设置部分控件不能点击
-                //渲染动态
-                Log.d(TAG, "getData: ---------------------------------------------");
-                //dongtai(1,thePageuserId,myId);
+                isotherpage(false);//设置部分控件不能点击
                 //增加访问量
+                doInsert(String.valueOf(thePageuserId));
 
 
-            }else {
+            } else {
+                isotherpage(true);
                 Log.d("xxx", "getData: 自己的主页");
             }
+            sv.setListener(new SpringView.OnFreshListener() {
+                @Override
+                public void onRefresh() {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            bandpageinfo(myId, thePageuserId);
+                            allList.clear();
+                            page =1;
+                            dogetDynamicById(page,thePageuserId);
+                            sv.onFinishFreshAndLoad();
+                        }
+                    },2500);
+                }
 
-            bandpageinfo(myId, thePageuserId);
-            Log.d("xxx", "传过来的id为" + thePageuserId);
+                @Override
+                public void onLoadmore() {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            page++;
+                            dogetDynamicById(page,thePageuserId);
+                            sv.onFinishFreshAndLoad();
+                        }
+                    },2500);
+                }
+            });
         }
 
 
-
-
-
     }
-
-
-    //渲染列表
-//        final  List<NewDynamicBean.ObjectBean.ListBean> list;
-    List<NewDynamicBean.ObjectBean.ListBean>  rcDynamics;
-    public void dongtai(int page,int thePageuserId,int myId){
-        //展示话题
-        NetUtils.getInstance().getApis().
-                doGetDynamicByUserid(thePageuserId,myId,page,15).
-                subscribeOn(Schedulers.io()).
-                observeOn(AndroidSchedulers.
-                mainThread()).
-                subscribe(new Observer<NewDynamicBean>() {
+    public void doInsert(String str){
+        NetUtils.getInstance().getApis()
+                .doInsertFangke(str,myId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<InsertRealBean>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(NewDynamicBean newDynamicBean) {
-                        if(newDynamicBean.getMsg().equals("findContentByUserId")){
-                            rcDynamics = newDynamicBean.getObject().getList();
-                        }
+                    public void onNext(InsertRealBean insertRealBean) {
+
                     }
 
                     @Override
@@ -294,25 +268,118 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
                     }
                 });
-
-//        if (rcDynamics.size()) {
-//            //设置展示话题
-//            rcDynamic.setVisibility(View.VISIBLE);
-//            GridLayoutManager gridLayoutManager = new GridLayoutManager(PersonHomeActivity.this, 4);
-//            rcDynamic.setLayoutManager(gridLayoutManager);
-//            Tencent  mTencent = Tencent.createInstance("101906973", this);
-//            NewDynamicAdapter adapter = new NewDynamicAdapter(PersonHomeActivity.this, rcDynamics,mTencent);
-//            rcDynamic.setAdapter(adapter);
-//
-//        } else {
-//            rcDynamic.setVisibility(View.GONE);
-//        }
-
-//        NewDynamicAdapter adapter = new NewDynamicAdapter(PersonHomeActivity.this,list)
-//        rcDynamic.setAdapter(adapter);
-
     }
+    //true 是别人的主页   false  是自己的主页
+    public void isotherpage(boolean ischeck) {
+        llFensi.setEnabled(ischeck);
+        llGuanzhu.setEnabled(ischeck);
+        llLiwu.setEnabled(ischeck);
+    }
+    public void dogetDynamicById(int page, int thePageuserId) {
+        showDialog();
+        NetUtils.getInstance().getApis().
+                doGetDynamicByUserid(thePageuserId, myId, page, 5).
+                subscribeOn(Schedulers.io()).
+                observeOn(AndroidSchedulers.
+                        mainThread()).
+                subscribe(new Observer<NewDynamicBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
+                    }
+
+                    @Override
+                    public void onNext(NewDynamicBean newDynamicBean) {
+                        hideDialog();
+                        List<NewDynamicBean.ObjectBean.ListBean> list = newDynamicBean.getObject().getList();
+
+                        if (list.size()>0 && list!=null){
+                            rlNodata.setVisibility(View.GONE);
+                            rcDynamic.setVisibility(View.VISIBLE);
+
+                            allList.addAll(list);
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(PersonHomeActivity.this, RecyclerView.VERTICAL, false);
+                            rcDynamic.setLayoutManager(linearLayoutManager);
+
+                            NewDynamicAdapter newDynamicAdapter = new NewDynamicAdapter(PersonHomeActivity.this, allList,mTencent);
+                            rcDynamic.setAdapter(newDynamicAdapter);
+                        }else{
+                            if (allList.size()>0){
+                                Toast.makeText(PersonHomeActivity.this, "没有更多内容了", Toast.LENGTH_SHORT).show();
+                            }else{
+                                rlNodata.setVisibility(View.VISIBLE);
+                                rcDynamic.setVisibility(View.GONE);
+                            }
+                        }
+                        if (list.size()>4){
+                            sv.setFooter(new AliFooter(PersonHomeActivity.this));
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        hideDialog();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+    public void dogetDynamicByName(int page, String name) {
+        showDialog();
+        //展示话题
+        NetUtils.getInstance().getApis().
+                doGetDynamicByName(name, myId, page, 5).
+                subscribeOn(Schedulers.io()).
+                observeOn(AndroidSchedulers.
+                        mainThread()).
+                subscribe(new Observer<NewDynamicBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(NewDynamicBean newDynamicBean) {
+                        hideDialog();
+                        List<NewDynamicBean.ObjectBean.ListBean> list = newDynamicBean.getObject().getList();
+
+                        if (list.size()>0 && list!=null){
+                            rlNodata.setVisibility(View.GONE);
+                            rcDynamic.setVisibility(View.VISIBLE);
+
+                            allList.addAll(list);
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(PersonHomeActivity.this, RecyclerView.VERTICAL, false);
+                            rcDynamic.setLayoutManager(linearLayoutManager);
+
+                            NewDynamicAdapter newDynamicAdapter = new NewDynamicAdapter(PersonHomeActivity.this, allList,mTencent);
+                            rcDynamic.setAdapter(newDynamicAdapter);
+                        }else{
+                            if (allList.size()>0){
+                                Toast.makeText(PersonHomeActivity.this, "没有更多内容了", Toast.LENGTH_SHORT).show();
+                            }else{
+                                rlNodata.setVisibility(View.VISIBLE);
+                                rcDynamic.setVisibility(View.GONE);
+                            }
+                        }
+                        if (list.size()>4){
+                            sv.setFooter(new AliFooter(PersonHomeActivity.this));
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        hideDialog();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
     //获取用户（好友或自己）信息 并绑定的到页面
     public void bandpageinfo(int myId, int thePageuserId) {
         //自己id   要查询id   并绑定到标签上面
@@ -352,7 +419,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             } else if (userRole.equals("保密")) {
                                 userRoleAge = friendAge + "";
                             } else {
-                                userRoleAge = userRole +" "+ friendAge;
+                                userRoleAge = userRole + " " + friendAge;
                             }
 
 
@@ -372,10 +439,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             tvGxqianming.setText(gxQianMing);
 
                         }
-
-
                     }
-
                     @Override
                     public void onError(Throwable e) {
 
@@ -427,7 +491,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             } else if (userRole.equals("保密")) {
                                 userRoleAge = friendAge + "";
                             } else {
-                                userRoleAge = userRole +" "+ friendAge;
+                                userRoleAge = userRole + " " + friendAge;
                             }
 
 
@@ -463,25 +527,10 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                 });
     }
 
-    //true 是别人的主页   false  是自己的主页
-    public void isotherpage() {
-        llFensi.setEnabled(false);
-        llGuanzhu.setEnabled(false);
-        llLiwu.setEnabled(false);
-    }
 
     @Override
     protected BasePresenter initPresenter() {
         return null;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-
-
     }
 
     @Override
@@ -496,15 +545,21 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
         switch (v.getId()) {
             //粉丝被点击
             case R.id.ll_fensi:
-//
+                intent = new Intent(PersonHomeActivity.this, FriendsActivity.class);
+                intent.putExtra("flag",2);
+                startActivity(intent);
                 break;
             case R.id.ll_guanzhu:
-
+                intent = new Intent(PersonHomeActivity.this, FriendsActivity.class);
+                intent.putExtra("flag",4);
+                startActivity(intent);
                 break;
             case R.id.ll_liwu:
 
-                break;
+                intent = new Intent(PersonHomeActivity.this, MyGiftActivity.class);
+                startActivity(intent);
 
+                break;
             case R.id.ll_back:
                 finish();
                 break;
@@ -512,24 +567,14 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
                 break;
             case R.id.Iv_beijing:
-
-                //Test
-//                showSelectImgAndVideo();
-
                 Log.d(TAG, "onClick: ------->" + "点击背景");
-                Intent intent = new Intent(PersonHomeActivity.this, PickerActivity.class);
+                intent = new Intent(PersonHomeActivity.this, PickerActivity.class);
                 intent.putExtra(PickerConfig.SELECT_MODE, PickerConfig.PICKER_IMAGE);//设置选择类型，默认是图片和视频可一起选择(非必填参数)
                 long maxSize = 10485760L;//long long long long类型
                 intent.putExtra(PickerConfig.MAX_SELECT_SIZE, maxSize);
                 intent.putExtra(PickerConfig.MAX_SELECT_COUNT, 1); //最大选择数量，默认40（非必填参数）
-//                PersonHomeActivity.this.startActivityForResult(intent, 201);
                 intent.putExtra("type", 1);
                 startActivityForResult(intent, 1);
-
-                //Toast.makeText(this, "更换背景", Toast.LENGTH_SHORT).show();
-
-
-
                 break;
 
 
@@ -537,6 +582,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
 
     }
+
     //设置背景图
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -551,28 +597,20 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                     select = data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT);
                     String path = select.get(0).path;
                     Glide.with(PersonHomeActivity.this).load(path).into(IvBeijing);
+
                     Log.d(TAG, "onActivityResult: 准备更换网络图片");
 
-//                    upbeijing(new File(path));
-
+                    upbeijing(path);
                 }
                 Log.i("select", "图片长度为" + select.size());
-
-
             }
-
         }
-
     }
 
-
-
-
     //上传背景图片
-    public void upbeijing(File file1) {
+    public void upbeijing(String file1) {
         String upToken;
         String serverPath = "http://img.rianbow.cn/";
-
 
         upToken = SPUtil.getInstance().getData(PersonHomeActivity.this, SPUtil.FILE_NAME, SPUtil.UPTOKEN);
 
@@ -580,7 +618,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
         UploadManager uploadManager = new UploadManager();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
         // 设置名字
-        String s = MD5Utils.string2Md5_16(file1.getAbsolutePath());
+        String s = MD5Utils.string2Md5_16(file1);
         String key = s + sdf.format(new Date()) + ".jpg";
         uploadManager.put(file1, key, upToken,
                 new UpCompletionHandler() {
@@ -593,6 +631,35 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                                 String upimg = res.getString("key");
                                 //将七牛返回图片的文件名添加到list集合中
                                 img1 = serverPath + upimg;
+
+                                //转化成功 更新本地服务器用户信息
+                                NetUtils.getInstance().getApis()
+                                        .doComPleteBackImg(myId,img1)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new Observer<ComPleteMsgBean>() {
+                                            @Override
+                                            public void onSubscribe(Disposable d) {
+
+                                            }
+
+                                            @Override
+                                            public void onNext(ComPleteMsgBean comPleteMsgBean) {
+                                                if (comPleteMsgBean.getMsg().equals("数据修改成功！")){
+                                                    Toast.makeText(PersonHomeActivity.this, "背景修改成功", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onError(Throwable e) {
+
+                                            }
+
+                                            @Override
+                                            public void onComplete() {
+
+                                            }
+                                        });
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -603,7 +670,6 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                         Log.i("xxx", img1);
                     }
                 }, null);
-
     }
 }
 

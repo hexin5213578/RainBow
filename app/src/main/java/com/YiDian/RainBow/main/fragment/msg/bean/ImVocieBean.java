@@ -30,7 +30,7 @@ public class ImVocieBean {
     private int set_from_name;
     private int d;
     private int e;
-    private int f;
+    private long f;
     private int _id;
     private ContentBean content;
     private String contentType;
@@ -74,11 +74,11 @@ public class ImVocieBean {
         this.e = e;
     }
 
-    public int getF() {
+    public long getF() {
         return f;
     }
 
-    public void setF(int f) {
+    public void setF(long f) {
         this.f = f;
     }
 

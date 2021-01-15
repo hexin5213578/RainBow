@@ -16,8 +16,6 @@ android {
             keyAlias "key0"
             keyPassword "caihong"
         }
-
-
     }
     defaultConfig {
         applicationId "com.YiDian.RainBow"
