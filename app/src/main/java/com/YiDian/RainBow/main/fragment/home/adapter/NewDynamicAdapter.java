@@ -349,7 +349,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
             holder.tvGuanzhu.setText("关注");
             holder.tvGuanzhu.setTextColor(R.color.color_3C025A);
         }
-
+        //点击关注
         holder.tvGuanzhu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
