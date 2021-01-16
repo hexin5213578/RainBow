@@ -58,6 +58,7 @@
         android:layout_below="@id/iv_headimg"
         android:layout_marginTop="@dimen/dp_12"
         android:text="点击上传头像"
+        android:id="@+id/tv3"
         android:textColor="#9A9A9A"
         android:textSize="@dimen/sp_12"
         android:layout_height="wrap_content">
@@ -68,24 +69,41 @@
         android:layout_width="wrap_content"
         android:text="昵称"
         android:textSize="@dimen/sp_17"
+        android:id="@+id/tv2"
         android:textColor="#343434"
-        android:layout_below="@id/rl1"
-        android:layout_marginTop="@dimen/dp_93"
+        android:layout_below="@id/tv3"
+        android:layout_marginTop="@dimen/dp_26"
         android:layout_marginLeft="@dimen/dp_58"
         android:layout_height="wrap_content">
     </TextView>
     <EditText
-        android:layout_width="@dimen/dp_200"
-        android:layout_below="@id/rl1"
+        android:layout_width="@dimen/dp_170"
+        android:layout_below="@id/tv3"
         android:background="@null"
         android:hint="请输入昵称"
         android:textColor="#9A9A9A"
         android:id="@+id/et_name"
+        android:maxLength="10"
+        android:layout_toRightOf="@id/tv2"
         android:textSize="@dimen/sp_14"
-        android:layout_marginTop="@dimen/dp_96"
-        android:layout_marginLeft="@dimen/dp_103"
+        android:layout_marginTop="@dimen/dp_29"
+        android:layout_marginLeft="@dimen/dp_15"
         android:layout_height="wrap_content">
     </EditText>
+    <TextView
+        android:layout_width="@dimen/dp_43"
+        android:text="检测"
+        android:layout_below="@id/tv3"
+        android:id="@+id/tv_jiance"
+        android:layout_marginTop="@dimen/dp_26"
+        android:layout_toRightOf="@id/et_name"
+        android:background="@drawable/name_jiance_bg"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_12"
+        android:layout_marginLeft="@dimen/dp_13"
+        android:gravity="center"
+        android:layout_height="@dimen/dp_24">
+    </TextView>
     <View
         android:id="@+id/v1"
         android:layout_below="@id/et_name"
@@ -103,6 +121,7 @@
         android:text="年龄"
         android:textSize="@dimen/sp_17"
         android:textColor="#343434"
+        android:id="@+id/tv"
         android:layout_below="@id/v1"
         android:layout_marginTop="@dimen/dp_11"
         android:layout_marginLeft="@dimen/dp_58"
@@ -112,14 +131,18 @@
         android:layout_width="@dimen/dp_200"
         android:layout_below="@id/v1"
         android:background="@null"
-        android:text="1998-01-01"
+        android:hint="1998-01-01"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_toRightOf="@id/tv"
         android:id="@+id/tv_birth"
         android:textColor="#9A9A9A"
         android:textSize="@dimen/sp_14"
         android:layout_marginTop="@dimen/dp_14"
-        android:layout_marginLeft="@dimen/dp_103"
         android:layout_height="wrap_content">
     </TextView>
+
+
+
     <View
         android:id="@+id/v2"
         android:layout_below="@id/tv_birth"
@@ -160,6 +183,7 @@
                 android:textColor="@drawable/selector_xingbie_text_color"
                 android:layout_height="@dimen/dp_19"
                 android:text="T"
+                android:checked="true"
                 android:background="@drawable/radio_bg"
                 android:id="@+id/rb1"
                 android:gravity="center"
@@ -182,7 +206,6 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:textColor="@drawable/selector_xingbie_text_color"
-
                 android:layout_marginLeft="@dimen/dp_8"
                 android:background="@drawable/radio_bg"
                 android:id="@+id/rb3"
@@ -217,7 +240,6 @@
                 ></RadioButton>
         </RadioGroup>
     </LinearLayout>
-
     <Button
         android:layout_width="@dimen/dp_180"
         android:layout_below="@id/l1"

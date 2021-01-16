@@ -147,6 +147,7 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
         userid = Integer.parseInt(Common.getUserId());
         token = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.UPTOKEN);
 
+
         username = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME);
         qm = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.QIANMING);
         birthday = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.BIRTHDAY);
@@ -464,8 +465,10 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
                 // 设置名字
                 String s = MD5Utils.string2Md5_16(path);
+
+                File file = new File(path);
                 String key = s + sdf.format(new Date()) + ".jpg";
-                uploadManager.put(path, key, token,
+                uploadManager.put(file, key, token,
                         new UpCompletionHandler() {
                             @Override
                             public void complete(String key, ResponseInfo info, JSONObject res) {
@@ -527,6 +530,7 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                                     }
                                 } else {
                                     Log.i("xxx", "Upload Fail");
+                                    Log.i("xxx", info.toString());
                                     //如果失败，这里可以把 info 信息上报自己的服务器，便于后面分析上传错误原因
                                 }
                                 Log.i("xxx", url);

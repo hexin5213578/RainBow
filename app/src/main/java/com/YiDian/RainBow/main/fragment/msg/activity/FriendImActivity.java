@@ -972,7 +972,6 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                                     if (insertRealBean.getMsg().equals("送出成功")){
                                         //送出成功 刷新余额
                                         getGlodNum();
-                                        Toast.makeText(FriendImActivity.this, "赠送礼物成功", Toast.LENGTH_SHORT).show();
                                     }
                                 }
 

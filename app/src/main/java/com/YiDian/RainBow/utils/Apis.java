@@ -24,6 +24,7 @@ import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.main.fragment.home.bean.OneCommentBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.FangkeMsgBean;
+import com.YiDian.RainBow.main.fragment.mine.bean.GiftBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.LoginUserInfoBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.SelectAllDraftsBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.GiftMsgBean;
@@ -70,11 +71,11 @@ public interface Apis {
     Observable<GetPhoneCodeBean> getPhoneCode(@Query("phoneNum")String phone);
 
     //注册
-    @GET("user/register")
+    @POST("user/register")
     Observable<RegistBean> doRegist(@Query("phoneNum")String phone,@Query("password")String pwd);
 
     //密码登录
-    @GET("user/userLogin")
+    @POST("user/userLogin")
     Observable<LoginBean> doPwdLogin(@Query("phoneNum")String phone,@Query("password")String pwd,@Query("accountType") int type,@Query("lng")double lng,@Query("lat")double lat);
 
     //QQ登录
@@ -92,6 +93,10 @@ public interface Apis {
     //修改背景图
     @POST("user/updateUserInfo")
     Observable<ComPleteMsgBean> doComPleteHeadImg(@Query("id")int userid,@Query("headImg")String headimg);
+
+    //完善资料
+    @POST("user/updateUserInfo")
+    Observable<ComPleteMsgBean> doComPlteAllMsg(@Query("id")int userid,@Query("nickName")String name,@Query("headImg")String headimg,@Query("birthday")String birthday,@Query("userRole")String role);
 
     //修改用户名
     @POST("user/updateUserInfo")
@@ -338,4 +343,12 @@ public interface Apis {
     //我加入的群聊
     @GET("group/selectGroupInfo")
     Observable<MyJoinGroupMsgBean> dogetMyCreateGroup(@Query("userId")int userid);
+
+    //查询送出的礼物
+    @GET("giftMarkVO/selectGiftMarkOut")
+    Observable<GiftBean> dogetSendGift(@Query("outUserId")int userid);
+
+    //查询收到的礼物
+    @GET("giftMarkVO/selectGiftMark")
+    Observable<GiftBean> dogetReciveGift(@Query("inUserId")int userid);
 }

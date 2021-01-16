@@ -65,7 +65,7 @@ public class BindPhoneActivity extends BaseAvtivity implements View.OnClickListe
     private String num;
     private String phone;
     private String code;
-
+    private boolean isPlayer;
     @Override
     protected int getResId() {
         return R.layout.activity_bindphone;
@@ -298,12 +298,14 @@ public class BindPhoneActivity extends BaseAvtivity implements View.OnClickListe
             @Override
             public void onTick(long millisUntilFinished) {
                 tv.setText(millisUntilFinished / 1000 + "秒后重发");
+                isPlayer = true;
             }
 
             @Override
             public void onFinish() {
                 tv.setEnabled(true);
                 tv.setText("发送验证码");
+                isPlayer =false;
                 cancel();
             }
         };
@@ -315,15 +317,8 @@ public class BindPhoneActivity extends BaseAvtivity implements View.OnClickListe
     protected void onDestroy() {
         super.onDestroy();
         //界面关闭销毁倒计时
-        if (mTimer != null) {
+        if (isPlayer) {
             mTimer.cancel();
         }
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
     }
 }

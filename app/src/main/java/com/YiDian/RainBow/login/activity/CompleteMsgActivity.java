@@ -7,7 +7,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -26,20 +30,36 @@ import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.login.bean.ComPleteMsgBean;
 import com.YiDian.RainBow.main.activity.MainActivity;
+import com.YiDian.RainBow.main.fragment.mine.activity.EditMsgActivity;
+import com.YiDian.RainBow.setpwd.activity.SetPwdActivity;
+import com.YiDian.RainBow.setup.bean.CheckNickNameBean;
 import com.YiDian.RainBow.utils.BasisTimesUtils;
+import com.YiDian.RainBow.utils.MD5Utils;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.YiDian.RainBow.utils.SPUtil;
+import com.YiDian.RainBow.utils.StringUtil;
+import com.amap.api.mapcore.util.fo;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.leaf.library.StatusBarUtil;
+import com.qiniu.android.http.ResponseInfo;
+import com.qiniu.android.storage.UpCompletionHandler;
+import com.qiniu.android.storage.UploadManager;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.lym.image.select.PictureSelector;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.api.BasicCallback;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -71,7 +91,19 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
     String str = "";
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.tv_jiance)
+    TextView tvJiance;
+    private String headimg;
+    private String username;
     private String path;
+    private UploadManager uploadManager;
+    private String token;
+    private static final String serverPath = "http://img.rianbow.cn/";
+    private String url;
+    private boolean isClick;
+    private boolean isjiance;
+    private int userid;
+    private String time;
 
     @Override
     protected int getResId() {
@@ -86,6 +118,9 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
         StatusBarUtil.setDarkMode(this);
 
 
+        userid = Integer.valueOf(Common.getUserId());
+
+
         //申请开启内存卡权限
         if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) && (CompleteMsgActivity.this.checkSelfPermission
                 (Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
@@ -94,23 +129,33 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
-        path = SPUtil.getInstance().getData(this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG);
-        if(path!=null){
-            Glide.with(CompleteMsgActivity.this).load(path).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
-        }
-        String data1 = SPUtil.getInstance().getData(this, SPUtil.FILE_NAME, SPUtil.USER_NAME);
-        if(data1!=null){
-            etName.setText(data1);
-        }
+
+        //先加载头像
+        headimg = SPUtil.getInstance().getData(this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG);
+        Glide.with(CompleteMsgActivity.this).load(headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+
+        username = SPUtil.getInstance().getData(this, SPUtil.FILE_NAME, SPUtil.USER_NAME);
+        etName.setHint(username);
+
+
         tvBirth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 BasisTimesUtils.showDatePickerDialog(CompleteMsgActivity.this, "请选择年月日", 1998, 1, 1, new BasisTimesUtils.OnDatePickerListener() {
                     @Override
                     public void onConfirm(int year, int month, int dayOfMonth) {
-                        tvBirth.setText(year + "-" + month + "-" + dayOfMonth);
-                    }
+                        if(month<10 && dayOfMonth<10){
+                            time = year + "-0" + month + "-0" + dayOfMonth;
+                        }else if (month<10){
+                            time = year + "-0" + month + "-" + dayOfMonth;
+                        }else if(dayOfMonth<10){
+                            time = year + "-" + month + "-0" + dayOfMonth;
+                        }else{
+                            time = year + "-" + month + "-" + dayOfMonth;
+                        }
 
+                        tvBirth.setText(time);
+                    }
                     @Override
                     public void onCancel() {
 
@@ -121,6 +166,54 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
         tvJumpMain.setOnClickListener(this);
         btconfirm.setOnClickListener(this);
         ivHeadimg.setOnClickListener(this);
+
+
+        token = Common.getToken();
+
+
+        tvJiance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String s = etName.getText().toString();
+                if (!TextUtils.isEmpty(s)){
+                    // TODO: 2021/1/6 0006 检测名称是否存在
+                    NetUtils.getInstance().getApis()
+                            .doCheckName(s)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Observer<CheckNickNameBean>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
+
+                                }
+
+                                @Override
+                                public void onNext(CheckNickNameBean checkNickNameBean) {
+                                    isjiance = true;
+                                    if (checkNickNameBean.getMsg().equals("用户名已存在！")){
+                                        Toast.makeText(CompleteMsgActivity.this, "用户名重复 换一个试试吧", Toast.LENGTH_SHORT).show();
+                                        isClick =false;
+                                    }else if (checkNickNameBean.getMsg().equals("用户名可用")){
+                                        Toast.makeText(CompleteMsgActivity.this, "用户名可用", Toast.LENGTH_SHORT).show();
+                                        isClick =true;
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+
+                                }
+                            });
+                }else{
+                    Toast.makeText(CompleteMsgActivity.this, "请先输入昵称", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override
@@ -148,7 +241,6 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
             case R.id.tv_jump_main:
                 //修改SP完善资料状态为1
                 SPUtil.getInstance().saveData(CompleteMsgActivity.this, SPUtil.FILE_NAME, SPUtil.IS_PERFECT, "1");
-
                 startActivity(new Intent(CompleteMsgActivity.this, MainActivity.class));
                 break;
             case R.id.bt_confirm:
@@ -171,13 +263,73 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
                 //修改SP中完善资料状态为0
                 String name = etName.getText().toString();
                 String birth = tvBirth.getText().toString();
-                int userId = Integer.valueOf(Common.getUserId());
-                if(!TextUtils.isEmpty(str)){
-                    if(!TextUtils.isEmpty(name)){
-                        if(str.equals("保密")){
-                            str="";
+
+                if (path!=null){
+                    //先发起更换极光的接口
+                    File file = new File(path);
+                    Log.d("xxx",file.getAbsolutePath());
+
+                    if (isjiance){
+                        if (isClick){
+                            if (!TextUtils.isEmpty(birth)){
+                                JMessageClient.updateUserAvatar(file, new BasicCallback() {
+                                    @Override
+                                    public void gotResult(int i, String s) {
+                                        if (i==0){
+                                            Log.d("xxx","当前登录用户头像设置成功");
+                                            //再调用完善信息接口
+                                            NetUtils.getInstance().getApis()
+                                                    .doComPlteAllMsg(userid,name,url,birth,str)
+                                                    .subscribeOn(Schedulers.io())
+                                                    .observeOn(AndroidSchedulers.mainThread())
+                                                    .subscribe(new Observer<ComPleteMsgBean>() {
+                                                        @Override
+                                                        public void onSubscribe(Disposable d) {
+
+                                                        }
+
+                                                        @Override
+                                                        public void onNext(ComPleteMsgBean comPleteMsgBean) {
+                                                            if (comPleteMsgBean.getMsg().equals("数据修改成功！")){
+
+                                                                SPUtil.getInstance().saveData(CompleteMsgActivity.this,SPUtil.FILE_NAME,SPUtil.IS_PERFECT,"1");
+
+                                                                SPUtil.getInstance().saveData(CompleteMsgActivity.this,SPUtil.FILE_NAME,SPUtil.USER_NAME,name);
+                                                                SPUtil.getInstance().saveData(CompleteMsgActivity.this,SPUtil.FILE_NAME,SPUtil.HEAD_IMG,url);
+                                                                SPUtil.getInstance().saveData(CompleteMsgActivity.this,SPUtil.FILE_NAME,SPUtil.BIRTHDAY,birth);
+                                                                SPUtil.getInstance().saveData(CompleteMsgActivity.this,SPUtil.FILE_NAME,SPUtil.ROLE,str);
+
+                                                                //直接跳转到主页
+                                                                startActivity(new Intent(CompleteMsgActivity.this,MainActivity.class));
+                                                            }
+                                                        }
+                                                        @Override
+                                                        public void onError(Throwable e) {
+
+                                                        }
+
+                                                        @Override
+                                                        public void onComplete() {
+
+                                                        }
+                                                    });
+                                        }else {
+                                            Log.d("xxx",s);
+                                        }
+                                    }
+                                });
+                            }else{
+                                Toast.makeText(this, "还未选择出生日期", Toast.LENGTH_SHORT).show();
+                            }
+                        }else{
+                            Toast.makeText(this, "用户名不可用,请换一个再试", Toast.LENGTH_SHORT).show();
+                            isjiance = false;
                         }
+                    }else{
+                        Toast.makeText(this, "请先对用户名进行检测", Toast.LENGTH_SHORT).show();
                     }
+                }else{
+                    Toast.makeText(this, "请选择要更换的头像", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -192,6 +344,39 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
                 List<String> paths = PictureSelector.obtainPathResult(data);
                 path = paths.get(0);
                 Glide.with(CompleteMsgActivity.this).load(path).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+
+
+                //上传至七牛云
+                // 图片上传到七牛 重用 uploadManager。一般地，只需要创建一个 uploadManager 对象
+                uploadManager = new UploadManager();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+                // 设置名字
+                String s = MD5Utils.string2Md5_16(path);
+
+                File file = new File(path);
+                String key = s + sdf.format(new Date()) + ".jpg";
+                uploadManager.put(file, key, token,
+                        new UpCompletionHandler() {
+                            @Override
+                            public void complete(String key, ResponseInfo info, JSONObject res) {
+                                //res 包含 hash、key 等信息，具体字段取决于上传策略的设置
+                                if (info.isOK()) {
+                                    // 七牛返回的文件名
+                                    try {
+                                        String upimg = res.getString("key");
+                                        //将七牛返回图片的文件名添加到list集合中
+                                        url = serverPath + upimg;
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    Log.i("xxx", "Upload Fail");
+                                    Log.i("xxx", info.toString());
+                                    //如果失败，这里可以把 info 信息上报自己的服务器，便于后面分析上传错误原因
+                                }
+                            }
+                        }, null);
             }
         }
     }

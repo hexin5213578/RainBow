@@ -2,21 +2,27 @@ package com.YiDian.RainBow.regist.activity;
 
 import android.content.Intent;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.dynamic.bean.SaveMsgSuccessBean;
 import com.YiDian.RainBow.feedback.activity.FeedBackActivity;
 import com.YiDian.RainBow.login.activity.LoginActivity;
+import com.YiDian.RainBow.main.activity.MainActivity;
 import com.YiDian.RainBow.setpwd.activity.SetPwdActivity;
 import com.YiDian.RainBow.setpwd.bean.GetPhoneCodeBean;
 import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.SPUtil;
 import com.YiDian.RainBow.utils.StringUtil;
+import com.leaf.library.StatusBarUtil;
 
 import butterknife.BindView;
 import io.reactivex.Observer;
@@ -28,7 +34,7 @@ import io.reactivex.schedulers.Schedulers;
 public class RegistActivity extends BaseAvtivity implements View.OnClickListener {
 
     @BindView(R.id.tv_go_login)
-    TextView goLogin;
+    RelativeLayout goLogin;
     @BindView(R.id.et_phone)
     EditText etPhone;
     @BindView(R.id.et_code)
@@ -49,11 +55,40 @@ public class RegistActivity extends BaseAvtivity implements View.OnClickListener
 
     @Override
     protected void getData() {
+
+        StatusBarUtil.setTransparentForWindow(RegistActivity.this);
+
         goLogin.setOnClickListener(this);
         tvGetcode.setOnClickListener(this);
         btRegist.setOnClickListener(this);
 
+        //获取七牛云uploadToken
+        NetUtils.getInstance().getApis().getUpdateToken()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<SaveMsgSuccessBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
+                    }
+
+                    @Override
+                    public void onNext(SaveMsgSuccessBean saveMsgSuccessBean) {
+                        String upToken = saveMsgSuccessBean.getUpToken();
+                        SPUtil.getInstance().saveData(RegistActivity.this, SPUtil.FILE_NAME, SPUtil.UPTOKEN, upToken);
+                        Log.d("xxx", "uptoken存入成功");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     @Override
@@ -104,6 +139,7 @@ public class RegistActivity extends BaseAvtivity implements View.OnClickListener
                 }
                 break;
             case R.id.bt_regist:
+                phone = etPhone.getText().toString();
                 String code = etCode.getText().toString();
                 if(StringUtil.checkPhoneNumber(phone)){
                     if(StringUtil.checkSms(code)){
@@ -113,6 +149,7 @@ public class RegistActivity extends BaseAvtivity implements View.OnClickListener
                             startActivity(intent);
                         }else{
                             Toast.makeText(this, "验证码输入有误", Toast.LENGTH_SHORT).show();
+                            etCode.setText("");
                         }
 
                     }

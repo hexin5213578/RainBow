@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
@@ -19,11 +20,15 @@ import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.SPUtil;
+import com.google.gson.Gson;
+import com.leaf.library.StatusBarUtil;
 import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.container.AliHeader;
 import com.liaoinstan.springview.widget.SpringView;
 import com.tencent.tauth.Tencent;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +39,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+//发布过的动态
 public class ReleaseDynamicsActivity extends BaseAvtivity {
 
 
@@ -53,7 +59,8 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
     private int myId;
     int page  =1;
     List<NewDynamicBean.ObjectBean.ListBean> allList;
-
+    File f = new File(
+            "/data/data/com.YiDian.RainBow/shared_prefs/relesedynamic.xml");
     @Override
     protected int getResId() {
         return R.layout.activity_release_dynameics;
@@ -61,6 +68,50 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
 
     @Override
     protected void getData() {
+
+        StatusBarUtil.setGradientColor(ReleaseDynamicsActivity.this,toolbar);
+        StatusBarUtil.setDarkMode(ReleaseDynamicsActivity.this);
+
+        //直接取消动画
+        RecyclerView.ItemAnimator animator = rcMydraftDevelopment.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
+
+        Gson gson = new Gson();
+        List<NewDynamicBean.ObjectBean.ListBean> SpList = new ArrayList<>();
+
+        for (int i = 1; i < 10; i++) {
+            String json = SPUtil.getInstance().getData(ReleaseDynamicsActivity.this, SPUtil.JSON_RELESE, "json" + i);
+            NewDynamicBean.ObjectBean.ListBean listBean = gson.fromJson(json, NewDynamicBean.ObjectBean.ListBean.class);
+            if(listBean!=null){
+                SpList.add(listBean);
+            }
+        }
+
+        if(f.exists()){
+            if(SpList.size()>0 && SpList!=null){
+                sv.setVisibility(View.VISIBLE);
+                rlNodata.setVisibility(View.GONE);
+
+                sv.setHeader(new AliHeader(ReleaseDynamicsActivity.this));
+                //创建最新动态适配器
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ReleaseDynamicsActivity.this, RecyclerView.VERTICAL, false);
+                rcMydraftDevelopment.setLayoutManager(linearLayoutManager);
+
+                NewDynamicAdapter newDynamicAdapter = new NewDynamicAdapter(ReleaseDynamicsActivity.this, SpList, mTencent);
+                rcMydraftDevelopment.setAdapter(newDynamicAdapter);
+            }
+        }
+
+
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         //腾讯AppId(替换你自己App Id)、上下文
         mTencent = Tencent.createInstance("101906973", ReleaseDynamicsActivity.this);
         myId = Integer.parseInt(Common.getUserId());
@@ -68,6 +119,8 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
         allList = new ArrayList<>();
 
         sv.setHeader(new AliHeader(this));
+
+        dogetDynamicById(page);
 
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
@@ -78,11 +131,11 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
 
                         allList.clear();
                         page = 1;
-                        dogetDynamicById(page,myId);
+                        dogetDynamicById(page);
                         //等待2.5秒后结束刷新
                         sv.onFinishFreshAndLoad();
                     }
-                },2500);
+                },1000);
             }
 
             @Override
@@ -91,22 +144,18 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
                     @Override
                     public void run() {
                         page++;
-                        dogetDynamicById(page,myId);
+                        dogetDynamicById(page);
                         sv.onFinishFreshAndLoad();
                     }
-                },2500);
+                },1000);
             }
         });
     }
 
-
-
-
     //动态信息填充到列表里面
-    public void dogetDynamicById(int page, int thePageuserId) {
-        showDialog();//显示加载圈
+    public void dogetDynamicById(int page) {
         NetUtils.getInstance().getApis().
-                doGetDynamicByUserid(thePageuserId, myId, page, 5).
+                doGetDynamicByUserid(myId, myId, page, 5).
                 subscribeOn(Schedulers.io()).
                 observeOn(AndroidSchedulers.
                         mainThread()).
@@ -118,7 +167,6 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
 
                     @Override
                     public void onNext(NewDynamicBean newDynamicBean) {
-                        hideDialog();//隐藏加载圈
                         List<NewDynamicBean.ObjectBean.ListBean> list = newDynamicBean.getObject().getList();
 
                         if (list.size() > 0 && list != null) {
@@ -126,6 +174,14 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
                             rlNodata.setVisibility(View.GONE);
                             //RecyclerView  rcDynamic
                             rcMydraftDevelopment.setVisibility(View.VISIBLE);
+
+                            //存五条数据
+                            for (int i = 1; i <= list.size(); i++) {
+                                NewDynamicBean.ObjectBean.ListBean listBean = list.get(i-1);
+                                Gson gson = new Gson();
+                                String json1 = gson.toJson(listBean);
+                                SPUtil.getInstance().saveData(ReleaseDynamicsActivity.this, SPUtil.JSON_RELESE, "json"+i, json1);
+                            }
 
                             allList.addAll(list);
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ReleaseDynamicsActivity.this, RecyclerView.VERTICAL, false);
@@ -146,7 +202,6 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
                             sv.setFooter(new AliFooter(ReleaseDynamicsActivity.this));
                         }
                     }
-
                     @Override
                     public void onError(Throwable e) {
                         hideDialog();
@@ -165,10 +220,4 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
 
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
 }

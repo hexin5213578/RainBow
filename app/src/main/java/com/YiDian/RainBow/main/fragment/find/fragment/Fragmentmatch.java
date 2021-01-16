@@ -432,8 +432,8 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
         Log.d("hmy", "onDestroy");
         //停止定位
         mlocationClient.stopLocation();
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
         }
     }
 

@@ -61,6 +61,16 @@
         <item name="android:textSize">@dimen/sp_12</item>
         <item name="android:textColor">@drawable/selector_friend_tab_text_color</item>
     </style>
+    <!--礼物tab-->
+    <style name="GiftTab">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:button">@null</item>
+        <item name="android:drawablePadding">2dp</item>
+        <item name="android:padding">@dimen/dp_6</item>
+        <item name="android:textSize">@dimen/sp_12</item>
+        <item name="android:textColor">@drawable/selector_friend_tab_text_color</item>
+    </style>
     <!--搜索 Tab-->
     <style name="SearchTab">
         <item name="android:button">@null</item>

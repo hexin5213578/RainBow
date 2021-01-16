@@ -35,12 +35,14 @@ import androidx.viewpager.widget.ViewPager;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.zbar.CaptureActivity;
 import com.YiDian.RainBow.dynamic.bean.SaveMsgSuccessBean;
 import com.YiDian.RainBow.main.fragment.FragmentFind;
 import com.YiDian.RainBow.main.fragment.FragmentHome;
 import com.YiDian.RainBow.main.fragment.FragmentMine;
 import com.YiDian.RainBow.main.fragment.FragmentMsg;
+import com.YiDian.RainBow.main.fragment.mine.bean.GiftBean;
 import com.YiDian.RainBow.service.GrayService;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.YiDian.RainBow.utils.SPUtil;
@@ -97,6 +99,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     private FragmentMsg fragmentMsg;
     private FragmentMine fragmentmine;
     private List<Fragment> list;
+    private int userid;
 
     @Override
     protected int getResId() {
@@ -119,6 +122,8 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     @Override
     protected void getData() {
 
+        userid = Integer.parseInt(Common.getUserId());
+
         //设置别名
         //setAlias();
         boolean ignoringBatteryOptimizations = isIgnoringBatteryOptimizations(MainActivity.this);
@@ -127,33 +132,6 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
             //不存在加入白名单
             requestIgnoreBatteryOptimizations(MainActivity.this);
         }
-        //获取七牛云uploadToken
-        NetUtils.getInstance().getApis().getUpdateToken()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<SaveMsgSuccessBean>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(SaveMsgSuccessBean saveMsgSuccessBean) {
-                        String upToken = saveMsgSuccessBean.getUpToken();
-                        SPUtil.getInstance().saveData(MainActivity.this, SPUtil.FILE_NAME, SPUtil.UPTOKEN, upToken);
-                        Log.d("xxx", "uptoken存入成功");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
         //开启服务
         Intent intent = new Intent(MainActivity.this, GrayService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -202,8 +180,78 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
 
         MyAdapter myAdapter = new MyAdapter(getSupportFragmentManager());
         vp.setAdapter(myAdapter);
+
+        getCount();
     }
 
+    public void getCount(){
+        NetUtils.getInstance().getApis()
+                .dogetSendGift(userid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GiftBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(GiftBean giftBean) {
+                        if (giftBean.getMsg().equals("查询成功")){
+                            List<GiftBean.ObjectBean> list = giftBean.getObject();
+                            if (list.size()>0){
+                                GiftBean.ObjectBean bean = giftBean.getObject().get(0);
+                                SPUtil.getInstance().saveData(MainActivity.this,SPUtil.FILE_NAME,SPUtil.SENG_COUNT, String.valueOf(bean.getAllNums()));
+                            }else{
+                                SPUtil.getInstance().saveData(MainActivity.this,SPUtil.FILE_NAME,SPUtil.SENG_COUNT, "0");
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+        NetUtils.getInstance().getApis()
+                .dogetReciveGift(userid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GiftBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(GiftBean giftBean) {
+                        if (giftBean.getMsg().equals("查询成功")){
+                            List<GiftBean.ObjectBean> list = giftBean.getObject();
+                            if (list.size()>0){
+                                GiftBean.ObjectBean bean = giftBean.getObject().get(0);
+                                SPUtil.getInstance().saveData(MainActivity.this,SPUtil.FILE_NAME,SPUtil.RECIVE_COUNT, String.valueOf(bean.getAllNums()));
+                            }else{
+                                SPUtil.getInstance().saveData(MainActivity.this,SPUtil.FILE_NAME,SPUtil.RECIVE_COUNT, "0");
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
     //判断是否存在白名单
     @RequiresApi(Build.VERSION_CODES.M)
     public boolean isIgnoringBatteryOptimizations(Context context) {

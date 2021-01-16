@@ -3,11 +3,13 @@ package com.YiDian.RainBow.main.fragment;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -304,6 +306,8 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
                 dismiss();
             }
         });
+
+        mPopupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));    //要为popWindow设置一个背景才有效
         //popwindow设置属性
         mPopupWindow.setAnimationStyle(R.style.popwindow_anim_style);
         mPopupWindow.setContentView(view);

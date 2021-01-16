@@ -44,10 +44,10 @@ public  class Common {
     /**
      * 获取token,不为空内种
      *
-     * @return token:未登录状态返回空字符串
+     * @return
      */
     public static String getToken() {
-        return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.KEY_TOKEN);
+        return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.UPTOKEN);
     }
 
     //获取userid

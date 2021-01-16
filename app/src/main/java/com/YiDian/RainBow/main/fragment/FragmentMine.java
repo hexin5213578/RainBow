@@ -31,6 +31,7 @@ import com.YiDian.RainBow.main.fragment.mine.activity.MyGiftActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.MyQrCodeActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.MydraftActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.RechargeGlodActivity;
+import com.YiDian.RainBow.main.fragment.mine.activity.ReleaseDynamicsActivity;
 import com.YiDian.RainBow.main.fragment.mine.adapter.HobbyAdapter;
 import com.YiDian.RainBow.main.fragment.mine.bean.LoginUserInfoBean;
 import com.YiDian.RainBow.setup.activity.SetupActivity;
@@ -181,6 +182,7 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
         // TODO: 2020/11/26 0026 获取当前用户个人信息展示
         getUserInfo();
     }
+
     //获取我的信息
     public void getUserInfo(){
         NetUtils.getInstance()
@@ -349,6 +351,8 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
             //发布的动态
             case R.id.ll_dongtai:
 
+                intent  = new Intent(getContext(), ReleaseDynamicsActivity.class);
+                startActivity(intent);
                 break;
             //草稿箱
             case R.id.ll_caogaoxiang:

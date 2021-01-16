@@ -3,9 +3,9 @@ package com.YiDian.RainBow.login.bean;
 public class LoginBean {
 
     /**
-     * msg : 返回信息
+     * msg : 登录成功！
      * type : OK
-     * object : {"id":102,"phoneNum":"18738037948","nickName":"张三","headImg":null,"birthday":null,"userType":1,"userRole":null,"isSingle":null,"lng":null,"lat":null,"ratio":null,"createTime":"2020-10-12 10:19:33","countNum":null,"invitationCode":null,"jid":null}
+     * object : {"id":100002,"phoneNum":"15652578312","nickName":"彩虹用户5531","headImg":"http://img.rianbow.cn/202101091337175732682.png","backImg":null,"explains":null,"birthday":null,"userType":1,"userRole":null,"isSingle":1,"lng":111,"lat":111,"ratio":0.5,"attestation":0,"createTime":"2021-01-16 19:32:49","isFans":null,"countNum":null,"distance":null,"distancing":null,"age":null,"invitationCode":null}
      */
 
     private String msg;
@@ -38,38 +38,50 @@ public class LoginBean {
 
     public static class ObjectBean {
         /**
-         * id : 102
-         * phoneNum : 18738037948
-         * nickName : 张三
-         * headImg : null
+         * id : 100002
+         * phoneNum : 15652578312
+         * nickName : 彩虹用户5531
+         * headImg : http://img.rianbow.cn/202101091337175732682.png
+         * backImg : null
+         * explains : null
          * birthday : null
          * userType : 1
          * userRole : null
-         * isSingle : null
-         * lng : null
-         * lat : null
-         * ratio : null
-         * createTime : 2020-10-12 10:19:33
+         * isSingle : 1
+         * lng : 111.0
+         * lat : 111.0
+         * ratio : 0.5
+         * attestation : 0
+         * createTime : 2021-01-16 19:32:49
+         * isFans : null
          * countNum : null
+         * distance : null
+         * distancing : null
+         * age : null
          * invitationCode : null
-         * jid : null
          */
 
         private int id;
         private String phoneNum;
         private String nickName;
-        private Object headImg;
+        private String headImg;
+        private Object backImg;
+        private Object explains;
         private Object birthday;
         private int userType;
         private Object userRole;
-        private Object isSingle;
+        private int isSingle;
         private double lng;
         private double lat;
-        private Object ratio;
+        private double ratio;
+        private int attestation;
         private String createTime;
+        private Object isFans;
         private Object countNum;
+        private Object distance;
+        private Object distancing;
+        private Object age;
         private Object invitationCode;
-        private Object jid;
 
         public int getId() {
             return id;
@@ -95,12 +107,28 @@ public class LoginBean {
             this.nickName = nickName;
         }
 
-        public Object getHeadImg() {
+        public String getHeadImg() {
             return headImg;
         }
 
-        public void setHeadImg(Object headImg) {
+        public void setHeadImg(String headImg) {
             this.headImg = headImg;
+        }
+
+        public Object getBackImg() {
+            return backImg;
+        }
+
+        public void setBackImg(Object backImg) {
+            this.backImg = backImg;
+        }
+
+        public Object getExplains() {
+            return explains;
+        }
+
+        public void setExplains(Object explains) {
+            this.explains = explains;
         }
 
         public Object getBirthday() {
@@ -127,11 +155,11 @@ public class LoginBean {
             this.userRole = userRole;
         }
 
-        public Object getIsSingle() {
+        public int getIsSingle() {
             return isSingle;
         }
 
-        public void setIsSingle(Object isSingle) {
+        public void setIsSingle(int isSingle) {
             this.isSingle = isSingle;
         }
 
@@ -151,12 +179,20 @@ public class LoginBean {
             this.lat = lat;
         }
 
-        public Object getRatio() {
+        public double getRatio() {
             return ratio;
         }
 
-        public void setRatio(Object ratio) {
+        public void setRatio(double ratio) {
             this.ratio = ratio;
+        }
+
+        public int getAttestation() {
+            return attestation;
+        }
+
+        public void setAttestation(int attestation) {
+            this.attestation = attestation;
         }
 
         public String getCreateTime() {
@@ -167,6 +203,14 @@ public class LoginBean {
             this.createTime = createTime;
         }
 
+        public Object getIsFans() {
+            return isFans;
+        }
+
+        public void setIsFans(Object isFans) {
+            this.isFans = isFans;
+        }
+
         public Object getCountNum() {
             return countNum;
         }
@@ -175,20 +219,36 @@ public class LoginBean {
             this.countNum = countNum;
         }
 
+        public Object getDistance() {
+            return distance;
+        }
+
+        public void setDistance(Object distance) {
+            this.distance = distance;
+        }
+
+        public Object getDistancing() {
+            return distancing;
+        }
+
+        public void setDistancing(Object distancing) {
+            this.distancing = distancing;
+        }
+
+        public Object getAge() {
+            return age;
+        }
+
+        public void setAge(Object age) {
+            this.age = age;
+        }
+
         public Object getInvitationCode() {
             return invitationCode;
         }
 
         public void setInvitationCode(Object invitationCode) {
             this.invitationCode = invitationCode;
-        }
-
-        public Object getJid() {
-            return jid;
-        }
-
-        public void setJid(Object jid) {
-            this.jid = jid;
         }
     }
 }

@@ -54,12 +54,17 @@ public class SPUtil {
     public static final String ROLE = "role";
     public static final String ISSINGLE = "isingle";
 
+
+    public static final String SENG_COUNT = "send";
+    public static final String RECIVE_COUNT = "recive";
+
     public static final String USER_ID = "user_id";
 
     public static  final String UPTOKEN = "upToken";
     public static final String COUNT = "count";
 
     public static final String JSON_Dynamic = "dynamic";
+    public static final String JSON_RELESE = "relesedynamic";
     public static final String JSOn_drafts = "drafts";
     public static final String JSON_Friend = "friend";
     public static final String JSON_Fans = "fans";
