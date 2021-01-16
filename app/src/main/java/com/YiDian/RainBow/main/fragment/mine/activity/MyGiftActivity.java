@@ -1,4 +1,4 @@
-package com.YiDian.RainBow.setup.activity;
+package com.YiDian.RainBow.main.fragment.mine.activity;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;

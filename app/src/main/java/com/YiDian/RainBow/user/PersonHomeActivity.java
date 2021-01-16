@@ -23,7 +23,7 @@ import com.YiDian.RainBow.friend.FriendsActivity;
 import com.YiDian.RainBow.login.bean.ComPleteMsgBean;
 import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
-import com.YiDian.RainBow.setup.activity.MyGiftActivity;
+import com.YiDian.RainBow.main.fragment.mine.activity.MyGiftActivity;
 import com.YiDian.RainBow.setup.bean.InsertRealBean;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.user.bean.UserMsgBean;
@@ -274,6 +274,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
         llFensi.setEnabled(ischeck);
         llGuanzhu.setEnabled(ischeck);
         llLiwu.setEnabled(ischeck);
+        IvBeijing.setEnabled(ischeck);
     }
     public void dogetDynamicById(int page, int thePageuserId) {
         showDialog();
@@ -558,7 +559,6 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
                 intent = new Intent(PersonHomeActivity.this, MyGiftActivity.class);
                 startActivity(intent);
-
                 break;
             case R.id.ll_back:
                 finish();

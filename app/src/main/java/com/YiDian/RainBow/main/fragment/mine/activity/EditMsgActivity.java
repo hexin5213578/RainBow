@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -114,7 +115,15 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
     private String username;
     private String qm;
     String time = "";
+    String role = "";
+    String single = "";
+
     private String birthday;
+    private PopupWindow mPopupWindow2;
+    private String Userrole;
+    private String issingle;
+    private PopupWindow mPopupWindow3;
+    private String headimg;
 
     @Override
     protected int getResId() {
@@ -137,18 +146,46 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
 
         userid = Integer.parseInt(Common.getUserId());
         token = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.UPTOKEN);
+
         username = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME);
         qm = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.QIANMING);
         birthday = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.BIRTHDAY);
-        // TODO: 2020/11/26 0026 获取当前用户个人信息展示
+        Userrole = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.ROLE);
+        issingle = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.ISSINGLE);
+        headimg = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG);
 
         tvName.setText(username);
-        tvQianming.setText(qm);
-        tvAge.setText(birthday);
 
+        // TODO: 2020/11/26 0026 获取当前用户个人信息展示
+        if (birthday==null){
+            tvAge.setText("未设置");
+        }else{
+            tvAge.setText(birthday);
+        }
+        if (qm==null){
+            tvQianming.setText("未设置");
+        }else{
+            tvQianming.setText(qm);
+        }
 
+        if (Userrole==null){
+            tvMyrole.setText("未设置");
+        }else{
+            tvMyrole.setText(Userrole);
+        }
+
+        if (issingle==null){
+            tvMystate.setText("未设置");
+        }else{
+            tvMystate.setText(issingle);
+        }
         //加载圆角图
-        Glide.with(this).load(R.mipmap.headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+        if (headimg!=null){
+            Glide.with(this).load(headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+        }else{
+            Glide.with(this).load(R.mipmap.headimg3).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+        }
+
 
         userInfo = new UserInfo() {
             @Override
@@ -284,66 +321,130 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                 break;
             //年龄
             case R.id.rl_age:
-                BasisTimesUtils.showDatePickerDialog(EditMsgActivity.this, "请选择年月日", 1998, 1, 1, new BasisTimesUtils.OnDatePickerListener() {
-                    @Override
-                    public void onConfirm(int year, int month, int dayOfMonth) {
-                         if(month<10){
-                            time = year + "-0" + month + "-" + dayOfMonth;
-                        }else{
-                            time = year + "-" + month + "-" + dayOfMonth;
+
+                birthday = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.BIRTHDAY);
+
+                if (birthday!=null){
+                    String[] split = birthday.split("-");
+                    BasisTimesUtils.showDatePickerDialog(EditMsgActivity.this, "请选择年月日", Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[1]), new BasisTimesUtils.OnDatePickerListener() {
+                        @Override
+                        public void onConfirm(int year, int month, int dayOfMonth) {
+                            if(month<10 && dayOfMonth<10){
+                                time = year + "-0" + month + "-0" + dayOfMonth;
+                            }else if (month<10){
+                                time = year + "-0" + month + "-" + dayOfMonth;
+                            }else if(dayOfMonth<10){
+                                time = year + "-" + month + "-0" + dayOfMonth;
+                            }else{
+                                time = year + "-" + month + "-" + dayOfMonth;
+                            }
+
+                            // TODO: 2021/1/7 0007 调用更新用户信息接口更换年龄
+                            NetUtils.getInstance()
+                                    .getApis()
+                                    .doComPleteAge(userid,time)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Observer<ComPleteMsgBean>() {
+                                        @Override
+                                        public void onSubscribe(Disposable d) {
+
+                                        }
+
+                                        @Override
+                                        public void onNext(ComPleteMsgBean comPleteMsgBean) {
+                                            if (comPleteMsgBean.getMsg().equals("数据修改成功！")){
+                                                tvAge.setText(time);
+                                                SPUtil.getInstance().saveData(EditMsgActivity.this,SPUtil.FILE_NAME,SPUtil.BIRTHDAY,time);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onError(Throwable e) {
+
+                                        }
+
+                                        @Override
+                                        public void onComplete() {
+
+                                        }
+                                    });
+
                         }
 
-                        // TODO: 2021/1/7 0007 调用更新用户信息接口更换年龄
-                        NetUtils.getInstance()
-                                .getApis()
-                                .doComPleteAge(userid,time)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Observer<ComPleteMsgBean>() {
-                                    @Override
-                                    public void onSubscribe(Disposable d) {
+                        @Override
+                        public void onCancel() {
 
-                                    }
+                        }
+                    });
+                }else{
+                    BasisTimesUtils.showDatePickerDialog(EditMsgActivity.this, "请选择年月日", 1998, 1, 1, new BasisTimesUtils.OnDatePickerListener() {
+                        @Override
+                        public void onConfirm(int year, int month, int dayOfMonth) {
+                            if(month<10 && dayOfMonth<10){
+                                time = year + "-0" + month + "-0" + dayOfMonth;
+                            }else if (month<10){
+                                time = year + "-0" + month + "-" + dayOfMonth;
+                            }else if(dayOfMonth<10){
+                                time = year + "-" + month + "-0" + dayOfMonth;
+                            }else{
+                                time = year + "-" + month + "-" + dayOfMonth;
+                            }
 
-                                    @Override
-                                    public void onNext(ComPleteMsgBean comPleteMsgBean) {
-                                        if (comPleteMsgBean.getMsg().equals("数据修改成功！")){
-                                            tvAge.setText(time);
-                                            SPUtil.getInstance().saveData(EditMsgActivity.this,SPUtil.FILE_NAME,SPUtil.BIRTHDAY,time);
+                            // TODO: 2021/1/7 0007 调用更新用户信息接口更换年龄
+                            NetUtils.getInstance()
+                                    .getApis()
+                                    .doComPleteAge(userid,time)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Observer<ComPleteMsgBean>() {
+                                        @Override
+                                        public void onSubscribe(Disposable d) {
+
                                         }
-                                    }
 
-                                    @Override
-                                    public void onError(Throwable e) {
+                                        @Override
+                                        public void onNext(ComPleteMsgBean comPleteMsgBean) {
+                                            if (comPleteMsgBean.getMsg().equals("数据修改成功！")){
+                                                tvAge.setText(time);
+                                                SPUtil.getInstance().saveData(EditMsgActivity.this,SPUtil.FILE_NAME,SPUtil.BIRTHDAY,time);
+                                            }
+                                        }
 
-                                    }
+                                        @Override
+                                        public void onError(Throwable e) {
 
-                                    @Override
-                                    public void onComplete() {
+                                        }
 
-                                    }
-                                });
+                                        @Override
+                                        public void onComplete() {
 
-                    }
+                                        }
+                                    });
 
-                    @Override
-                    public void onCancel() {
+                        }
 
-                    }
-                });
+                        @Override
+                        public void onCancel() {
+
+                        }
+                    });
+                }
                 break;
             //个性签名
             case R.id.rl_qianming:
-                //展示自定义弹出框
+                //展示修改个性签名弹出框
                 showChangeQianming();
                 break;
             //我的角色
             case R.id.rl_myrole:
-
+                //展示更换角色弹出框
+                showChangeRole();
                 break;
             //我的感情状态
+                //展示更换感情状态弹出框
             case R.id.rl_ganqingstate:
-
+                showChangeSingle();
                 break;
         }
     }
@@ -375,8 +476,51 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                                         String upimg = res.getString("key");
                                         //将七牛返回图片的文件名添加到list集合中
                                         url = serverPath + upimg;
-                                        //调起更换头像的接口
 
+                                        //先发起更换极光的接口
+                                        File file = new File(path);
+                                        Log.d("xxx",file.getAbsolutePath());
+
+                                        JMessageClient.updateUserAvatar(file, new BasicCallback() {
+                                            @Override
+                                            public void gotResult(int i, String s) {
+                                                if (i==0){
+                                                    Log.d("xxx","当前登录用户头像设置成功");
+                                                    //调起更换头像的接口
+                                                    NetUtils.getInstance().getApis()
+                                                            .doComPleteHeadImg(userid,url)
+                                                            .subscribeOn(Schedulers.io())
+                                                            .observeOn(AndroidSchedulers.mainThread())
+                                                            .subscribe(new Observer<ComPleteMsgBean>() {
+                                                                @Override
+                                                                public void onSubscribe(Disposable d) {
+
+                                                                }
+
+                                                                @Override
+                                                                public void onNext(ComPleteMsgBean comPleteMsgBean) {
+                                                                    if (comPleteMsgBean.getMsg().equals("数据修改成功！")){
+                                                                        dismiss();
+                                                                        SPUtil.getInstance().saveData(EditMsgActivity.this,SPUtil.FILE_NAME,SPUtil.HEAD_IMG,url);
+                                                                        Toast.makeText(EditMsgActivity.this, "头像修改成功", Toast.LENGTH_SHORT).show();
+                                                                    }
+
+                                                                }
+                                                                @Override
+                                                                public void onError(Throwable e) {
+
+                                                                }
+
+                                                                @Override
+                                                                public void onComplete() {
+
+                                                                }
+                                                            });
+                                                }else {
+                                                    Log.d("xxx",s);
+                                                }
+                                            }
+                                        });
 
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -439,6 +583,13 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
         TextView confrim = view.findViewById(R.id.tv_confirm);
         TextView count = view.findViewById(R.id.tv_count);
         EditText text = view.findViewById(R.id.et_text);
+
+        qm = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.QIANMING);
+
+        if (qm!=null){
+            text.setText(qm);
+        }
+
         cancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -590,6 +741,7 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
         TextView tv_confirm = view.findViewById(R.id.tv_confirm);
 
         tv_confirm.setEnabled(false);
+
 
         //将用户名 回显到输入框
         et_name.setText(tvName.getText().toString());
@@ -772,6 +924,344 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
             mPopupWindow1.dismiss();
         }
     }
+    // 弹出修改昵称弹出框
+    public void showChangeRole() {
+        //创建popwiondow弹出框
+        mPopupWindow2 = new PopupWindow();
+        mPopupWindow2.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        mPopupWindow2.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_changerole, null);
 
+
+
+        TextView tv_confirm = view.findViewById(R.id.tv_confirm);
+        TextView tv_cancle = view.findViewById(R.id.tv_cancle);
+        RadioButton rb1 = view.findViewById(R.id.rb1);
+        RadioButton rb2 = view.findViewById(R.id.rb2);
+        RadioButton rb3 = view.findViewById(R.id.rb3);
+        RadioButton rb4 = view.findViewById(R.id.rb4);
+        RadioButton rb5 = view.findViewById(R.id.rb5);
+
+
+        Userrole = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.ROLE);
+
+        if (Userrole!=null){
+            if (Userrole.equals("T")){
+                rb1.setChecked(true);
+            }else if(Userrole.equals("P")){
+                rb2.setChecked(true);
+            }else if(Userrole.equals("H")){
+                rb3.setChecked(true);
+            }else if(Userrole.equals("BI")){
+                rb4.setChecked(true);
+            }else{
+                rb5.setChecked(true);
+            }
+        }else{
+            rb1.setChecked(true);
+        }
+
+        rb1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rb1.setChecked(true);
+
+                rb2.setChecked(false);
+                rb3.setChecked(false);
+                rb4.setChecked(false);
+                rb5.setChecked(false);
+            }
+        });
+        rb2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rb2.setChecked(true);
+
+                rb1.setChecked(false);
+                rb3.setChecked(false);
+                rb4.setChecked(false);
+                rb5.setChecked(false);
+            }
+        });
+        rb3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rb3.setChecked(true);
+
+                rb1.setChecked(false);
+                rb2.setChecked(false);
+                rb4.setChecked(false);
+                rb5.setChecked(false);
+            }
+        });
+        rb4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rb4.setChecked(true);
+
+                rb1.setChecked(false);
+                rb2.setChecked(false);
+                rb3.setChecked(false);
+                rb5.setChecked(false);
+            }
+        });
+        rb5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rb5.setChecked(true);
+
+                rb1.setChecked(false);
+                rb2.setChecked(false);
+                rb3.setChecked(false);
+                rb4.setChecked(false);
+            }
+        });
+
+        tv_cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss2();
+            }
+        });
+
+        tv_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (rb1.isChecked()){
+                    role = "T";
+                }
+                if (rb2.isChecked()){
+                    role = "P";
+                }
+                if (rb3.isChecked()){
+                    role = "H";
+                }
+                if (rb4.isChecked()){
+                    role = "BI";
+                }
+                if (rb5.isChecked()){
+                    role = "保密";
+                }
+                Toast.makeText(EditMsgActivity.this, "当前选中角色为"+role, Toast.LENGTH_SHORT).show();
+
+                NetUtils.getInstance()
+                        .getApis()
+                        .doComPleteUserRole(userid,role)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<ComPleteMsgBean>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(ComPleteMsgBean comPleteMsgBean) {
+                                if (comPleteMsgBean.getMsg().equals("数据修改成功！")){
+                                    //存入sp
+                                    tvMyrole.setText(role+"");
+                                    dismiss2();
+                                    SPUtil.getInstance().saveData(EditMsgActivity.this,SPUtil.FILE_NAME,SPUtil.ROLE,role);
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
+            }
+        });
+        //popwindow设置属性
+        mPopupWindow2.setContentView(view);
+        mPopupWindow2.setBackgroundDrawable(new BitmapDrawable());
+        mPopupWindow2.setFocusable(true);
+        mPopupWindow2.setOutsideTouchable(true);
+        mPopupWindow2.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                setWindowAlpa(false);
+            }
+        });
+        show2(view);
+    }
+
+    /**
+     * 显示PopupWindow
+     */
+    private void show2(View v) {
+        if (mPopupWindow2 != null && !mPopupWindow2.isShowing()) {
+            mPopupWindow2.showAtLocation(v, Gravity.CENTER, 0, 0);
+        }
+        setWindowAlpa(true);
+
+    }
+
+    /**
+     * 消失PopupWindow
+     */
+    public void dismiss2() {
+        if (mPopupWindow2 != null && mPopupWindow2.isShowing()) {
+            mPopupWindow2.dismiss();
+        }
+    }
+
+    // 弹出修改昵称弹出框
+    public void showChangeSingle() {
+        //创建popwiondow弹出框
+        mPopupWindow3 = new PopupWindow();
+        mPopupWindow3.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        mPopupWindow3.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_changeissingle, null);
+
+
+        TextView tv_confirm = view.findViewById(R.id.tv_confirm);
+        TextView tv_cancle = view.findViewById(R.id.tv_cancle);
+
+        RelativeLayout rl1 = view.findViewById(R.id.rl_danshen);
+        RelativeLayout rl2 = view.findViewById(R.id.rl_lianai);
+        RelativeLayout rl3 = view.findViewById(R.id.rl_baomi);
+
+        RadioButton rb1 = view.findViewById(R.id.check_danshen);
+        RadioButton rb2 = view.findViewById(R.id.check_lianai);
+        RadioButton rb3 = view.findViewById(R.id.check_baomi);
+
+        rb1.setClickable(false);
+        rb2.setClickable(false);
+        rb3.setClickable(false);
+
+        issingle = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.ISSINGLE);
+
+        if (issingle!=null){
+            if (issingle.equals("单身")){
+                rb1.setChecked(true);
+            }else if (issingle.equals("恋爱中")){
+                rb2.setChecked(true);
+            }else {
+                rb3.setChecked(true);
+            }
+        }else{
+            rb1.setChecked(true);
+        }
+
+        rl1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rb1.setChecked(true);
+                rb2.setChecked(false);
+                rb3.setChecked(false);
+            }
+        });
+        rl2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rb2.setChecked(true);
+                rb1.setChecked(false);
+                rb3.setChecked(false);
+            }
+        });
+        rl3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rb3.setChecked(true);
+                rb1.setChecked(false);
+                rb2.setChecked(false);
+            }
+        });
+
+        tv_cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss3();
+            }
+        });
+        tv_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                int a = 0;
+                if (rb1.isChecked()){
+                    single = "单身";
+                    a= 1;
+                }
+                if (rb2.isChecked()){
+                    single = "恋爱中";
+                    a=  2;
+                }
+                if (rb3.isChecked()){
+                    single = "保密";
+                    a = 3;
+                }
+                NetUtils.getInstance()
+                        .getApis()
+                        .doComPleteIsSingle(userid,a)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<ComPleteMsgBean>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(ComPleteMsgBean comPleteMsgBean) {
+                                if (comPleteMsgBean.getMsg().equals("数据修改成功！")){
+                                    //存入sp
+                                    tvMystate.setText(single+"");
+                                    dismiss3();
+                                    SPUtil.getInstance().saveData(EditMsgActivity.this,SPUtil.FILE_NAME,SPUtil.ISSINGLE,single);
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
+            }
+        });
+        //popwindow设置属性
+        mPopupWindow3.setContentView(view);
+        mPopupWindow3.setBackgroundDrawable(new BitmapDrawable());
+        mPopupWindow3.setFocusable(true);
+        mPopupWindow3.setOutsideTouchable(true);
+        mPopupWindow3.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                setWindowAlpa(false);
+            }
+        });
+        show3(view);
+    }
+
+    /**
+     * 显示PopupWindow
+     */
+    private void show3(View v) {
+        if (mPopupWindow3 != null && !mPopupWindow3.isShowing()) {
+            mPopupWindow3.showAtLocation(v, Gravity.CENTER, 0, 0);
+        }
+        setWindowAlpa(true);
+
+    }
+
+    /**
+     * 消失PopupWindow
+     */
+    public void dismiss3() {
+        if (mPopupWindow3 != null && mPopupWindow3.isShowing()) {
+            mPopupWindow3.dismiss();
+        }
+    }
 
 }

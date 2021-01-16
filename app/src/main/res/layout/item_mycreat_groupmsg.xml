@@ -38,7 +38,7 @@
             android:layout_height="wrap_content">
             <ImageView
                 android:layout_width="@dimen/dp_6"
-                android:src="@drawable/back_blue"
+                android:src="@mipmap/people_count"
                 android:layout_marginLeft="@dimen/dp_3"
                 android:layout_gravity="center"
                 android:layout_height="@dimen/dp_8">

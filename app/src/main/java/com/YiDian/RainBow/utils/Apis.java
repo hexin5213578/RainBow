@@ -89,6 +89,10 @@ public interface Apis {
     @POST("user/updateUserInfo")
     Observable<ComPleteMsgBean> doComPleteBackImg(@Query("id")int userid,@Query("backImg")String backImg);
 
+    //修改背景图
+    @POST("user/updateUserInfo")
+    Observable<ComPleteMsgBean> doComPleteHeadImg(@Query("id")int userid,@Query("headImg")String headimg);
+
     //修改用户名
     @POST("user/updateUserInfo")
     Observable<ComPleteMsgBean> doComPleteName(@Query("id")int userid,@Query("nickName")String name);
@@ -97,9 +101,17 @@ public interface Apis {
     @POST("user/updateUserInfo")
     Observable<ComPleteMsgBean> doComPleteQM(@Query("id")int userid,@Query("explains")String explains);
 
-    //修改签名
+    //修改生日
     @POST("user/updateUserInfo")
     Observable<ComPleteMsgBean> doComPleteAge(@Query("id")int userid,@Query("birthday")String birthday);
+
+    //修改用户角色
+    @POST("user/updateUserInfo")
+    Observable<ComPleteMsgBean> doComPleteUserRole(@Query("id")int userid,@Query("userRole")String role);
+
+    //修改用户角色
+    @POST("user/updateUserInfo")
+    Observable<ComPleteMsgBean> doComPleteIsSingle(@Query("id")int userid,@Query("isSingle")int single);
 
     //用户名判重
     @GET("user/selectNickName")

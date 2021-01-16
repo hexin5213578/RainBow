@@ -27,6 +27,7 @@ import com.YiDian.RainBow.custom.zbar.CaptureActivity;
 import com.YiDian.RainBow.friend.FriendsActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.EditMsgActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.FangkerecordActivity;
+import com.YiDian.RainBow.main.fragment.mine.activity.MyGiftActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.MyQrCodeActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.MydraftActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.RechargeGlodActivity;
@@ -34,6 +35,7 @@ import com.YiDian.RainBow.main.fragment.mine.adapter.HobbyAdapter;
 import com.YiDian.RainBow.main.fragment.mine.bean.LoginUserInfoBean;
 import com.YiDian.RainBow.setup.activity.SetupActivity;
 import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.SPUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
@@ -116,6 +118,9 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
     TextView tvMygold;
     private Intent intent;
     private int userid;
+    private String headimg;
+    private String username;
+    private String qm;
 
     @Override
     protected void getid(View view) {
@@ -169,6 +174,11 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
 
         userid = Integer.valueOf(Common.getUserId());
 
+
+        //ID赋值
+        tvUserId.setText(userid+"");
+
+        // TODO: 2020/11/26 0026 获取当前用户个人信息展示
         getUserInfo();
     }
     //获取我的信息
@@ -188,8 +198,32 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
                         LoginUserInfoBean.ObjectBean bean = loginUserInfoBean.getObject();
                         LoginUserInfoBean.ObjectBean.UserInfoBean info = bean.getUserInfo();
 
+
+                        username = SPUtil.getInstance().getData(getContext(), SPUtil.FILE_NAME, SPUtil.USER_NAME);
+                        headimg = SPUtil.getInstance().getData(getContext(), SPUtil.FILE_NAME, SPUtil.HEAD_IMG);
+                        qm = SPUtil.getInstance().getData(getContext(), SPUtil.FILE_NAME, SPUtil.QIANMING);
+
                         //加载一张圆角头像
-                        Glide.with(getContext()).load(info.getHeadImg()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+                        if (headimg==null){
+                            SPUtil.getInstance().saveData(getContext(),SPUtil.FILE_NAME,SPUtil.HEAD_IMG,info.getHeadImg());
+                            Glide.with(getContext()).load(info.getHeadImg()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+                        }else{
+                            //加载缓存内的头像信息
+                            Glide.with(getContext()).load(headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+                        }
+                        if (username==null){
+                            SPUtil.getInstance().saveData(getContext(),SPUtil.FILE_NAME,SPUtil.USER_NAME,info.getNickName());
+                            tvUsername.setText(info.getNickName());
+                        }else{
+                            tvUsername.setText(username);
+                        }
+                        //个性签名赋值
+                        if (qm==null){
+                            SPUtil.getInstance().saveData(getContext(),SPUtil.FILE_NAME,SPUtil.QIANMING,info.getExplains());
+                            tvSignature.setText(info.getExplains());
+                        }else{
+                            tvSignature.setText(qm);
+                        }
 
                         //数量赋值
                         tvCountHaoyou.setText(bean.getCountFriendNum()+"");
@@ -199,10 +233,6 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
 
                         //访客
                         tvCountFangke.setText(bean.getCountVisitorNum()+"");
-                        //用户名赋值
-                        tvUsername.setText(info.getNickName());
-                        //ID赋值
-                        tvUserId.setText(info.getId()+"");
 
                         //年龄赋值
                         String userRole = info.getUserRole();
@@ -341,12 +371,15 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
             //礼物记录
             case R.id.ll_liwu:
 
+                intent = new Intent(getContext(), MyGiftActivity.class);
+                startActivity(intent);
+
                 break;
             //扫一扫
             case R.id.ll_saoyisao:
                 //扫描二维码
-                Intent intent1 = new Intent(getContext(), CaptureActivity.class);
-                startActivityForResult(intent1, 100);
+                intent = new Intent(getContext(), CaptureActivity.class);
+                startActivityForResult(intent, 100);
                 break;
             //设置
             case R.id.ll_shezhi:

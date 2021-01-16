@@ -273,6 +273,11 @@
             android:name=".main.fragment.mine.activity.MyQrCodeActivity"
             android:screenOrientation="portrait" />
 
+        <!-- 我的礼物 -->
+        <activity
+            android:name=".main.fragment.mine.activity.MyGiftActivity"
+            android:screenOrientation="portrait" />
+
         <!-- 更多房间 -->
         <activity
             android:name=".main.fragment.im.activity.MordRoomActivity"
@@ -424,10 +429,7 @@
             android:name=".setup.activity.BlackListActivity"
             android:screenOrientation="portrait" />
 
-        <!-- 黑名单 -->
-        <activity
-            android:name=".setup.activity.MyGiftActivity"
-            android:screenOrientation="portrait" />
+
 
         <!-- 用户协议 -->
         <activity
