@@ -333,6 +333,11 @@
             android:name=".dynamic.activity.SelectWhoCanSeeActivity"
             android:screenOrientation="portrait" />
 
+        <!-- 发布的动态 -->
+        <activity
+            android:name=".main.fragment.mine.activity.ReleaseDynamicsActivity"
+            android:screenOrientation="portrait" />
+
         <!-- 我的草稿箱 -->
         <activity
             android:name=".main.fragment.mine.activity.MydraftActivity"

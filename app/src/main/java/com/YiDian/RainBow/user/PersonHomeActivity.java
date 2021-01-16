@@ -176,6 +176,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             allList.clear();
                             page = 1;
                             dogetDynamicByName(page,name);
+                            //等待2.5秒后结束刷新
                             sv.onFinishFreshAndLoad();
                         }
                     },2500);
@@ -211,10 +212,11 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                 isotherpage(true);
                 Log.d("xxx", "getData: 自己的主页");
             }
+            //实现列表滚动加载，刷新效果
             sv.setListener(new SpringView.OnFreshListener() {
                 @Override
                 public void onRefresh() {
-                    new Handler().postDelayed(new Runnable() {
+                        new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             bandpageinfo(myId, thePageuserId);
@@ -242,6 +244,9 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
 
     }
+
+
+
     public void doInsert(String str){
         NetUtils.getInstance().getApis()
                 .doInsertFangke(str,myId)
@@ -274,9 +279,11 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
         llFensi.setEnabled(ischeck);
         llGuanzhu.setEnabled(ischeck);
         llLiwu.setEnabled(ischeck);
+        IvBeijing.setEnabled(ischeck);
     }
+    //动态信息填充到列表里面
     public void dogetDynamicById(int page, int thePageuserId) {
-        showDialog();
+        showDialog();//显示加载圈
         NetUtils.getInstance().getApis().
                 doGetDynamicByUserid(thePageuserId, myId, page, 5).
                 subscribeOn(Schedulers.io()).
@@ -290,11 +297,13 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
                     @Override
                     public void onNext(NewDynamicBean newDynamicBean) {
-                        hideDialog();
+                        hideDialog();//隐藏加载圈
                         List<NewDynamicBean.ObjectBean.ListBean> list = newDynamicBean.getObject().getList();
 
                         if (list.size()>0 && list!=null){
+                            //RelativeLayout rlNodata;
                             rlNodata.setVisibility(View.GONE);
+                            //RecyclerView  rcDynamic
                             rcDynamic.setVisibility(View.VISIBLE);
 
                             allList.addAll(list);
@@ -312,6 +321,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             }
                         }
                         if (list.size()>4){
+                            //设置底部
                             sv.setFooter(new AliFooter(PersonHomeActivity.this));
                         }
                     }
@@ -530,6 +540,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
     @Override
     protected BasePresenter initPresenter() {
+
         return null;
     }
 
@@ -549,23 +560,28 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                 intent.putExtra("flag",2);
                 startActivity(intent);
                 break;
+                //关注被点击
             case R.id.ll_guanzhu:
                 intent = new Intent(PersonHomeActivity.this, FriendsActivity.class);
                 intent.putExtra("flag",4);
                 startActivity(intent);
                 break;
+                //礼物被点击
             case R.id.ll_liwu:
 
                 intent = new Intent(PersonHomeActivity.this, MyGiftActivity.class);
                 startActivity(intent);
 
                 break;
+                //返回
             case R.id.ll_back:
                 finish();
                 break;
+                //菜单
             case R.id.ll_candian:
 
                 break;
+                //点击背景  是自己的主页可以进行更换
             case R.id.Iv_beijing:
                 Log.d(TAG, "onClick: ------->" + "点击背景");
                 intent = new Intent(PersonHomeActivity.this, PickerActivity.class);
