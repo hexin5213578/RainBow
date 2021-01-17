@@ -118,6 +118,8 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
     @Override
     protected void getData() {
+        Log.d(TAG, "getData: 进入Activity");
+
         //腾讯AppId(替换你自己App Id)、上下文
         mTencent = Tencent.createInstance("101906973", PersonHomeActivity.this);
 
