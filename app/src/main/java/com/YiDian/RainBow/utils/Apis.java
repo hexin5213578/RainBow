@@ -351,4 +351,8 @@ public interface Apis {
     //查询收到的礼物
     @GET("giftMarkVO/selectGiftMark")
     Observable<GiftBean> dogetReciveGift(@Query("inUserId")int userid);
+
+    //查询签到记录
+    @GET("signIn/selectSign")
+
 }
