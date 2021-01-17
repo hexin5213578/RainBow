@@ -26,6 +26,7 @@ import com.YiDian.RainBow.custom.customrecycle.SpacesItemDecoration;
 import com.YiDian.RainBow.custom.zbar.CaptureActivity;
 import com.YiDian.RainBow.friend.FriendsActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.EditMsgActivity;
+import com.YiDian.RainBow.main.fragment.mine.activity.EveryDayRegisterActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.FangkerecordActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.MyGiftActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.MyQrCodeActivity;
@@ -370,14 +371,13 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
                 break;
             //去签到
             case R.id.ll_qiandao:
-
+                intent = new Intent(getContext(), EveryDayRegisterActivity.class);
+                startActivity(intent);
                 break;
             //礼物记录
             case R.id.ll_liwu:
-
                 intent = new Intent(getContext(), MyGiftActivity.class);
                 startActivity(intent);
-
                 break;
             //扫一扫
             case R.id.ll_saoyisao:

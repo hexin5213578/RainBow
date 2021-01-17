@@ -303,6 +303,11 @@
             android:name=".main.fragment.mine.activity.RechargeGlodActivity"
             android:screenOrientation="portrait" />
 
+        <!-- 每日签到 -->
+        <activity
+            android:name=".main.fragment.mine.activity.EveryDayRegisterActivity"
+            android:screenOrientation="portrait" />
+
         <!-- 扫描二维码 -->
         <activity
             android:name=".custom.zbar.CaptureActivity"

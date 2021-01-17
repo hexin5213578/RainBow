@@ -23,10 +23,12 @@ import com.YiDian.RainBow.main.fragment.home.bean.DynamicDetailsBean;
 import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.main.fragment.home.bean.OneCommentBean;
+import com.YiDian.RainBow.main.fragment.mine.bean.AddSignInBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.FangkeMsgBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.GiftBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.LoginUserInfoBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.SelectAllDraftsBean;
+import com.YiDian.RainBow.main.fragment.mine.bean.SigninMsgBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.GiftMsgBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.GlodNumBean;
 import com.YiDian.RainBow.notice.bean.CleanNoticeBean;
@@ -353,6 +355,10 @@ public interface Apis {
     Observable<GiftBean> dogetReciveGift(@Query("inUserId")int userid);
 
     //查询签到记录
-    @GET("signIn/selectSign")
+    @POST("signIn/selectSign")
+    Observable<SigninMsgBean> doGetSigninMsg(@Query("userId")int userid);
 
+    //签到 补签
+    @POST("signIn/addSign")
+    Observable<AddSignInBean> doAddSign(@Query("weeks")int week,@Query("userId")int userid);
 }
