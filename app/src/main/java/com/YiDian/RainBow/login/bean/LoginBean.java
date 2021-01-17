@@ -5,7 +5,7 @@ public class LoginBean {
     /**
      * msg : 登录成功！
      * type : OK
-     * object : {"id":100002,"phoneNum":"15652578312","nickName":"彩虹用户5531","headImg":"http://img.rianbow.cn/202101091337175732682.png","backImg":null,"explains":null,"birthday":null,"userType":1,"userRole":null,"isSingle":1,"lng":111,"lat":111,"ratio":0.5,"attestation":0,"createTime":"2021-01-16 19:32:49","isFans":null,"countNum":null,"distance":null,"distancing":null,"age":null,"invitationCode":null}
+     * object : {"id":1030,"phoneNum":"15652578310","nickName":"恭喜嘻嘻明","headImg":"http://img.rianbow.cn/f86d726e20210117175619.jpg","backImg":"http://img.rianbow.cn/5fab96d020210115175710.jpg","explains":"主要是移民洗衣液","birthday":"1998-01-01","userType":1,"userRole":"T","isSingle":2,"lng":115.298826,"lat":34.097066,"ratio":0.5,"attestation":5,"createTime":"2020-12-11 15:46:34","isFans":null,"countNum":null,"distance":null,"distancing":null,"age":23,"invitationCode":null}
      */
 
     private String msg;
@@ -38,26 +38,26 @@ public class LoginBean {
 
     public static class ObjectBean {
         /**
-         * id : 100002
-         * phoneNum : 15652578312
-         * nickName : 彩虹用户5531
-         * headImg : http://img.rianbow.cn/202101091337175732682.png
-         * backImg : null
-         * explains : null
-         * birthday : null
+         * id : 1030
+         * phoneNum : 15652578310
+         * nickName : 恭喜嘻嘻明
+         * headImg : http://img.rianbow.cn/f86d726e20210117175619.jpg
+         * backImg : http://img.rianbow.cn/5fab96d020210115175710.jpg
+         * explains : 主要是移民洗衣液
+         * birthday : 1998-01-01
          * userType : 1
-         * userRole : null
-         * isSingle : 1
-         * lng : 111.0
-         * lat : 111.0
+         * userRole : T
+         * isSingle : 2
+         * lng : 115.298826
+         * lat : 34.097066
          * ratio : 0.5
-         * attestation : 0
-         * createTime : 2021-01-16 19:32:49
+         * attestation : 5
+         * createTime : 2020-12-11 15:46:34
          * isFans : null
          * countNum : null
          * distance : null
          * distancing : null
-         * age : null
+         * age : 23
          * invitationCode : null
          */
 
@@ -65,11 +65,11 @@ public class LoginBean {
         private String phoneNum;
         private String nickName;
         private String headImg;
-        private Object backImg;
-        private Object explains;
-        private Object birthday;
+        private String backImg;
+        private String explains;
+        private String birthday;
         private int userType;
-        private Object userRole;
+        private String userRole;
         private int isSingle;
         private double lng;
         private double lat;
@@ -80,7 +80,7 @@ public class LoginBean {
         private Object countNum;
         private Object distance;
         private Object distancing;
-        private Object age;
+        private int age;
         private Object invitationCode;
 
         public int getId() {
@@ -115,27 +115,27 @@ public class LoginBean {
             this.headImg = headImg;
         }
 
-        public Object getBackImg() {
+        public String getBackImg() {
             return backImg;
         }
 
-        public void setBackImg(Object backImg) {
+        public void setBackImg(String backImg) {
             this.backImg = backImg;
         }
 
-        public Object getExplains() {
+        public String getExplains() {
             return explains;
         }
 
-        public void setExplains(Object explains) {
+        public void setExplains(String explains) {
             this.explains = explains;
         }
 
-        public Object getBirthday() {
+        public String getBirthday() {
             return birthday;
         }
 
-        public void setBirthday(Object birthday) {
+        public void setBirthday(String birthday) {
             this.birthday = birthday;
         }
 
@@ -147,11 +147,11 @@ public class LoginBean {
             this.userType = userType;
         }
 
-        public Object getUserRole() {
+        public String getUserRole() {
             return userRole;
         }
 
-        public void setUserRole(Object userRole) {
+        public void setUserRole(String userRole) {
             this.userRole = userRole;
         }
 
@@ -235,11 +235,11 @@ public class LoginBean {
             this.distancing = distancing;
         }
 
-        public Object getAge() {
+        public int getAge() {
             return age;
         }
 
-        public void setAge(Object age) {
+        public void setAge(int age) {
             this.age = age;
         }
 

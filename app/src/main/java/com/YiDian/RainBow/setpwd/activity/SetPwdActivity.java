@@ -342,7 +342,7 @@ public class SetPwdActivity extends BaseAvtivity implements View.OnClickListener
                                                                 JMessageClient.register(id, id, new BasicCallback() {
                                                                     @Override
                                                                     public void gotResult(int i, String s) {
-                                                                        if (i == 0) {
+                                                                        if (i == 0|| i==898001) {
                                                                             JMessageClient.login(id, id, new BasicCallback() {
                                                                                 @Override
                                                                                 public void gotResult(int i, String s) {
@@ -389,7 +389,7 @@ public class SetPwdActivity extends BaseAvtivity implements View.OnClickListener
                                                                                                     e.printStackTrace();
                                                                                                 }
                                                                                             }
-                                                                                        });
+                                                                                        }).start();
                                                                                         //登录成功跳转至完善信息页
                                                                                         startActivity(new Intent(SetPwdActivity.this, CompleteMsgActivity.class));
                                                                                         finish();

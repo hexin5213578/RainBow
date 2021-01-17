@@ -52,7 +52,7 @@ public  class Common {
 
     //获取userid
     public static String getUserId() {
-        return "1030";
+        return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.USER_ID);
     }
     //获取极光APO_KEY
     public static String get_JG() {
@@ -62,8 +62,28 @@ public  class Common {
     public static String getPhone() {
         return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.KEY_PHONE);
     }
+    //获取个性签名
+    public static String getQM() {
+        return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.QIANMING);
+    }
+    //获取用户名
     public static String getUserName(){
-        return "何梦阳";
+        return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.USER_NAME);
+    }
+
+    //获取用户名
+    public static String getHeadImg(){
+        return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.HEAD_IMG);
+    }
+
+    //获取用户名
+    public static String getRole(){
+        return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.ROLE);
+    }
+
+    //获取用户名
+    public static String getBirthday(){
+        return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.BIRTHDAY);
     }
 
     //获取是否已经登录过状态

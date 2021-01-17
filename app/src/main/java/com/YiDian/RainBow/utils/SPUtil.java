@@ -46,6 +46,7 @@ public class SPUtil {
     //是否完善资料  0已完善 1未完善
     public static final String IS_PERFECT = "isperfect";
     public static final String HEAD_IMG = "headimg";
+    public static final String BACK_IMG = "backimg";
     public static final String KEY_PHONE = "phone";
 
     public static final String USER_NAME = "username";
@@ -53,6 +54,7 @@ public class SPUtil {
     public static final String QIANMING = "qianming";
     public static final String ROLE = "role";
     public static final String ISSINGLE = "isingle";
+    public static final String AGE = "age";
 
 
     public static final String SENG_COUNT = "send";

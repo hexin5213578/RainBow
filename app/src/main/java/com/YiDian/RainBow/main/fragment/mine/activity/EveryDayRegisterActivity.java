@@ -1,6 +1,7 @@
 package com.YiDian.RainBow.main.fragment.mine.activity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -12,6 +13,9 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.leaf.library.StatusBarUtil;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -82,7 +86,6 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
     protected void getData() {
         //设置状态栏透明
         StatusBarUtil.setTransparentForWindow(EveryDayRegisterActivity.this);
-
 
     }
 

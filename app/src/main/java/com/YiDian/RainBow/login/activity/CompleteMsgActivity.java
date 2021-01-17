@@ -5,8 +5,12 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -51,14 +55,25 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.lym.image.select.PictureSelector;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.DownloadAvatarCallback;
+import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
+import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -100,10 +115,11 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
     private String token;
     private static final String serverPath = "http://img.rianbow.cn/";
     private String url;
-    private boolean isClick;
-    private boolean isjiance;
+    private boolean isClick = true;
+    private boolean isjiance = true;
     private int userid;
     private String time;
+    private UserInfo userInfo;
 
     @Override
     protected int getResId() {
@@ -118,8 +134,110 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
         StatusBarUtil.setDarkMode(this);
 
 
-        userid = Integer.valueOf(Common.getUserId());
+        userInfo = new UserInfo() {
+            @Override
+            public String getNotename() {
+                return null;
+            }
 
+            @Override
+            public String getNoteText() {
+                return null;
+            }
+
+            @Override
+            public long getBirthday() {
+                return 0;
+            }
+
+            @Override
+            public File getAvatarFile() {
+                return null;
+            }
+
+            @Override
+            public void getAvatarFileAsync(DownloadAvatarCallback downloadAvatarCallback) {
+
+            }
+
+            @Override
+            public void getAvatarBitmap(GetAvatarBitmapCallback getAvatarBitmapCallback) {
+
+            }
+
+            @Override
+            public File getBigAvatarFile() {
+                return null;
+            }
+
+            @Override
+            public void getBigAvatarBitmap(GetAvatarBitmapCallback getAvatarBitmapCallback) {
+
+            }
+
+            @Override
+            public int getBlacklist() {
+                return 0;
+            }
+
+            @Override
+            public int getNoDisturb() {
+                return 0;
+            }
+
+            @Override
+            public boolean isFriend() {
+                return false;
+            }
+
+            @Override
+            public String getAppKey() {
+                return null;
+            }
+
+            @Override
+            public void setUserExtras(Map<String, String> map) {
+
+            }
+
+            @Override
+            public void setUserExtras(String s, String s1) {
+
+            }
+
+            @Override
+            public void setBirthday(long l) {
+
+            }
+
+            @Override
+            public void setNoDisturb(int i, BasicCallback basicCallback) {
+
+            }
+
+            @Override
+            public void removeFromFriendList(BasicCallback basicCallback) {
+
+            }
+
+            @Override
+            public void updateNoteName(String s, BasicCallback basicCallback) {
+
+            }
+
+            @Override
+            public void updateNoteText(String s, BasicCallback basicCallback) {
+
+            }
+
+            @Override
+            public String getDisplayName() {
+                return null;
+            }
+        };
+
+
+        userid = Integer.valueOf(Common.getUserId());
 
         //申请开启内存卡权限
         if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) && (CompleteMsgActivity.this.checkSelfPermission
@@ -135,47 +253,115 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
         Glide.with(CompleteMsgActivity.this).load(headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
 
         username = SPUtil.getInstance().getData(this, SPUtil.FILE_NAME, SPUtil.USER_NAME);
-        etName.setHint(username);
+        etName.setText(username);
 
+        String role = SPUtil.getInstance().getData(this, SPUtil.FILE_NAME, SPUtil.ROLE);
+        if (role != null && !role.equals("")) {
+            if (role.equals("T")) {
+                rb1.setChecked(true);
+            } else if (role.equals("P")) {
+                rb2.setChecked(true);
+            } else if (role.equals("H")) {
+                rb3.setChecked(true);
+            } else if (role.equals("BI")) {
+                rb4.setChecked(true);
+            } else {
+                rb5.setChecked(true);
+            }
+        } else {
+            rb1.setChecked(true);
+        }
 
-        tvBirth.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                BasisTimesUtils.showDatePickerDialog(CompleteMsgActivity.this, "请选择年月日", 1998, 1, 1, new BasisTimesUtils.OnDatePickerListener() {
-                    @Override
-                    public void onConfirm(int year, int month, int dayOfMonth) {
-                        if(month<10 && dayOfMonth<10){
-                            time = year + "-0" + month + "-0" + dayOfMonth;
-                        }else if (month<10){
-                            time = year + "-0" + month + "-" + dayOfMonth;
-                        }else if(dayOfMonth<10){
-                            time = year + "-" + month + "-0" + dayOfMonth;
-                        }else{
-                            time = year + "-" + month + "-" + dayOfMonth;
+        String birthday = SPUtil.getInstance().getData(this, SPUtil.FILE_NAME, SPUtil.BIRTHDAY);
+        if (birthday != null && !birthday.equals("")) {
+            tvBirth.setText(birthday);
+
+            String[] split = birthday.split("-");
+            tvBirth.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    BasisTimesUtils.showDatePickerDialog(CompleteMsgActivity.this, "请选择年月日", Integer.valueOf(split[0]), Integer.valueOf(split[1]), Integer.valueOf(split[2]), new BasisTimesUtils.OnDatePickerListener() {
+                        @Override
+                        public void onConfirm(int year, int month, int dayOfMonth) {
+                            if (month < 10 && dayOfMonth < 10) {
+                                time = year + "-0" + month + "-0" + dayOfMonth;
+                            } else if (month < 10) {
+                                time = year + "-0" + month + "-" + dayOfMonth;
+                            } else if (dayOfMonth < 10) {
+                                time = year + "-" + month + "-0" + dayOfMonth;
+                            } else {
+                                time = year + "-" + month + "-" + dayOfMonth;
+                            }
+
+                            tvBirth.setText(time);
                         }
 
-                        tvBirth.setText(time);
-                    }
-                    @Override
-                    public void onCancel() {
+                        @Override
+                        public void onCancel() {
 
-                    }
-                });
-            }
-        });
+                        }
+                    });
+                }
+            });
+        } else {
+            tvBirth.setText("1998-01-01");
+            tvBirth.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    BasisTimesUtils.showDatePickerDialog(CompleteMsgActivity.this, "请选择年月日", 1998, 1, 1, new BasisTimesUtils.OnDatePickerListener() {
+                        @Override
+                        public void onConfirm(int year, int month, int dayOfMonth) {
+                            if (month < 10 && dayOfMonth < 10) {
+                                time = year + "-0" + month + "-0" + dayOfMonth;
+                            } else if (month < 10) {
+                                time = year + "-0" + month + "-" + dayOfMonth;
+                            } else if (dayOfMonth < 10) {
+                                time = year + "-" + month + "-0" + dayOfMonth;
+                            } else {
+                                time = year + "-" + month + "-" + dayOfMonth;
+                            }
+
+                            tvBirth.setText(time);
+                        }
+
+                        @Override
+                        public void onCancel() {
+
+                        }
+                    });
+                }
+            });
+        }
+
+
         tvJumpMain.setOnClickListener(this);
         btconfirm.setOnClickListener(this);
         ivHeadimg.setOnClickListener(this);
 
 
         token = Common.getToken();
+        etName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                isjiance = false;
+            }
+        });
 
         tvJiance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String s = etName.getText().toString();
-                if (!TextUtils.isEmpty(s)){
+                if (!TextUtils.isEmpty(s)) {
                     // TODO: 2021/1/6 0006 检测名称是否存在
                     NetUtils.getInstance().getApis()
                             .doCheckName(s)
@@ -190,12 +376,12 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
                                 @Override
                                 public void onNext(CheckNickNameBean checkNickNameBean) {
                                     isjiance = true;
-                                    if (checkNickNameBean.getMsg().equals("用户名已存在！")){
+                                    if (checkNickNameBean.getMsg().equals("用户名已存在！")) {
                                         Toast.makeText(CompleteMsgActivity.this, "用户名重复 换一个试试吧", Toast.LENGTH_SHORT).show();
-                                        isClick =false;
-                                    }else if (checkNickNameBean.getMsg().equals("用户名可用")){
+                                        isClick = false;
+                                    } else if (checkNickNameBean.getMsg().equals("用户名可用")) {
                                         Toast.makeText(CompleteMsgActivity.this, "用户名可用", Toast.LENGTH_SHORT).show();
-                                        isClick =true;
+                                        isClick = true;
                                     }
                                 }
 
@@ -209,7 +395,7 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
 
                                 }
                             });
-                }else{
+                } else {
                     Toast.makeText(CompleteMsgActivity.this, "请先输入昵称", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -264,71 +450,94 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
                 String name = etName.getText().toString();
                 String birth = tvBirth.getText().toString();
 
-                if (path!=null){
+                if (path != null) {
                     //先发起更换极光的接口
                     File file = new File(path);
-                    Log.d("xxx",file.getAbsolutePath());
+                    Log.d("xxx", file.getAbsolutePath());
+                    if (isjiance) {
+                        if (isClick) {
+                            JMessageClient.updateUserAvatar(file, new BasicCallback() {
+                                @Override
+                                public void gotResult(int i, String s) {
+                                    if (i == 0) {
+                                        Log.d("xxx", "当前登录用户头像设置成功");
+                                        //再调用完善信息接口
+                                        NetUtils.getInstance().getApis()
+                                                .doComPlteAllMsg(userid, name, url, birth, str)
+                                                .subscribeOn(Schedulers.io())
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .subscribe(new Observer<ComPleteMsgBean>() {
+                                                    @Override
+                                                    public void onSubscribe(Disposable d) {
 
-                    if (isjiance){
-                        if (isClick){
-                            if (!TextUtils.isEmpty(birth)){
-                                JMessageClient.updateUserAvatar(file, new BasicCallback() {
-                                    @Override
-                                    public void gotResult(int i, String s) {
-                                        if (i==0){
-                                            Log.d("xxx","当前登录用户头像设置成功");
-                                            //再调用完善信息接口
-                                            NetUtils.getInstance().getApis()
-                                                    .doComPlteAllMsg(userid,name,url,birth,str)
-                                                    .subscribeOn(Schedulers.io())
-                                                    .observeOn(AndroidSchedulers.mainThread())
-                                                    .subscribe(new Observer<ComPleteMsgBean>() {
-                                                        @Override
-                                                        public void onSubscribe(Disposable d) {
+                                                    }
 
+                                                    @Override
+                                                    public void onNext(ComPleteMsgBean comPleteMsgBean) {
+                                                        if (comPleteMsgBean.getMsg().equals("数据修改成功！")) {
+
+                                                            SPUtil.getInstance().saveData(CompleteMsgActivity.this, SPUtil.FILE_NAME, SPUtil.IS_PERFECT, "1");
+
+                                                            SPUtil.getInstance().saveData(CompleteMsgActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME, name);
+                                                            SPUtil.getInstance().saveData(CompleteMsgActivity.this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG, url);
+                                                            SPUtil.getInstance().saveData(CompleteMsgActivity.this, SPUtil.FILE_NAME, SPUtil.BIRTHDAY, birth);
+                                                            SPUtil.getInstance().saveData(CompleteMsgActivity.this, SPUtil.FILE_NAME, SPUtil.ROLE, str);
+
+                                                            //直接跳转到主页
+                                                            startActivity(new Intent(CompleteMsgActivity.this, MainActivity.class));
+
+                                                            userInfo.setNickname(name);
+                                                            //登陆成功设置极光用户名及头像
+                                                            JMessageClient.updateMyInfo(UserInfo.Field.nickname, userInfo, new BasicCallback() {
+                                                                @Override
+                                                                public void gotResult(int i, String s) {
+                                                                    if (i == 0) {
+                                                                        Log.d("xxx", "极光昵称设置成功");
+                                                                        //极光更换成功调用 上传到服务器
+                                                                    } else {
+                                                                        Log.d("xxx", "设置失败，原因为" + s);
+                                                                    }
+                                                                }
+                                                            });
+
+
+                                                            File file = new File(path);
+                                                            JMessageClient.updateUserAvatar(file, new BasicCallback() {
+                                                                @Override
+                                                                public void gotResult(int i, String s) {
+                                                                    if (i == 0) {
+                                                                        Log.d("xxx", "当前登录用户头像设置成功");
+                                                                    } else {
+                                                                        Log.d("xxx", s);
+                                                                    }
+                                                                }
+                                                            });
                                                         }
+                                                    }
 
-                                                        @Override
-                                                        public void onNext(ComPleteMsgBean comPleteMsgBean) {
-                                                            if (comPleteMsgBean.getMsg().equals("数据修改成功！")){
+                                                    @Override
+                                                    public void onError(Throwable e) {
 
-                                                                SPUtil.getInstance().saveData(CompleteMsgActivity.this,SPUtil.FILE_NAME,SPUtil.IS_PERFECT,"1");
+                                                    }
 
-                                                                SPUtil.getInstance().saveData(CompleteMsgActivity.this,SPUtil.FILE_NAME,SPUtil.USER_NAME,name);
-                                                                SPUtil.getInstance().saveData(CompleteMsgActivity.this,SPUtil.FILE_NAME,SPUtil.HEAD_IMG,url);
-                                                                SPUtil.getInstance().saveData(CompleteMsgActivity.this,SPUtil.FILE_NAME,SPUtil.BIRTHDAY,birth);
-                                                                SPUtil.getInstance().saveData(CompleteMsgActivity.this,SPUtil.FILE_NAME,SPUtil.ROLE,str);
+                                                    @Override
+                                                    public void onComplete() {
 
-                                                                //直接跳转到主页
-                                                                startActivity(new Intent(CompleteMsgActivity.this,MainActivity.class));
-                                                            }
-                                                        }
-                                                        @Override
-                                                        public void onError(Throwable e) {
-
-                                                        }
-
-                                                        @Override
-                                                        public void onComplete() {
-
-                                                        }
-                                                    });
-                                        }else {
-                                            Log.d("xxx",s);
-                                        }
+                                                    }
+                                                });
+                                    } else {
+                                        Log.d("xxx", s);
                                     }
-                                });
-                            }else{
-                                Toast.makeText(this, "还未选择出生日期", Toast.LENGTH_SHORT).show();
-                            }
-                        }else{
-                            Toast.makeText(this, "用户名不可用,请换一个再试", Toast.LENGTH_SHORT).show();
-                            isjiance = false;
+                                }
+                            });
+
+                        } else {
+                            Toast.makeText(this, "名称不可用，请换一个试试吧", Toast.LENGTH_SHORT).show();
                         }
-                    }else{
-                        Toast.makeText(this, "请先对用户名进行检测", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "请先检测昵称是否可用", Toast.LENGTH_SHORT).show();
                     }
-                }else{
+                } else {
                     Toast.makeText(this, "请选择要更换的头像", Toast.LENGTH_SHORT).show();
                 }
                 break;

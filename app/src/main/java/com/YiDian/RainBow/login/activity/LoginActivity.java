@@ -8,8 +8,11 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.os.Build;
-import android.os.Message;
+import android.os.Bundle;
+import android.os.Environment;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -34,8 +37,6 @@ import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.feedback.activity.FeedBackActivity;
 import com.YiDian.RainBow.login.bean.LoginBean;
-import com.YiDian.RainBow.login.bean.QLoginSuccessBean;
-import com.YiDian.RainBow.login.bean.QLoginUserInfoBean;
 import com.YiDian.RainBow.main.activity.MainActivity;
 import com.YiDian.RainBow.regist.activity.RegistActivity;
 import com.YiDian.RainBow.remember.activity.RememberPwdActivity;
@@ -46,13 +47,12 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.google.gson.Gson;
+import com.leaf.library.StatusBarUtil;
 import com.tencent.connect.UserInfo;
 import com.tencent.connect.auth.QQToken;
 import com.tencent.connect.common.Constants;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
-import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
@@ -60,18 +60,30 @@ import com.tencent.tauth.UiError;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.DownloadAvatarCallback;
+import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
 import cn.jpush.im.api.BasicCallback;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.internal.Util;
 
 import static com.tencent.connect.common.Constants.PACKAGE_QQ;
 
@@ -79,7 +91,7 @@ import static com.tencent.connect.common.Constants.PACKAGE_QQ;
 public class LoginActivity extends BaseAvtivity implements View.OnClickListener, AMapLocationListener {
 
     @BindView(R.id.tv_mt_pro)
-    TextView tvMtPro;
+    RelativeLayout tvMtPro;
     @BindView(R.id.et_phone)
     EditText etPhone;
     @BindView(R.id.et_pwd1)
@@ -96,6 +108,8 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
     RelativeLayout rlQqLogin;
     @BindView(R.id.rl_wechat_login)
     RelativeLayout rlWechatLogin;
+    @BindView(R.id.rl1)
+    RelativeLayout rl1;
     private double latitude;
     private double longitude;
     //声明mlocationClient对象
@@ -114,6 +128,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
     private String avatar;
     private String nickName;
     private String openId;
+    private cn.jpush.im.android.api.model.UserInfo userInfo;
 
     @Override
     protected int getResId() {
@@ -123,6 +138,9 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void getData() {
+
+        StatusBarUtil.setTransparentForWindow(LoginActivity.this);
+
         tvMtPro.setOnClickListener(this);
         tvToRegist.setOnClickListener(this);
         tvRemePwd.setOnClickListener(this);
@@ -130,7 +148,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
         rlQqLogin.setOnClickListener(this);
         rlWechatLogin.setOnClickListener(this);
         //密码明文密文切换
-        ivSeePwd1.setOnTouchListener(new View.OnTouchListener() {
+        rl1.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
@@ -152,10 +170,112 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
         //开启定位
         doLocation();
 
-        //登录QQ
-
         //腾讯AppId(替换你自己App Id)、上下文
         mTencent = Tencent.createInstance("101906973", this);
+
+
+        userInfo = new cn.jpush.im.android.api.model.UserInfo() {
+           @Override
+           public String getNotename() {
+               return null;
+           }
+
+           @Override
+           public String getNoteText() {
+               return null;
+           }
+
+           @Override
+           public long getBirthday() {
+               return 0;
+           }
+
+           @Override
+           public File getAvatarFile() {
+               return null;
+           }
+
+           @Override
+           public void getAvatarFileAsync(DownloadAvatarCallback downloadAvatarCallback) {
+
+           }
+
+           @Override
+           public void getAvatarBitmap(GetAvatarBitmapCallback getAvatarBitmapCallback) {
+
+           }
+
+           @Override
+           public File getBigAvatarFile() {
+               return null;
+           }
+
+           @Override
+           public void getBigAvatarBitmap(GetAvatarBitmapCallback getAvatarBitmapCallback) {
+
+           }
+
+           @Override
+           public int getBlacklist() {
+               return 0;
+           }
+
+           @Override
+           public int getNoDisturb() {
+               return 0;
+           }
+
+           @Override
+           public boolean isFriend() {
+               return false;
+           }
+
+           @Override
+           public String getAppKey() {
+               return null;
+           }
+
+           @Override
+           public void setUserExtras(Map<String, String> map) {
+
+           }
+
+           @Override
+           public void setUserExtras(String s, String s1) {
+
+           }
+
+           @Override
+           public void setBirthday(long l) {
+
+           }
+
+           @Override
+           public void setNoDisturb(int i, BasicCallback basicCallback) {
+
+           }
+
+           @Override
+           public void removeFromFriendList(BasicCallback basicCallback) {
+
+           }
+
+           @Override
+           public void updateNoteName(String s, BasicCallback basicCallback) {
+
+           }
+
+           @Override
+           public void updateNoteText(String s, BasicCallback basicCallback) {
+
+           }
+
+           @Override
+           public String getDisplayName() {
+               return null;
+           }
+       };
+
 
     }
 
@@ -225,7 +345,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                 //跳转忘记密码页
                 break;
             case R.id.bt_login:
-                //调用注册登录接口
+                //调用登录接口
                 String phone = etPhone.getText().toString();
                 String pwd = etPwd1.getText().toString();
                 if (StringUtil.checkPhoneNumber(phone)) {
@@ -253,32 +373,37 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                                                 double lng = object.getLng();
                                                 double lat = object.getLat();
                                                 //极光注册登录
-                                                JMessageClient.register(id, id, new BasicCallback() {
+                                                JMessageClient.login(id, id, new BasicCallback() {
                                                     @Override
                                                     public void gotResult(int i, String s) {
-                                                        Log.d("xxx", "极光注册状态为" + i + "原因为" + s);
-                                                        if (i == 0 || i == 898001) {
-                                                            JMessageClient.login(id, id, new BasicCallback() {
-                                                                @Override
-                                                                public void gotResult(int i, String s) {
-                                                                    Log.d("xxx", "极光登录状态为" + i + "原因为" + s);
-                                                                    if (i == 0) {
-                                                                        //记录登录后的信息
-                                                                        SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_ID, id);
-                                                                        SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.KEY_PHONE, phone);
-                                                                        SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.IS_LOGIN, "0");
-                                                                        //登录成功跳转至完善信息页
-                                                                        String isPerfect = Common.getIsPerfect();
-                                                                        Log.d("hmy", isPerfect);
-                                                                        if (isPerfect != null) {
-                                                                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                                                        } else {
-                                                                            startActivity(new Intent(LoginActivity.this, CompleteMsgActivity.class));
-                                                                        }
-                                                                        finish();
-                                                                    }
+                                                        Log.d("xxx", "极光登录状态为" + i + "原因为" + s);
+                                                        if (i == 0) {
+                                                            //记录登录后的信息
+                                                            SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_ID, id);
+                                                            SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME, object.getNickName());
+                                                            SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG, object.getHeadImg());
+                                                            SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.BIRTHDAY, object.getBirthday());
+                                                            SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.ROLE, object.getUserRole());
+                                                            SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.AGE, String.valueOf(object.getAge()));
+                                                            SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.ISSINGLE, String.valueOf(object.getIsSingle()));
+                                                            SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.BACK_IMG, object.getBackImg());
+                                                            SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.KEY_PHONE, phone);
+                                                            SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.IS_LOGIN, "0");
+                                                            //登录成功跳转至完善信息页
+                                                            String isPerfect = Common.getIsPerfect();
+                                                            if (isPerfect!=null && !isPerfect.equals("")){
+                                                                if (isPerfect.equals("0")) {
+                                                                    Log.d("hmy", isPerfect);
+                                                                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                                                    finish();
+                                                                } else {
+                                                                    startActivity(new Intent(LoginActivity.this, CompleteMsgActivity.class));
+                                                                    finish();
                                                                 }
-                                                            });
+                                                            }else{
+                                                                startActivity(new Intent(LoginActivity.this, CompleteMsgActivity.class));
+                                                                finish();
+                                                            }
                                                         }
                                                     }
                                                 });
@@ -305,12 +430,12 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                 break;
             case R.id.rl_qq_login:
                 //QQ登录
-                if(longitude ==0.0  && latitude ==0.0){
+                if (longitude == 0.0 && latitude == 0.0) {
                     //调取定位权限
                     Toast.makeText(LoginActivity.this, "正在获取当前位置信息，请稍后再试", Toast.LENGTH_SHORT).show();
 
                     Request();
-                }else{
+                } else {
                     //注意：此段非必要，如果手机未安装应用则会跳转网页进行授权
                     if (!hasApp(LoginActivity.this, PACKAGE_QQ)) {
                         Toast.makeText(LoginActivity.this, "未安装QQ应用",
@@ -325,20 +450,21 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                 break;
             case R.id.rl_wechat_login:
                 //微信登录
-                if(longitude ==0.0  && latitude ==0.0){
+                if (longitude == 0.0 && latitude == 0.0) {
                     //调取定位权限
                     Toast.makeText(LoginActivity.this, "正在获取当前位置信息，请稍后再试", Toast.LENGTH_SHORT).show();
 
                     Request();
-                }else{
+                } else {
                     doWechatLogin();
                 }
 
                 break;
         }
     }
+
     //微信登录
-    public void doWechatLogin(){
+    public void doWechatLogin() {
 
         if (!App.getWXApi().isWXAppInstalled()) {
             Toast.makeText(LoginActivity.this, "您的设备未安装微信客户端", Toast.LENGTH_SHORT).show();
@@ -349,6 +475,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
             App.getWXApi().sendReq(req);
         }
     }
+
     //微信回调信息
     @Override
     protected void onResume() {
@@ -369,56 +496,166 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
             editor.clear();
             editor.commit();
 
-            Log.e("xxx","openid"+openid1+"    name"+wechatName+"    头像"+wechatHeadimgurl);
+            Log.e("xxx", "openid" + openid1 + "    name" + wechatName + "    头像" + wechatHeadimgurl);
+
+            SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME, wechatName);
+            SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG, wechatHeadimgurl);
+            //将登录状态改为已经登录
+            SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.IS_LOGIN, "0");
+
+
+            //获取完用户信息调用微信登录接口
+            NetUtils.getInstance().getApis().doWechatLogin(2, openid1, longitude, latitude)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<LoginBean>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(LoginBean loginBean) {
+                            if (loginBean.getType().equals("OK")) {
+                                LoginBean.ObjectBean object = loginBean.getObject();
+                                String id = String.valueOf(object.getId());
+                                SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_ID, id);
+                                //极光注册登录
+                                JMessageClient.register(id, id, new BasicCallback() {
+                                    @Override
+                                    public void gotResult(int i, String s) {
+                                        Log.d("xxx", "极光注册状态为" + i + "原因为" + s);
+                                        if (i == 0 || i==898001) {
+                                            JMessageClient.login(id, id, new BasicCallback() {
+                                                @Override
+                                                public void gotResult(int i, String s) {
+                                                    Log.d("xxx", "极光登录状态为" + i + "原因为" + s);
+                                                    if (i == 0) {
+
+                                                        userInfo.setNickname(wechatName);
+
+                                                        //登陆成功设置极光用户名及头像
+                                                        JMessageClient.updateMyInfo(cn.jpush.im.android.api.model.UserInfo.Field.nickname,userInfo,new BasicCallback() {
+                                                            @Override
+                                                            public void gotResult(int i, String s) {
+                                                                if (i==0){
+                                                                    Log.d("xxx","极光昵称设置成功");
+                                                                    //极光更换成功调用 上传到服务器
+                                                                }else{
+                                                                    Log.d("xxx","设置失败，原因为"+s);
+                                                                }
+                                                            }
+                                                        });
+                                                        new Thread(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                try {
+                                                                    Bitmap bitmap = returnBitMap(wechatHeadimgurl);
+                                                                    String name =  System.currentTimeMillis()+".jpg";
+                                                                    File file = saveFile(bitmap, name);
+                                                                    Log.d("xxx","微信头像为"+file.toString());
+                                                                    JMessageClient.updateUserAvatar(file, new BasicCallback() {
+                                                                        @Override
+                                                                        public void gotResult(int i, String s) {
+                                                                            if (i==0){
+                                                                                Log.d("xxx","当前登录用户头像设置成功");
+                                                                            }else {
+                                                                                Log.d("xxx",s);
+                                                                            }
+                                                                        }
+                                                                    });
+                                                                } catch (IOException e) {
+                                                                    e.printStackTrace();
+                                                                }
+                                                            }
+                                                        }).start();
+
+                                                        //登录成功跳转至完善信息页
+                                                        String isPerfect = Common.getIsPerfect();
+                                                        if (isPerfect!=null && !isPerfect.equals("")){
+                                                            if (isPerfect.equals("0")) {
+                                                                Log.d("hmy", isPerfect);
+                                                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                                                finish();
+                                                            } else {
+                                                                startActivity(new Intent(LoginActivity.this, CompleteMsgActivity.class));
+                                                                finish();
+                                                            }
+                                                        }else{
+                                                            startActivity(new Intent(LoginActivity.this, CompleteMsgActivity.class));
+                                                            finish();
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+
+
         }
     }
-        //QQ登录
-        private void doQlogin() {
-            listener = new IUiListener() {
-                @Override
-                public void onComplete(Object object) {
 
-                    Log.e(TAG, "登录成功: " + object.toString() );
+    //QQ登录
+    private void doQlogin() {
+        listener = new IUiListener() {
+            @Override
+            public void onComplete(Object object) {
 
-                    JSONObject jsonObject = (JSONObject) object;
-                    try {
-                        //得到token、expires、openId等参数
-                        String token = jsonObject.getString(Constants.PARAM_ACCESS_TOKEN);
-                        String expires = jsonObject.getString(Constants.PARAM_EXPIRES_IN);
-                        openId = jsonObject.getString(Constants.PARAM_OPEN_ID);
+                Log.e(TAG, "登录成功: " + object.toString());
 
-                        mTencent.setAccessToken(token, expires);
-                        mTencent.setOpenId(openId);
-                        Log.e(TAG, "token: " + token);
-                        Log.e(TAG, "expires: " + expires);
-                        Log.e(TAG, "openId: " + openId);
+                JSONObject jsonObject = (JSONObject) object;
+                try {
+                    //得到token、expires、openId等参数
+                    String token = jsonObject.getString(Constants.PARAM_ACCESS_TOKEN);
+                    String expires = jsonObject.getString(Constants.PARAM_EXPIRES_IN);
+                    openId = jsonObject.getString(Constants.PARAM_OPEN_ID);
 
-                        //获取个人信息
-                        getQQInfo();
-                    } catch (Exception e) {
-                    }
+                    mTencent.setAccessToken(token, expires);
+                    mTencent.setOpenId(openId);
+                    Log.e(TAG, "token: " + token);
+                    Log.e(TAG, "expires: " + expires);
+                    Log.e(TAG, "openId: " + openId);
+
+                    //获取个人信息
+                    getQQInfo();
+                } catch (Exception e) {
                 }
+            }
 
-                @Override
-                public void onError(UiError uiError) {
-                    //登录失败
-                    Log.e(TAG, "登录失败" + uiError.errorDetail);
-                    Log.e(TAG, "登录失败" + uiError.errorMessage);
-                    Log.e(TAG, "登录失败" + uiError.errorCode + "");
-
-                }
-                @Override
-                public void onCancel() {
-                    //登录取消
-                    Log.e(TAG, "登录取消");
-                }
-            };
-            //context上下文、第二个参数SCOPO 是一个String类型的字符串，表示一些权限
-            //应用需要获得权限，由“,”分隔。例如：SCOPE = “get_user_info,add_t”；所有权限用“all”
-            //第三个参数事件监听器
-            mTencent.login(this, "all", listener);
-            //注销登录
-        }
+            @Override
+            public void onError(UiError uiError) {
+                //登录失败
+                Log.e(TAG, "登录失败" + uiError.errorDetail);
+                Log.e(TAG, "登录失败" + uiError.errorMessage);
+                Log.e(TAG, "登录失败" + uiError.errorCode + "");
+            }
+            @Override
+            public void onCancel() {
+                //登录取消
+                Log.e(TAG, "登录取消");
+            }
+        };
+        //context上下文、第二个参数SCOPO 是一个String类型的字符串，表示一些权限
+        //应用需要获得权限，由“,”分隔。例如：SCOPE = “get_user_info,add_t”；所有权限用“all”
+        //第三个参数事件监听器
+        mTencent.login(this, "all", listener);
+        //注销登录
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -474,6 +711,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
             mlocationClient.onDestroy();
         }
     }
+
     /**
      * 获取QQ个人信息
      */
@@ -493,9 +731,11 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
 
                     SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME, nickName);
                     SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG, avatar);
-
                     //将登录状态改为已经登录
                     SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.IS_LOGIN, "0");
+
+
+
 
                     //获取完用户信息调用QQ登录接口
                     NetUtils.getInstance().getApis().doQqLogin(3, openId, longitude, latitude)
@@ -518,20 +758,65 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                                             @Override
                                             public void gotResult(int i, String s) {
                                                 Log.d("xxx", "极光注册状态为" + i + "原因为" + s);
-                                                if (i == 0 || i == 898001) {
+                                                if (i == 0 || i==898001) {
                                                     JMessageClient.login(id, id, new BasicCallback() {
                                                         @Override
                                                         public void gotResult(int i, String s) {
                                                             Log.d("xxx", "极光登录状态为" + i + "原因为" + s);
                                                             if (i == 0) {
+                                                                userInfo.setNickname(nickName);
+                                                                //登陆成功设置极光用户名及头像
+                                                                JMessageClient.updateMyInfo(cn.jpush.im.android.api.model.UserInfo.Field.nickname,userInfo,new BasicCallback() {
+                                                                    @Override
+                                                                    public void gotResult(int i, String s) {
+                                                                        if (i==0){
+                                                                            Log.d("xxx","极光昵称设置成功");
+                                                                            //极光更换成功调用 上传到服务器
+                                                                        }else{
+                                                                            Log.d("xxx","设置失败，原因为"+s);
+                                                                        }
+                                                                    }
+                                                                });
+
+                                                                new Thread(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        try {
+                                                                            Bitmap bitmap = returnBitMap(avatar);
+                                                                            String name =  System.currentTimeMillis()+".jpg";
+                                                                            File file = saveFile(bitmap, name);
+
+                                                                            JMessageClient.updateUserAvatar(file, new BasicCallback() {
+                                                                                @Override
+                                                                                public void gotResult(int i, String s) {
+                                                                                    if (i==0){
+                                                                                        Log.d("xxx","当前登录用户头像设置成功");
+                                                                                    }else {
+                                                                                        Log.d("xxx",s);
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                        } catch (IOException e) {
+                                                                            e.printStackTrace();
+                                                                        }
+                                                                    }
+                                                                }).start();
+
                                                                 //登录成功跳转至完善信息页
                                                                 String isPerfect = Common.getIsPerfect();
-                                                                if (isPerfect != null) {
-                                                                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                                                } else {
+                                                                if (isPerfect!=null && !isPerfect.equals("")){
+                                                                    if (isPerfect.equals("0")) {
+                                                                        Log.d("hmy", isPerfect);
+                                                                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                                                        finish();
+                                                                    } else {
+                                                                        startActivity(new Intent(LoginActivity.this, CompleteMsgActivity.class));
+                                                                        finish();
+                                                                    }
+                                                                }else{
                                                                     startActivity(new Intent(LoginActivity.this, CompleteMsgActivity.class));
+                                                                    finish();
                                                                 }
-                                                                finish();
                                                             }
                                                         }
                                                     });
@@ -586,4 +871,58 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
         }
         return is;
     }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
+    }
+
+    public final static Bitmap returnBitMap(String url) {
+        URL myFileUrl = null;
+        Bitmap bitmap = null;
+        try {
+            myFileUrl = new URL(url);
+            HttpURLConnection conn;
+            conn = (HttpURLConnection) myFileUrl.openConnection();
+            conn.setDoInput(true);
+            int length = conn.getContentLength();
+            conn.connect();
+            InputStream is = conn.getInputStream();
+            BufferedInputStream bis = new BufferedInputStream(is, length);
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize =2;    // 设置缩放比例
+            Rect rect = new Rect(0, 0,0,0);
+            bitmap = BitmapFactory.decodeStream(bis,rect,options);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
+    public static File saveFile(Bitmap bm, String fileName) throws IOException {
+        String path = getSDPath() +"/wuliu/";
+        File dirFile = new File(path);
+        if(!dirFile.exists()){
+            dirFile.mkdir();
+        }
+        File myCaptureFile = new File(path + fileName);
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(myCaptureFile));
+        bm.compress(Bitmap.CompressFormat.JPEG, 80, bos);
+        bos.flush();
+        bos.close();
+        return myCaptureFile;
+    }
+    //获取sd卡路径
+    public static String getSDPath(){
+        File sdDir = null;
+        boolean sdCardExist = Environment.getExternalStorageState()
+                .equals(Environment.MEDIA_MOUNTED);//判断sd卡是否存在
+        if(sdCardExist)
+        {
+            sdDir = Environment.getExternalStorageDirectory();//获取跟目录
+        }
+        return sdDir.toString();
+    }
+
 }
