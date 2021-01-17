@@ -81,11 +81,11 @@ public interface Apis {
     Observable<LoginBean> doPwdLogin(@Query("phoneNum")String phone,@Query("password")String pwd,@Query("accountType") int type,@Query("lng")double lng,@Query("lat")double lat);
 
     //QQ登录
-    @GET("user/userLogin")
+    @POST("user/userLogin")
     Observable<LoginBean> doQqLogin(@Query("accountType") int type,@Query("qqOpenID")String qqId,@Query("lng")double lng,@Query("lat")double lat);
 
     //微信登录
-    @GET("user/userLogin")
+    @POST("user/userLogin")
     Observable<LoginBean> doWechatLogin(@Query("accountType") int type,@Query("weChatOpenId")String wechatId,@Query("lng")double lng,@Query("lat")double lat);
 
     //修改背景图

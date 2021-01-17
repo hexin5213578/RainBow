@@ -148,40 +148,42 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
         token = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.UPTOKEN);
 
 
-        username = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME);
-        qm = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.QIANMING);
-        birthday = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.BIRTHDAY);
-        Userrole = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.ROLE);
+        username = Common.getUserName();
+        qm = Common.getQM();
+        birthday = Common.getBirthday();
+        Userrole = Common.getRole();
         issingle = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.ISSINGLE);
-        headimg = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG);
+        headimg = Common.getHeadImg();
 
         tvName.setText(username);
 
         // TODO: 2020/11/26 0026 获取当前用户个人信息展示
-        if (birthday==null){
-            tvAge.setText("未设置");
-        }else{
+        if (birthday!=null && !birthday.equals("")){
             tvAge.setText(birthday);
-        }
-        if (qm==null){
-            tvQianming.setText("未设置");
         }else{
+            tvAge.setText("未设置");
+
+        }
+        if (qm!=null && !qm.equals("")){
             tvQianming.setText(qm);
+        }else{
+            tvQianming.setText("未设置");
         }
 
-        if (Userrole==null){
-            tvMyrole.setText("未设置");
-        }else{
+        if (Userrole!=null && !Userrole.equals("") ){
             tvMyrole.setText(Userrole);
+        }else{
+            tvMyrole.setText("未设置");
         }
 
-        if (issingle==null){
-            tvMystate.setText("未设置");
-        }else{
+        if (issingle!=null &&issingle.equals("")){
             tvMystate.setText(issingle);
+        }else{
+            tvMystate.setText("未设置");
+
         }
         //加载圆角图
-        if (headimg!=null){
+        if (headimg!=null && !headimg.equals("")){
             Glide.with(this).load(headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
         }else{
             Glide.with(this).load(R.mipmap.headimg3).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
@@ -325,7 +327,7 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
 
                 birthday = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.BIRTHDAY);
 
-                if (birthday!=null){
+                if (birthday!=null && !birthday.equals("")){
                     String[] split = birthday.split("-");
                     BasisTimesUtils.showDatePickerDialog(EditMsgActivity.this, "请选择年月日", Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[1]), new BasisTimesUtils.OnDatePickerListener() {
                         @Override

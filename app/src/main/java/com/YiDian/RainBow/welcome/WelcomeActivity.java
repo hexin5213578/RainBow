@@ -19,15 +19,23 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.dynamic.bean.SaveMsgSuccessBean;
 import com.YiDian.RainBow.login.activity.CompleteMsgActivity;
+import com.YiDian.RainBow.login.activity.LoginActivity;
 import com.YiDian.RainBow.main.activity.MainActivity;
 import com.YiDian.RainBow.regist.activity.RegistActivity;
+import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.SPUtil;
 import com.leaf.library.StatusBarUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.api.BasicCallback;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class WelcomeActivity extends BaseAvtivity {
 
@@ -49,6 +57,34 @@ public class WelcomeActivity extends BaseAvtivity {
         StatusBarUtil.setGradientColor(WelcomeActivity.this,toolbar);
         StatusBarUtil.setDarkMode(WelcomeActivity.this);
 
+
+        //获取七牛云uploadToken
+        NetUtils.getInstance().getApis().getUpdateToken()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<SaveMsgSuccessBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(SaveMsgSuccessBean saveMsgSuccessBean) {
+                        String upToken = saveMsgSuccessBean.getUpToken();
+                        SPUtil.getInstance().saveData(WelcomeActivity.this, SPUtil.FILE_NAME, SPUtil.UPTOKEN, upToken);
+                        Log.d("xxx", "uptoken存入成功");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
 
         requestPermission();
         handler = new Handler();
@@ -76,12 +112,12 @@ public class WelcomeActivity extends BaseAvtivity {
                                             finish();
                                         }
                                     } else {
-                                        Intent intent = new Intent(WelcomeActivity.this, RegistActivity.class);
+                                        Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
                                         startActivity(intent);
                                         finish();
                                     }
                                 } else {
-                                    Intent intent = new Intent(WelcomeActivity.this, RegistActivity.class);
+                                    Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
                                     startActivity(intent);
                                     finish();
                                 }
@@ -101,12 +137,12 @@ public class WelcomeActivity extends BaseAvtivity {
                             startActivity(intent);
                             finish();
                         } else {
-                            Intent intent = new Intent(WelcomeActivity.this, RegistActivity.class);
+                            Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
                             startActivity(intent);
                             finish();
                         }
                     } else {
-                        Intent intent = new Intent(WelcomeActivity.this, RegistActivity.class);
+                        Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
                         startActivity(intent);
                         finish();
                     }

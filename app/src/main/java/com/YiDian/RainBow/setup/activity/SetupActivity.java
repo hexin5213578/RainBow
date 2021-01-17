@@ -26,12 +26,15 @@ import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.feedback.activity.FeedBackActivity;
+import com.YiDian.RainBow.login.activity.LoginActivity;
 import com.YiDian.RainBow.setup.bean.GetRealDataBean;
 import com.YiDian.RainBow.utils.DataCleanManager;
 import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.SPUtil;
 import com.leaf.library.StatusBarUtil;
 
 import butterknife.BindView;
+import cn.jpush.im.android.api.JMessageClient;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -205,7 +208,11 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
                 //登出
             case R.id.rl_loginout:
                 // TODO: 2021/1/6 0006 退出登录
-
+                SPUtil.unReg(this, SPUtil.FILE_NAME);
+                JMessageClient.logout();
+                intent = new Intent(SetupActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
                 break;
         }
     }

@@ -39,7 +39,7 @@
             android:layout_alignParentRight="true"
             android:textSize="@dimen/sp_14"
             android:textColor="@color/white"
-            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_15"
             android:layout_height="@dimen/dp_30">
         </TextView>
@@ -80,7 +80,6 @@
         android:layout_width="@dimen/dp_170"
         android:layout_below="@id/tv3"
         android:background="@null"
-        android:hint="请输入昵称"
         android:textColor="#9A9A9A"
         android:id="@+id/et_name"
         android:maxLength="10"
@@ -131,7 +130,7 @@
         android:layout_width="@dimen/dp_200"
         android:layout_below="@id/v1"
         android:background="@null"
-        android:hint="1998-01-01"
+        android:text="1998-01-01"
         android:layout_marginLeft="@dimen/dp_15"
         android:layout_toRightOf="@id/tv"
         android:id="@+id/tv_birth"
@@ -140,9 +139,6 @@
         android:layout_marginTop="@dimen/dp_14"
         android:layout_height="wrap_content">
     </TextView>
-
-
-
     <View
         android:id="@+id/v2"
         android:layout_below="@id/tv_birth"
@@ -183,7 +179,6 @@
                 android:textColor="@drawable/selector_xingbie_text_color"
                 android:layout_height="@dimen/dp_19"
                 android:text="T"
-                android:checked="true"
                 android:background="@drawable/radio_bg"
                 android:id="@+id/rb1"
                 android:gravity="center"
