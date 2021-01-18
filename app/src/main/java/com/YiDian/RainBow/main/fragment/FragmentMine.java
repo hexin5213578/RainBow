@@ -15,14 +15,11 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
-import com.YiDian.RainBow.custom.customrecycle.SpacesItemDecoration;
 import com.YiDian.RainBow.custom.zbar.CaptureActivity;
 import com.YiDian.RainBow.friend.FriendsActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.EditMsgActivity;
@@ -33,7 +30,6 @@ import com.YiDian.RainBow.main.fragment.mine.activity.MyQrCodeActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.MydraftActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.RechargeGlodActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.ReleaseDynamicsActivity;
-import com.YiDian.RainBow.main.fragment.mine.adapter.HobbyAdapter;
 import com.YiDian.RainBow.main.fragment.mine.bean.LoginUserInfoBean;
 import com.YiDian.RainBow.setup.activity.SetupActivity;
 import com.YiDian.RainBow.utils.NetUtils;
@@ -46,10 +42,6 @@ import com.leaf.library.StatusBarUtil;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
-import java.util.IllegalFormatCodePointException;
-import java.util.List;
 
 import butterknife.BindView;
 import io.reactivex.Observer;
