@@ -217,6 +217,9 @@ public interface Apis {
     @GET("content/getContentByUserId")
     Observable<NewDynamicBean> doGetDynamicByName(@Query("nickName")String name,@Query("currUserId")int userid,@Query("page")int page,@Query("pageSize")int size);
 
+    //查询用户收藏的动态
+    @GET("content/getContentByUserCollect")
+    Observable<NewDynamicBean> doGetCollectDynamicById(@Query("page")int page,@Query("pageSize")int size,@Query("userId")int userid);
     //我喜欢的
     @GET("favorite/selectUserIdS")
     Observable<UserMySeeBean> doGetMyLike(@Query("userId")int userid,@Query("page")int page,@Query("pageSize")int size);

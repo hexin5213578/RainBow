@@ -352,6 +352,11 @@
             android:name=".main.fragment.mine.activity.MydraftActivity"
             android:screenOrientation="portrait" />
 
+        <!-- 我的收藏 -->
+        <activity
+            android:name=".main.fragment.mine.activity.CollectActivity"
+            android:screenOrientation="portrait" />
+
         <!-- 用户主页 -->
         <activity
             android:name=".user.PersonHomeActivity"

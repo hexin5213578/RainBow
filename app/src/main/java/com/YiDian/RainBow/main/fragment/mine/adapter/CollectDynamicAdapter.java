@@ -41,17 +41,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.App;
 import com.YiDian.RainBow.base.Common;
-import com.YiDian.RainBow.custom.customDialog.CustomDialogCancleFollow;
 import com.YiDian.RainBow.custom.customDialog.CustomDialogCleanNotice;
 import com.YiDian.RainBow.custom.image.NineGridTestLayout;
 import com.YiDian.RainBow.custom.videoplayer.SampleCoverVideo;
 import com.YiDian.RainBow.main.fragment.home.activity.DynamicDetailsActivity;
 import com.YiDian.RainBow.main.fragment.home.bean.CollectDynamicBean;
 import com.YiDian.RainBow.main.fragment.home.bean.DianzanBean;
-import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
-import com.YiDian.RainBow.notice.ClickNoticeActivity;
-import com.YiDian.RainBow.notice.bean.CleanNoticeBean;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.topic.TopicDetailsActivity;
 import com.YiDian.RainBow.user.PersonHomeActivity;
@@ -90,7 +86,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class MyDynamicAdapter extends RecyclerView.Adapter<MyViewHolder> {
+public class CollectDynamicAdapter extends RecyclerView.Adapter<CollectViewHolder> {
     private final Activity context;
     private final List<NewDynamicBean.ObjectBean.ListBean> list;
 
@@ -104,9 +100,9 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<MyViewHolder> {
     private NewDynamicBean.ObjectBean.ListBean listBean;
     private NewDynamicBean.ObjectBean.ListBean.UserInfoBean userInfo;
     private int id;
-    private MyViewHolder viewHolder;
+    private CollectViewHolder viewHolder;
 
-    public MyDynamicAdapter(Activity context, List<NewDynamicBean.ObjectBean.ListBean> list, Tencent mTencent) {
+    public CollectDynamicAdapter(Activity context, List<NewDynamicBean.ObjectBean.ListBean> list, Tencent mTencent) {
         this.context = context;
         this.list = list;
         this.mTencent = mTencent;
@@ -114,37 +110,38 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CollectViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //纯文本
         if (viewType == 1) {
-            viewHolder = MyViewHolder.createViewHolder(context, parent, R.layout.item_mydynamic_text);
+            viewHolder = CollectViewHolder.createViewHolder(context, parent, R.layout.item_collectdynamic_text);
             return viewHolder;
         }
         //纯图片
         if (viewType == 2) {
-            viewHolder = MyViewHolder.createViewHolder(context, parent, R.layout.item_mydynamic_img);
+            viewHolder = CollectViewHolder.createViewHolder(context, parent, R.layout.item_collectdynamic_img);
             return viewHolder;
         }
         //文本加图片
         if (viewType == 21) {
-            viewHolder = MyViewHolder.createViewHolder(context, parent, R.layout.item_mydynamic_text_img);
+            viewHolder = CollectViewHolder.createViewHolder(context, parent, R.layout.item_collectdynamic_text_img);
             return viewHolder;
         }
         //纯视频
         if (viewType == 3) {
-            viewHolder = MyViewHolder.createViewHolder(context, parent, R.layout.item_mydynamic_video);
+            viewHolder = CollectViewHolder.createViewHolder(context, parent, R.layout.item_collectdynamic_video);
             return viewHolder;
         }
         //视频加文本
         if (viewType == 31) {
-            viewHolder = MyViewHolder.createViewHolder(context, parent, R.layout.item_mydynamic_video_text);
+            viewHolder = CollectViewHolder.createViewHolder(context, parent, R.layout.item_collectdynamic_video_text);
             return viewHolder;
         }
         return null;
     }
 
     @SuppressLint("ResourceAsColor")
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    @Override
+    public void onBindViewHolder(@NonNull CollectViewHolder holder, int position) {
         userid = Integer.valueOf(Common.getUserId());
 
         listBean = list.get(position);
@@ -186,7 +183,6 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
 
         int attestation = userInfo.getAttestation();
-
         //认证等级
         if (attestation == 0) {
             holder.isattaction.setVisibility(View.GONE);
@@ -218,6 +214,7 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<MyViewHolder> {
         } else {
             holder.ivDianzan.setImageResource(R.mipmap.weidianzan);
         }
+
         //点赞的单击事件
         holder.rlDianzan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -329,16 +326,20 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
             holder.tvDianzanCount.setText(s);
         }
-        holder.tvDelete.setOnClickListener(new View.OnClickListener() {
+
+        //设置评论数
+        holder.tvPinglunCount.setText(listBean.getCommentCount() + "");
+
+        holder.tvGuanzhu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listBean = list.get(position);
                 CustomDialogCleanNotice.Builder builder = new CustomDialogCleanNotice.Builder(context);
-                builder.setMessage("确定删除该动态吗?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                builder.setMessage("确定取消收藏该动态吗?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
                         NetUtils.getInstance().getApis()
-                                .doDeleteDynamic(listBean.getId(), userid)
+                                .doCancleCollectDynamic(listBean.getId(), userid)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Observer<CollectDynamicBean>() {
@@ -349,9 +350,7 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
                                     @Override
                                     public void onNext(CollectDynamicBean collectDynamicBean) {
-                                        if (collectDynamicBean.getObject().equals("删除成功")){
-                                            EventBus.getDefault().post("刷新数据");
-                                        }
+                                        EventBus.getDefault().post("刷新数据");
                                         dialog.dismiss();
                                     }
 
@@ -376,11 +375,6 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<MyViewHolder> {
                 builder.create().show();
             }
         });
-
-
-        //设置评论数
-        holder.tvPinglunCount.setText(listBean.getCommentCount() + "");
-
         //转发点击事件
         holder.rlZhuanfa.setOnClickListener(new View.OnClickListener() {
             @Override
