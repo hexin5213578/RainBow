@@ -2,10 +2,11 @@ package com.YiDian.RainBow.main.fragment.mine.bean;
 
 public class AddSignInBean {
 
+
     /**
      * msg : addSign
      * type : OK
-     * object : {"签到信息":"签到成功","获得签到奖励":5,"连续签到天数":1}
+     * object : {"签到信息":"补签成功","totalAward":5,"todayAward":5,"continuousAward":0,"continuousDays":1}
      */
 
     private String msg;
@@ -38,14 +39,18 @@ public class AddSignInBean {
 
     public static class ObjectBean {
         /**
-         * 签到信息 : 签到成功
-         * 获得签到奖励 : 5
-         * 连续签到天数 : 1
+         * 签到信息 : 补签成功
+         * totalAward : 5
+         * todayAward : 5
+         * continuousAward : 0
+         * continuousDays : 1
          */
 
         private String 签到信息;
-        private int 获得签到奖励;
-        private int 连续签到天数;
+        private int totalAward;
+        private int todayAward;
+        private int continuousAward;
+        private int continuousDays;
 
         public String get签到信息() {
             return 签到信息;
@@ -55,20 +60,36 @@ public class AddSignInBean {
             this.签到信息 = 签到信息;
         }
 
-        public int get获得签到奖励() {
-            return 获得签到奖励;
+        public int getTotalAward() {
+            return totalAward;
         }
 
-        public void set获得签到奖励(int 获得签到奖励) {
-            this.获得签到奖励 = 获得签到奖励;
+        public void setTotalAward(int totalAward) {
+            this.totalAward = totalAward;
         }
 
-        public int get连续签到天数() {
-            return 连续签到天数;
+        public int getTodayAward() {
+            return todayAward;
         }
 
-        public void set连续签到天数(int 连续签到天数) {
-            this.连续签到天数 = 连续签到天数;
+        public void setTodayAward(int todayAward) {
+            this.todayAward = todayAward;
+        }
+
+        public int getContinuousAward() {
+            return continuousAward;
+        }
+
+        public void setContinuousAward(int continuousAward) {
+            this.continuousAward = continuousAward;
+        }
+
+        public int getContinuousDays() {
+            return continuousDays;
+        }
+
+        public void setContinuousDays(int continuousDays) {
+            this.continuousDays = continuousDays;
         }
     }
 }

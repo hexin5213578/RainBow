@@ -52,7 +52,7 @@ public  class Common {
 
     //获取userid
     public static String getUserId() {
-        return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.USER_ID);
+        return "1030";
     }
     //获取极光APO_KEY
 

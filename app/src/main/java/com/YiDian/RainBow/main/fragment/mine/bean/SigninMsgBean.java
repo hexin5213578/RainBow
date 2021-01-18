@@ -7,12 +7,12 @@ public class SigninMsgBean {
     /**
      * msg : 数据加载成功
      * type : OK
-     * object : [{"id":84,"userId":1030,"weeks":1,"isSign":0,"createTime":null,"award":5},{"id":85,"userId":1030,"weeks":2,"isSign":0,"createTime":null,"award":5},{"id":86,"userId":1030,"weeks":3,"isSign":0,"createTime":null,"award":5},{"id":87,"userId":1030,"weeks":4,"isSign":0,"createTime":null,"award":5},{"id":88,"userId":1030,"weeks":5,"isSign":0,"createTime":null,"award":5},{"id":89,"userId":1030,"weeks":6,"isSign":1,"createTime":"2021-01-16T16:00:00.000+0000","award":5},{"id":90,"userId":1030,"weeks":7,"isSign":0,"createTime":null,"award":5}]
+     * object : {"signInList":[{"id":119,"userId":1030,"weeks":1,"isSign":1,"createTime":"2021-01-17T16:00:00.000+0000","award":5},{"id":120,"userId":1030,"weeks":2,"isSign":0,"createTime":null,"award":5},{"id":121,"userId":1030,"weeks":3,"isSign":0,"createTime":null,"award":5},{"id":122,"userId":1030,"weeks":4,"isSign":0,"createTime":null,"award":5},{"id":123,"userId":1030,"weeks":5,"isSign":0,"createTime":null,"award":5},{"id":124,"userId":1030,"weeks":6,"isSign":0,"createTime":null,"award":5},{"id":125,"userId":1030,"weeks":7,"isSign":0,"createTime":null,"award":5}],"continuousDays":1}
      */
 
     private String msg;
     private String type;
-    private List<ObjectBean> object;
+    private ObjectBean object;
 
     public String getMsg() {
         return msg;
@@ -30,77 +30,110 @@ public class SigninMsgBean {
         this.type = type;
     }
 
-    public List<ObjectBean> getObject() {
+    public ObjectBean getObject() {
         return object;
     }
 
-    public void setObject(List<ObjectBean> object) {
+    public void setObject(ObjectBean object) {
         this.object = object;
     }
 
     public static class ObjectBean {
         /**
-         * id : 84
-         * userId : 1030
-         * weeks : 1
-         * isSign : 0
-         * createTime : null
-         * award : 5
+         * signInList : [
+         * {"id":119,"userId":1030,"weeks":1,"isSign":1,"createTime":"2021-01-17T16:00:00.000+0000","award":5},
+         * {"id":120,"userId":1030,"weeks":2,"isSign":0,"createTime":null,"award":5},
+         * {"id":121,"userId":1030,"weeks":3,"isSign":0,"createTime":null,"award":5},
+         * {"id":122,"userId":1030,"weeks":4,"isSign":0,"createTime":null,"award":5},
+         * {"id":123,"userId":1030,"weeks":5,"isSign":0,"createTime":null,"award":5},
+         * {"id":124,"userId":1030,"weeks":6,"isSign":0,"createTime":null,"award":5},
+         * {"id":125,"userId":1030,"weeks":7,"isSign":0,"createTime":null,"award":5}]
+         * continuousDays : 1
          */
 
-        private int id;
-        private int userId;
-        private int weeks;
-        private int isSign;
-        private Object createTime;
-        private int award;
+        private int continuousDays;
+        private List<SignInListBean> signInList;
 
-        public int getId() {
-            return id;
+        public int getContinuousDays() {
+            return continuousDays;
         }
 
-        public void setId(int id) {
-            this.id = id;
+        public void setContinuousDays(int continuousDays) {
+            this.continuousDays = continuousDays;
         }
 
-        public int getUserId() {
-            return userId;
+        public List<SignInListBean> getSignInList() {
+            return signInList;
         }
 
-        public void setUserId(int userId) {
-            this.userId = userId;
+        public void setSignInList(List<SignInListBean> signInList) {
+            this.signInList = signInList;
         }
 
-        public int getWeeks() {
-            return weeks;
-        }
+        public static class SignInListBean {
+            /**
+             * id : 119
+             * userId : 1030
+             * weeks : 1
+             * isSign : 1
+             * createTime : 2021-01-17T16:00:00.000+0000
+             * award : 5
+             */
 
-        public void setWeeks(int weeks) {
-            this.weeks = weeks;
-        }
+            private int id;
+            private int userId;
+            private int weeks;
+            private int isSign;
+            private String createTime;
+            private int award;
 
-        public int getIsSign() {
-            return isSign;
-        }
+            public int getId() {
+                return id;
+            }
 
-        public void setIsSign(int isSign) {
-            this.isSign = isSign;
-        }
+            public void setId(int id) {
+                this.id = id;
+            }
 
-        public Object getCreateTime() {
-            return createTime;
-        }
+            public int getUserId() {
+                return userId;
+            }
 
-        public void setCreateTime(Object createTime) {
-            this.createTime = createTime;
-        }
+            public void setUserId(int userId) {
+                this.userId = userId;
+            }
 
-        public int getAward() {
-            return award;
-        }
+            public int getWeeks() {
+                return weeks;
+            }
 
-        public void setAward(int award) {
-            this.award = award;
+            public void setWeeks(int weeks) {
+                this.weeks = weeks;
+            }
+
+            public int getIsSign() {
+                return isSign;
+            }
+
+            public void setIsSign(int isSign) {
+                this.isSign = isSign;
+            }
+
+            public String getCreateTime() {
+                return createTime;
+            }
+
+            public void setCreateTime(String createTime) {
+                this.createTime = createTime;
+            }
+
+            public int getAward() {
+                return award;
+            }
+
+            public void setAward(int award) {
+                this.award = award;
+            }
         }
     }
 }
