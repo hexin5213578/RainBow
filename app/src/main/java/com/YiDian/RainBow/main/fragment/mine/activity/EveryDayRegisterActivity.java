@@ -30,10 +30,24 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.custom.customDialog.CustomDialogCleanNotice;
+import com.YiDian.RainBow.main.fragment.mine.bean.AddSignInBean;
+import com.YiDian.RainBow.main.fragment.mine.bean.SigninMsgBean;
+import com.YiDian.RainBow.utils.NetUtils;
 import com.leaf.library.StatusBarUtil;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnClickListener {
 
