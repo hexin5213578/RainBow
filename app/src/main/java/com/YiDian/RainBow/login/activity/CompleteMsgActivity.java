@@ -476,7 +476,7 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
                                                     public void onNext(ComPleteMsgBean comPleteMsgBean) {
                                                         if (comPleteMsgBean.getMsg().equals("数据修改成功！")) {
 
-                                                            SPUtil.getInstance().saveData(CompleteMsgActivity.this, SPUtil.FILE_NAME, SPUtil.IS_PERFECT, "1");
+                                                            SPUtil.getInstance().saveData(CompleteMsgActivity.this, SPUtil.FILE_NAME, SPUtil.IS_PERFECT, "0");
 
                                                             SPUtil.getInstance().saveData(CompleteMsgActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME, name);
                                                             SPUtil.getInstance().saveData(CompleteMsgActivity.this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG, url);

@@ -200,19 +200,11 @@ public class MyQrCodeActivity extends BaseAvtivity implements View.OnClickListen
         mPopupWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         view = LayoutInflater.from(MyQrCodeActivity.this).inflate(R.layout.dialog_share, null);
 
-        LinearLayout friend = view.findViewById(R.id.ll_share_friend);
         LinearLayout qq = view.findViewById(R.id.ll_share_qq);
         LinearLayout space = view.findViewById(R.id.ll_share_space);
         LinearLayout wechat = view.findViewById(R.id.ll_share_Wechat);
         LinearLayout moments = view.findViewById(R.id.ll_share_wechatmoments);
 
-        friend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //分享到好友
-
-            }
-        });
         qq.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

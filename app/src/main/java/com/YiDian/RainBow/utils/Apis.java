@@ -100,6 +100,9 @@ public interface Apis {
     @POST("user/updateUserInfo")
     Observable<ComPleteMsgBean> doComPlteAllMsg(@Query("id")int userid,@Query("nickName")String name,@Query("headImg")String headimg,@Query("birthday")String birthday,@Query("userRole")String role);
 
+    //完善QQ微信登录信息
+    Observable<ComPleteMsgBean> doComPlteThiredLogin(@Query("id")int userid,@Query("nickName")String name,@Query("headImg")String headimg);
+
     //修改用户名
     @POST("user/updateUserInfo")
     Observable<ComPleteMsgBean> doComPleteName(@Query("id")int userid,@Query("nickName")String name);

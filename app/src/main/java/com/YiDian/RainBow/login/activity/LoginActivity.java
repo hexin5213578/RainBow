@@ -36,6 +36,7 @@ import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.feedback.activity.FeedBackActivity;
+import com.YiDian.RainBow.login.bean.ComPleteMsgBean;
 import com.YiDian.RainBow.login.bean.LoginBean;
 import com.YiDian.RainBow.main.activity.MainActivity;
 import com.YiDian.RainBow.regist.activity.RegistActivity;
@@ -376,7 +377,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                                                 JMessageClient.login(id, id, new BasicCallback() {
                                                     @Override
                                                     public void gotResult(int i, String s) {
-                                                        Log.d("xxx", "极光登录状态为" + i + "原因为" + s);
+                                                        Log.d("xxx", id+"极光登录状态为" + i + "原因为" + s);
                                                         if (i == 0) {
                                                             //记录登录后的信息
                                                             SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_ID, id);
@@ -389,6 +390,45 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                                                             SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.BACK_IMG, object.getBackImg());
                                                             SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.KEY_PHONE, phone);
                                                             SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.IS_LOGIN, "0");
+
+                                                            userInfo.setNickname(object.getNickName());
+
+                                                            //登陆成功设置极光用户名及头像
+                                                            JMessageClient.updateMyInfo(cn.jpush.im.android.api.model.UserInfo.Field.nickname,userInfo,new BasicCallback() {
+                                                                @Override
+                                                                public void gotResult(int i, String s) {
+                                                                    if (i==0){
+                                                                        Log.d("xxx",id+"极光昵称设置成"+object.getNickName());
+                                                                        //极光更换成功调用 上传到服务器
+                                                                    }else{
+                                                                        Log.d("xxx","设置失败，原因为"+s);
+                                                                    }
+                                                                }
+                                                            });
+                                                            new Thread(new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    try {
+                                                                        Bitmap bitmap = returnBitMap(object.getHeadImg());
+                                                                        String name =  System.currentTimeMillis()+".jpg";
+                                                                        File file = saveFile(bitmap, name);
+                                                                        Log.d("xxx","头像为"+file.toString());
+                                                                        JMessageClient.updateUserAvatar(file, new BasicCallback() {
+                                                                            @Override
+                                                                            public void gotResult(int i, String s) {
+                                                                                if (i==0){
+                                                                                    Log.d("xxx",id+"头像设置成功");
+                                                                                }else {
+                                                                                    Log.d("xxx",s);
+                                                                                }
+                                                                            }
+                                                                        });
+                                                                    } catch (IOException e) {
+                                                                        e.printStackTrace();
+                                                                    }
+                                                                }
+                                                            }).start();
+
                                                             //登录成功跳转至完善信息页
                                                             String isPerfect = Common.getIsPerfect();
                                                             if (isPerfect!=null && !isPerfect.equals("")){
@@ -498,12 +538,6 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
 
             Log.e("xxx", "openid" + openid1 + "    name" + wechatName + "    头像" + wechatHeadimgurl);
 
-            SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME, wechatName);
-            SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG, wechatHeadimgurl);
-            //将登录状态改为已经登录
-            SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.IS_LOGIN, "0");
-
-
             //获取完用户信息调用微信登录接口
             NetUtils.getInstance().getApis().doWechatLogin(2, openid1, longitude, latitude)
                     .subscribeOn(Schedulers.io())
@@ -513,7 +547,6 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                         public void onSubscribe(Disposable d) {
 
                         }
-
                         @Override
                         public void onNext(LoginBean loginBean) {
                             if (loginBean.getType().equals("OK")) {
@@ -524,51 +557,87 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                                 JMessageClient.register(id, id, new BasicCallback() {
                                     @Override
                                     public void gotResult(int i, String s) {
-                                        Log.d("xxx", "极光注册状态为" + i + "原因为" + s);
+                                        Log.d("xxx", id+"极光注册状态为" + i + "原因为" + s);
                                         if (i == 0 || i==898001) {
                                             JMessageClient.login(id, id, new BasicCallback() {
                                                 @Override
                                                 public void gotResult(int i, String s) {
-                                                    Log.d("xxx", "极光登录状态为" + i + "原因为" + s);
+                                                    Log.d("xxx", id+"极光登录状态为" + i + "原因为" + s);
                                                     if (i == 0) {
 
-                                                        userInfo.setNickname(wechatName);
+                                                        //更新用户信息
+                                                        NetUtils.getInstance()
+                                                                .getApis()
+                                                                .doComPlteThiredLogin(object.getId(),wechatName,wechatHeadimgurl)
+                                                                .subscribeOn(Schedulers.io())
+                                                                .observeOn(AndroidSchedulers.mainThread())
+                                                                .subscribe(new Observer<ComPleteMsgBean>() {
+                                                                    @Override
+                                                                    public void onSubscribe(Disposable d) {
 
-                                                        //登陆成功设置极光用户名及头像
-                                                        JMessageClient.updateMyInfo(cn.jpush.im.android.api.model.UserInfo.Field.nickname,userInfo,new BasicCallback() {
-                                                            @Override
-                                                            public void gotResult(int i, String s) {
-                                                                if (i==0){
-                                                                    Log.d("xxx","极光昵称设置成功");
-                                                                    //极光更换成功调用 上传到服务器
-                                                                }else{
-                                                                    Log.d("xxx","设置失败，原因为"+s);
-                                                                }
-                                                            }
-                                                        });
-                                                        new Thread(new Runnable() {
-                                                            @Override
-                                                            public void run() {
-                                                                try {
-                                                                    Bitmap bitmap = returnBitMap(wechatHeadimgurl);
-                                                                    String name =  System.currentTimeMillis()+".jpg";
-                                                                    File file = saveFile(bitmap, name);
-                                                                    Log.d("xxx","微信头像为"+file.toString());
-                                                                    JMessageClient.updateUserAvatar(file, new BasicCallback() {
-                                                                        @Override
-                                                                        public void gotResult(int i, String s) {
-                                                                            if (i==0){
-                                                                                Log.d("xxx","当前登录用户头像设置成功");
-                                                                            }else {
-                                                                                Log.d("xxx",s);
-                                                                            }
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onNext(ComPleteMsgBean comPleteMsgBean) {
+                                                                        if (comPleteMsgBean.getMsg().equals("数据修改成功！")) {
+
+                                                                            SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.IS_LOGIN, "0");
+
+                                                                            SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME, wechatName);
+                                                                            SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG, wechatHeadimgurl);
+
+                                                                            userInfo.setNickname(wechatName);
+
+                                                                            //登陆成功设置极光用户名及头像
+                                                                            JMessageClient.updateMyInfo(cn.jpush.im.android.api.model.UserInfo.Field.nickname,userInfo,new BasicCallback() {
+                                                                                @Override
+                                                                                public void gotResult(int i, String s) {
+                                                                                    if (i==0){
+                                                                                        Log.d("xxx",id+"极光昵称设置成"+wechatName);
+                                                                                        //极光更换成功调用 上传到服务器
+                                                                                    }else{
+                                                                                        Log.d("xxx","设置失败，原因为"+s);
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                            new Thread(new Runnable() {
+                                                                                @Override
+                                                                                public void run() {
+                                                                                    try {
+                                                                                        Bitmap bitmap = returnBitMap(wechatHeadimgurl);
+                                                                                        String name =  System.currentTimeMillis()+".jpg";
+                                                                                        File file = saveFile(bitmap, name);
+                                                                                        Log.d("xxx","微信头像为"+file.toString());
+                                                                                        JMessageClient.updateUserAvatar(file, new BasicCallback() {
+                                                                                            @Override
+                                                                                            public void gotResult(int i, String s) {
+                                                                                                if (i==0){
+                                                                                                    Log.d("xxx",id+"头像设置成功");
+                                                                                                }else {
+                                                                                                    Log.d("xxx",s);
+                                                                                                }
+                                                                                            }
+                                                                                        });
+                                                                                    } catch (IOException e) {
+                                                                                        e.printStackTrace();
+                                                                                    }
+                                                                                }
+                                                                            }).start();
                                                                         }
-                                                                    });
-                                                                } catch (IOException e) {
-                                                                    e.printStackTrace();
-                                                                }
-                                                            }
-                                                        }).start();
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onError(Throwable e) {
+
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onComplete() {
+
+                                                                    }
+                                                                });
+
+
 
                                                         //登录成功跳转至完善信息页
                                                         String isPerfect = Common.getIsPerfect();
@@ -727,15 +796,6 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                     //头像
                     avatar = ((JSONObject) object).getString("figureurl_2");
                     nickName = ((JSONObject) object).getString("nickname");
-                    //将用户信息存入SP
-
-                    SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME, nickName);
-                    SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG, avatar);
-                    //将登录状态改为已经登录
-                    SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.IS_LOGIN, "0");
-
-
-
 
                     //获取完用户信息调用QQ登录接口
                     NetUtils.getInstance().getApis().doQqLogin(3, openId, longitude, latitude)
@@ -757,56 +817,88 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                                         JMessageClient.register(id, id, new BasicCallback() {
                                             @Override
                                             public void gotResult(int i, String s) {
-                                                Log.d("xxx", "极光注册状态为" + i + "原因为" + s);
+                                                Log.d("xxx", id+"极光注册状态为" + i + "原因为" + s);
                                                 if (i == 0 || i==898001) {
                                                     JMessageClient.login(id, id, new BasicCallback() {
                                                         @Override
                                                         public void gotResult(int i, String s) {
-                                                            Log.d("xxx", "极光登录状态为" + i + "原因为" + s);
+                                                            Log.d("xxx", id+"极光登录状态为" + i + "原因为" + s);
                                                             if (i == 0) {
-                                                                userInfo.setNickname(nickName);
-                                                                //登陆成功设置极光用户名及头像
-                                                                JMessageClient.updateMyInfo(cn.jpush.im.android.api.model.UserInfo.Field.nickname,userInfo,new BasicCallback() {
-                                                                    @Override
-                                                                    public void gotResult(int i, String s) {
-                                                                        if (i==0){
-                                                                            Log.d("xxx","极光昵称设置成功");
-                                                                            //极光更换成功调用 上传到服务器
-                                                                        }else{
-                                                                            Log.d("xxx","设置失败，原因为"+s);
-                                                                        }
-                                                                    }
-                                                                });
 
-                                                                new Thread(new Runnable() {
-                                                                    @Override
-                                                                    public void run() {
-                                                                        try {
-                                                                            Bitmap bitmap = returnBitMap(avatar);
-                                                                            String name =  System.currentTimeMillis()+".jpg";
-                                                                            File file = saveFile(bitmap, name);
+                                                                NetUtils.getInstance().getApis()
+                                                                        .doComPlteThiredLogin(object.getId(),nickName,avatar)
+                                                                        .subscribeOn(Schedulers.io())
+                                                                        .observeOn(AndroidSchedulers.mainThread())
+                                                                        .subscribe(new Observer<ComPleteMsgBean>() {
+                                                                            @Override
+                                                                            public void onSubscribe(Disposable d) {
 
-                                                                            JMessageClient.updateUserAvatar(file, new BasicCallback() {
-                                                                                @Override
-                                                                                public void gotResult(int i, String s) {
-                                                                                    if (i==0){
-                                                                                        Log.d("xxx","当前登录用户头像设置成功");
-                                                                                    }else {
-                                                                                        Log.d("xxx",s);
-                                                                                    }
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onNext(ComPleteMsgBean comPleteMsgBean) {
+                                                                                if (comPleteMsgBean.getMsg().equals("数据修改成功！")) {
+
+                                                                                    SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME, nickName);
+                                                                                    SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG, avatar);
+                                                                                    //将登录状态改为已经登录
+                                                                                    SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.IS_LOGIN, "0");
+
+                                                                                    userInfo.setNickname(nickName);
+                                                                                    //登陆成功设置极光用户名及头像
+                                                                                    JMessageClient.updateMyInfo(cn.jpush.im.android.api.model.UserInfo.Field.nickname,userInfo,new BasicCallback() {
+                                                                                        @Override
+                                                                                        public void gotResult(int i, String s) {
+                                                                                            if (i==0){
+                                                                                                Log.d("xxx","极光昵称设置成"+nickName);
+                                                                                                //极光更换成功调用 上传到服务器
+                                                                                            }else{
+                                                                                                Log.d("xxx","设置失败，原因为"+s);
+                                                                                            }
+                                                                                        }
+                                                                                    });
+
+                                                                                    new Thread(new Runnable() {
+                                                                                        @Override
+                                                                                        public void run() {
+                                                                                            try {
+                                                                                                Bitmap bitmap = returnBitMap(avatar);
+                                                                                                String name =  System.currentTimeMillis()+".jpg";
+                                                                                                File file = saveFile(bitmap, name);
+
+                                                                                                JMessageClient.updateUserAvatar(file, new BasicCallback() {
+                                                                                                    @Override
+                                                                                                    public void gotResult(int i, String s) {
+                                                                                                        if (i==0){
+                                                                                                            Log.d("xxx","当前登录用户头像设置成功");
+                                                                                                        }else {
+                                                                                                            Log.d("xxx",s);
+                                                                                                        }
+                                                                                                    }
+                                                                                                });
+                                                                                            } catch (IOException e) {
+                                                                                                e.printStackTrace();
+                                                                                            }
+                                                                                        }
+                                                                                    }).start();
                                                                                 }
-                                                                            });
-                                                                        } catch (IOException e) {
-                                                                            e.printStackTrace();
-                                                                        }
-                                                                    }
-                                                                }).start();
+                                                                            }
 
+                                                                            @Override
+                                                                            public void onError(Throwable e) {
+
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onComplete() {
+
+                                                                            }
+                                                                        });
                                                                 //登录成功跳转至完善信息页
                                                                 String isPerfect = Common.getIsPerfect();
                                                                 if (isPerfect!=null && !isPerfect.equals("")){
                                                                     if (isPerfect.equals("0")) {
-                                                                        Log.d("hmy", isPerfect);
+                                                                        Log.d("xxx", isPerfect);
                                                                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                                                         finish();
                                                                     } else {

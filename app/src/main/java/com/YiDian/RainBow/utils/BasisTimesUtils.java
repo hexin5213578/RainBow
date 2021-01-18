@@ -12,6 +12,7 @@ import android.widget.DatePicker;
 import android.widget.NumberPicker;
 import android.widget.TimePicker;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -250,6 +251,13 @@ public class BasisTimesUtils {
 
         if (!TextUtils.isEmpty(title)) {
             mDatePickerDialog.setTitle(title);
+        }
+        Date  d = new Date();
+        try {
+            d= new SimpleDateFormat("yyyy-MM-dd").parse("2020-05-21");
+            mDatePickerDialog.getDatePicker().setMaxDate(d.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
         mDatePickerDialog.show();
         return new BasisTimesUtils();

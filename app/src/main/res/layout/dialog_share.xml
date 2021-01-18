@@ -28,17 +28,17 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:id="@+id/ll_share_friend"
+                android:id="@+id/ll_share_Wechat"
                 android:orientation="vertical"
                 android:layout_height="@dimen/dp_70">
                 <ImageView
                     android:layout_width="@dimen/dp_45"
-                    android:src="@mipmap/haoyou"
+                    android:src="@mipmap/sharewechat"
                     android:layout_height="@dimen/dp_45">
                 </ImageView>
                 <TextView
                     android:layout_width="wrap_content"
-                    android:text="好友"
+                    android:text="微信"
                     android:textSize="@dimen/sp_12"
                     android:layout_marginLeft="@dimen/dp_11"
                     android:layout_marginTop="@dimen/dp_10"
@@ -106,7 +106,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:id="@+id/ll_share_Wechat"
+                android:id="@+id/ll_share_wechatmoments"
                 android:orientation="vertical"
                 android:layout_height="@dimen/dp_70">
                 <ImageView
@@ -116,9 +116,9 @@
                 </ImageView>
                 <TextView
                     android:layout_width="wrap_content"
-                    android:text="微信"
+                    android:text="朋友圈"
                     android:textSize="@dimen/sp_12"
-                    android:layout_marginLeft="@dimen/dp_11"
+                    android:layout_marginLeft="@dimen/dp_6"
                     android:layout_marginTop="@dimen/dp_10"
                     android:textColor="@color/color_666666"
                     android:layout_height="wrap_content">
@@ -128,8 +128,8 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_weight="1"
+                android:visibility="invisible"
                 android:orientation="vertical"
-                android:id="@+id/ll_share_wechatmoments"
                 android:layout_height="@dimen/dp_70">
                 <ImageView
                     android:layout_width="@dimen/dp_45"

@@ -1,4 +1,4 @@
-package com.YiDian.RainBow.main.fragment.home.adapter;
+package com.YiDian.RainBow.main.fragment.mine.adapter;
 
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
@@ -15,7 +15,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaMetadataRetriever;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
@@ -43,12 +42,16 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.App;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.customDialog.CustomDialogCancleFollow;
+import com.YiDian.RainBow.custom.customDialog.CustomDialogCleanNotice;
 import com.YiDian.RainBow.custom.image.NineGridTestLayout;
 import com.YiDian.RainBow.custom.videoplayer.SampleCoverVideo;
 import com.YiDian.RainBow.main.fragment.home.activity.DynamicDetailsActivity;
+import com.YiDian.RainBow.main.fragment.home.bean.CollectDynamicBean;
 import com.YiDian.RainBow.main.fragment.home.bean.DianzanBean;
 import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
+import com.YiDian.RainBow.notice.ClickNoticeActivity;
+import com.YiDian.RainBow.notice.bean.CleanNoticeBean;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.topic.TopicDetailsActivity;
 import com.YiDian.RainBow.user.PersonHomeActivity;
@@ -82,15 +85,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
+public class MyDynamicAdapter extends RecyclerView.Adapter<MyViewHolder> {
     private final Activity context;
     private final List<NewDynamicBean.ObjectBean.ListBean> list;
+
     private Tencent mTencent;
 
     public static final String TAG = "ListNormalAdapter22";
@@ -101,9 +104,9 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
     private NewDynamicBean.ObjectBean.ListBean listBean;
     private NewDynamicBean.ObjectBean.ListBean.UserInfoBean userInfo;
     private int id;
-    private ViewHolder viewHolder;
+    private MyViewHolder viewHolder;
 
-    public NewDynamicAdapter(Activity context, List<NewDynamicBean.ObjectBean.ListBean> list,Tencent mTencent) {
+    public MyDynamicAdapter(Activity context, List<NewDynamicBean.ObjectBean.ListBean> list, Tencent mTencent) {
         this.context = context;
         this.list = list;
         this.mTencent = mTencent;
@@ -111,38 +114,37 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //纯文本
         if (viewType == 1) {
-            viewHolder = ViewHolder.createViewHolder(context, parent, R.layout.item_dynamic_text);
+            viewHolder = MyViewHolder.createViewHolder(context, parent, R.layout.item_mydynamic_text);
             return viewHolder;
         }
         //纯图片
         if (viewType == 2) {
-            viewHolder = ViewHolder.createViewHolder(context, parent, R.layout.item_dynamic_img);
+            viewHolder = MyViewHolder.createViewHolder(context, parent, R.layout.item_mydynamic_img);
             return viewHolder;
         }
         //文本加图片
         if (viewType == 21) {
-            viewHolder = ViewHolder.createViewHolder(context, parent, R.layout.item_dynamic_text_img);
+            viewHolder = MyViewHolder.createViewHolder(context, parent, R.layout.item_mydynamic_text_img);
             return viewHolder;
         }
         //纯视频
         if (viewType == 3) {
-            viewHolder = ViewHolder.createViewHolder(context, parent, R.layout.item_dynamic_video);
+            viewHolder = MyViewHolder.createViewHolder(context, parent, R.layout.item_mydynamic_video);
             return viewHolder;
         }
         //视频加文本
         if (viewType == 31) {
-            viewHolder = ViewHolder.createViewHolder(context, parent, R.layout.item_dynamic_video_text);
+            viewHolder = MyViewHolder.createViewHolder(context, parent, R.layout.item_mydynamic_video_text);
             return viewHolder;
         }
         return null;
     }
 
     @SuppressLint("ResourceAsColor")
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         userid = Integer.valueOf(Common.getUserId());
 
         listBean = list.get(position);
@@ -171,7 +173,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
                 saveIntentMsgBean.setId(listBean.getUserId());
                 //2标记传入姓名  1标记传入id
                 saveIntentMsgBean.setFlag(1);
-                intent.putExtra("msg",saveIntentMsgBean);
+                intent.putExtra("msg", saveIntentMsgBean);
                 context.startActivity(intent);
             }
         });
@@ -188,15 +190,15 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
         //认证等级
         if (attestation == 0) {
             holder.isattaction.setVisibility(View.GONE);
-        } else if(attestation==1){
+        } else if (attestation == 1) {
             holder.isattaction.setImageResource(R.mipmap.qingtong);
-        }else if(attestation==2){
+        } else if (attestation == 2) {
             holder.isattaction.setImageResource(R.mipmap.baiyin);
-        }else if(attestation==3){
+        } else if (attestation == 3) {
             holder.isattaction.setImageResource(R.mipmap.huangjin);
-        }else if(attestation==4){
+        } else if (attestation == 4) {
             holder.isattaction.setImageResource(R.mipmap.bojin);
-        }else if (attestation==5){
+        } else if (attestation == 5) {
             holder.isattaction.setImageResource(R.mipmap.zuanshi);
         }
 
@@ -205,7 +207,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
         String userRole = userInfo.getUserRole();
         if (userRole.equals("保密")) {
             holder.tvAge.setVisibility(View.GONE);
-        }else{
+        } else {
             //设置角色
             holder.tvAge.setText(userRole);
         }
@@ -216,14 +218,6 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
         } else {
             holder.ivDianzan.setImageResource(R.mipmap.weidianzan);
         }
-        //判断当前用户与动态发布者 是一人 隐藏关注按钮
-        if(userid==userInfo.getId()){
-            holder.tvGuanzhu.setVisibility(View.GONE);
-        }
-        //是否关注为空时隐藏关注按钮
-        if(listBean.isIsAttention()==null){
-            holder.tvGuanzhu.setVisibility(View.GONE);
-        }
         //点赞的单击事件
         holder.rlDianzan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -231,7 +225,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
                 listBean = list.get(position);
                 id = listBean.getId();
 
-                if (listBean.isIsClick()==true) {
+                if (listBean.isIsClick() == true) {
                     //取消点赞
                     //开始执行设置不可点击 防止多次点击发生冲突
                     holder.rlDianzan.setEnabled(false);
@@ -256,7 +250,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
 
                                     //取消点赞成功数量加一
                                     String s = holder.tvDianzanCount.getText().toString();
-                                    if(!s.contains("w")){
+                                    if (!s.contains("w")) {
                                         Integer integer = Integer.valueOf(s);
 
                                         integer -= 1;
@@ -275,7 +269,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
 
                                 }
                             });
-                } else if(listBean.isIsClick()==false){
+                } else if (listBean.isIsClick() == false) {
                     //点赞
                     holder.rlDianzan.setEnabled(false);
 
@@ -302,7 +296,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
                                     //点赞成功数量加一
                                     String s = holder.tvDianzanCount.getText().toString();
 
-                                    if(!s.contains("w")){
+                                    if (!s.contains("w")) {
                                         Integer integer = Integer.valueOf(s);
 
                                         integer += 1;
@@ -328,127 +322,62 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
 
         //点赞数设置
         int clickNum = listBean.getClickNum();
-        if(clickNum<10000){
-            holder.tvDianzanCount.setText(clickNum+"");
-        }else{
+        if (clickNum < 10000) {
+            holder.tvDianzanCount.setText(clickNum + "");
+        } else {
             String s = StringUtil.rawIntStr2IntStr(String.valueOf(clickNum));
 
             holder.tvDianzanCount.setText(s);
         }
-
-        //设置评论数
-        holder.tvPinglunCount.setText(listBean.getCommentCount() + "");
-
-        //判断是否关注
-        if (listBean.isIsAttention()) {
-            holder.tvGuanzhu.setBackground(context.getResources().getDrawable(R.drawable.newdynamic_yiguanzhu));
-            holder.tvGuanzhu.setText("已关注");
-            holder.tvGuanzhu.setTextColor(R.color.color_999999);
-        } else {
-            holder.tvGuanzhu.setBackground(context.getResources().getDrawable(R.drawable.newdynamic_weiguanzhu));
-            holder.tvGuanzhu.setText("关注");
-            holder.tvGuanzhu.setTextColor(R.color.color_3C025A);
-        }
-        //点击关注
-        holder.tvGuanzhu.setOnClickListener(new View.OnClickListener() {
+        holder.tvDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listBean = list.get(position);
+                CustomDialogCleanNotice.Builder builder = new CustomDialogCleanNotice.Builder(context);
+                builder.setMessage("确定删除该动态吗?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
 
-                if (listBean.isIsAttention()) {
-                    CustomDialogCancleFollow.Builder builder = new CustomDialogCancleFollow.Builder(context);
-                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            //开始执行设置不可点击 防止多次点击发生冲突
-                            holder.tvGuanzhu.setEnabled(false);
-                            NetUtils.getInstance().getApis()
-                                    .doCancleFollow(userid, listBean.getUserId())
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Observer<FollowBean>() {
-                                        @Override
-                                        public void onSubscribe(Disposable d) {
-
-                                        }
-
-                                        @Override
-                                        public void onNext(FollowBean followBean) {
-                                            //处理结束后恢复点击
-                                            holder.tvGuanzhu.setEnabled(true);
-                                            if (followBean.getMsg().equals("取消关注成功")) {
-
-                                                EventBus.getDefault().post("刷新界面");
-                                                listBean.setIsAttention(false);
-
-                                                // TODO: 2020/12/15 0015 发送通知
-
-                                                dialog.dismiss();
-
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onError(Throwable e) {
-
-                                        }
-
-                                        @Override
-                                        public void onComplete() {
-
-                                        }
-                                    });
-
-                        }
-                    });
-                    builder.setNegativeButton("取消",
-                            new android.content.DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    builder.create().show();
-                } else {
-                    //开始执行设置不可点击 防止多次点击发生冲突
-                    holder.tvGuanzhu.setEnabled(false);
-
-                    //关注
-                    NetUtils.getInstance().getApis()
-                            .doFollow(userid, listBean.getUserId())
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Observer<FollowBean>() {
-                                @Override
-                                public void onSubscribe(Disposable d) {
-
-                                }
-
-                                @Override
-                                public void onNext(FollowBean followBean) {
-                                    //处理结束后恢复点击
-                                    holder.tvGuanzhu.setEnabled(true);
-                                    if (followBean.getMsg().equals("关注成功")) {
-
-                                        EventBus.getDefault().post("刷新界面");
-
-                                        listBean.setIsAttention(true);
-
+                        NetUtils.getInstance().getApis()
+                                .doDeleteDynamic(listBean.getId(), userid)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Observer<CollectDynamicBean>() {
+                                    @Override
+                                    public void onSubscribe(Disposable d) {
 
                                     }
-                                }
 
-                                @Override
-                                public void onError(Throwable e) {
+                                    @Override
+                                    public void onNext(CollectDynamicBean collectDynamicBean) {
+                                        EventBus.getDefault().post("刷新数据");
+                                        dialog.dismiss();
+                                    }
 
-                                }
+                                    @Override
+                                    public void onError(Throwable e) {
 
-                                @Override
-                                public void onComplete() {
+                                    }
 
-                                }
-                            });
-                }
+                                    @Override
+                                    public void onComplete() {
+
+                                    }
+                                });
+                    }
+                });
+                builder.setNegativeButton("取消",
+                        new android.content.DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                builder.create().show();
             }
         });
+
+
+        //设置评论数
+        holder.tvPinglunCount.setText(listBean.getCommentCount() + "");
 
         //转发点击事件
         holder.rlZhuanfa.setOnClickListener(new View.OnClickListener() {
@@ -465,10 +394,10 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
 
             double a = Double.valueOf(distance);
             long round = Math.round(a);
-            if(round<1000){
+            if (round < 1000) {
                 holder.tvDistance.setText(round + "m");
-            }else{
-                holder.tvDistance.setText(round/1000 + "km");
+            } else {
+                holder.tvDistance.setText(round / 1000 + "km");
             }
 
         } else {
@@ -477,7 +406,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
 
         //获取发布时间
         String createTime = listBean.getCreateTime();
-        if(createTime!=null){
+        if (createTime != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-dd HH:mm:ss", Locale.SIMPLIFIED_CHINESE);
             try {
                 Date parse = sdf.parse(createTime);
@@ -533,9 +462,9 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
             String contentInfo = listBean.getContentInfo();
 
             //设置@ ## 颜色及点击
-            if(!contentInfo.equals("") && contentInfo.contains("@") || contentInfo.contains("#")){
-                getWeiBoContent(context,contentInfo,holder.tvDynamicText);
-            }else{
+            if (!contentInfo.equals("") && contentInfo.contains("@") || contentInfo.contains("#")) {
+                getWeiBoContent(context, contentInfo, holder.tvDynamicText);
+            } else {
                 holder.tvDynamicText.setText(contentInfo);
             }
         }
@@ -547,7 +476,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
             List<String> imglist = new ArrayList<>();
 
             for (int i = 0; i < split.length; i++) {
-                imglist.add(split[i].trim()+"?imageView2/0/format/jpg/w/400");
+                imglist.add(split[i].trim() + "?imageView2/0/format/jpg/w/400");
             }
 
             holder.layout.setIsShowAll(false); //当传入的图片数超过9张时，是否全部显示
@@ -563,9 +492,9 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
             String contentInfo = listBean.getContentInfo();
 
             //设置@ ## 颜色及点击
-            if(!contentInfo.equals("") && contentInfo.contains("@") || contentInfo.contains("#")){
-                getWeiBoContent(context,contentInfo,holder.tvDynamicText);
-            }else{
+            if (!contentInfo.equals("") && contentInfo.contains("@") || contentInfo.contains("#")) {
+                getWeiBoContent(context, contentInfo, holder.tvDynamicText);
+            } else {
                 holder.tvDynamicText.setText(contentInfo);
             }
             //设置图片
@@ -573,7 +502,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
             String[] split = contentImg.split(",");
             List<String> img = new ArrayList<>();
             for (int i = 0; i < split.length; i++) {
-                img.add(split[i].trim()+"?imageView2/0/format/jpg/w/400");
+                img.add(split[i].trim() + "?imageView2/0/format/jpg/w/400");
             }
             holder.layout.setIsShowAll(false); //当传入的图片数超过9张时，是否全部显示
             holder.layout.setSpacing(5); //动态设置图片之间的间隔
@@ -613,9 +542,9 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
             String contentInfo = listBean.getContentInfo();
 
             //设置@ ## 颜色及点击
-            if(!contentInfo.equals("") && contentInfo.contains("@") || contentInfo.contains("#")){
-                getWeiBoContent(context,contentInfo,holder.tvDynamicText);
-            }else{
+            if (!contentInfo.equals("") && contentInfo.contains("@") || contentInfo.contains("#")) {
+                getWeiBoContent(context, contentInfo, holder.tvDynamicText);
+            } else {
                 holder.tvDynamicText.setText(contentInfo);
             }
 
@@ -654,13 +583,13 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
     public long getItemId(int position) {
         return position;
     }
+
     @Override
     public int getItemViewType(int position) {
         int imgType = list.get(position).getImgType();
 
         return imgType;
     }
-
 
 
     public void showSelect() {
@@ -739,41 +668,41 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
         int imgType = listBean.getImgType();
         Bundle params = new Bundle();
 
-        if(imgType==1){
+        if (imgType == 1) {
             params.putString(QQShare.SHARE_TO_QQ_SUMMARY, listBean.getContentInfo());
-            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName()+"的动态");
+            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName() + "的动态");
             params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973");
             params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
             params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_ITEM_HIDE);
         }
-        if(imgType==21){
+        if (imgType == 21) {
             String[] split = listBean.getContentImg().split(",");
 
             params.putString(QQShare.SHARE_TO_QQ_SUMMARY, listBean.getContentInfo());
-            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName()+"的动态");
+            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName() + "的动态");
             params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973");
             params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, split[0]);
             params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
             params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_ITEM_HIDE);
         }
-        if(imgType==2){
+        if (imgType == 2) {
             String[] split = listBean.getContentImg().split(",");
             params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, split[0]);
-            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName()+"的动态");
+            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName() + "的动态");
             params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973");
-            params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare. SHARE_TO_QQ_TYPE_IMAGE);
+            params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_IMAGE);
             params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_ITEM_HIDE);
         }
-        if(imgType==3){
+        if (imgType == 3) {
             params.putString(QQShare.SHARE_TO_QQ_AUDIO_URL, listBean.getContentImg());
-            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName()+"的动态");
+            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName() + "的动态");
             params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973");
-            params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare. SHARE_TO_QQ_TYPE_AUDIO);
+            params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_AUDIO);
             params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_ITEM_HIDE);
         }
-        if(imgType==31){
+        if (imgType == 31) {
             params.putString(QQShare.SHARE_TO_QQ_SUMMARY, listBean.getContentInfo());
-            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName()+"的动态");
+            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName() + "的动态");
             params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973");
             params.putString(QQShare.SHARE_TO_QQ_AUDIO_URL, listBean.getContentImg());
             params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
@@ -804,42 +733,42 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
         int imgType = listBean.getImgType();
         Bundle params = new Bundle();
 
-        if(imgType==1){
+        if (imgType == 1) {
             params.putString(QQShare.SHARE_TO_QQ_SUMMARY, listBean.getContentInfo());
-            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName()+"的动态");
+            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName() + "的动态");
             params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973");
             params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
             params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_AUTO_OPEN);
         }
-        if(imgType==21){
+        if (imgType == 21) {
             String[] split = listBean.getContentImg().split(",");
             params.putString(QQShare.SHARE_TO_QQ_SUMMARY, listBean.getContentInfo());
-            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName()+"的动态");
+            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName() + "的动态");
             params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973");
             params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, split[0]);
             params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
             params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_AUTO_OPEN);
         }
-        if(imgType==2){
+        if (imgType == 2) {
             String[] split = listBean.getContentImg().split(",");
             params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, split[0]);
-            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName()+"的动态");
+            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName() + "的动态");
             params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973");
-            params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare. SHARE_TO_QQ_TYPE_IMAGE);
+            params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_IMAGE);
             params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_AUTO_OPEN);
 
         }
-        if(imgType==3){
+        if (imgType == 3) {
             params.putString(QQShare.SHARE_TO_QQ_AUDIO_URL, listBean.getContentImg());
-            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName()+"的动态");
+            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName() + "的动态");
             params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973");
-            params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare. SHARE_TO_QQ_TYPE_AUDIO);
+            params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_AUDIO);
             params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_AUTO_OPEN);
 
         }
-        if(imgType==31){
+        if (imgType == 31) {
             params.putString(QQShare.SHARE_TO_QQ_SUMMARY, listBean.getContentInfo());
-            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName()+"的动态");
+            params.putString(QQShare.SHARE_TO_QQ_TITLE, userInfo.getNickName() + "的动态");
             params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973");
             params.putString(QQShare.SHARE_TO_QQ_AUDIO_URL, listBean.getContentImg());
             params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
@@ -851,6 +780,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
             public void onComplete(Object o) {
                 Log.e(TAG, "分享成功: " + o.toString());
             }
+
             @Override
             public void onError(UiError uiError) {
 
@@ -866,11 +796,11 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
     //分享到微信好友
     private void onclickShareWechatFriend() {
         int imgType = listBean.getImgType();
-        if (!App.getWXApi().isWXAppInstalled()){
+        if (!App.getWXApi().isWXAppInstalled()) {
             Toast.makeText(context, "您未安装微信", Toast.LENGTH_SHORT).show();
             return;
-        }else{
-            if(imgType==1){
+        } else {
+            if (imgType == 1) {
                 // TODO: 2020/12/18 0018 要跳转的链接
 
                 //初始化 WXImageObject 和 WXMediaMessage 对象
@@ -880,7 +810,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
                 WXMediaMessage msg = new WXMediaMessage(localWXWebpageObject);
                 msg.description = listBean.getContentInfo();
 
-                msg.title = userInfo.getNickName()+"的动态";
+                msg.title = userInfo.getNickName() + "的动态";
                 //构造一个Req
                 SendMessageToWX.Req req = new SendMessageToWX.Req();
                 req.transaction = String.valueOf(System.currentTimeMillis());
@@ -889,7 +819,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
                 //调用api接口，发送数据到微信
                 App.getWXApi().sendReq(req);
             }
-            if(imgType==2){
+            if (imgType == 2) {
                 String[] split = listBean.getContentImg().split(",");
 
                 Glide.with(context).asBitmap().load(split[0])
@@ -900,7 +830,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
                                 localWXWebpageObject.webpageUrl = wechatUrl;
                                 WXMediaMessage localWXMediaMessage = new WXMediaMessage(
                                         localWXWebpageObject);
-                                localWXMediaMessage.title = userInfo.getNickName()+"的动态";//不能太长，否则微信会提示出错。不过博主没验证过具体能输入多长。
+                                localWXMediaMessage.title = userInfo.getNickName() + "的动态";//不能太长，否则微信会提示出错。不过博主没验证过具体能输入多长。
                                 localWXMediaMessage.description = "";
                                 localWXMediaMessage.thumbData = getBitmapBytes(resource, false);
 
@@ -914,7 +844,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
                             }
                         });
             }
-            if(imgType==21){
+            if (imgType == 21) {
                 String[] split = listBean.getContentImg().split(",");
 
                 Glide.with(context).asBitmap().load(split[0])
@@ -925,7 +855,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
                                 localWXWebpageObject.webpageUrl = wechatUrl;
                                 WXMediaMessage localWXMediaMessage = new WXMediaMessage(
                                         localWXWebpageObject);
-                                localWXMediaMessage.title = userInfo.getNickName()+"的动态";//不能太长，否则微信会提示出错。不过博主没验证过具体能输入多长。
+                                localWXMediaMessage.title = userInfo.getNickName() + "的动态";//不能太长，否则微信会提示出错。不过博主没验证过具体能输入多长。
                                 localWXMediaMessage.description = listBean.getContentInfo();
                                 localWXMediaMessage.thumbData = getBitmapBytes(resource, false);
 
@@ -939,45 +869,45 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
                             }
                         });
             }
-            if(imgType==3){
+            if (imgType == 3) {
                 //初始化一个WXVideoObject，填写url
                 WXVideoObject video = new WXVideoObject();
-                video.videoUrl =listBean.getContentImg();
+                video.videoUrl = listBean.getContentImg();
 
                 //用 WXVideoObject 对象初始化一个 WXMediaMessage 对象
                 WXMediaMessage msg = new WXMediaMessage(video);
-                msg.title =userInfo.getNickName()+"的动态";
+                msg.title = userInfo.getNickName() + "的动态";
 
                 Bitmap netVideoBitmap = getNetVideoBitmap(listBean.getContentImg());
                 //设置封面
-                msg.thumbData =getBitmapBytes(netVideoBitmap, false);
+                msg.thumbData = getBitmapBytes(netVideoBitmap, false);
 
                 //构造一个Req
                 SendMessageToWX.Req req = new SendMessageToWX.Req();
                 req.transaction = String.valueOf(System.currentTimeMillis());
-                req.message =msg;
+                req.message = msg;
                 req.scene = SendMessageToWX.Req.WXSceneSession;
 
                 //调用api接口，发送数据到微信
                 App.getWXApi().sendReq(req);
             }
-            if(imgType==31){
+            if (imgType == 31) {
                 //初始化一个WXVideoObject，填写url
                 WXVideoObject video = new WXVideoObject();
-                video.videoUrl =listBean.getContentImg();
+                video.videoUrl = listBean.getContentImg();
 
                 //用 WXVideoObject 对象初始化一个 WXMediaMessage 对象
                 WXMediaMessage msg = new WXMediaMessage(video);
-                msg.title =userInfo.getNickName()+"的动态";
-                msg.description= listBean.getContentInfo();
+                msg.title = userInfo.getNickName() + "的动态";
+                msg.description = listBean.getContentInfo();
                 Bitmap netVideoBitmap = getNetVideoBitmap(listBean.getContentImg());
                 //设置封面
-                msg.thumbData =getBitmapBytes(netVideoBitmap, false);
+                msg.thumbData = getBitmapBytes(netVideoBitmap, false);
 
                 //构造一个Req
                 SendMessageToWX.Req req = new SendMessageToWX.Req();
                 req.transaction = String.valueOf(System.currentTimeMillis());
-                req.message =msg;
+                req.message = msg;
                 req.scene = SendMessageToWX.Req.WXSceneSession;
 
                 //调用api接口，发送数据到微信
@@ -987,17 +917,16 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
         }
 
 
-
     }
 
     //分享到微信朋友圈
     private void onclickShareWechatmoments() {
         int imgType = listBean.getImgType();
-        if (!App.getWXApi().isWXAppInstalled()){
+        if (!App.getWXApi().isWXAppInstalled()) {
             Toast.makeText(context, "您未安装微信", Toast.LENGTH_SHORT).show();
             return;
-        }else{
-            if(imgType==1){
+        } else {
+            if (imgType == 1) {
                 // TODO: 2020/12/18 0018 要跳转的链接
 
                 //初始化 WXImageObject 和 WXMediaMessage 对象
@@ -1007,7 +936,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
                 WXMediaMessage msg = new WXMediaMessage(localWXWebpageObject);
                 msg.description = listBean.getContentInfo();
 
-                msg.title = userInfo.getNickName()+"的动态";
+                msg.title = userInfo.getNickName() + "的动态";
                 //构造一个Req
                 SendMessageToWX.Req req = new SendMessageToWX.Req();
                 req.transaction = String.valueOf(System.currentTimeMillis());
@@ -1016,7 +945,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
                 //调用api接口，发送数据到微信
                 App.getWXApi().sendReq(req);
             }
-            if(imgType==2){
+            if (imgType == 2) {
                 String[] split = listBean.getContentImg().split(",");
 
                 Glide.with(context).asBitmap().load(split[0])
@@ -1027,7 +956,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
                                 localWXWebpageObject.webpageUrl = wechatUrl;
                                 WXMediaMessage localWXMediaMessage = new WXMediaMessage(
                                         localWXWebpageObject);
-                                localWXMediaMessage.title = userInfo.getNickName()+"的动态";//不能太长，否则微信会提示出错。不过博主没验证过具体能输入多长。
+                                localWXMediaMessage.title = userInfo.getNickName() + "的动态";//不能太长，否则微信会提示出错。不过博主没验证过具体能输入多长。
                                 localWXMediaMessage.description = "";
                                 localWXMediaMessage.thumbData = getBitmapBytes(resource, false);
 
@@ -1041,7 +970,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
                             }
                         });
             }
-            if(imgType==21){
+            if (imgType == 21) {
                 String[] split = listBean.getContentImg().split(",");
 
                 Glide.with(context).asBitmap().load(split[0])
@@ -1052,7 +981,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
                                 localWXWebpageObject.webpageUrl = wechatUrl;
                                 WXMediaMessage localWXMediaMessage = new WXMediaMessage(
                                         localWXWebpageObject);
-                                localWXMediaMessage.title = userInfo.getNickName()+"的动态";//不能太长，否则微信会提示出错。不过博主没验证过具体能输入多长。
+                                localWXMediaMessage.title = userInfo.getNickName() + "的动态";//不能太长，否则微信会提示出错。不过博主没验证过具体能输入多长。
                                 localWXMediaMessage.description = listBean.getContentInfo();
                                 localWXMediaMessage.thumbData = getBitmapBytes(resource, false);
 
@@ -1066,45 +995,45 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
                             }
                         });
             }
-            if(imgType==3){
+            if (imgType == 3) {
                 //初始化一个WXVideoObject，填写url
                 WXVideoObject video = new WXVideoObject();
-                video.videoUrl =listBean.getContentImg();
+                video.videoUrl = listBean.getContentImg();
 
                 //用 WXVideoObject 对象初始化一个 WXMediaMessage 对象
                 WXMediaMessage msg = new WXMediaMessage(video);
-                msg.title =userInfo.getNickName()+"的动态";
+                msg.title = userInfo.getNickName() + "的动态";
 
                 Bitmap netVideoBitmap = getNetVideoBitmap(listBean.getContentImg());
                 //设置封面
-                msg.thumbData =getBitmapBytes(netVideoBitmap, false);
+                msg.thumbData = getBitmapBytes(netVideoBitmap, false);
 
                 //构造一个Req
                 SendMessageToWX.Req req = new SendMessageToWX.Req();
                 req.transaction = String.valueOf(System.currentTimeMillis());
-                req.message =msg;
+                req.message = msg;
                 req.scene = SendMessageToWX.Req.WXSceneTimeline;
 
                 //调用api接口，发送数据到微信
                 App.getWXApi().sendReq(req);
             }
-            if(imgType==31){
+            if (imgType == 31) {
                 //初始化一个WXVideoObject，填写url
                 WXVideoObject video = new WXVideoObject();
-                video.videoUrl =listBean.getContentImg();
+                video.videoUrl = listBean.getContentImg();
 
                 //用 WXVideoObject 对象初始化一个 WXMediaMessage 对象
                 WXMediaMessage msg = new WXMediaMessage(video);
-                msg.title =userInfo.getNickName()+"的动态";
-                msg.description= listBean.getContentInfo();
+                msg.title = userInfo.getNickName() + "的动态";
+                msg.description = listBean.getContentInfo();
                 Bitmap netVideoBitmap = getNetVideoBitmap(listBean.getContentImg());
                 //设置封面
-                msg.thumbData =getBitmapBytes(netVideoBitmap, false);
+                msg.thumbData = getBitmapBytes(netVideoBitmap, false);
 
                 //构造一个Req
                 SendMessageToWX.Req req = new SendMessageToWX.Req();
                 req.transaction = String.valueOf(System.currentTimeMillis());
-                req.message =msg;
+                req.message = msg;
                 req.scene = SendMessageToWX.Req.WXSceneTimeline;
 
                 //调用api接口，发送数据到微信
@@ -1161,15 +1090,16 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
             mPopupWindow.dismiss();
         }
     }
+
     @SuppressLint("ResourceAsColor")
-    public static Spannable getWeiBoContent(final Context context, String source,TextView tv) {
+    public static Spannable getWeiBoContent(final Context context, String source, TextView tv) {
 
         SpannableStringBuilder spannable = new SpannableStringBuilder(source);
         // 定义正则表达式
         String AT = "@[\\u4e00-\\u9fa5\\w\\-]+";// @人
         String TOPIC = "#([^\\#|.]+)#";// ##话题
         //设置正则
-        Pattern pattern = Pattern.compile("("+AT+")|"+"("+TOPIC+")");
+        Pattern pattern = Pattern.compile("(" + AT + ")|" + "(" + TOPIC + ")");
         Matcher matcher = pattern.matcher(spannable);
 
 
@@ -1184,7 +1114,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
                 int end = start + at.length();
 
                 tv.setMovementMethod(LinkMovementMethod.getInstance());
-                spannable.setSpan(new MyClickableSpanAt(){
+                spannable.setSpan(new MyClickableSpanAt() {
                     @Override
                     public void onClick(View widget) {
                         //这里需要做跳转用户的实现，先用一个Toast代替
@@ -1195,7 +1125,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
                         saveIntentMsgBean.setMsg(substring);
                         //2标记传入姓名  1标记传入id
                         saveIntentMsgBean.setFlag(2);
-                        intent.putExtra("msg",saveIntentMsgBean);
+                        intent.putExtra("msg", saveIntentMsgBean);
                         context.startActivity(intent);
                     }
                 }, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -1208,7 +1138,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
                 int end = start + topic.length();
 
                 tv.setMovementMethod(LinkMovementMethod.getInstance());
-                spannable.setSpan(new MyClickableSpanTopic(){
+                spannable.setSpan(new MyClickableSpanTopic() {
                     @Override
                     public void onClick(@NonNull View widget) {
                         String substring = topic.substring(1, topic.length() - 1);
@@ -1218,7 +1148,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
                         saveIntentMsgBean.setMsg(substring);
                         //2标记传入话题名  1标记传入id
                         saveIntentMsgBean.setFlag(2);
-                        intent.putExtra("msg",saveIntentMsgBean);
+                        intent.putExtra("msg", saveIntentMsgBean);
                         context.startActivity(intent);
 
                     }
@@ -1230,11 +1160,13 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
 
         return spannable;
     }
+
     public static class MyClickableSpanTopic extends ClickableSpan {
         @Override
         public void onClick(@NonNull View widget) {
 
         }
+
         @SuppressLint("ResourceAsColor")
         @Override
         public void updateDrawState(@NonNull TextPaint ds) {
@@ -1244,11 +1176,13 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
             ds.setUnderlineText(false);
         }
     }
+
     public static class MyClickableSpanAt extends ClickableSpan {
         @Override
         public void onClick(@NonNull View widget) {
 
         }
+
         @SuppressLint("ResourceAsColor")
         @Override
         public void updateDrawState(@NonNull TextPaint ds) {
@@ -1258,6 +1192,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
             ds.setUnderlineText(false);
         }
     }
+
     // 需要对图片进行处理，否则微信会在log中输出thumbData检查错误
     private static byte[] getBitmapBytes(Bitmap bitmap, boolean paramBoolean) {
         Bitmap localBitmap = Bitmap.createBitmap(80, 80, Bitmap.Config.RGB_565);
@@ -1272,7 +1207,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
             j = bitmap.getHeight();
         }
         while (true) {
-            localCanvas.drawBitmap(bitmap, new Rect(0, 0, i, j), new Rect(0, 0,80
+            localCanvas.drawBitmap(bitmap, new Rect(0, 0, i, j), new Rect(0, 0, 80
                     , 80), null);
             if (paramBoolean)
                 bitmap.recycle();
@@ -1285,7 +1220,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
                 localByteArrayOutputStream.close();
                 return arrayOfByte;
             } catch (Exception e) {
-                Log.d("xxx",e.getMessage());
+                Log.d("xxx", e.getMessage());
             }
             i = bitmap.getHeight();
             j = bitmap.getHeight();

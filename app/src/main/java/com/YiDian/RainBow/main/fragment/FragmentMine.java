@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -47,7 +48,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
@@ -123,6 +127,8 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
     private String headimg;
     private String username;
     private String qm;
+    private String birthday;
+    private String userrole;
 
     @Override
     protected void getid(View view) {
@@ -165,6 +171,7 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
         ivHeadimg.setOnClickListener(this);
         tvUsername.setOnClickListener(this);
 
+        userid = Integer.valueOf(Common.getUserId());
 
         //申请开启相机权限
         if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) && (getContext().checkSelfPermission
@@ -174,16 +181,73 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
                     Manifest.permission.CAMERA}, 1);
         }
 
-        userid = Integer.valueOf(Common.getUserId());
-
-
-        //ID赋值
-        tvUserId.setText(userid+"");
-
         // TODO: 2020/11/26 0026 获取当前用户个人信息展示
+        getMyInfo();
         getUserInfo();
     }
 
+
+    public void getMyInfo(){
+        Log.d("xxx", "getMyInfo: 执行刷新数据");
+        username = Common.getUserName();
+        qm = Common.getQM();
+        birthday = Common.getBirthday();
+        userrole = Common.getRole();
+        headimg = Common.getHeadImg();
+
+        tvUsername.setText(username);
+        // TODO: 2020/11/26 0026 获取当前用户个人信息展示
+        if (birthday !=null && !birthday.equals("")){
+            Date d=new Date();
+            try{
+                d= new SimpleDateFormat("yyyy-MM-dd").parse(birthday);
+
+                int age = getAgeByBirthday(d);
+
+                //刷新缓存内年龄
+                SPUtil.getInstance().saveData(getContext(),SPUtil.FILE_NAME,SPUtil.AGE, String.valueOf(age));
+
+                if (userrole !=null && !userrole.equals("") ){
+                    if (age>0){
+                        tvAge.setText(userrole+" "+age);
+                    }else{
+                        tvAge.setText(userrole+" "+0);
+                    }
+                }else{
+                    if (age>0){
+                        tvAge.setText(" "+age);
+                    }else{
+                        tvAge.setText(" "+0);
+                    }
+                }
+            }
+            catch(Exception e){
+
+            }
+        }else{
+            if (userrole !=null && !userrole.equals("") ){
+                tvAge.setText(userrole);
+            }else{
+                tvAge.setVisibility(View.GONE);
+            }
+        }
+
+        if (qm!=null && !qm.equals("")){
+            tvSignature.setText(qm);
+        }else{
+            tvSignature.setText("还没有设置签名哦~");
+        }
+
+        //加载圆角图
+        if (headimg!=null && !headimg.equals("")){
+            Glide.with(this).load(headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+        }else{
+            Glide.with(this).load(R.mipmap.headimg3).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+        }
+
+        //ID赋值
+        tvUserId.setText(userid+"");
+    }
     //获取我的信息
     public void getUserInfo(){
         NetUtils.getInstance()
@@ -199,34 +263,6 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
                     @Override
                     public void onNext(LoginUserInfoBean loginUserInfoBean) {
                         LoginUserInfoBean.ObjectBean bean = loginUserInfoBean.getObject();
-                        LoginUserInfoBean.ObjectBean.UserInfoBean info = bean.getUserInfo();
-
-
-                        username = SPUtil.getInstance().getData(getContext(), SPUtil.FILE_NAME, SPUtil.USER_NAME);
-                        headimg = SPUtil.getInstance().getData(getContext(), SPUtil.FILE_NAME, SPUtil.HEAD_IMG);
-                        qm = SPUtil.getInstance().getData(getContext(), SPUtil.FILE_NAME, SPUtil.QIANMING);
-
-                        //加载一张圆角头像
-                        if (headimg==null){
-                            SPUtil.getInstance().saveData(getContext(),SPUtil.FILE_NAME,SPUtil.HEAD_IMG,info.getHeadImg());
-                            Glide.with(getContext()).load(info.getHeadImg()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
-                        }else{
-                            //加载缓存内的头像信息
-                            Glide.with(getContext()).load(headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
-                        }
-                        if (username==null){
-                            SPUtil.getInstance().saveData(getContext(),SPUtil.FILE_NAME,SPUtil.USER_NAME,info.getNickName());
-                            tvUsername.setText(info.getNickName());
-                        }else{
-                            tvUsername.setText(username);
-                        }
-                        //个性签名赋值
-                        if (qm==null){
-                            SPUtil.getInstance().saveData(getContext(),SPUtil.FILE_NAME,SPUtil.QIANMING,info.getExplains());
-                            tvSignature.setText(info.getExplains());
-                        }else{
-                            tvSignature.setText(qm);
-                        }
 
                         //数量赋值
                         tvCountHaoyou.setText(bean.getCountFriendNum()+"");
@@ -234,19 +270,11 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
                         tvCountGuanzhu.setText(bean.getCountFollowNum()+"");
                         tvCountQunzu.setText(bean.getCountGroupNum()+"");
 
-                        //访客
-                        tvCountFangke.setText(bean.getCountVisitorNum()+"");
-
-                        //年龄赋值
-                        String userRole = info.getUserRole();
-                        if (userRole!=null){
-                            if (userRole.equals("保密")){
-                                tvAge.setText(info.getAge()+"");
-                            }else{
-                                tvAge.setText(info.getAge()+" "+userRole);
-                            }
+                        if (bean.getCountVisitorNum()!=null){
+                            //访客
+                            tvCountFangke.setText(bean.getCountVisitorNum()+"");
                         }else{
-                            tvAge.setText(info.getAge()+"");
+                            tvCountFangke.setText("0");
                         }
 
                         //设置我的金币剩余数
@@ -280,13 +308,22 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
             EventBus.getDefault().unregister(this);
         }
     }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser){
+            getUserInfo();
+        }
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getString(String str){
         if (str.equals("重新获取我的基本信息")){
             userid = Integer.valueOf(Common.getUserId());
 
+            getMyInfo();
             getUserInfo();
-
         }
     }
     @Override
@@ -363,7 +400,7 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
                 break;
             //收藏
             case R.id.ll_shoucang:
-
+                intent = new Intent();
                 break;
             //情侣标识
             case R.id.ll_yaoqing:
@@ -397,5 +434,41 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
         }
     }
 
+
+    /**
+     * 根据用户生日计算年龄
+     */
+    public static int getAgeByBirthday(Date birthday) {
+        Calendar cal = Calendar.getInstance();
+
+        if (cal.before(birthday)) {
+            throw new IllegalArgumentException(
+                    "The birthDay is before Now.It's unbelievable!");
+        }
+
+        int yearNow = cal.get(Calendar.YEAR);
+        int monthNow = cal.get(Calendar.MONTH) + 1;
+        int dayOfMonthNow = cal.get(Calendar.DAY_OF_MONTH);
+
+        cal.setTime(birthday);
+        int yearBirth = cal.get(Calendar.YEAR);
+        int monthBirth = cal.get(Calendar.MONTH) + 1;
+        int dayOfMonthBirth = cal.get(Calendar.DAY_OF_MONTH);
+
+        int age = yearNow - yearBirth;
+
+        if (monthNow <= monthBirth) {
+            if (monthNow == monthBirth) {
+                // monthNow==monthBirth
+                if (dayOfMonthNow < dayOfMonthBirth) {
+                    age--;
+                }
+            } else {
+                // monthNow>monthBirth
+                age--;
+            }
+        }
+        return age;
+    }
 
 }

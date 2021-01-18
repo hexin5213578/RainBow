@@ -50,6 +50,7 @@ import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UploadManager;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.lym.image.select.PictureSelector;
@@ -117,6 +118,7 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
     String time = "";
     String role = "";
     String single = "";
+    int a = 0;
 
     private String birthday;
     private PopupWindow mPopupWindow2;
@@ -176,8 +178,14 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
             tvMyrole.setText("未设置");
         }
 
-        if (issingle!=null &&issingle.equals("")){
-            tvMystate.setText(issingle);
+        if (issingle!=null && !issingle.equals("")){
+            if (issingle.equals("1")){
+                tvMystate.setText("单身");
+            }else if(issingle.equals("2")){
+                tvMystate.setText("恋爱中");
+            }else{
+                tvMystate.setText("保密");
+            }
         }else{
             tvMystate.setText("未设置");
 
@@ -329,6 +337,7 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
 
                 if (birthday!=null && !birthday.equals("")){
                     String[] split = birthday.split("-");
+
                     BasisTimesUtils.showDatePickerDialog(EditMsgActivity.this, "请选择年月日", Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[1]), new BasisTimesUtils.OnDatePickerListener() {
                         @Override
                         public void onConfirm(int year, int month, int dayOfMonth) {
@@ -359,6 +368,7 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                                             if (comPleteMsgBean.getMsg().equals("数据修改成功！")){
                                                 tvAge.setText(time);
                                                 SPUtil.getInstance().saveData(EditMsgActivity.this,SPUtil.FILE_NAME,SPUtil.BIRTHDAY,time);
+                                                
                                             }
                                         }
 
@@ -411,6 +421,8 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                                             if (comPleteMsgBean.getMsg().equals("数据修改成功！")){
                                                 tvAge.setText(time);
                                                 SPUtil.getInstance().saveData(EditMsgActivity.this,SPUtil.FILE_NAME,SPUtil.BIRTHDAY,time);
+                                                
+
                                             }
                                         }
 
@@ -508,6 +520,8 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                                                                         dismiss();
                                                                         SPUtil.getInstance().saveData(EditMsgActivity.this,SPUtil.FILE_NAME,SPUtil.HEAD_IMG,url);
                                                                         Toast.makeText(EditMsgActivity.this, "头像修改成功", Toast.LENGTH_SHORT).show();
+                                                                        
+
                                                                     }
 
                                                                 }
@@ -625,6 +639,8 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                                     SPUtil.getInstance().saveData(EditMsgActivity.this,SPUtil.FILE_NAME,SPUtil.QIANMING,str);
                                     tvQianming.setText(str);
                                     Toast.makeText(EditMsgActivity.this, "签名修改成功", Toast.LENGTH_SHORT).show();
+                                    
+
                                 }
                             }
 
@@ -873,6 +889,8 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                                                     tvName.setText(name+"");
                                                     dismiss1();
                                                     SPUtil.getInstance().saveData(EditMsgActivity.this,SPUtil.FILE_NAME,SPUtil.USER_NAME,name);
+                                                    
+
                                                 }
                                             }
 
@@ -1067,6 +1085,7 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                                     //存入sp
                                     tvMyrole.setText(role+"");
                                     dismiss2();
+                                    
                                     SPUtil.getInstance().saveData(EditMsgActivity.this,SPUtil.FILE_NAME,SPUtil.ROLE,role);
                                 }
                             }
@@ -1190,7 +1209,6 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
             @Override
             public void onClick(View v) {
 
-                int a = 0;
                 if (rb1.isChecked()){
                     single = "单身";
                     a= 1;
@@ -1218,7 +1236,7 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                             public void onNext(ComPleteMsgBean comPleteMsgBean) {
                                 if (comPleteMsgBean.getMsg().equals("数据修改成功！")){
                                     //存入sp
-                                    tvMystate.setText(single+"");
+                                    tvMystate.setText(a+"");
                                     dismiss3();
                                     SPUtil.getInstance().saveData(EditMsgActivity.this,SPUtil.FILE_NAME,SPUtil.ISSINGLE,single);
                                 }

@@ -7,6 +7,7 @@ import android.widget.RelativeLayout;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
@@ -34,9 +35,8 @@ public class CollectActivity extends BaseAvtivity {
     RecyclerView rcMydraftDevelopment;
     @BindView(R.id.sv)
     SpringView sv;
-    ArrayList allList;
-    int myId;
     int page =1;
+    private int userid;
 
     @Override
     protected int getResId() {
@@ -46,14 +46,18 @@ public class CollectActivity extends BaseAvtivity {
     @Override
     protected void getData() {
 
+        userid = Integer.valueOf(Common.getUserId());
+
+        //直接取消动画
+        RecyclerView.ItemAnimator animator = rcMydraftDevelopment.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
 
         //设置背景透明
-        StatusBarUtil.setTransparentForWindow(this);
+        StatusBarUtil.setGradientColor(CollectActivity.this,toolbar);
         //设置状态栏字体黑色
-        StatusBarUtil.setLightMode(this);
-        myId = Integer.parseInt(Common.getUserId());
-
-        allList = new ArrayList<>();
+        StatusBarUtil.setDarkMode(this);
 
         sv.setHeader(new AliHeader(this));
 
@@ -64,13 +68,12 @@ public class CollectActivity extends BaseAvtivity {
                     @Override
                     public void run() {
 
-                        allList.clear();
                         page = 1;
 
                         //等待2.5秒后结束刷新
                         sv.onFinishFreshAndLoad();
                     }
-                },2500);
+                },1000);
             }
 
             @Override
@@ -82,26 +85,18 @@ public class CollectActivity extends BaseAvtivity {
 
                         sv.onFinishFreshAndLoad();
                     }
-                },2500);
+                },1000);
             }
         });
 
 
     }
+    public void getDynamic(int page,int size){
 
-
-
-
-
+    }
     @Override
     protected BasePresenter initPresenter() {
         return null;
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
 }

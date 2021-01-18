@@ -1082,18 +1082,11 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
         mPopupWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         View view = LayoutInflater.from(DynamicDetailsActivity.this).inflate(R.layout.dialog_share, null);
 
-        LinearLayout friend = view.findViewById(R.id.ll_share_friend);
         LinearLayout qq = view.findViewById(R.id.ll_share_qq);
         LinearLayout space = view.findViewById(R.id.ll_share_space);
         LinearLayout wechat = view.findViewById(R.id.ll_share_Wechat);
         LinearLayout moments = view.findViewById(R.id.ll_share_wechatmoments);
 
-        friend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //分享到好友
-            }
-        });
         qq.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

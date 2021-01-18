@@ -2,6 +2,7 @@ package com.YiDian.RainBow.setup.activity;
 
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -25,8 +26,11 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.custom.customDialog.CustomDialogCleanNotice;
 import com.YiDian.RainBow.feedback.activity.FeedBackActivity;
 import com.YiDian.RainBow.login.activity.LoginActivity;
+import com.YiDian.RainBow.notice.ClickNoticeActivity;
+import com.YiDian.RainBow.notice.bean.CleanNoticeBean;
 import com.YiDian.RainBow.setup.bean.GetRealDataBean;
 import com.YiDian.RainBow.utils.DataCleanManager;
 import com.YiDian.RainBow.utils.NetUtils;
@@ -208,11 +212,23 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
                 //登出
             case R.id.rl_loginout:
                 // TODO: 2021/1/6 0006 退出登录
-                SPUtil.unReg(this, SPUtil.FILE_NAME);
-                JMessageClient.logout();
-                intent = new Intent(SetupActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
+                CustomDialogCleanNotice.Builder builder = new CustomDialogCleanNotice.Builder(SetupActivity.this);
+                builder.setMessage("确定退出登录吗?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        SPUtil.unReg(SetupActivity.this, SPUtil.FILE_NAME);
+                        JMessageClient.logout();
+                        intent = new Intent(SetupActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+                builder.setNegativeButton("取消",
+                        new android.content.DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                builder.create().show();
                 break;
         }
     }

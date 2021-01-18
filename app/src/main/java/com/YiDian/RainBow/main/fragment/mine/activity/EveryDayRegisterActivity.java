@@ -96,10 +96,4 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
 
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
 }

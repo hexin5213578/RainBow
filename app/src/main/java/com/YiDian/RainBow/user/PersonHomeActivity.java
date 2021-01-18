@@ -22,6 +22,7 @@ import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.friend.FriendsActivity;
 import com.YiDian.RainBow.login.bean.ComPleteMsgBean;
 import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
+import com.YiDian.RainBow.main.fragment.home.adapter.UserDetailsDynamicAdapter;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.main.fragment.mine.activity.MyGiftActivity;
 import com.YiDian.RainBow.setup.bean.InsertRealBean;
@@ -181,7 +182,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             //等待2.5秒后结束刷新
                             sv.onFinishFreshAndLoad();
                         }
-                    },2500);
+                    },1000);
                 }
 
                 @Override
@@ -193,7 +194,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             dogetDynamicByName(page,name);
                             sv.onFinishFreshAndLoad();
                         }
-                    },2500);
+                    },1000);
                 }
             });
         } else {
@@ -246,8 +247,6 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
 
     }
-
-
 
     public void doInsert(String str){
         NetUtils.getInstance().getApis()
@@ -312,8 +311,8 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(PersonHomeActivity.this, RecyclerView.VERTICAL, false);
                             rcDynamic.setLayoutManager(linearLayoutManager);
 
-                            NewDynamicAdapter newDynamicAdapter = new NewDynamicAdapter(PersonHomeActivity.this, allList,mTencent);
-                            rcDynamic.setAdapter(newDynamicAdapter);
+                            UserDetailsDynamicAdapter userDetailsDynamicAdapter = new UserDetailsDynamicAdapter(PersonHomeActivity.this, allList,mTencent);
+                            rcDynamic.setAdapter(userDetailsDynamicAdapter);
                         }else{
                             if (allList.size()>0){
                                 Toast.makeText(PersonHomeActivity.this, "没有更多内容了", Toast.LENGTH_SHORT).show();
@@ -366,8 +365,8 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(PersonHomeActivity.this, RecyclerView.VERTICAL, false);
                             rcDynamic.setLayoutManager(linearLayoutManager);
 
-                            NewDynamicAdapter newDynamicAdapter = new NewDynamicAdapter(PersonHomeActivity.this, allList,mTencent);
-                            rcDynamic.setAdapter(newDynamicAdapter);
+                            UserDetailsDynamicAdapter userDetailsDynamicAdapter = new UserDetailsDynamicAdapter(PersonHomeActivity.this, allList,mTencent);
+                            rcDynamic.setAdapter(userDetailsDynamicAdapter);
                         }else{
                             if (allList.size()>0){
                                 Toast.makeText(PersonHomeActivity.this, "没有更多内容了", Toast.LENGTH_SHORT).show();

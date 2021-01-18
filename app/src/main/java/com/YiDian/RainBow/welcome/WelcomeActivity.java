@@ -93,7 +93,7 @@ public class WelcomeActivity extends BaseAvtivity {
                 @Override
                 public void gotResult(int i, String s) {
                     if (i == 0) {
-                        Log.d("xxx", "极光登录状态为" + i + "原因为" + s);
+                        Log.d("xxx", userId+"极光登录状态为" + i + "原因为" + s);
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {

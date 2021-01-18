@@ -19,6 +19,7 @@ import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
+import com.YiDian.RainBow.main.fragment.mine.adapter.MyDynamicAdapter;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.YiDian.RainBow.utils.SPUtil;
 import com.google.gson.Gson;
@@ -27,6 +28,10 @@ import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.container.AliHeader;
 import com.liaoinstan.springview.widget.SpringView;
 import com.tencent.tauth.Tencent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -99,8 +104,8 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ReleaseDynamicsActivity.this, RecyclerView.VERTICAL, false);
                 rcMydraftDevelopment.setLayoutManager(linearLayoutManager);
 
-                NewDynamicAdapter newDynamicAdapter = new NewDynamicAdapter(ReleaseDynamicsActivity.this, SpList, mTencent);
-                rcMydraftDevelopment.setAdapter(newDynamicAdapter);
+                MyDynamicAdapter myDynamicAdapter = new MyDynamicAdapter(ReleaseDynamicsActivity.this, SpList, mTencent);
+                rcMydraftDevelopment.setAdapter(myDynamicAdapter);
             }
         }
 
@@ -187,8 +192,8 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ReleaseDynamicsActivity.this, RecyclerView.VERTICAL, false);
                             rcMydraftDevelopment.setLayoutManager(linearLayoutManager);
 
-                            NewDynamicAdapter newDynamicAdapter = new NewDynamicAdapter(ReleaseDynamicsActivity.this, allList, mTencent);
-                            rcMydraftDevelopment.setAdapter(newDynamicAdapter);
+                            MyDynamicAdapter myDynamicAdapter = new MyDynamicAdapter(ReleaseDynamicsActivity.this, allList, mTencent);
+                            rcMydraftDevelopment.setAdapter(myDynamicAdapter);
                         } else {
                             if (allList.size() > 0) {
                                 Toast.makeText(ReleaseDynamicsActivity.this, "没有更多内容了", Toast.LENGTH_SHORT).show();
@@ -212,6 +217,29 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
 
                     }
                 });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getStr(String str){
+        if (str.equals("刷新数据")){
+            allList.clear();
+            dogetDynamicById(1);
+        }
     }
 
     @Override

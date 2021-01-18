@@ -15,7 +15,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaMetadataRetriever;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
@@ -28,10 +27,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,8 +40,6 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.App;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.customDialog.CustomDialogCancleFollow;
-import com.YiDian.RainBow.custom.image.NineGridTestLayout;
-import com.YiDian.RainBow.custom.videoplayer.SampleCoverVideo;
 import com.YiDian.RainBow.main.fragment.home.activity.DynamicDetailsActivity;
 import com.YiDian.RainBow.main.fragment.home.bean.DianzanBean;
 import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
@@ -81,14 +76,12 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
+public class UserDetailsDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
     private final Activity context;
     private final List<NewDynamicBean.ObjectBean.ListBean> list;
     private Tencent mTencent;
@@ -103,7 +96,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
     private int id;
     private ViewHolder viewHolder;
 
-    public NewDynamicAdapter(Activity context, List<NewDynamicBean.ObjectBean.ListBean> list,Tencent mTencent) {
+    public UserDetailsDynamicAdapter(Activity context, List<NewDynamicBean.ObjectBean.ListBean> list, Tencent mTencent) {
         this.context = context;
         this.list = list;
         this.mTencent = mTencent;
@@ -156,22 +149,6 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
 
                 Intent intent = new Intent(context, DynamicDetailsActivity.class);
                 intent.putExtra("id", id);
-                context.startActivity(intent);
-            }
-        });
-
-        //跳转到用户信息页
-        holder.ivHeadimg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listBean = list.get(position);
-
-                Intent intent = new Intent(context, PersonHomeActivity.class);
-                SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
-                saveIntentMsgBean.setId(listBean.getUserId());
-                //2标记传入姓名  1标记传入id
-                saveIntentMsgBean.setFlag(1);
-                intent.putExtra("msg",saveIntentMsgBean);
                 context.startActivity(intent);
             }
         });
@@ -401,7 +378,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
                         }
                     });
                     builder.setNegativeButton("取消",
-                            new android.content.DialogInterface.OnClickListener() {
+                            new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
                                 }

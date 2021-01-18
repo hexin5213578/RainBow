@@ -359,7 +359,7 @@ public class SetPwdActivity extends BaseAvtivity implements View.OnClickListener
                                                                                             @Override
                                                                                             public void gotResult(int i, String s) {
                                                                                                 if (i==0){
-                                                                                                    Log.d("xxx","极光昵称设置成功");
+                                                                                                    Log.d("xxx",id+"极光昵称设置成"+name);
                                                                                                     //极光更换成功调用 上传到服务器
                                                                                                 }else{
                                                                                                     Log.d("xxx","设置失败，原因为"+s);
@@ -379,7 +379,7 @@ public class SetPwdActivity extends BaseAvtivity implements View.OnClickListener
                                                                                                         @Override
                                                                                                         public void gotResult(int i, String s) {
                                                                                                             if (i==0){
-                                                                                                                Log.d("xxx","当前登录用户头像设置成功");
+                                                                                                                Log.d("xxx",id+"头像设置成功");
                                                                                                             }else {
                                                                                                                 Log.d("xxx",s);
                                                                                                             }

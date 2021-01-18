@@ -55,33 +55,37 @@ public  class Common {
         return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.USER_ID);
     }
     //获取极光APO_KEY
+
     public static String get_JG() {
         return JG_APP_KEY;
     }
     //获取手机号
+
     public static String getPhone() {
         return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.KEY_PHONE);
     }
+
     //获取个性签名
     public static String getQM() {
         return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.QIANMING);
     }
+
     //获取用户名
     public static String getUserName(){
         return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.USER_NAME);
     }
 
-    //获取用户名
+    //获取头像信息
     public static String getHeadImg(){
         return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.HEAD_IMG);
     }
 
-    //获取用户名
+    //获取角色信息
     public static String getRole(){
         return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.ROLE);
     }
 
-    //获取用户名
+    //获取出生日期
     public static String getBirthday(){
         return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.BIRTHDAY);
     }
