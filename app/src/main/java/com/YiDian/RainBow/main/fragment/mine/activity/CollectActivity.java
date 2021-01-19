@@ -42,6 +42,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+//我的收藏
 public class CollectActivity extends BaseAvtivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -70,7 +71,6 @@ public class CollectActivity extends BaseAvtivity {
     @Override
     protected void onStart() {
         super.onStart();
-        getDynamic(page,size);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class CollectActivity extends BaseAvtivity {
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
-        Gson gson = new Gson();
+      /*  Gson gson = new Gson();
         List<NewDynamicBean.ObjectBean.ListBean> SpList = new ArrayList<>();
 
         for (int i = 1; i < 10; i++) {
@@ -112,7 +112,8 @@ public class CollectActivity extends BaseAvtivity {
                 CollectDynamicAdapter myDynamicAdapter = new CollectDynamicAdapter(CollectActivity.this, SpList, mTencent);
                 rcMydraftDevelopment.setAdapter(myDynamicAdapter);
             }
-        }
+        }*/
+        getDynamic(page,size);
 
         allList = new ArrayList<>();
         //设置背景透明
@@ -177,13 +178,13 @@ public class CollectActivity extends BaseAvtivity {
                             sv.setVisibility(View.VISIBLE);
                             rcMydraftDevelopment.setVisibility(View.VISIBLE);
 
-                            //存五条数据
+                            /*//存五条数据
                             for (int i = 1; i <= list.size(); i++) {
                                 NewDynamicBean.ObjectBean.ListBean listBean = list.get(i - 1);
                                 Gson gson = new Gson();
                                 String json1 = gson.toJson(listBean);
                                 SPUtil.getInstance().saveData(CollectActivity.this, SPUtil.JSON_COLLECT, "json" + i, json1);
-                            }
+                            }*/
 
 
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(CollectActivity.this, RecyclerView.VERTICAL, false);

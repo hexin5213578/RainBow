@@ -1163,9 +1163,9 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
         issingle = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.ISSINGLE);
 
         if (issingle!=null){
-            if (issingle.equals("单身")){
+            if (issingle.equals("1")){
                 rb1.setChecked(true);
-            }else if (issingle.equals("恋爱中")){
+            }else if (issingle.equals("2")){
                 rb2.setChecked(true);
             }else {
                 rb3.setChecked(true);
@@ -1236,9 +1236,9 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                             public void onNext(ComPleteMsgBean comPleteMsgBean) {
                                 if (comPleteMsgBean.getMsg().equals("数据修改成功！")){
                                     //存入sp
-                                    tvMystate.setText(a+"");
+                                    tvMystate.setText(single+"");
                                     dismiss3();
-                                    SPUtil.getInstance().saveData(EditMsgActivity.this,SPUtil.FILE_NAME,SPUtil.ISSINGLE,single);
+                                    SPUtil.getInstance().saveData(EditMsgActivity.this,SPUtil.FILE_NAME,SPUtil.ISSINGLE, String.valueOf(a));
                                 }
                             }
 

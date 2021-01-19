@@ -84,9 +84,17 @@ public class MyGiftActivity extends BaseAvtivity implements RadioGroup.OnChecked
 
         String sendcount = SPUtil.getInstance().getData(MyGiftActivity.this, SPUtil.FILE_NAME, SPUtil.SENG_COUNT);
         String recivecount = SPUtil.getInstance().getData(MyGiftActivity.this, SPUtil.FILE_NAME, SPUtil.RECIVE_COUNT);
+        if (sendcount!=null && !sendcount.equals("")){
+            rbSend.setText("送出("+sendcount+")");
+        }else{
+            rbSend.setText("送出("+0+")");
+        }
 
-        rbSend.setText("送出("+sendcount+")");
-        rbRevice.setText("收到("+recivecount+")");
+        if (recivecount!=null && !recivecount.equals("")){
+            rbRevice.setText("收到("+recivecount+")");
+        }else{
+            rbRevice.setText("收到("+0+")");
+        }
 
         rbs[0] = rbSend;
         rbs[1] = rbRevice;

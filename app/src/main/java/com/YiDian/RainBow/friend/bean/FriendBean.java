@@ -58,6 +58,15 @@ public class FriendBean {
         private String headImg;
         private String explains;
         private String userRole;
+        private boolean ischeck;
+
+        public boolean isIscheck() {
+            return ischeck;
+        }
+
+        public void setIscheck(boolean ischeck) {
+            this.ischeck = ischeck;
+        }
 
         public Object getId() {
             return id;

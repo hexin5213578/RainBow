@@ -52,7 +52,7 @@ public class HotHuatiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return 4;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

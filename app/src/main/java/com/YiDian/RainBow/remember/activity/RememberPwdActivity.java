@@ -2,6 +2,7 @@ package com.YiDian.RainBow.remember.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -10,20 +11,22 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
-import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.feedback.activity.FeedBackActivity;
 import com.YiDian.RainBow.remember.bean.RememberPwdBean;
 import com.YiDian.RainBow.setpwd.bean.GetPhoneCodeBean;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.YiDian.RainBow.utils.StringUtil;
+import com.leaf.library.StatusBarUtil;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -31,7 +34,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class RememberPwdActivity extends BaseAvtivity implements View.OnClickListener {
     @BindView(R.id.back)
-    ImageView back;
+    RelativeLayout back;
     @BindView(R.id.tv_mt_pro)
     TextView tvMtPro;
     @BindView(R.id.et_phone)
@@ -46,8 +49,10 @@ public class RememberPwdActivity extends BaseAvtivity implements View.OnClickLis
     ImageView ivSeePwd1;
     @BindView(R.id.bt_confirm)
     Button btConfirm;
+    @BindView(R.id.rl1)
+    RelativeLayout rl1;
     private CountDownTimer mTimer;
-    private boolean isplayer =false;
+    private boolean isplayer = false;
     private String phone;
     private String auth;
 
@@ -64,8 +69,10 @@ public class RememberPwdActivity extends BaseAvtivity implements View.OnClickLis
         tvMtPro.setOnClickListener(this);
         btConfirm.setOnClickListener(this);
 
+        StatusBarUtil.setTransparentForWindow(RememberPwdActivity.this);
+
         //密码明文密文切换
-        ivSeePwd1.setOnTouchListener(new View.OnTouchListener() {
+        rl1.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
@@ -90,19 +97,19 @@ public class RememberPwdActivity extends BaseAvtivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.back:
                 //返回登录页
                 finish();
                 break;
-                //确认修改密码
+            //确认修改密码
             case R.id.bt_confirm:
                 // TODO: 2020/10/6 0006 调用修改密码接口  修改成功后跳转至登录页
                 String code = etCode.getText().toString();
                 String pwd = etPwd1.getText().toString();
-                if(code.equals(auth)){
-                    if(StringUtil.checkPassword(pwd)){
-                        NetUtils.getInstance().getApis().doRemeberPwd(pwd,phone)
+                if (code.equals(auth)) {
+                    if (StringUtil.checkPassword(pwd)) {
+                        NetUtils.getInstance().getApis().doRemeberPwd(pwd, phone)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Observer<RememberPwdBean>() {
@@ -110,37 +117,40 @@ public class RememberPwdActivity extends BaseAvtivity implements View.OnClickLis
                                     public void onSubscribe(Disposable d) {
 
                                     }
+
                                     @Override
                                     public void onNext(RememberPwdBean rememberPwdBean) {
-                                        if(rememberPwdBean.getType().equals("OK")){
+                                        if (rememberPwdBean.getType().equals("OK")) {
                                             Toast.makeText(RememberPwdActivity.this, "密码重置成功", Toast.LENGTH_SHORT).show();
                                             finish();
                                         }
                                     }
+
                                     @Override
                                     public void onError(Throwable e) {
 
                                     }
+
                                     @Override
                                     public void onComplete() {
 
                                     }
                                 });
                     }
-                }else {
+                } else {
                     Toast.makeText(this, "验证码输入有误", Toast.LENGTH_SHORT).show();
                 }
-                
+
                 break;
-                //跳转至遇到问题界面
+            //跳转至遇到问题界面
             case R.id.tv_mt_pro:
                 startActivity(new Intent(RememberPwdActivity.this, FeedBackActivity.class));
                 break;
-                //获取验证码
+            //获取验证码
             case R.id.tv_getcode:
                 phone = etPhone.getText().toString();
 
-                if(StringUtil.checkPhoneNumber(phone)){
+                if (StringUtil.checkPhoneNumber(phone)) {
                     countDownTime();
 
                     NetUtils.getInstance().getApis().getPhoneCode(phone)
@@ -155,7 +165,7 @@ public class RememberPwdActivity extends BaseAvtivity implements View.OnClickLis
 
                                 @Override
                                 public void onNext(GetPhoneCodeBean getPhoneCodeBean) {
-                                    if(getPhoneCodeBean.getType().equals("OK")){
+                                    if (getPhoneCodeBean.getType().equals("OK")) {
                                         auth = getPhoneCodeBean.getObject();
                                     }
                                 }
@@ -174,6 +184,7 @@ public class RememberPwdActivity extends BaseAvtivity implements View.OnClickLis
                 break;
         }
     }
+
     private void countDownTime() {
         //用安卓自带的CountDownTimer实现
         mTimer = new CountDownTimer(60 * 1000, 1000) {
@@ -187,18 +198,26 @@ public class RememberPwdActivity extends BaseAvtivity implements View.OnClickLis
             public void onFinish() {
                 tvGetcode.setEnabled(true);
                 tvGetcode.setText("获取验证码");
-                isplayer  =false;
+                isplayer = false;
                 cancel();
             }
         };
         mTimer.start();
         tvGetcode.setEnabled(false);
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(isplayer){
+        if (isplayer) {
             mTimer.cancel();
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }
