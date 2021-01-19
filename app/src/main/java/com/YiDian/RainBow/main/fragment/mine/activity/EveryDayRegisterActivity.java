@@ -343,6 +343,7 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
                 public void onClick(DialogInterface dialog, int which) {
                     sendsign(da);          //签到 补签
                     dialog.dismiss();
+                    showChangeName(1,2,3,4);
                 }
             });
             builder.setNegativeButton("取消",
@@ -372,14 +373,25 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
         }
     }
 
-    // 弹出修改昵称弹出框
-    public void showChangeName(int flag) {
+    // 弹出修改昵称弹出框   flag=1 签到奖励   flag 补签奖励
+    public void showChangeName(int flag,int award,int buqian,int continuousAward) {
+
+
         //创建popwiondow弹出框
         mPopupWindow1 = new PopupWindow();
         mPopupWindow1.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         mPopupWindow1.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
-        View view = LayoutInflater.from(this).inflate(R.layout.dialog_changename, null);
+        TextView view = (TextView) LayoutInflater.from(this).inflate(R.layout.dialog_sign_jiangli, null);
 
+        if(flag==1){
+            //获取签到信息
+            String str = "签到奖励金币 × "+award+"\n"+"连续签到奖励 × "+continuousAward;
+            view.setText(str);
+
+        }else {
+            String str = "补签奖励金币 × "+buqian+"\n"+"连续签到奖励 × "+continuousAward;
+            view.setText(str);
+        }
 
 
         new Handler().postDelayed(new Runnable() {
