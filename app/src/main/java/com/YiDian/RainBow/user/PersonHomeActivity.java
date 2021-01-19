@@ -451,7 +451,15 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             String userRoleAge = null;     //用户真实名   + 年龄
                             String friendname = userInfo.getNickName();//昵称
                             String headImg = userInfo.getHeadImg();//头像
-                            String gxQianMing = "个性签名：" + userInfo.getExplains();//个性签名
+
+                            String explains = userInfo.getExplains();
+                            if (explains==null){
+                                String gxQianMing = "";//个性签名
+                                tvGxqianming.setText(gxQianMing);
+                            }else{
+                                String gxQianMing = "个性签名：" + explains;//个性签名
+                                tvGxqianming.setText(gxQianMing);
+                            }
 
                             if (userRole == null) {
                                 userRoleAge = friendAge + "";
@@ -475,7 +483,6 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             tvGuanzhuC.setText(guanzhu);//关注数
                             tvLiwuC.setText(liwu);//礼物数
                             tvUsername.setText(friendname);//设置昵称
-                            tvGxqianming.setText(gxQianMing);
 
                         }
                     }
@@ -524,7 +531,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             String headImg = userInfo.getHeadImg();//头像
 
                             String explains = userInfo.getExplains();
-                            if (explains==null){
+                            if (explains.equals("null")){
                                 tvGxqianming.setText("");
                             }else{
                                 String gxQianMing = "个性签名：" + explains;//个性签名
