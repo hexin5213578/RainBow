@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -46,7 +47,7 @@ public class AccountSafeActivity extends BaseAvtivity implements View.OnClickLis
     TextView tvBind;
     private int userid;
     private Intent intent;
-
+    private boolean isClick;
     @Override
     protected int getResId() {
         return R.layout.activity_accountsafe;
@@ -62,7 +63,6 @@ public class AccountSafeActivity extends BaseAvtivity implements View.OnClickLis
         ivBack.setOnClickListener(this);
         rlChangePhone.setOnClickListener(this);
         rlChangePwd.setOnClickListener(this);
-
 
         isbind();
     }
@@ -84,11 +84,13 @@ public class AccountSafeActivity extends BaseAvtivity implements View.OnClickLis
                             tvBind.setText("更改手机号");
                             tvIsbind.setText(getBindPhoneMsgBean.getObject().getPhoneNum());
 
+                            isClick = true;
                         } else if (getBindPhoneMsgBean.getMsg().equals("您还未绑定手机号！")) {
 
                             tvBind.setText("绑定手机号");
                             tvIsbind.setText("未绑定");
 
+                            isClick = false;
                         }
                     }
                     @Override
@@ -134,10 +136,15 @@ public class AccountSafeActivity extends BaseAvtivity implements View.OnClickLis
                 finish();
                 break;
             case R.id.rl_change_pwd:
-                intent = new Intent(AccountSafeActivity.this, ChangePwdActivity.class);
-                startActivity(intent);
+                if (isClick){
+                    intent = new Intent(AccountSafeActivity.this, ChangePwdActivity.class);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(this, "请先绑定手机号", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.rl_change_phone:
+
                 intent = new Intent(AccountSafeActivity.this, BindPhoneActivity.class);
                 startActivity(intent);
                 break;

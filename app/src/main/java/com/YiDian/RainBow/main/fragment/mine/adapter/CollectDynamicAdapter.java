@@ -339,7 +339,7 @@ public class CollectDynamicAdapter extends RecyclerView.Adapter<CollectViewHolde
                     public void onClick(DialogInterface dialog, int which) {
 
                         NetUtils.getInstance().getApis()
-                                .doCancleCollectDynamic(listBean.getId(), userid)
+                                .doCancleCollectDynamic(userid,listBean.getId())
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Observer<CollectDynamicBean>() {

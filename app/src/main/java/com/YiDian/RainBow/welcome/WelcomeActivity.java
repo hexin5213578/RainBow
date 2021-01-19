@@ -71,7 +71,7 @@ public class WelcomeActivity extends BaseAvtivity {
                     @Override
                     public void onNext(SaveMsgSuccessBean saveMsgSuccessBean) {
                         String upToken = saveMsgSuccessBean.getUpToken();
-                        SPUtil.getInstance().saveData(WelcomeActivity.this, SPUtil.FILE_NAME, SPUtil.UPTOKEN, upToken);
+                        SPUtil.getInstance().saveData(WelcomeActivity.this, SPUtil.FILE_TOKEN, SPUtil.UPTOKEN, upToken);
                         Log.d("xxx", "uptoken存入成功");
                     }
 
@@ -123,10 +123,13 @@ public class WelcomeActivity extends BaseAvtivity {
                                 }
                             }
                         }, 2000);//2秒后执行Runnable中的run方法
+                    }else{
+                        Log.d("xxx","极光登录失败错误码为"+i+"原因为"+s);
                     }
                 }
             });
         } else {
+            Log.d("xxx","走到了这里");
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {

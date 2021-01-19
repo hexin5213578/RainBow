@@ -47,12 +47,12 @@ public  class Common {
      * @return
      */
     public static String getToken() {
-        return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.UPTOKEN);
+        return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_TOKEN, SPUtil.UPTOKEN);
     }
 
     //获取userid
     public static String getUserId() {
-        return "1030";
+        return SPUtil.getInstance().getData(App.getContext(),SPUtil.FILE_NAME, SPUtil.USER_ID);
     }
     //获取极光APO_KEY
 

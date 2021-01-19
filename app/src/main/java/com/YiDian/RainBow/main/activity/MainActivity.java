@@ -18,6 +18,7 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -44,6 +45,8 @@ import com.YiDian.RainBow.main.fragment.FragmentMine;
 import com.YiDian.RainBow.main.fragment.FragmentMsg;
 import com.YiDian.RainBow.main.fragment.mine.bean.GiftBean;
 import com.YiDian.RainBow.service.GrayService;
+import com.YiDian.RainBow.topic.SaveIntentMsgBean;
+import com.YiDian.RainBow.user.PersonHomeActivity;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.YiDian.RainBow.utils.SPUtil;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
@@ -184,7 +187,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
         getCount();
     }
 
-    public void getCount(){
+    public void getCount() {
         NetUtils.getInstance().getApis()
                 .dogetSendGift(userid)
                 .subscribeOn(Schedulers.io())
@@ -197,13 +200,13 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
 
                     @Override
                     public void onNext(GiftBean giftBean) {
-                        if (giftBean.getMsg().equals("查询成功")){
+                        if (giftBean.getMsg().equals("查询成功")) {
                             List<GiftBean.ObjectBean> list = giftBean.getObject();
-                            if (list.size()>0){
+                            if (list!=null  && list.size() > 0) {
                                 GiftBean.ObjectBean bean = giftBean.getObject().get(0);
-                                SPUtil.getInstance().saveData(MainActivity.this,SPUtil.FILE_NAME,SPUtil.SENG_COUNT, String.valueOf(bean.getAllNums()));
-                            }else{
-                                SPUtil.getInstance().saveData(MainActivity.this,SPUtil.FILE_NAME,SPUtil.SENG_COUNT, "0");
+                                SPUtil.getInstance().saveData(MainActivity.this, SPUtil.FILE_NAME, SPUtil.SENG_COUNT, String.valueOf(bean.getAllNums()));
+                            } else {
+                                SPUtil.getInstance().saveData(MainActivity.this, SPUtil.FILE_NAME, SPUtil.SENG_COUNT, "0");
                             }
                         }
                     }
@@ -230,13 +233,13 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
 
                     @Override
                     public void onNext(GiftBean giftBean) {
-                        if (giftBean.getMsg().equals("查询成功")){
+                        if (giftBean.getMsg().equals("查询成功")) {
                             List<GiftBean.ObjectBean> list = giftBean.getObject();
-                            if (list.size()>0){
+                            if (list!=null  && list.size() > 0) {
                                 GiftBean.ObjectBean bean = giftBean.getObject().get(0);
-                                SPUtil.getInstance().saveData(MainActivity.this,SPUtil.FILE_NAME,SPUtil.RECIVE_COUNT, String.valueOf(bean.getAllNums()));
-                            }else{
-                                SPUtil.getInstance().saveData(MainActivity.this,SPUtil.FILE_NAME,SPUtil.RECIVE_COUNT, "0");
+                                SPUtil.getInstance().saveData(MainActivity.this, SPUtil.FILE_NAME, SPUtil.RECIVE_COUNT, String.valueOf(bean.getAllNums()));
+                            } else {
+                                SPUtil.getInstance().saveData(MainActivity.this, SPUtil.FILE_NAME, SPUtil.RECIVE_COUNT, "0");
                             }
                         }
                     }
@@ -252,6 +255,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
                     }
                 });
     }
+
     //判断是否存在白名单
     @RequiresApi(Build.VERSION_CODES.M)
     public boolean isIgnoringBatteryOptimizations(Context context) {
@@ -293,7 +297,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
                 if (i == 6002) {
                     Message obtain = Message.obtain();
                     obtain.what = 100;
-                    mHandler.sendMessageDelayed(obtain, 1000 * 60);//60秒后重新验证
+                    mHandler.sendMessageDelayed(obtain, 1000 * 30);//60秒后重新验证
                 }
             }
         });
@@ -431,7 +435,20 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
                 String result = bundle.getString(CaptureActivity.EXTRA_STRING);
 
                 //判断信息是否属于彩虹 属于彩虹+id格式 跳转到扫描成功页 通过ID查询用户信息
-                Log.e("xxx", result);
+                if (result.contains("彩虹App内用户")) {
+                    String substring = result.substring(8);
+
+                    Log.e("xxx", substring);
+
+                    //跳转到用户信息页
+                    Intent intent = new Intent(MainActivity.this, PersonHomeActivity.class);
+                    SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
+                    saveIntentMsgBean.setId(Integer.parseInt(substring));
+                    //2标记传入姓名  1标记传入id
+                    saveIntentMsgBean.setFlag(1);
+                    intent.putExtra("msg", saveIntentMsgBean);
+                    startActivity(intent);
+                }
             }
         }
     }

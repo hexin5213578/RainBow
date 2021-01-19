@@ -1,6 +1,8 @@
 package com.YiDian.RainBow.utils;
 
 
+import com.YiDian.RainBow.dynamic.bean.HotTopicBean;
+import com.YiDian.RainBow.dynamic.bean.SelectFriendOrGroupBean;
 import com.YiDian.RainBow.friend.bean.FriendBean;
 import com.YiDian.RainBow.friend.bean.MyFansBean;
 import com.YiDian.RainBow.friend.bean.MyfollowBean;
@@ -28,6 +30,7 @@ import com.YiDian.RainBow.main.fragment.mine.bean.FangkeMsgBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.GiftBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.LoginUserInfoBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.SelectAllDraftsBean;
+import com.YiDian.RainBow.main.fragment.mine.bean.SignNeedPayBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.SigninMsgBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.GiftMsgBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.GlodNumBean;
@@ -128,7 +131,7 @@ public interface Apis {
     Observable<CheckNickNameBean> doCheckName(@Query("nickName")String name);
 
     //修改 忘记密码
-    @GET("user/updatePassword")
+    @POST("user/updatePassword")
     Observable<RememberPwdBean> doRemeberPwd(@Query("password")String pwd,@Query("phoneNum")String phone);
 
     //获取UpdateToken
@@ -240,6 +243,14 @@ public interface Apis {
     @GET("fans/selectFansAndUser")
     Observable<FriendBean> doGetMyFriend(@Query("userId")int userid);
 
+    //搜索我的好友
+    @GET("user/searchFriendAndGroup")
+    Observable<SelectFriendOrGroupBean> doGetFriendOrGroup(@Query("searchTerm")String msg,@Query("userId")int userid);
+
+    //获取热门动态
+    @GET("topic/findHotTopic")
+    Observable<HotTopicBean> dogetHotTopicBean();
+
     //获取我的粉丝
     @GET("fans/selectFansByUserId")
     Observable<MyFansBean> doGetMyFans(@Query("userId")int userid,@Query("page")int page,@Query("pageSize") int size);
@@ -317,7 +328,7 @@ public interface Apis {
     Observable<FangkeMsgBean> dogetMyFangke(@Query("beUserId")int userid,@Query("page")int page,@Query("pageSize")int size);
 
     //增加访客
-    @GET("meet/addUser")
+    @POST("meet/addUser")
     Observable<InsertRealBean> doInsertFangke(@Query("beUser")String beuserid,@Query("userId")int userid);
 
     //通过id查询用户信息
@@ -367,4 +378,8 @@ public interface Apis {
     //签到 补签
     @POST("signIn/addSign")
     Observable<AddSignInBean> doAddSign(@Query("weeks")int week,@Query("userId")int userid);
+
+    //获取补签的天数 及花费的金币
+    @GET("signIn/getReSignInDays")
+    Observable<SignNeedPayBean> doGetReSignDays(@Query("userId")int userid);
 }

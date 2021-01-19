@@ -343,11 +343,11 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
         if (listBean.isIsAttention()) {
             holder.tvGuanzhu.setBackground(context.getResources().getDrawable(R.drawable.newdynamic_yiguanzhu));
             holder.tvGuanzhu.setText("已关注");
-            holder.tvGuanzhu.setTextColor(R.color.color_999999);
+            holder.tvGuanzhu.setTextColor(context.getResources().getColor(R.color.color_999999));
         } else {
+            holder.tvGuanzhu.setTextColor(context.getResources().getColor(R.color.color_3C025A));
             holder.tvGuanzhu.setBackground(context.getResources().getDrawable(R.drawable.newdynamic_weiguanzhu));
             holder.tvGuanzhu.setText("关注");
-            holder.tvGuanzhu.setTextColor(R.color.color_3C025A);
         }
         //点击关注
         holder.tvGuanzhu.setOnClickListener(new View.OnClickListener() {

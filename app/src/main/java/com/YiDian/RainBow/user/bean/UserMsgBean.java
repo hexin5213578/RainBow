@@ -125,7 +125,7 @@ public class UserMsgBean {
             private Object countNum;
             private Object distance;
             private Object distancing;
-            private int age;
+            private Integer age;
             private Object invitationCode;
 
             public int getId() {
@@ -280,11 +280,11 @@ public class UserMsgBean {
                 this.distancing = distancing;
             }
 
-            public int getAge() {
+            public Integer getAge() {
                 return age;
             }
 
-            public void setAge(int age) {
+            public void setAge(Integer age) {
                 this.age = age;
             }
 

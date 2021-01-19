@@ -67,11 +67,10 @@ public class SendGiftFragment extends BaseFragment {
                     public void onNext(GiftBean giftBean) {
                         if (giftBean.getMsg().equals("查询成功")) {
                             List<GiftBean.ObjectBean> list = giftBean.getObject();
-                            if (list.size() > 0) {
-                                GiftBean.ObjectBean bean = giftBean.getObject().get(0);
-                                SPUtil.getInstance().saveData(getContext(), SPUtil.FILE_NAME, SPUtil.SENG_COUNT, String.valueOf(bean.getAllNums()));
+                                if (list!=null && list.size()>0){
 
-                                if (list.size()>0 && list!=null){
+                                    GiftBean.ObjectBean bean = giftBean.getObject().get(0);
+                                    SPUtil.getInstance().saveData(getContext(), SPUtil.FILE_NAME, SPUtil.SENG_COUNT, String.valueOf(bean.getAllNums()));
 
                                     rlNodata.setVisibility(View.GONE);
                                     rcGift.setVisibility(View.VISIBLE);
@@ -86,10 +85,9 @@ public class SendGiftFragment extends BaseFragment {
                                 }else{
                                     rlNodata.setVisibility(View.VISIBLE);
                                     rcGift.setVisibility(View.GONE);
+                                    SPUtil.getInstance().saveData(getContext(), SPUtil.FILE_NAME, SPUtil.SENG_COUNT, "0");
+
                                 }
-                            } else {
-                                SPUtil.getInstance().saveData(getContext(), SPUtil.FILE_NAME, SPUtil.SENG_COUNT, "0");
-                            }
                         }
                     }
 

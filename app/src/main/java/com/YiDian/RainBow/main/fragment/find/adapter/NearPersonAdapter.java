@@ -71,14 +71,14 @@ public class NearPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             //已关注 取消关注
             ((ViewHolder)holder).btGuanzhu.setText("已关注");
         }
-        ((AllLikeAdapter.ViewHolder)holder).btGuanzhu.setOnClickListener(new View.OnClickListener() {
+        ((ViewHolder)holder).btGuanzhu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listBean = list.get(position);
 
                 if (listBean.getIsFans()==0){
                     //未关注 发起关注
-                    ((AllLikeAdapter.ViewHolder)holder).btGuanzhu.setEnabled(false);
+                    ((ViewHolder)holder).btGuanzhu.setEnabled(false);
                     NetUtils.getInstance().getApis()
                             .doFollow(userid, listBean.getId())
                             .subscribeOn(Schedulers.io())
@@ -91,8 +91,8 @@ public class NearPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                                 @Override
                                 public void onNext(FollowBean followBean) {
-                                    ((AllLikeAdapter.ViewHolder)holder).btGuanzhu.setEnabled(true);
-                                    ((AllLikeAdapter.ViewHolder)holder).btGuanzhu.setText("已关注");
+                                    ((ViewHolder)holder).btGuanzhu.setEnabled(true);
+                                    ((ViewHolder)holder).btGuanzhu.setText("已关注");
                                     listBean.setIsFans(1);
 
                                     EventBus.getDefault().post("匹配过的刷新界面");
@@ -110,13 +110,13 @@ public class NearPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             });
                 }else if(listBean.getIsFans()==1){
                     //已关注 取消关注
-                    ((MyLikeAdapter.ViewHolder)holder).btGuanzhu.setEnabled(false);
+                    ((ViewHolder)holder).btGuanzhu.setEnabled(false);
 
                     CustomDialogCancleFollow.Builder builder = new CustomDialogCancleFollow.Builder(context);
                     builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             //已关注 取消关注
-                            ((MyLikeAdapter.ViewHolder)holder).btGuanzhu.setEnabled(false);
+                            ((ViewHolder)holder).btGuanzhu.setEnabled(false);
                             dialog.dismiss();
 
                             NetUtils.getInstance().getApis()
@@ -131,8 +131,8 @@ public class NearPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                                         @Override
                                         public void onNext(FollowBean followBean) {
-                                            ((MyLikeAdapter.ViewHolder)holder).btGuanzhu.setEnabled(true);
-                                            ((MyLikeAdapter.ViewHolder)holder).btGuanzhu.setText("关注");
+                                            ((ViewHolder)holder).btGuanzhu.setEnabled(true);
+                                            ((ViewHolder)holder).btGuanzhu.setText("关注");
                                             listBean.setIsFans(0);
 
                                             EventBus.getDefault().post("我喜欢的刷新界面");

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/white"
     android:layout_width="match_parent" android:layout_height="match_parent">
     <RelativeLayout
         android:layout_width="match_parent"
@@ -18,6 +19,7 @@
             android:textSize="@dimen/sp_10"
             android:textColor="@color/color_333333"
             android:id="@+id/tv_name"
+            android:layout_marginTop="@dimen/dp_5"
             android:layout_toRightOf="@id/iv_headimg"
             android:layout_marginLeft="@dimen/dp_7"
             android:layout_height="wrap_content">
@@ -28,6 +30,7 @@
             android:textSize="@dimen/sp_8"
             android:id="@+id/tv_autograph"
             android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dp_5"
             android:layout_toRightOf="@id/iv_headimg"
             android:layout_marginLeft="@dimen/dp_7"
             android:layout_height="wrap_content">

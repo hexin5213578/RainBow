@@ -34,6 +34,7 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.App;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.utils.EncodingUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
@@ -95,6 +96,7 @@ public class MyQrCodeActivity extends BaseAvtivity implements View.OnClickListen
     String TAG = "MyQrCodeActivity";
     private File file;
     String filename;//声明文件名
+    private int userid;
 
     @Override
     protected int getResId() {
@@ -125,11 +127,12 @@ public class MyQrCodeActivity extends BaseAvtivity implements View.OnClickListen
         //加载一张圆角头像
         Glide.with(MyQrCodeActivity.this).load(R.mipmap.headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
 
+        userid = Integer.valueOf(Common.getUserId());
+
         //将使用 彩虹 + 用户ID 生成二维码
-        qrCode = EncodingUtils.createQRCode("彩虹" + 123456, 200, 200, null);
+        qrCode = EncodingUtils.createQRCode("彩虹App内用户"+userid, 200, 200, null);
         //获取用户ID
         //先获取用户信息  设置数据
-
 
         //设置二维码
         ivQrcode.setImageBitmap(qrCode);

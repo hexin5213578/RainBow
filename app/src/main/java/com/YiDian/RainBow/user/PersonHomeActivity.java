@@ -1,5 +1,6 @@
 package com.YiDian.RainBow.user;
 
+import android.app.Person;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,6 +25,7 @@ import com.YiDian.RainBow.login.bean.ComPleteMsgBean;
 import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
 import com.YiDian.RainBow.main.fragment.home.adapter.UserDetailsDynamicAdapter;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
+import com.YiDian.RainBow.main.fragment.mine.activity.CollectActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.MyGiftActivity;
 import com.YiDian.RainBow.setup.bean.InsertRealBean;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
@@ -37,6 +39,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.dmcbig.mediapicker.PickerActivity;
 import com.dmcbig.mediapicker.PickerConfig;
 import com.dmcbig.mediapicker.entity.Media;
+import com.google.gson.Gson;
 import com.leaf.library.StatusBarUtil;
 import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.container.AliHeader;
@@ -46,6 +49,9 @@ import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UploadManager;
 import com.tencent.tauth.Tencent;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -111,6 +117,9 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
     int page  =1;
     List<NewDynamicBean.ObjectBean.ListBean> allList ;
     private Tencent mTencent;
+    private int flag;
+    private String name;
+    private int thePageuserId;
 
     @Override
     protected int getResId() {
@@ -129,6 +138,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
         llCandian.setOnClickListener(this);
         IvBeijing.setOnClickListener(this);
 
+
         allList = new ArrayList<>();
         //设置背景透明
         StatusBarUtil.setTransparentForWindow(this);
@@ -138,11 +148,11 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
         Intent intent =
                 getIntent();
         SaveIntentMsgBean msg = (SaveIntentMsgBean) intent.getSerializableExtra("msg");
-        int flag = msg.getFlag();
+        flag = msg.getFlag();
         //接收到的id
-        int thePageuserId = msg.getId();
+        thePageuserId = msg.getId();
         //接收到的name
-        String name = msg.getMsg();
+        name = msg.getMsg();
 
         sv.setHeader(new AliHeader(this));
 
@@ -154,7 +164,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
             //获取用户信息
             Log.d("xxx", "传过来的姓名为" + name);
             bandpageinfo(myId, name);
-            dogetDynamicByName(page,name);
+            dogetDynamicByName(page, name);
 
             if (!name.equals(myName)) {
                 Log.d("xxx", "getData: 不是自己的主页");
@@ -176,7 +186,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             bandpageinfo(myId, name);
                             allList.clear();
                             page = 1;
-                            dogetDynamicByName(page,name);
+                            dogetDynamicByName(page, name);
                             //等待2.5秒后结束刷新
                             sv.onFinishFreshAndLoad();
                         }
@@ -189,7 +199,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                         @Override
                         public void run() {
                             page++;
-                            dogetDynamicByName(page,name);
+                            dogetDynamicByName(page, name);
                             sv.onFinishFreshAndLoad();
                         }
                     },1000);
@@ -200,7 +210,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
             Log.d("xxx", "传过来的id为" + thePageuserId);
             bandpageinfo(myId, thePageuserId);
 
-            dogetDynamicById(page,thePageuserId);
+            dogetDynamicById(page, thePageuserId);
 
             if (!(thePageuserId == myId)) {
                 Log.d("xxx", "getData: 不是自己的主页");
@@ -223,10 +233,10 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             bandpageinfo(myId, thePageuserId);
                             allList.clear();
                             page =1;
-                            dogetDynamicById(page,thePageuserId);
+                            dogetDynamicById(page, thePageuserId);
                             sv.onFinishFreshAndLoad();
                         }
-                    },2500);
+                    },1000);
                 }
 
                 @Override
@@ -235,15 +245,23 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                         @Override
                         public void run() {
                             page++;
-                            dogetDynamicById(page,thePageuserId);
+                            dogetDynamicById(page, thePageuserId);
                             sv.onFinishFreshAndLoad();
                         }
-                    },2500);
+                    },1000);
                 }
             });
         }
 
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
     }
 
     public void doInsert(String str){
@@ -279,6 +297,18 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
         llGuanzhu.setEnabled(ischeck);
         llLiwu.setEnabled(ischeck);
         IvBeijing.setEnabled(ischeck);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getStr(String str){
+        allList.clear();
+        if (str.equals("刷新界面")){
+            if (flag==2){
+                dogetDynamicByName(page, name);
+            }else{
+                dogetDynamicById(page, thePageuserId);
+            }
+        }
     }
     //动态信息填充到列表里面
     public void dogetDynamicById(int page, int thePageuserId) {
@@ -486,21 +516,40 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             String liwu = object.getCountGiftNum() + "";
 
                             String backImg = userInfo.getBackImg();
-                            int friendAge = userInfo.getAge();
+                            Integer friendAge = userInfo.getAge();
 
                             String userRole = userInfo.getUserRole();// 用户真实名
                             String userRoleAge = null;     //用户真实名   + 年龄
                             String friendname = userInfo.getNickName();//昵称
                             String headImg = userInfo.getHeadImg();//头像
-                            String gxQianMing = "个性签名：" + userInfo.getExplains();//个性签名
+
+                            String explains = userInfo.getExplains();
+                            if (explains==null){
+                                tvGxqianming.setText("");
+                            }else{
+                                String gxQianMing = "个性签名：" + explains;//个性签名
+                                tvGxqianming.setText(gxQianMing);
+                            }
 
 
                             if (userRole == null) {
-                                userRoleAge = friendAge + "";
+                                if (friendAge==null){
+                                    userRoleAge = 0 + "";
+                                }else{
+                                    userRoleAge = friendAge + "";
+                                }
                             } else if (userRole.equals("保密")) {
-                                userRoleAge = friendAge + "";
+                                if (friendAge==null){
+                                    userRoleAge = 0 + "";
+                                }else{
+                                    userRoleAge = friendAge + "";
+                                }
                             } else {
-                                userRoleAge = userRole + " " + friendAge;
+                                if (friendAge==null){
+                                    userRoleAge = userRole + " " + 0;
+                                }else{
+                                    userRoleAge = userRole + " " + friendAge;
+                                }
                             }
 
 
@@ -517,7 +566,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             tvGuanzhuC.setText(guanzhu);//关注数
                             tvLiwuC.setText(liwu);//礼物数
                             tvUsername.setText(friendname);
-                            tvGxqianming.setText(gxQianMing);
+
 
                         }
 
@@ -545,8 +594,10 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
     @Override
     protected void onDestroy() {
-        Log.d("xxx", "onDestroy: 该页面已经销毁");
         super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
     }
 
 

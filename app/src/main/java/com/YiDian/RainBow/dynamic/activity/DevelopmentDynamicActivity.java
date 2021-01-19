@@ -53,6 +53,7 @@ import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.customDialog.CustomDialog;
 import com.YiDian.RainBow.dynamic.adapter.DevelogmentImgAdapter;
 import com.YiDian.RainBow.dynamic.adapter.HotHuatiAdapter;
+import com.YiDian.RainBow.dynamic.bean.HotTopicBean;
 import com.YiDian.RainBow.dynamic.bean.SaveAiteBean;
 import com.YiDian.RainBow.dynamic.bean.SaveHotHuatiBean;
 import com.YiDian.RainBow.dynamic.bean.SaveMsgSuccessBean;
@@ -286,18 +287,40 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                 tvCount.setText(100 - length + "");
             }
         });
-        List<String> hotHuati = new ArrayList<>();
-        hotHuati.add("热门话题1");
-        hotHuati.add("热门话题2");
-        hotHuati.add("热门话题3");
-        hotHuati.add("热门话题4");
-        //热门话题
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 4);
-        rcHotHuati.setLayoutManager(gridLayoutManager);
+        NetUtils.getInstance().getApis()
+                .dogetHotTopicBean()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<HotTopicBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-        //创建适配器
-        HotHuatiAdapter hotHuatiAdapter = new HotHuatiAdapter(this, hotHuati);
-        rcHotHuati.setAdapter(hotHuatiAdapter);
+                    }
+
+                    @Override
+                    public void onNext(HotTopicBean hotTopicBean) {
+                        List<String> list = hotTopicBean.getObject();
+
+                        //热门话题
+                        GridLayoutManager gridLayoutManager = new GridLayoutManager(DevelopmentDynamicActivity.this, 4);
+                        rcHotHuati.setLayoutManager(gridLayoutManager);
+
+                        //创建适配器
+                        HotHuatiAdapter hotHuatiAdapter = new HotHuatiAdapter(DevelopmentDynamicActivity.this, list);
+                        rcHotHuati.setAdapter(hotHuatiAdapter);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
 
 
         videoView.setOnClickListener(new View.OnClickListener() {

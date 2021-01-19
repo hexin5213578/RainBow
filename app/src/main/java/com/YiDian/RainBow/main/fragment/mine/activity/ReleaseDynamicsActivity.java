@@ -109,7 +109,6 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
             }
         }
 
-
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,7 +122,6 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
 
         allList = new ArrayList<>();
 
-        sv.setHeader(new AliHeader(this));
 
         dogetDynamicById(page);
 
@@ -174,11 +172,13 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
                     public void onNext(NewDynamicBean newDynamicBean) {
                         List<NewDynamicBean.ObjectBean.ListBean> list = newDynamicBean.getObject().getList();
 
-                        if (list.size() > 0 && list != null) {
+                        if ( list != null && list.size() > 0) {
                             //RelativeLayout rlNodata;
                             rlNodata.setVisibility(View.GONE);
                             //RecyclerView  rcDynamic
                             rcMydraftDevelopment.setVisibility(View.VISIBLE);
+
+                            sv.setHeader(new AliHeader(ReleaseDynamicsActivity.this));
 
                             //存五条数据
                             for (int i = 1; i <= list.size(); i++) {

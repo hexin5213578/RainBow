@@ -40,6 +40,7 @@ import java.util.Set;
 public class SPUtil {
 
     public static final String FILE_NAME = "userInfo";
+    public static final String FILE_TOKEN = "filetoken";
     public static final String KEY_TOKEN = "token";
     //存储是否已经登录  0已登录 1未登录或退出登录
     public static final String IS_LOGIN = "islogin";
