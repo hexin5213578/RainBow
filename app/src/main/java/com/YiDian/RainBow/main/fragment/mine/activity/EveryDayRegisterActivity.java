@@ -27,6 +27,7 @@ import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.customDialog.CustomDialogCleanNotice;
 import com.YiDian.RainBow.main.fragment.mine.bean.AddSignInBean;
+import com.YiDian.RainBow.main.fragment.mine.bean.SignNeedPayBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.SigninMsgBean;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.leaf.library.StatusBarUtil;
@@ -93,7 +94,7 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
     RecyclerView rcTask;
     @BindView(R.id.l_black)
     LinearLayout lBlack;
-    Integer userId;
+    Integer userId ;
     int nowWeek;
 
     ArrayList<TextView> list1 = new ArrayList<>();
@@ -317,28 +318,28 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
         //签到与补签事件
         switch (v.getId()) {
             case R.id.bt_qiandao:
-                qiandao(nowWeek);
+                showDilog(nowWeek);
                 break;
             case R.id.rl_zhouyi:
-                qiandao(1);
+                showDilog(1);
                 break;
             case R.id.rl_zhouer:
-                qiandao(2);
+                showDilog(2);
                 break;
             case R.id.rl_zhousan:
-                qiandao(3);
+                showDilog(3);
                 break;
             case R.id.rl_zhousi:
-                qiandao(4);
+                showDilog(4);
                 break;
             case R.id.rl_zhouwu:
-                qiandao(5);
+                showDilog(5);
                 break;
             case R.id.rl_zhouliu:
-                qiandao(6);
+                showDilog(6);
                 break;
             case R.id.rl_zhouri:
-                qiandao(7);
+                showDilog(7);
                 break;
             case R.id.l_black:
                 Log.d(TAG, "onClick: 返回");
@@ -346,18 +347,51 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
                 break;
         }
     }
-    //弹出对话框确定是否签到  并调用sendsign()函数发送数据请求签到
-    public void qiandao(int da){
+    public void showDilog(int da){
+        NetUtils.getInstance().getApis().doGetReSignDays(userId).
+                subscribeOn(Schedulers.io()).
+                observeOn(AndroidSchedulers.mainThread()).
+                subscribe(new Observer<SignNeedPayBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(SignNeedPayBean signNeedPayBean) {
+                        if(signNeedPayBean.getType().equals("OK")){
+                            String str ="本周第"+(signNeedPayBean.getObject().getReSignInDays()+1)+"次补签！\n补签需要"
+                                    +signNeedPayBean.getObject().getReSignMsg()+"金币";
+                            Log.d(TAG, "onNext: " + str);
+                            qiandao(da,str);
+
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
+    }
+
+    //弹出对话框确定是否签到  并调用sendsign()函数发送数据请求签到  da:签到的是哪一天
+    public void qiandao(int da,String str){
         CustomDialogCleanNotice.Builder builder;
         if(da<nowWeek){
             //补签  拿到补签需要的金币数填充字符串
-            String consume = "补签需要消耗1金币";
+
             builder = new CustomDialogCleanNotice.Builder(EveryDayRegisterActivity.this);
-            builder.setMessage(consume).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            builder.setMessage(str).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     sendsign(da,0);          //签到 补签
                     dialog.dismiss();
-
                 }
             });
             builder.setNegativeButton("取消",
@@ -489,3 +523,12 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
         animator.start();
     }
 }
+
+
+
+
+
+
+
+
+
