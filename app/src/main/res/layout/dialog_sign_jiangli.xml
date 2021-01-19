@@ -5,28 +5,103 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:background="@drawable/tenradious_white_bg"
-        android:layout_width="@dimen/dp_265"
+        android:background="@drawable/sign_dialog_bg"
+        android:layout_width="@dimen/dp_238"
         android:layout_centerInParent="true"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/dp_262">
 
-        <TextView
+        <ImageView
+            android:id="@+id/i1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_26"
+            android:layout_width="@dimen/dp_207"
+            android:layout_height="@dimen/dp_91"
+            android:src="@drawable/signjiangli"
+            />
+        <LinearLayout
+            android:layout_below="@+id/i1"
             android:gravity="center"
-            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_29"
+            android:id="@+id/l1"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_20"
-
-            android:text="提示信息"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             >
-
-        </TextView>
-        <TextView
-            android:id="@+id/tv_signjiangli"
+            <TextView
+                android:id="@+id/tv_signinfo0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="签到成功！"
+                android:layout_alignParentLeft="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dp_15"
+                />
+            <TextView
+                android:id="@+id/tv_jinbi0"
+                android:layout_width="@dimen/dp_30"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_toRightOf="@+id/tv_signinfo0"
+                android:text="+1"
+                android:textColor="#FED523"
+                android:textSize="@dimen/dp_15"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/tv_jinbi0"
+                android:text="金币"
+                android:textColor="#FED523"
+                android:textSize="@dimen/dp_15"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_below="@+id/l1"
             android:gravity="center"
+            android:id="@+id/l2"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_120">
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_signinfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="连续签到！"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dp_15"
+                />
+            <TextView
+                android:layout_toRightOf="@+id/tv_signinfo"
+                android:id="@+id/tv_jinbi"
+                android:layout_width="@dimen/dp_30"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="+10"
+                android:textColor="#FED523"
+                android:textSize="@dimen/dp_15"
+                />
+            <TextView
+                android:layout_toRightOf="@+id/tv_jinbi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="金币"
+                android:textColor="#FED523"
+                android:textSize="@dimen/dp_15"
+                />
+        </LinearLayout>
 
-        </TextView>
+        <TextView
+            android:id="@+id/tv_signanniu"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_width="@dimen/dp_180"
+            android:layout_height="@dimen/dp_35"
+            android:layout_below="@+id/l2"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="我知道了"
+            android:background="@drawable/sign_dialog_text_bg"
+            />
 
 
     </RelativeLayout>

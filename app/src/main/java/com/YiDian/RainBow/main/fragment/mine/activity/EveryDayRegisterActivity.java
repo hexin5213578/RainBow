@@ -3,6 +3,7 @@ package com.YiDian.RainBow.main.fragment.mine.activity;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Handler;
@@ -17,6 +18,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.TextClock;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.YiDian.RainBow.R;
@@ -97,6 +99,7 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
     ArrayList<TextView> list1 = new ArrayList<>();
     ArrayList<View> list2 = new ArrayList<>();
     ArrayList<TextView> awardList = new ArrayList<>();
+    ArrayList<String> smallTitle = new ArrayList<>();
     private PopupWindow mPopupWindow1;
 
     /**
@@ -120,6 +123,15 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
         list1.add(tvZhouwu);
         list1.add(tvZhouliu);
         list1.add(tvZhouri);
+        //
+        smallTitle.add("第一天");
+        smallTitle.add("第二天");
+        smallTitle.add("第三天");
+        smallTitle.add("第四天");
+        smallTitle.add("第五天");
+        smallTitle.add("第六天");
+        smallTitle.add("第七天");
+
         //背景
         list2.add(rlZhouyi);
         list2.add(rlZhouer);
@@ -153,12 +165,12 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
         Log.d(TAG, "getData:------>" + userId);
         nowWeek = 7;
 //        getWeekbyDate(new Date())
-        isSign();
+        refreshSign();
     }
     List<SigninMsgBean.ObjectBean.SignInListBean> signInList = new ArrayList<>();
 
     //刷新数据 Refresh  init
-    public void isSign() {
+    public void refreshSign() {
         //拿到数据
         NetUtils.getInstance().getApis().
                 doGetSigninMsg(userId)
@@ -175,7 +187,6 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
                         tvDays.setText(signinMsgBean.getObject().getContinuousDays()+"");
                         //拿到签到信息列表
                         signInList = signinMsgBean.getObject().getSignInList();
-                        Log.d(TAG, "isSign: 返回信息条数" + signInList.size());
                         TextView textView;
                         View view1;
                         //遍历数据
@@ -187,19 +198,21 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
                             awardList.get(i-1).setText("金币 ×"+signInList.get(i-1).getAward());
                             if (i < nowWeek) {
                                 //今天之前的操作
-                                //判断是否签到设置背景
+                                //判断是否签到设置背景  getIsSign()==1  表示已经签到
                                 if (signInList.get(i - 1).getIsSign() == 1) {
                                     //禁止签到
                                     view1.setEnabled(false);
                                     //设置为签到
+                                    awardList.get(i-1).setTextColor(EveryDayRegisterActivity.this.getResources().getColor(R.color.color_999999));
+                                    textView.setText(smallTitle.get(i-1));
                                     textView.setBackgroundResource(R.drawable.select_qiandao_yiqiandao);
                                     view1.setBackgroundResource(R.drawable.select_qiandao_yiqiandao_bg);
                                 } else {
+                                    //设置补签
+                                    textView.setText("点击补签");
                                     //设置为未签到
                                     textView.setBackgroundResource(R.drawable.select_qiandao_weiqiandao);
                                     view1.setBackgroundResource(R.drawable.select_qiandao_weiqiandao_bg);
-                                    //设置补签
-                                    textView.setText("点击补签");
                                 }
                             } else if (i == nowWeek) {
                                 Log.d(TAG, "idSign: 今天的操作=" + i);
@@ -209,8 +222,9 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
                                     btQiandao.setEnabled(false);
                                     btQiandao.setBackgroundResource(R.drawable.background_gradient_yiqiandao);
                                     btQiandao.setText("已签到");
-                                    view1.isEnabled();          //不允许点击
+                                    view1.setEnabled(false);      //不允许点击
                                     //设置为签到
+                                    awardList.get(i-1).setTextColor(EveryDayRegisterActivity.this.getResources().getColor(R.color.color_999999));
                                     textView.setBackgroundResource(R.drawable.select_qiandao_yiqiandao);
                                     view1.setBackgroundResource(R.drawable.select_qiandao_yiqiandao_bg);
 
@@ -256,16 +270,13 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
         }
         return dayForWeek;
     }
-//    public void  singing(){
-//        view.setBackgroundResource(R.drawable.select_qiandao_yiqiandao_bg);
-//    }
 
     @Override
     protected BasePresenter initPresenter() {
         return null;
     }
-    //发送签到请求修改服务器数据
-    public void sendsign(int day) {
+    //发送签到请求修改服务器数据 并调用refreshSign()刷新视图
+    public void sendsign(int day,int flag) {
         NetUtils.getInstance().getApis().
                 doAddSign(day, userId).
                 subscribeOn(Schedulers.io()).
@@ -273,20 +284,24 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
                 subscribe(new Observer<AddSignInBean>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        Log.d(TAG, "onSubscribe: ccccccccccccc");
                     }
 
                     @Override
                     public void onNext(AddSignInBean addSignInBean) {
-                        Log.d(TAG, "onNext: "+day);
-                        isSign();
+                        if(addSignInBean.getType().equals("OK")){
+                            refreshSign();
+                            addSignInBean.getObject().getTodayAward();
+                            // 弹出修改昵称弹出框   flag=1 签到 0 为补签     award：签到奖励   buqian 补签奖励  continuousAward：连续签到奖励
+                            showChangeName(flag,addSignInBean.getObject().getTodayAward(),addSignInBean.getObject().getContinuousAward());
+                        }else {
+                            Log.d(TAG, "onNext: fst---->请求数据错误");
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
                     }
-
                     @Override
                     public void onComplete() {
 
@@ -295,7 +310,7 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
 
     }
 
-
+    //处理点击事件  判断当前点击的按钮 调用签到
     @Override
     public void onClick(View v) {
 
@@ -306,7 +321,6 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
                 break;
             case R.id.rl_zhouyi:
                 qiandao(1);
-
                 break;
             case R.id.rl_zhouer:
                 qiandao(2);
@@ -332,18 +346,18 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
                 break;
         }
     }
-
+    //弹出对话框确定是否签到  并调用sendsign()函数发送数据请求签到
     public void qiandao(int da){
         CustomDialogCleanNotice.Builder builder;
-        if(nowWeek<da){
+        if(da<nowWeek){
             //补签  拿到补签需要的金币数填充字符串
-            String consume = "签到需要1金币";
+            String consume = "补签需要消耗1金币";
             builder = new CustomDialogCleanNotice.Builder(EveryDayRegisterActivity.this);
             builder.setMessage(consume).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    sendsign(da);          //签到 补签
+                    sendsign(da,0);          //签到 补签
                     dialog.dismiss();
-                    showChangeName(1,2,3,4);
+
                 }
             });
             builder.setNegativeButton("取消",
@@ -355,10 +369,11 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
             builder.create().show();
 
         }else {
+            //签到今天
             builder = new CustomDialogCleanNotice.Builder(EveryDayRegisterActivity.this);
             builder.setMessage("确定签到？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    sendsign(da);          //签到 补签
+                    sendsign(da,1);          //签到 补签
                     dialog.dismiss();
                 }
             });
@@ -373,33 +388,44 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
         }
     }
 
-    // 弹出修改昵称弹出框   flag=1 签到奖励   flag 补签奖励
-    public void showChangeName(int flag,int award,int buqian,int continuousAward) {
+    // 弹出修改昵称弹出框   flag=1 签到 0 为补签     award：签到奖励   buqian 补签奖励  continuousAward：连续签到奖励
+    public void showChangeName(int flag,int signAward,int continuousAward) {
 
-
+        Log.d(TAG, "showChangeName: -------->");
         //创建popwiondow弹出框
         mPopupWindow1 = new PopupWindow();
         mPopupWindow1.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         mPopupWindow1.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
-        TextView view = (TextView) LayoutInflater.from(this).inflate(R.layout.dialog_sign_jiangli, null);
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_sign_jiangli, null);
+        TextView signView = view.findViewById(R.id.tv_jinbi0);
+        TextView continuousSignView = view.findViewById(R.id.tv_jinbi);
+        TextView signt = view.findViewById(R.id.tv_signinfo0);
+        TextView button = view.findViewById(R.id.tv_signanniu);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+
 
         if(flag==1){
             //获取签到信息
-            String str = "签到奖励金币 × "+award+"\n"+"连续签到奖励 × "+continuousAward;
-            view.setText(str);
-
+            String str = "+"+signAward;
+            signView.setText(str);
+            String str2 = "+"+continuousAward;
+            continuousSignView.setText(str2);
+            String str3 = "签到成功！";
+            signt.setText(str3);
         }else {
-            String str = "补签奖励金币 × "+buqian+"\n"+"连续签到奖励 × "+continuousAward;
-            view.setText(str);
+            String str = "+"+signAward;
+            signView.setText(str);
+            String str2 = "+"+continuousAward;
+            continuousSignView.setText(str2);
+            String str3 = "补签成功！";
+            signt.setText(str3);
         }
 
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                dismiss();
-            }
-        },2000);
 
         //popwindow设置属性
         mPopupWindow1.setContentView(view);

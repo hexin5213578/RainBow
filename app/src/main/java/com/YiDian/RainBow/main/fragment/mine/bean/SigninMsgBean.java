@@ -4,10 +4,11 @@ import java.util.List;
 
 public class SigninMsgBean {
 
+
     /**
      * msg : 数据加载成功
      * type : OK
-     * object : {"signInList":[{"id":119,"userId":1030,"weeks":1,"isSign":1,"createTime":"2021-01-17T16:00:00.000+0000","award":5},{"id":120,"userId":1030,"weeks":2,"isSign":0,"createTime":null,"award":5},{"id":121,"userId":1030,"weeks":3,"isSign":0,"createTime":null,"award":5},{"id":122,"userId":1030,"weeks":4,"isSign":0,"createTime":null,"award":5},{"id":123,"userId":1030,"weeks":5,"isSign":0,"createTime":null,"award":5},{"id":124,"userId":1030,"weeks":6,"isSign":0,"createTime":null,"award":5},{"id":125,"userId":1030,"weeks":7,"isSign":0,"createTime":null,"award":5}],"continuousDays":1}
+     * object : {"signInList":[{"id":119,"userId":1030,"weeks":1,"isSign":1,"createTime":"2021-01-17T16:00:00.000+0000","award":5},{"id":120,"userId":1030,"weeks":2,"isSign":1,"createTime":"2021-01-18T16:00:00.000+0000","award":5},{"id":121,"userId":1030,"weeks":3,"isSign":0,"createTime":"2021-01-17T16:00:00.000+0000","award":5},{"id":122,"userId":1030,"weeks":4,"isSign":0,"createTime":"2021-01-17T16:00:00.000+0000","award":5},{"id":123,"userId":1030,"weeks":5,"isSign":0,"createTime":"2021-01-17T16:00:00.000+0000","award":5},{"id":124,"userId":1030,"weeks":6,"isSign":0,"createTime":"2021-01-17T16:00:00.000+0000","award":5},{"id":125,"userId":1030,"weeks":7,"isSign":0,"createTime":"2021-01-17T16:00:00.000+0000","award":5}],"continuousDays":0}
      */
 
     private String msg;
@@ -40,15 +41,8 @@ public class SigninMsgBean {
 
     public static class ObjectBean {
         /**
-         * signInList : [
-         * {"id":119,"userId":1030,"weeks":1,"isSign":1,"createTime":"2021-01-17T16:00:00.000+0000","award":5},
-         * {"id":120,"userId":1030,"weeks":2,"isSign":0,"createTime":null,"award":5},
-         * {"id":121,"userId":1030,"weeks":3,"isSign":0,"createTime":null,"award":5},
-         * {"id":122,"userId":1030,"weeks":4,"isSign":0,"createTime":null,"award":5},
-         * {"id":123,"userId":1030,"weeks":5,"isSign":0,"createTime":null,"award":5},
-         * {"id":124,"userId":1030,"weeks":6,"isSign":0,"createTime":null,"award":5},
-         * {"id":125,"userId":1030,"weeks":7,"isSign":0,"createTime":null,"award":5}]
-         * continuousDays : 1
+         * signInList : [{"id":119,"userId":1030,"weeks":1,"isSign":1,"createTime":"2021-01-17T16:00:00.000+0000","award":5},{"id":120,"userId":1030,"weeks":2,"isSign":1,"createTime":"2021-01-18T16:00:00.000+0000","award":5},{"id":121,"userId":1030,"weeks":3,"isSign":0,"createTime":"2021-01-17T16:00:00.000+0000","award":5},{"id":122,"userId":1030,"weeks":4,"isSign":0,"createTime":"2021-01-17T16:00:00.000+0000","award":5},{"id":123,"userId":1030,"weeks":5,"isSign":0,"createTime":"2021-01-17T16:00:00.000+0000","award":5},{"id":124,"userId":1030,"weeks":6,"isSign":0,"createTime":"2021-01-17T16:00:00.000+0000","award":5},{"id":125,"userId":1030,"weeks":7,"isSign":0,"createTime":"2021-01-17T16:00:00.000+0000","award":5}]
+         * continuousDays : 0
          */
 
         private int continuousDays;
