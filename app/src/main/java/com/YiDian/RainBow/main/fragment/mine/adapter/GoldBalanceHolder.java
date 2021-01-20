@@ -15,6 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class GoldBalanceHolder extends RecyclerView.ViewHolder {
+
     @BindView(R.id.tv_gift)
     TextView tvGift;
     @BindView(R.id.tv_consumption)

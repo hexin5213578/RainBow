@@ -26,6 +26,7 @@ import com.YiDian.RainBow.main.fragment.mine.activity.CollectActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.EditMsgActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.EveryDayRegisterActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.FangkerecordActivity;
+import com.YiDian.RainBow.main.fragment.mine.activity.GoldBalance;
 import com.YiDian.RainBow.main.fragment.mine.activity.MyGiftActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.MyQrCodeActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.MydraftActivity;
@@ -326,7 +327,7 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
             //我的金币
             case R.id.ll_my_money:
                 //跳转到金币充值功能
-                 intent = new Intent(getContext(), RechargeGlodActivity.class);
+                 intent = new Intent(getContext(), GoldBalance.class);
                 startActivity(intent);
                 break;
             //特权认证

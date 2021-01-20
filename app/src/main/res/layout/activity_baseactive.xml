@@ -80,6 +80,7 @@
                 </TextView>
 
                 <TextView
+                    android:id="@+id/tv_ableuse"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
@@ -114,21 +115,10 @@
                     android:background="@drawable/balance_bg2"
 
                     />
-
-
-
-
-
-
             </RelativeLayout>
-
 
         </RelativeLayout>
 
-        
-        
-        
-        
     </RelativeLayout>
     <LinearLayout
         android:id="@+id/l1"
@@ -139,6 +129,7 @@
         android:gravity="center"
 
         >
+        
         <TextView
             android:id="@+id/tv_time_period"
             android:layout_width="wrap_content"
@@ -155,14 +146,65 @@
             android:textSize="@dimen/sp_12"
             android:textColor="#999999"
             />
+        <RelativeLayout
+            android:id="@+id/iv_date"
+            android:layout_width="@dimen/dp_36"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            >
+            <ImageView
+                android:id="@+id/iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/date1"
+                />
+
+        </RelativeLayout>
     </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_below="@+id/l1"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:id="@+id/rl_default"
+        android:visibility="gone"
+        android:layout_below="@+id/l1">
+
+        <ImageView
+            android:id="@+id/iv2"
+            android:layout_marginTop="@dimen/dp_25"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/account_default"
+            />
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#333333"
+            android:text="当前暂无帐单条目"
+            android:textSize="@dimen/sp_15"
+            android:layout_below="@+id/iv2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_25"
+            />
+    </RelativeLayout>
+    <com.liaoinstan.springview.widget.SpringView
+        android:layout_width="match_parent"
+        android:id="@+id/sv"
+        android:layout_below="@id/l1"
+        android:visibility="visible"
+        android:layout_height="match_parent">
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_below="@+id/l1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </androidx.recyclerview.widget.RecyclerView>
+        </androidx.core.widget.NestedScrollView>
+    </com.liaoinstan.springview.widget.SpringView>
 
 
-    </androidx.recyclerview.widget.RecyclerView>
-    
+
 </RelativeLayout>

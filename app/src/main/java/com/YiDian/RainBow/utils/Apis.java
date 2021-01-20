@@ -26,6 +26,7 @@ import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.main.fragment.home.bean.OneCommentBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.AddSignInBean;
+import com.YiDian.RainBow.main.fragment.mine.bean.ConsumeRecordBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.FangkeMsgBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.GiftBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.LoginUserInfoBean;
@@ -382,4 +383,12 @@ public interface Apis {
     //获取补签的天数 及花费的金币
     @GET("signIn/getReSignInDays")
     Observable<SignNeedPayBean> doGetReSignDays(@Query("userId")int userid);
+
+    //查询用户账单详情  每页15
+    @GET("goldRecord/selectUserIdRecord")
+    Observable<ConsumeRecordBean>doGetConsumeRecord(@Query("userId")int userid,@Query("page")int page,@Query("pageSize")int pageSize);
+
+    @GET("goldRecord/selectUserIdRecord")
+    Observable<ConsumeRecordBean>doGetConsumeRecord(@Query("userId")int userid,@Query("beginTime")String beginTime,@Query("beginTime")String endTime,@Query("page")int page,@Query("pageSize")int pageSize);
+
 }
