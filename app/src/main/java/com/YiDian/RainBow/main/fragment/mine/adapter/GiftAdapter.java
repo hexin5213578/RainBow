@@ -64,6 +64,8 @@ public class GiftAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         TextView tvName;
         @BindView(R.id.tv_count)
         TextView tvCount;
+
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
