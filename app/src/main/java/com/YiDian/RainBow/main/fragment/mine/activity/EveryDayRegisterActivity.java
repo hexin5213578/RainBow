@@ -26,6 +26,7 @@ import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.customDialog.CustomDialogCleanNotice;
+import com.YiDian.RainBow.custom.customDialog.EveryDayDialogDialog;
 import com.YiDian.RainBow.main.fragment.mine.bean.AddSignInBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.SignNeedPayBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.SigninMsgBean;
@@ -164,8 +165,8 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
         //获取用户id
         userId = Integer.parseInt(Common.getUserId());
         Log.d(TAG, "getData:------>" + userId);
-        nowWeek = 7;
-//        getWeekbyDate(new Date())
+        nowWeek = getWeekbyDate(new Date());
+//
         refreshSign();
     }
     List<SigninMsgBean.ObjectBean.SignInListBean> signInList = new ArrayList<>();
@@ -231,7 +232,7 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
 
                                 } else {
                                     //设置为未签到
-                                    btQiandao.setText("未签到");
+                                    btQiandao.setText("点击签到");
                                     textView.setBackgroundResource(R.drawable.select_qiandao_weiqiandao);
                                     view1.setBackgroundResource(R.drawable.select_qiandao_weiqiandao_bg);
                                 }
@@ -383,11 +384,11 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
 
     //弹出对话框确定是否签到  并调用sendsign()函数发送数据请求签到  da:签到的是哪一天
     public void qiandao(int da,String str){
-        CustomDialogCleanNotice.Builder builder;
+        EveryDayDialogDialog.Builder builder;
         if(da<nowWeek){
             //补签  拿到补签需要的金币数填充字符串
 
-            builder = new CustomDialogCleanNotice.Builder(EveryDayRegisterActivity.this);
+            builder = new EveryDayDialogDialog.Builder(EveryDayRegisterActivity.this);
             builder.setMessage(str).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     sendsign(da,0);          //签到 补签
@@ -404,7 +405,7 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
 
         }else {
             //签到今天
-            builder = new CustomDialogCleanNotice.Builder(EveryDayRegisterActivity.this);
+            builder = new EveryDayDialogDialog.Builder(EveryDayRegisterActivity.this);
             builder.setMessage("确定签到？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     sendsign(da,1);          //签到 补签
@@ -422,7 +423,7 @@ public class EveryDayRegisterActivity extends BaseAvtivity implements View.OnCli
         }
     }
 
-    // 弹出修改昵称弹出框   flag=1 签到 0 为补签     award：签到奖励   buqian 补签奖励  continuousAward：连续签到奖励
+    // 弹出弹出框   flag=1 签到 0 为补签     award：签到奖励   buqian 补签奖励  continuousAward：连续签到奖励
     public void showChangeName(int flag,int signAward,int continuousAward) {
 
         Log.d(TAG, "showChangeName: -------->");

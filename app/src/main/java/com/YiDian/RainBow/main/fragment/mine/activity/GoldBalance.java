@@ -7,6 +7,9 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
@@ -51,6 +54,8 @@ public class GoldBalance extends BaseAvtivity implements View.OnClickListener {
     SpringView sv;
     @BindView(R.id.rl_default)
     RelativeLayout rlDefault;
+    @BindView(R.id.recycler_view_record)
+    RecyclerView recyclerViewRecord;
     private Intent intent;
     private int userId;
     private final String TAG = "xxx";
@@ -176,8 +181,13 @@ public class GoldBalance extends BaseAvtivity implements View.OnClickListener {
                             //可提现金币
                             int ableUseGold = consumeRecordBean.getObject().getGoldNum().getGoldUsable();
                             tvAbleuse.setText(ableUseGold + "");
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(GoldBalance.this, RecyclerView.VERTICAL, false);
+                            recyclerViewRecord.setLayoutManager(linearLayoutManager);
+
                             List<ConsumeRecordBean.ObjectBean.PageInfoBean.ListBean> list = consumeRecordBean.getObject().getPageInfo().getList();
                             GoldBalanceAdapter adapter = new GoldBalanceAdapter(GoldBalance.this, list);
+                            //创建最新动态适配器
+                            recyclerViewRecord.setAdapter(adapter);
 
 
                         } else {

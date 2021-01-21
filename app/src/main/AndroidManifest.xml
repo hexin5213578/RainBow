@@ -459,5 +459,27 @@
         <activity
             android:name=".agreement.XingweiActivity"
             android:screenOrientation="portrait" />
+
+<!--     账单界面-->
+        <activity
+            android:name=".main.fragment.mine.activity.GoldBalance"
+            android:screenOrientation="portrait"
+            />
+
+<!--    提现界面-->
+        <activity
+            android:name=".main.fragment.mine.activity.CashActivity"
+            android:screenOrientation="portrait"
+            />
+
+<!--    情侣标识-->
+        <activity
+            android:name=".main.fragment.mine.activity.LavesMarkActivity"
+            android:screenOrientation="portrait"
+            />
+
+
+
+
     </application>
 </manifest>
