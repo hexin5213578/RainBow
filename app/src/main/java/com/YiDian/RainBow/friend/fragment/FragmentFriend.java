@@ -191,10 +191,12 @@ public class FragmentFriend extends Fragment {
 
                     @Override
                     public void onNext(FriendBean friendBean) {
+
+                        hideDialog();
+
                         List<FriendBean.ObjectBean> list =
                                 friendBean.getObject();
                         if (list.size() > 0 && list != null) {
-                            hideDialog();
                             //存本地缓存
                             for (int i = 1; i <= list.size(); i++) {
                                 FriendBean.ObjectBean objectBean = list.get(i - 1);

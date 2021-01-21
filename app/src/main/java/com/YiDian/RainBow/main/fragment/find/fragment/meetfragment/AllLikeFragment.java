@@ -44,6 +44,7 @@ public class AllLikeFragment extends BaseFragment {
     RelativeLayout rlNodata;
     int page = 1;
     int size = 15;
+    private boolean isfirst;
     private List<AllLikeBean.ObjectBean.ListBean> allList;
     private LinearLayoutManager linearLayoutManager;
     private AllLikeAdapter allLikeAdapter;
@@ -69,7 +70,7 @@ public class AllLikeFragment extends BaseFragment {
         allList = new ArrayList<>();
         userid = Integer.valueOf(Common.getUserId());
 
-
+        isfirst = true;
         getStr(page,size);
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
@@ -175,6 +176,18 @@ public class AllLikeFragment extends BaseFragment {
         super.onResume();
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser){
+            if (isfirst){
+                allList.clear();
+                getStr(1,size);
+
+            }
         }
     }
 

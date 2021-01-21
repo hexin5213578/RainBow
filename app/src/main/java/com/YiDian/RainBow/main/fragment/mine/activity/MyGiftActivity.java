@@ -1,6 +1,5 @@
 package com.YiDian.RainBow.main.fragment.mine.activity;
 
-import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -17,29 +16,15 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
-import com.YiDian.RainBow.friend.FriendsActivity;
-import com.YiDian.RainBow.friend.fragment.FragmentFans;
-import com.YiDian.RainBow.friend.fragment.FragmentFollow;
-import com.YiDian.RainBow.friend.fragment.FragmentFriend;
-import com.YiDian.RainBow.friend.fragment.FragmentGroup;
-import com.YiDian.RainBow.main.activity.MainActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.giftfragment.ReciveGiftFragment;
 import com.YiDian.RainBow.main.fragment.mine.activity.giftfragment.SendGiftFragment;
-import com.YiDian.RainBow.main.fragment.mine.bean.GiftBean;
-import com.YiDian.RainBow.utils.NetUtils;
 import com.YiDian.RainBow.utils.SPUtil;
 import com.leaf.library.StatusBarUtil;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 //我的礼物
 public class MyGiftActivity extends BaseAvtivity implements RadioGroup.OnCheckedChangeListener {

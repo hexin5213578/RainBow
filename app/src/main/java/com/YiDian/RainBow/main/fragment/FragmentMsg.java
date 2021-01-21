@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -23,7 +22,7 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
-import com.YiDian.RainBow.friend.FriendsActivity;
+import com.YiDian.RainBow.friend.activity.FriendsActivity;
 import com.YiDian.RainBow.main.bean.NoticeCountBean;
 import com.YiDian.RainBow.main.fragment.msg.activity.FriendImActivity;
 import com.YiDian.RainBow.main.fragment.msg.adapter.MsgRecordingAdapter;

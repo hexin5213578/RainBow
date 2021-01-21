@@ -43,6 +43,7 @@ public class MyLikeFragment extends BaseFragment {
     private int userid;
     int page = 1;
     int size = 15;
+    private boolean isfirst;
     private List<UserMySeeBean.ObjectBean> allList;
     private LinearLayoutManager linearLayoutManager;
     private MyLikeAdapter myLikeAdapter;
@@ -68,7 +69,7 @@ public class MyLikeFragment extends BaseFragment {
         userid = Integer.valueOf(Common.getUserId());
 
         getStr(page,size);
-
+        isfirst = true;
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {
@@ -171,7 +172,16 @@ public class MyLikeFragment extends BaseFragment {
             EventBus.getDefault().register(this);
         }
     }
-
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser){
+            if (isfirst){
+                allList.clear();
+                getStr(1,size);
+            }
+        }
+    }
     @Override
     public void onDestroy() {
         super.onDestroy();
