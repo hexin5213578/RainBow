@@ -107,6 +107,7 @@ public interface Apis {
     Observable<ComPleteMsgBean> doComPlteAllMsg(@Query("id")int userid,@Query("nickName")String name,@Query("headImg")String headimg,@Query("birthday")String birthday,@Query("userRole")String role);
 
     //完善QQ微信登录信息
+    @POST("user/updateUserInfo")
     Observable<ComPleteMsgBean> doComPlteThiredLogin(@Query("id")int userid,@Query("nickName")String name,@Query("headImg")String headimg);
 
     //修改用户名
@@ -226,6 +227,7 @@ public interface Apis {
     //查询用户收藏的动态
     @GET("content/getContentByUserCollect")
     Observable<NewDynamicBean> doGetCollectDynamicById(@Query("page")int page,@Query("pageSize")int size,@Query("userId")int userid);
+
     //我喜欢的
     @GET("favorite/selectUserIdS")
     Observable<UserMySeeBean> doGetMyLike(@Query("userId")int userid,@Query("page")int page,@Query("pageSize")int size);

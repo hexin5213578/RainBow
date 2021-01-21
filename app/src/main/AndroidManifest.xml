@@ -372,6 +372,11 @@
             android:name=".friend.activity.FriendsActivity"
             android:screenOrientation="portrait" />
 
+        <!-- 添加好友 -->
+        <activity
+            android:name=".friend.activity.AddFriendActivity"
+            android:screenOrientation="portrait" />
+
         <!-- 创建群组 -->
         <activity
             android:name=".imgroup.CreateGroupActivity"
@@ -443,8 +448,6 @@
             android:name=".setup.activity.BlackListActivity"
             android:screenOrientation="portrait" />
 
-
-
         <!-- 用户协议 -->
         <activity
             android:name=".agreement.YonghuActivity"
@@ -460,26 +463,22 @@
             android:name=".agreement.XingweiActivity"
             android:screenOrientation="portrait" />
 
-<!--     账单界面-->
+        <!--账单界面-->
         <activity
             android:name=".main.fragment.mine.activity.GoldBalance"
             android:screenOrientation="portrait"
             />
 
-<!--    提现界面-->
+        <!--提现界面-->
         <activity
             android:name=".main.fragment.mine.activity.CashActivity"
             android:screenOrientation="portrait"
             />
 
-<!--    情侣标识-->
+        <!--情侣标识-->
         <activity
             android:name=".main.fragment.mine.activity.LavesMarkActivity"
             android:screenOrientation="portrait"
             />
-
-
-
-
     </application>
 </manifest>

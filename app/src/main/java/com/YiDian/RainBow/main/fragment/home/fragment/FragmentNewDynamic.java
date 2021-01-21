@@ -234,7 +234,7 @@ public class FragmentNewDynamic extends BaseFragment {
                             public void onNext(NewDynamicBean newDynamicBean) {
                                 NewDynamicBean.ObjectBean object = newDynamicBean.getObject();
                                 List<NewDynamicBean.ObjectBean.ListBean> list = object.getList();
-                                if (list.size() > 0 && list != null) {
+                                if (list != null && list.size() > 0) {
                                     //存五条数据
                                     for (int i = 1; i <= list.size(); i++) {
                                         NewDynamicBean.ObjectBean.ListBean listBean = list.get(i-1);
