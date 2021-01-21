@@ -12,6 +12,8 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.friend.adapter.RecommendGroupAdapter;
+import com.YiDian.RainBow.friend.bean.RecommendGroupBean;
 import com.YiDian.RainBow.imgroup.adapter.GroupMyCreateAdapter;
 import com.YiDian.RainBow.imgroup.adapter.GroupMyJoinAdapter;
 import com.YiDian.RainBow.imgroup.bean.MyCreateGroupMsgBean;
@@ -72,9 +74,12 @@ public class FragmentGroup extends BaseFragment {
         sv.setHeader(new AliHeader(getContext()));
         userid = Integer.valueOf(Common.getUserId());
 
+        sv.setHeader(new AliHeader(getContext()));
+
         //首次进入获取数据
         getMyCreateGroup();
         getMyJoinGroup();
+        getRecommendGroup();
 
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
@@ -85,6 +90,8 @@ public class FragmentGroup extends BaseFragment {
                         //刷新重新获取数据
                         getMyCreateGroup();
                         getMyJoinGroup();
+                        getRecommendGroup();
+
 
                         sv.onFinishFreshAndLoad();
                     }
@@ -98,8 +105,41 @@ public class FragmentGroup extends BaseFragment {
         });
     }
 
+    //获取推荐群组
     public void getRecommendGroup() {
+        NetUtils.getInstance()
+                .getApis()
+                .dogetRecommendGroup(userid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<RecommendGroupBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
+                    }
+
+                    @Override
+                    public void onNext(RecommendGroupBean recommendGroupBean) {
+                        List<RecommendGroupBean.ObjectBean> list = recommendGroupBean.getObject();
+
+                        //创建布局管理器
+                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+                        rcComment.setLayoutManager(linearLayoutManager);
+
+                        RecommendGroupAdapter adapter = new RecommendGroupAdapter(getContext(), list);
+                        rcComment.setAdapter(adapter);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     @Override

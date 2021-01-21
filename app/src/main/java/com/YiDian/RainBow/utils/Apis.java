@@ -6,6 +6,8 @@ import com.YiDian.RainBow.dynamic.bean.SelectFriendOrGroupBean;
 import com.YiDian.RainBow.friend.bean.FriendBean;
 import com.YiDian.RainBow.friend.bean.MyFansBean;
 import com.YiDian.RainBow.friend.bean.MyfollowBean;
+import com.YiDian.RainBow.friend.bean.RecommendGroupBean;
+import com.YiDian.RainBow.friend.bean.RecommendUserBean;
 import com.YiDian.RainBow.imgroup.bean.MyCreateGroupMsgBean;
 import com.YiDian.RainBow.imgroup.bean.MyJoinGroupMsgBean;
 import com.YiDian.RainBow.main.bean.NoticeCountBean;
@@ -363,6 +365,14 @@ public interface Apis {
     //我加入的群聊
     @GET("group/selectGroupInfo")
     Observable<MyJoinGroupMsgBean> dogetMyCreateGroup(@Query("userId")int userid);
+
+    //推荐群组
+    @GET("groupInfo/selectTuiGroup")
+    Observable<RecommendGroupBean> dogetRecommendGroup(@Query("userId")int userid);
+
+    //推荐用户
+    @GET("user/selectTuiUser")
+    Observable<RecommendUserBean> dogetRecommendFriend(@Query("userId")int userid);
 
     //查询送出的礼物
     @GET("giftMarkVO/selectGiftMarkOut")

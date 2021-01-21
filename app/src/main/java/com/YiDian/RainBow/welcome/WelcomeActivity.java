@@ -38,10 +38,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class WelcomeActivity extends BaseAvtivity {
-
-
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
     private Handler handler;
 
     @Override
@@ -54,9 +50,8 @@ public class WelcomeActivity extends BaseAvtivity {
 
         String userId = Common.getUserId();
 
-        StatusBarUtil.setGradientColor(WelcomeActivity.this,toolbar);
+        StatusBarUtil.setTransparentForWindow(WelcomeActivity.this);
         StatusBarUtil.setDarkMode(WelcomeActivity.this);
-
 
         //获取七牛云uploadToken
         NetUtils.getInstance().getApis().getUpdateToken()

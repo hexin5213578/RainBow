@@ -1,7 +1,6 @@
-package com.YiDian.RainBow.friend;
+package com.YiDian.RainBow.friend.activity;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -22,7 +21,6 @@ import com.YiDian.RainBow.friend.fragment.FragmentFans;
 import com.YiDian.RainBow.friend.fragment.FragmentFriend;
 import com.YiDian.RainBow.friend.fragment.FragmentGroup;
 import com.YiDian.RainBow.imgroup.CreateGroupActivity;
-import com.YiDian.RainBow.main.fragment.msg.activity.FriendImActivity;
 import com.leaf.library.StatusBarUtil;
 
 import org.greenrobot.eventbus.EventBus;
