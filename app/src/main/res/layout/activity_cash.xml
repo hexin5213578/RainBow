@@ -119,7 +119,8 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:checked="true"
                 android:button="@drawable/check_button_bg"
-                android:textColor="#999999">
+                android:textColor="#999999"
+                >
             </RadioButton>
             <ImageView
                 android:id="@+id/iv2"
@@ -137,14 +138,9 @@
                 android:layout_marginLeft="@dimen/sp_14"
                 />
         </LinearLayout>
-        <View
-            android:layout_width="match_parent"
-            android:background="#F0F0F0"
-            android:layout_below="@id/l2"
-            android:id="@+id/v34"
-            android:layout_height="@dimen/dp_1">
-        </View>
+
         <LinearLayout
+            android:layout_marginTop="@dimen/dp_2"
             android:id="@+id/l3"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_53"

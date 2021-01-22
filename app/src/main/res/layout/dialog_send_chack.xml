@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="@dimen/dp_245"
+        android:layout_height="@dimen/dp_268"
+        android:background="@drawable/love_dialog"
+        android:layout_centerInParent="true"
+
+        >
+        <TextView
+           android:id="@+id/tv_true"
+            android:layout_width="@dimen/dp_170"
+            android:layout_height="@dimen/dp_30"
+            android:text="确认"
+            android:textSize="@dimen/sp_15"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/tv_false"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:background="@drawable/love_dialog_true"
+            />
+        <TextView
+            android:id="@+id/tv_false"
+            android:layout_width="@dimen/dp_170"
+            android:layout_height="@dimen/dp_30"
+            android:text="取消"
+            android:textSize="@dimen/sp_15"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dp_31"
+            android:background="@drawable/love_dialog_false"
+            />
+        <TextView
+            android:id="@+id/t1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="是否与该用户发起情侣绑定"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/color_8867E7"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/tv_true"
+            android:layout_marginBottom="@dimen/dp_26"
+            />
+        <TextView
+            android:id="@+id/tv_dialog_nicheng"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="昵称"
+            android:textSize="@dimen/sp_12"
+            android:textColor="#333333"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/t1"
+            android:layout_marginBottom="@dimen/dp_9"
+            />
+        <ImageView
+            android:id="@+id/iv_headimg4"
+            android:layout_width="@dimen/dp_45"
+            android:layout_height="@dimen/dp_45"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_31"
+
+            />
+
+
+
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>

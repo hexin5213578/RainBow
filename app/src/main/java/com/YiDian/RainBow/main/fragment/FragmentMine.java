@@ -27,6 +27,7 @@ import com.YiDian.RainBow.main.fragment.mine.activity.EditMsgActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.EveryDayRegisterActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.FangkerecordActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.GoldBalance;
+import com.YiDian.RainBow.main.fragment.mine.activity.LavesMarkActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.MyGiftActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.MyQrCodeActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.MydraftActivity;
@@ -397,7 +398,8 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
                 break;
             //情侣标识
             case R.id.ll_yaoqing:
-
+                intent = new Intent(getContext(), LavesMarkActivity.class);
+                startActivity(intent);
                 break;
             //去签到
             case R.id.ll_qiandao:

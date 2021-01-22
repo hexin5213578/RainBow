@@ -253,12 +253,9 @@ public class BasisTimesUtils {
             mDatePickerDialog.setTitle(title);
         }
         Date  d = new Date();
-        try {
-            d= new SimpleDateFormat("yyyy-MM-dd").parse("2020-05-21");
-            mDatePickerDialog.getDatePicker().setMaxDate(d.getTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+
+        mDatePickerDialog.getDatePicker().setMaxDate(d.getTime());
+
         mDatePickerDialog.show();
         return new BasisTimesUtils();
     }

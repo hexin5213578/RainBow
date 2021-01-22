@@ -28,13 +28,17 @@ import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.main.fragment.home.bean.OneCommentBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.AddSignInBean;
+import com.YiDian.RainBow.main.fragment.mine.bean.ChackBuildLovesBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.ConsumeRecordBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.FangkeMsgBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.GiftBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.LoginUserInfoBean;
+import com.YiDian.RainBow.main.fragment.mine.bean.LoveBulidBean;
+import com.YiDian.RainBow.main.fragment.mine.bean.LoveStateBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.SelectAllDraftsBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.SignNeedPayBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.SigninMsgBean;
+import com.YiDian.RainBow.main.fragment.mine.bean.UserInfoById;
 import com.YiDian.RainBow.main.fragment.msg.bean.GiftMsgBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.GlodNumBean;
 import com.YiDian.RainBow.notice.bean.CleanNoticeBean;
@@ -404,5 +408,26 @@ public interface Apis {
     @GET("goldRecord/selectUserIdRecord")
     Observable<ConsumeRecordBean>doGetConsumeRecord(@Query("userId")int userid,@Query("page")int page,@Query("pageSize")int pageSize);
 
+    //情侣标识
+    @GET("lovers/selectLoveState")
+    Observable<LoveStateBean>doGetLoveState(@Query("userId")int userId);
+
+    //查询用户
+    @GET("user/selectUserInfoById")
+    Observable<UserInfoById>doGetUserInfobyId(@Query("id")int id);
+
+    //请求建立关系
+    @POST("lovers/buildLovers")
+    Observable<LoveBulidBean>doGetBuildLovers(@Query("userPId")int userPId, @Query("userTId")int userTId);
+
+    //解除关系
+    @POST("lovers/cancelLovers")
+    Observable<LoveBulidBean>doGetReleaseLove(@Query("userPId")int userPId, @Query("userTId")int userTId);
+
+    @POST("lovers/breakLovers")
+    Observable<LoveBulidBean>doGetInterruption(@Query("userPId")int userPId, @Query("userTId")int userTId);
+
+    @POST("lovers/checkBuildLovers")
+    Observable<ChackBuildLovesBean>doGetChackBuildLovers(@Query("userPId")int userPId, @Query("userTId")int userTId, @Query("isAgree") int isAgree);
 
 }

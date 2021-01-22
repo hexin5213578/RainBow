@@ -1,50 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-
     android:layout_width="match_parent"
     android:background="@color/white"
+    android:orientation="vertical"
     android:layout_height="match_parent">
     <View
         android:id="@+id/v1"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_20"
         android:background="#FFFFFF"/>
+<!--    情侣标识 头-->
     <RelativeLayout
         android:id="@+id/r1"
-        android:layout_below="@+id/v1"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_46"
-        >
+        android:layout_height="@dimen/dp_46">
         <LinearLayout
-            android:layout_alignParentLeft="true"
             android:id="@+id/l_return"
             android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_46">
+            android:layout_height="@dimen/dp_46"
+            android:layout_alignParentLeft="true">
             <ImageView
                 android:layout_width="@dimen/dp_8"
-                android:layout_gravity="center"
                 android:layout_height="@dimen/dp_15"
+                android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/dp_15"
-                android:src="@mipmap/back_white" />
+
+                android:src="@mipmap/back" />
         </LinearLayout>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="情侣标识"
             android:layout_centerInParent="true"
-            android:textSize="@dimen/dp_18"
+            android:text="情侣标识"
             android:textColor="#333333"
-            />
+            android:textSize="@dimen/dp_18" />
 
     </RelativeLayout>
+<!--邀请建立关系 r11-->
     <RelativeLayout
+
         android:id="@+id/r11"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_80"
-        android:visibility="gone"
-        android:layout_below="@+id/r1">
+        >
         <TextView
+            android:id="@+id/tv_myid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="本人ID：123456"
@@ -72,8 +74,10 @@
                 android:background="@null"
                 android:layout_marginRight="@dimen/dp_20"
                 android:layout_marginLeft="@dimen/dp_20"
+                android:inputType="number"
                 />
             <TextView
+                android:id="@+id/tv_bangding"
                 android:layout_toRightOf="@+id/ed_inputid"
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_22"
@@ -92,17 +96,15 @@
             android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
-            android:background="#FF0000"/>
+            android:background="@color/f2f2f2"/>
 
 
     </RelativeLayout>
-
+<!--收到建立关系请求   等待中  r12-->
     <RelativeLayout
         android:id="@+id/r12"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_130"
-        android:layout_below="@+id/r1"
-        
         >
         <ImageView
             android:id="@+id/iv_headimg1"
@@ -124,6 +126,7 @@
             android:layout_marginTop="@dimen/sp_7"
             />
         <TextView
+            android:id="@+id/tv_requestCon"
             android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -138,6 +141,7 @@
             android:background="@drawable/lovemark_exit"
             />
         <RelativeLayout
+            android:id="@+id/rl_ConsentRefusal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_nicheng"
@@ -175,15 +179,11 @@
 
                 />
         </RelativeLayout>
-
-
     </RelativeLayout>
-
-
+<!--    图片   r22-->
     <RelativeLayout
-
-        android:id="@+id/r2"
-        android:layout_below="@+id/r12"
+        android:id="@+id/r22"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_182">
         <ImageView
@@ -196,6 +196,7 @@
 
             />
         <TextView
+            android:id="@+id/tv_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="你已绑定情侣"
@@ -211,14 +212,15 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:background="@color/f2f2f2"
-        android:layout_below="@+id/r2"
+        android:layout_below="@+id/r22"
         />
+<!--    建立关系-->
     <RelativeLayout
-        android:visibility="gone"
+        android:id="@+id/r13"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_69"
         android:layout_below="@+id/v2"
-        android:background="@mipmap/lovemark1"
+
         >
         <RelativeLayout
             android:layout_width="match_parent"
@@ -255,6 +257,7 @@
 
             </RelativeLayout>
             <TextView
+                android:id="@+id/tv_explains"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/sp_12"
@@ -265,6 +268,7 @@
                 android:layout_alignParentBottom="true"
                 />
             <TextView
+                android:id="@+id/tv_nicheng2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/dp_15"
@@ -276,6 +280,7 @@
 
                 />
             <TextView
+                android:id="@+id/tv_jiechu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/sp_10"
@@ -288,7 +293,7 @@
                 android:layout_marginBottom="@dimen/dp_12"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
-                android:background="#ff2222"
+                android:background="@drawable/love_true"
                 />
 
             
@@ -299,7 +304,4 @@
 
     </RelativeLayout>
 
-
-
-
-</RelativeLayout>
+</LinearLayout>

@@ -48,8 +48,8 @@ public class ConsumeRecordBean {
          */
 
         private PageInfoBean pageInfo;
-        private int spendingGoldNum;
-        private int incomeGoldNum;
+        private Integer spendingGoldNum;
+        private Integer incomeGoldNum;
         private GoldNumBean goldNum;
 
         public PageInfoBean getPageInfo() {
@@ -64,7 +64,7 @@ public class ConsumeRecordBean {
             return spendingGoldNum;
         }
 
-        public void setSpendingGoldNum(int spendingGoldNum) {
+        public void setSpendingGoldNum(Integer spendingGoldNum) {
             this.spendingGoldNum = spendingGoldNum;
         }
 
@@ -106,22 +106,22 @@ public class ConsumeRecordBean {
              * navigateLastPage : 8
              */
 
-            private int total;
-            private int pageNum;
-            private int pageSize;
-            private int size;
-            private int startRow;
-            private int endRow;
-            private int pages;
-            private int prePage;
-            private int nextPage;
+            private Integer total;
+            private Integer pageNum;
+            private Integer pageSize;
+            private Integer size;
+            private Integer startRow;
+            private Integer endRow;
+            private Integer pages;
+            private Integer prePage;
+            private Integer nextPage;
             private boolean isFirstPage;
             private boolean isLastPage;
             private boolean hasPreviousPage;
             private boolean hasNextPage;
-            private int navigatePages;
-            private int navigateFirstPage;
-            private int navigateLastPage;
+            private Integer navigatePages;
+            private Integer navigateFirstPage;
+            private Integer navigateLastPage;
             private List<ListBean> list;
             private List<Integer> navigatepageNums;
 
@@ -129,7 +129,7 @@ public class ConsumeRecordBean {
                 return total;
             }
 
-            public void setTotal(int total) {
+            public void setTotal(Integer total) {
                 this.total = total;
             }
 
@@ -137,7 +137,7 @@ public class ConsumeRecordBean {
                 return pageNum;
             }
 
-            public void setPageNum(int pageNum) {
+            public void setPageNum(Integer pageNum) {
                 this.pageNum = pageNum;
             }
 
@@ -145,55 +145,55 @@ public class ConsumeRecordBean {
                 return pageSize;
             }
 
-            public void setPageSize(int pageSize) {
+            public void setPageSize(Integer pageSize) {
                 this.pageSize = pageSize;
             }
 
-            public int getSize() {
+            public Integer getSize() {
                 return size;
             }
 
-            public void setSize(int size) {
+            public void setSize(Integer size) {
                 this.size = size;
             }
 
-            public int getStartRow() {
+            public Integer getStartRow() {
                 return startRow;
             }
 
-            public void setStartRow(int startRow) {
+            public void setStartRow(Integer startRow) {
                 this.startRow = startRow;
             }
 
-            public int getEndRow() {
+            public Integer getEndRow() {
                 return endRow;
             }
 
-            public void setEndRow(int endRow) {
+            public void setEndRow(Integer endRow) {
                 this.endRow = endRow;
             }
 
-            public int getPages() {
+            public Integer getPages() {
                 return pages;
             }
 
-            public void setPages(int pages) {
+            public void setPages(Integer pages) {
                 this.pages = pages;
             }
 
-            public int getPrePage() {
+            public Integer getPrePage() {
                 return prePage;
             }
 
-            public void setPrePage(int prePage) {
+            public void setPrePage(Integer prePage) {
                 this.prePage = prePage;
             }
 
-            public int getNextPage() {
+            public Integer getNextPage() {
                 return nextPage;
             }
 
-            public void setNextPage(int nextPage) {
+            public void setNextPage(Integer nextPage) {
                 this.nextPage = nextPage;
             }
 
@@ -229,27 +229,27 @@ public class ConsumeRecordBean {
                 this.hasNextPage = hasNextPage;
             }
 
-            public int getNavigatePages() {
+            public Integer getNavigatePages() {
                 return navigatePages;
             }
 
-            public void setNavigatePages(int navigatePages) {
+            public void setNavigatePages(Integer navigatePages) {
                 this.navigatePages = navigatePages;
             }
 
-            public int getNavigateFirstPage() {
+            public Integer getNavigateFirstPage() {
                 return navigateFirstPage;
             }
 
-            public void setNavigateFirstPage(int navigateFirstPage) {
+            public void setNavigateFirstPage(Integer navigateFirstPage) {
                 this.navigateFirstPage = navigateFirstPage;
             }
 
-            public int getNavigateLastPage() {
+            public Integer getNavigateLastPage() {
                 return navigateLastPage;
             }
 
-            public void setNavigateLastPage(int navigateLastPage) {
+            public void setNavigateLastPage(Integer navigateLastPage) {
                 this.navigateLastPage = navigateLastPage;
             }
 
@@ -279,34 +279,34 @@ public class ConsumeRecordBean {
                  * createTime : 2021-01-21 13:02:46
                  */
 
-                private int id;
-                private int userId;
-                private int goldNum;
+                private Integer id;
+                private Integer userId;
+                private Integer goldNum;
                 private String recordContent;
-                private int recordType;
+                private Integer recordType;
                 private String createTime;
 
-                public int getId() {
+                public Integer getId() {
                     return id;
                 }
 
-                public void setId(int id) {
+                public void setId(Integer id) {
                     this.id = id;
                 }
 
-                public int getUserId() {
+                public Integer getUserId() {
                     return userId;
                 }
 
-                public void setUserId(int userId) {
+                public void setUserId(Integer userId) {
                     this.userId = userId;
                 }
 
-                public int getGoldNum() {
+                public Integer getGoldNum() {
                     return goldNum;
                 }
 
-                public void setGoldNum(int goldNum) {
+                public void setGoldNum(Integer goldNum) {
                     this.goldNum = goldNum;
                 }
 
@@ -318,11 +318,11 @@ public class ConsumeRecordBean {
                     this.recordContent = recordContent;
                 }
 
-                public int getRecordType() {
+                public Integer getRecordType() {
                     return recordType;
                 }
 
-                public void setRecordType(int recordType) {
+                public void setRecordType(Integer recordType) {
                     this.recordType = recordType;
                 }
 
@@ -346,58 +346,58 @@ public class ConsumeRecordBean {
              * goldAll : 1039513272
              */
 
-            private int id;
-            private int userId;
-            private int goldNum;
-            private int usableNum;
-            private int goldUsable;
-            private int goldAll;
+            private Integer id;
+            private Integer userId;
+            private Integer goldNum;
+            private Integer usableNum;
+            private Integer goldUsable;
+            private Integer goldAll;
 
-            public int getId() {
+            public Integer getId() {
                 return id;
             }
 
-            public void setId(int id) {
+            public void setId(Integer id) {
                 this.id = id;
             }
 
-            public int getUserId() {
+            public Integer getUserId() {
                 return userId;
             }
 
-            public void setUserId(int userId) {
+            public void setUserId(Integer userId) {
                 this.userId = userId;
             }
 
-            public int getGoldNum() {
+            public Integer getGoldNum() {
                 return goldNum;
             }
 
-            public void setGoldNum(int goldNum) {
+            public void setGoldNum(Integer goldNum) {
                 this.goldNum = goldNum;
             }
 
-            public int getUsableNum() {
+            public Integer getUsableNum() {
                 return usableNum;
             }
 
-            public void setUsableNum(int usableNum) {
+            public void setUsableNum(Integer usableNum) {
                 this.usableNum = usableNum;
             }
 
-            public int getGoldUsable() {
+            public Integer getGoldUsable() {
                 return goldUsable;
             }
 
-            public void setGoldUsable(int goldUsable) {
+            public void setGoldUsable(Integer goldUsable) {
                 this.goldUsable = goldUsable;
             }
 
-            public int getGoldAll() {
+            public Integer getGoldAll() {
                 return goldAll;
             }
 
-            public void setGoldAll(int goldAll) {
+            public void setGoldAll(Integer goldAll) {
                 this.goldAll = goldAll;
             }
         }
