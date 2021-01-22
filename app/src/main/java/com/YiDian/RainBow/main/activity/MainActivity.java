@@ -448,6 +448,8 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
                     saveIntentMsgBean.setFlag(1);
                     intent.putExtra("msg", saveIntentMsgBean);
                     startActivity(intent);
+                }else{
+                    Toast.makeText(this, "请扫描用户的二维码", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -458,26 +460,5 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
         super.onRestart();
         Log.d(TAG, "MainActivity的onRestart执行了");
         EventBus.getDefault().post("重新获取我的基本信息");
-    }
-
-    //在这里抽取了一个方法   可以封装到自己的工具类中...
-    public File getFile(Bitmap bitmap) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-        File file = new File(Environment.getExternalStorageDirectory() + "/temp.jpg");
-        try {
-            file.createNewFile();
-            FileOutputStream fos = new FileOutputStream(file);
-            InputStream is = new ByteArrayInputStream(baos.toByteArray());
-            int x = 0;
-            byte[] b = new byte[1024 * 100];
-            while ((x = is.read(b)) != -1) {
-                fos.write(b, 0, x);
-            }
-            fos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return file;
     }
 }

@@ -54,11 +54,13 @@
             </TextView>
         </LinearLayout>
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_200"
             android:text="创造机会的人是勇者"
             android:textSize="@dimen/sp_10"
             android:textColor="@color/color_666666"
             android:layout_marginLeft="@dimen/dp_12"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:layout_toRightOf="@id/ll_num"
             android:layout_alignParentBottom="true"
             android:id="@+id/tv_autograph"

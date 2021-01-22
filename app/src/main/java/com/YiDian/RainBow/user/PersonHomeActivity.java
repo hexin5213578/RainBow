@@ -438,7 +438,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             String liwu = object.getCountGiftNum() + "";
 
                             String backImg = userInfo.getBackImg();
-                            int friendAge = userInfo.getAge();
+                            Integer friendAge = userInfo.getAge();
 
                             String userRole = userInfo.getUserRole();// 用户真实名
                             String userRoleAge = null;     //用户真实名   + 年龄
@@ -455,11 +455,23 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             }
 
                             if (userRole == null) {
-                                userRoleAge = friendAge + "";
+                                if (friendAge!=null){
+                                    userRoleAge = friendAge + "";
+                                }else{
+                                    userRoleAge = 0 + "";
+                                }
                             } else if (userRole.equals("保密")) {
-                                userRoleAge = friendAge + "";
+                                if (friendAge!=null){
+                                    userRoleAge = friendAge + "";
+                                }else{
+                                    userRoleAge = 0 + "";
+                                }
                             } else {
-                                userRoleAge = userRole + " " + friendAge;
+                                if (friendAge!=null){
+                                    userRoleAge = userRole + " " + friendAge;
+                                }else{
+                                    userRoleAge = 0 + "";
+                                }
                             }
 
 
