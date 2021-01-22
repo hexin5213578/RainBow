@@ -443,8 +443,6 @@
             android:name=".setup.activity.BlackListActivity"
             android:screenOrientation="portrait" />
 
-
-
         <!-- 用户协议 -->
         <activity
             android:name=".agreement.YonghuActivity"

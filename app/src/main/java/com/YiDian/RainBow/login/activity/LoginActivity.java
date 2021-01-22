@@ -797,6 +797,9 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                     avatar = ((JSONObject) object).getString("figureurl_2");
                     nickName = ((JSONObject) object).getString("nickname");
 
+
+                    SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME, nickName);
+                    SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG, avatar);
                     //获取完用户信息调用QQ登录接口
                     NetUtils.getInstance().getApis().doQqLogin(3, openId, longitude, latitude)
                             .subscribeOn(Schedulers.io())
@@ -839,8 +842,6 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                                                                             public void onNext(ComPleteMsgBean comPleteMsgBean) {
                                                                                 if (comPleteMsgBean.getMsg().equals("数据修改成功！")) {
 
-                                                                                    SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME, nickName);
-                                                                                    SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG, avatar);
                                                                                     //将登录状态改为已经登录
                                                                                     SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.IS_LOGIN, "0");
 

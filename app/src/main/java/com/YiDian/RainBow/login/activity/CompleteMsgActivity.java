@@ -249,13 +249,14 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
         }
 
         //先加载头像
-        headimg = SPUtil.getInstance().getData(this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG);
+        headimg = Common.getHeadImg();
         Glide.with(CompleteMsgActivity.this).load(headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
 
-        username = SPUtil.getInstance().getData(this, SPUtil.FILE_NAME, SPUtil.USER_NAME);
+        username = Common.getUserName();
         etName.setText(username);
 
-        String role = SPUtil.getInstance().getData(this, SPUtil.FILE_NAME, SPUtil.ROLE);
+
+        String role = Common.getRole();
         if (role != null && !role.equals("")) {
             if (role.equals("T")) {
                 rb1.setChecked(true);

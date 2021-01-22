@@ -4,10 +4,16 @@
     android:layout_width="match_parent"
     android:background="@color/white"
     android:layout_height="match_parent">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0_1"
+        android:background="@color/white"
+        />
     <View
         android:id="@+id/v1"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_20"
+        android:layout_height="@dimen/dp_40"
         android:background="#FFFFFF"/>
     <RelativeLayout
         android:id="@+id/r1"
@@ -132,12 +138,12 @@
                 />
         </LinearLayout>
         <View
-            android:id="@+id/v3"
-            android:layout_below="@+id/l2"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            android:background="#E6E6E6"
-            />
+            android:background="#F0F0F0"
+            android:layout_below="@id/l2"
+            android:id="@+id/v34"
+            android:layout_height="@dimen/dp_1">
+        </View>
         <LinearLayout
             android:id="@+id/l3"
             android:layout_width="match_parent"

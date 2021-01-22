@@ -40,7 +40,6 @@ import java.util.regex.Pattern;
  */
 public  class Common {
     private static final String JG_APP_KEY = "87ce5706efafab51ddd2be08";
-
     /**
      * 获取token,不为空内种
      *
@@ -151,9 +150,7 @@ public  class Common {
      *
      * @param bitmap
      */
-
     public static ArrayList<Integer> getPicturePixel(Bitmap bitmap) {
-
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
 

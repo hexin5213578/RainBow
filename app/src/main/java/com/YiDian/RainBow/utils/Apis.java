@@ -107,6 +107,7 @@ public interface Apis {
     Observable<ComPleteMsgBean> doComPlteAllMsg(@Query("id")int userid,@Query("nickName")String name,@Query("headImg")String headimg,@Query("birthday")String birthday,@Query("userRole")String role);
 
     //完善QQ微信登录信息
+    @POST("user/updateUserInfo")
     Observable<ComPleteMsgBean> doComPlteThiredLogin(@Query("id")int userid,@Query("nickName")String name,@Query("headImg")String headimg);
 
     //修改用户名
@@ -396,9 +397,11 @@ public interface Apis {
 
     //查询用户账单详情  每页15
     @GET("goldRecord/selectUserIdRecord")
+    Observable<ConsumeRecordBean>doGetConsumeRecord(@Query("userId")int userid,@Query("createTime")String nowday,@Query("page")int page,@Query("pageSize")int pageSize);
+
+    //查询用户账单详情  每页15
+    @GET("goldRecord/selectUserIdRecord")
     Observable<ConsumeRecordBean>doGetConsumeRecord(@Query("userId")int userid,@Query("page")int page,@Query("pageSize")int pageSize);
 
-    @GET("goldRecord/selectUserIdRecord")
-    Observable<ConsumeRecordBean>doGetConsumeRecord(@Query("userId")int userid,@Query("beginTime")String beginTime,@Query("beginTime")String endTime,@Query("page")int page,@Query("pageSize")int pageSize);
 
 }

@@ -8,26 +8,7 @@ public class ConsumeRecordBean {
     /**
      * msg : 查询成功
      * type : OK
-     * object : {"pageInfo":{"total":384,"list":
-     * [{"id":771,"userId":1030,"goldNum":3000,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-18 10:43:51"},
-     * {"id":769,"userId":1030,"goldNum":500,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-18 10:42:28"},
-     * {"id":767,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:12"},
-     * {"id":761,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:08"},
-     * {"id":763,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:08"},
-     * {"id":765,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:08"},
-     * {"id":753,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:07"},
-     * {"id":755,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:07"},
-     * {"id":757,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:07"},
-     * {"id":759,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:07"},
-     * {"id":745,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:06"},
-     * {"id":747,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:06"},
-     * {"id":749,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:06"},
-     * {"id":751,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:06"},
-     * {"id":733,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:05"}],
-     * "pageNum":1,"pageSize":15,"size":15,"startRow":1,"endRow":15,"pages":26,"prePage":0,"nextPage":2,"isFirstPage":true,"
-     * isLastPage":false,"hasPreviousPage":false,"hasNextPage":true,"navigatePages":8,"navigatepageNums":[1,2,3,4,5,6,7,8],
-     * "navigateFirstPage":1,"navigateLastPage":8},"spendingGoldNum":61355326,"incomeGoldNum":2000,"goldNum":
-     * {"id":6,"userId":1030,"goldNum":39513204,"usableNum":0,"goldUsable":1000000000,"goldAll":1039513204}}
+     * object : {"pageInfo":{"total":396,"list":[{"id":784,"userId":1030,"goldNum":13,"recordContent":"此次签到或补签奖励","recordType":1,"createTime":"2021-01-21 13:02:46"},{"id":785,"userId":1030,"goldNum":4,"recordContent":"本次补签所花费金币","recordType":2,"createTime":"2021-01-21 13:02:46"},{"id":782,"userId":1030,"goldNum":11,"recordContent":"此次签到或补签奖励","recordType":1,"createTime":"2021-01-21 10:53:37"},{"id":783,"userId":1030,"goldNum":3,"recordContent":"本次补签所花费金币","recordType":2,"createTime":"2021-01-21 10:53:37"},{"id":780,"userId":1030,"goldNum":9,"recordContent":"此次签到或补签奖励","recordType":1,"createTime":"2021-01-21 10:53:31"},{"id":781,"userId":1030,"goldNum":2,"recordContent":"本次补签所花费金币","recordType":2,"createTime":"2021-01-21 10:53:31"},{"id":779,"userId":1030,"goldNum":5,"recordContent":"此次签到或补签奖励","recordType":1,"createTime":"2021-01-21 10:53:23"},{"id":778,"userId":1030,"goldNum":19,"recordContent":"此次签到或补签奖励","recordType":1,"createTime":"2021-01-21 09:38:48"},{"id":774,"userId":1030,"goldNum":10,"recordContent":"您和您的情侣都已经签到,可以去任务中领取哦","recordType":1,"createTime":"2021-01-20 17:02:23"},{"id":775,"userId":1030,"goldNum":10,"recordContent":"实名认证完成获取金币10个","recordType":1,"createTime":"2021-01-20 17:02:23"}],"pageNum":1,"pageSize":10,"size":10,"startRow":1,"endRow":10,"pages":40,"prePage":0,"nextPage":2,"isFirstPage":true,"isLastPage":false,"hasPreviousPage":false,"hasNextPage":true,"navigatePages":8,"navigatepageNums":[1,2,3,4,5,6,7,8],"navigateFirstPage":1,"navigateLastPage":8},"spendingGoldNum":61355335,"incomeGoldNum":2097,"goldNum":{"id":6,"userId":1030,"goldNum":39513272,"usableNum":0,"goldUsable":1000000000,"goldAll":1039513272}}
      */
 
     private String msg;
@@ -60,26 +41,10 @@ public class ConsumeRecordBean {
 
     public static class ObjectBean {
         /**
-         * pageInfo : {"total":384,"list":
-         * [{"id":771,"userId":1030,"goldNum":3000,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-18 10:43:51"},
-         * {"id":769,"userId":1030,"goldNum":500,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-18 10:42:28"},
-         * {"id":767,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:12"},
-         * {"id":761,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:08"},
-         * {"id":763,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:08"},
-         * {"id":765,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:08"},
-         * {"id":753,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:07"},
-         * {"id":755,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:07"},
-         * {"id":757,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:07"},
-         * {"id":759,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:07"},
-         * {"id":745,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:06"},
-         * {"id":747,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:06"},
-         * {"id":749,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:06"},
-         * {"id":751,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:06"},
-         * {"id":733,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:05"}],
-         * "pageNum":1,"pageSize":15,"size":15,"startRow":1,"endRow":15,"pages":26,"prePage":0,"nextPage":2,"isFirstPage":true,"isLastPage":false,"hasPreviousPage":false,"hasNextPage":true,"navigatePages":8,"navigatepageNums":[1,2,3,4,5,6,7,8],"navigateFirstPage":1,"navigateLastPage":8}
-         * spendingGoldNum : 61355326
-         * incomeGoldNum : 2000
-         * goldNum : {"id":6,"userId":1030,"goldNum":39513204,"usableNum":0,"goldUsable":1000000000,"goldAll":1039513204}
+         * pageInfo : {"total":396,"list":[{"id":784,"userId":1030,"goldNum":13,"recordContent":"此次签到或补签奖励","recordType":1,"createTime":"2021-01-21 13:02:46"},{"id":785,"userId":1030,"goldNum":4,"recordContent":"本次补签所花费金币","recordType":2,"createTime":"2021-01-21 13:02:46"},{"id":782,"userId":1030,"goldNum":11,"recordContent":"此次签到或补签奖励","recordType":1,"createTime":"2021-01-21 10:53:37"},{"id":783,"userId":1030,"goldNum":3,"recordContent":"本次补签所花费金币","recordType":2,"createTime":"2021-01-21 10:53:37"},{"id":780,"userId":1030,"goldNum":9,"recordContent":"此次签到或补签奖励","recordType":1,"createTime":"2021-01-21 10:53:31"},{"id":781,"userId":1030,"goldNum":2,"recordContent":"本次补签所花费金币","recordType":2,"createTime":"2021-01-21 10:53:31"},{"id":779,"userId":1030,"goldNum":5,"recordContent":"此次签到或补签奖励","recordType":1,"createTime":"2021-01-21 10:53:23"},{"id":778,"userId":1030,"goldNum":19,"recordContent":"此次签到或补签奖励","recordType":1,"createTime":"2021-01-21 09:38:48"},{"id":774,"userId":1030,"goldNum":10,"recordContent":"您和您的情侣都已经签到,可以去任务中领取哦","recordType":1,"createTime":"2021-01-20 17:02:23"},{"id":775,"userId":1030,"goldNum":10,"recordContent":"实名认证完成获取金币10个","recordType":1,"createTime":"2021-01-20 17:02:23"}],"pageNum":1,"pageSize":10,"size":10,"startRow":1,"endRow":10,"pages":40,"prePage":0,"nextPage":2,"isFirstPage":true,"isLastPage":false,"hasPreviousPage":false,"hasNextPage":true,"navigatePages":8,"navigatepageNums":[1,2,3,4,5,6,7,8],"navigateFirstPage":1,"navigateLastPage":8}
+         * spendingGoldNum : 61355335
+         * incomeGoldNum : 2097
+         * goldNum : {"id":6,"userId":1030,"goldNum":39513272,"usableNum":0,"goldUsable":1000000000,"goldAll":1039513272}
          */
 
         private PageInfoBean pageInfo;
@@ -121,14 +86,14 @@ public class ConsumeRecordBean {
 
         public static class PageInfoBean {
             /**
-             * total : 384
-             * list : [{"id":771,"userId":1030,"goldNum":3000,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-18 10:43:51"},{"id":769,"userId":1030,"goldNum":500,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-18 10:42:28"},{"id":767,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:12"},{"id":761,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:08"},{"id":763,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:08"},{"id":765,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:08"},{"id":753,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:07"},{"id":755,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:07"},{"id":757,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:07"},{"id":759,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:07"},{"id":745,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:06"},{"id":747,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:06"},{"id":749,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:06"},{"id":751,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:06"},{"id":733,"userId":1030,"goldNum":288888,"recordContent":"给北方发送了礼物","recordType":2,"createTime":"2021-01-16 17:23:05"}]
+             * total : 396
+             * list : [{"id":784,"userId":1030,"goldNum":13,"recordContent":"此次签到或补签奖励","recordType":1,"createTime":"2021-01-21 13:02:46"},{"id":785,"userId":1030,"goldNum":4,"recordContent":"本次补签所花费金币","recordType":2,"createTime":"2021-01-21 13:02:46"},{"id":782,"userId":1030,"goldNum":11,"recordContent":"此次签到或补签奖励","recordType":1,"createTime":"2021-01-21 10:53:37"},{"id":783,"userId":1030,"goldNum":3,"recordContent":"本次补签所花费金币","recordType":2,"createTime":"2021-01-21 10:53:37"},{"id":780,"userId":1030,"goldNum":9,"recordContent":"此次签到或补签奖励","recordType":1,"createTime":"2021-01-21 10:53:31"},{"id":781,"userId":1030,"goldNum":2,"recordContent":"本次补签所花费金币","recordType":2,"createTime":"2021-01-21 10:53:31"},{"id":779,"userId":1030,"goldNum":5,"recordContent":"此次签到或补签奖励","recordType":1,"createTime":"2021-01-21 10:53:23"},{"id":778,"userId":1030,"goldNum":19,"recordContent":"此次签到或补签奖励","recordType":1,"createTime":"2021-01-21 09:38:48"},{"id":774,"userId":1030,"goldNum":10,"recordContent":"您和您的情侣都已经签到,可以去任务中领取哦","recordType":1,"createTime":"2021-01-20 17:02:23"},{"id":775,"userId":1030,"goldNum":10,"recordContent":"实名认证完成获取金币10个","recordType":1,"createTime":"2021-01-20 17:02:23"}]
              * pageNum : 1
-             * pageSize : 15
-             * size : 15
+             * pageSize : 10
+             * size : 10
              * startRow : 1
-             * endRow : 15
-             * pages : 26
+             * endRow : 10
+             * pages : 40
              * prePage : 0
              * nextPage : 2
              * isFirstPage : true
@@ -306,12 +271,12 @@ public class ConsumeRecordBean {
 
             public static class ListBean {
                 /**
-                 * id : 771
+                 * id : 784
                  * userId : 1030
-                 * goldNum : 3000
-                 * recordContent : 给北方发送了礼物
-                 * recordType : 2
-                 * createTime : 2021-01-18 10:43:51
+                 * goldNum : 13
+                 * recordContent : 此次签到或补签奖励
+                 * recordType : 1
+                 * createTime : 2021-01-21 13:02:46
                  */
 
                 private int id;
@@ -375,10 +340,10 @@ public class ConsumeRecordBean {
             /**
              * id : 6
              * userId : 1030
-             * goldNum : 39513204
+             * goldNum : 39513272
              * usableNum : 0
              * goldUsable : 1000000000
-             * goldAll : 1039513204
+             * goldAll : 1039513272
              */
 
             private int id;

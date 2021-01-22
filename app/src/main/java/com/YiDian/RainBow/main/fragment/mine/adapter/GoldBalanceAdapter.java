@@ -1,6 +1,7 @@
 package com.YiDian.RainBow.main.fragment.mine.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -38,6 +39,7 @@ public class GoldBalanceAdapter extends RecyclerView.Adapter<GoldBalanceHolder> 
             //收入
             holder.tvGift.setText("收入");
             holder.tvConsumption.setText(list.get(position).getCreateTime()+"");
+            holder.tvTvConsumptionCount.setTextColor(Color.parseColor("#D42626"));
             holder.tvTvConsumptionCount.setText("+"+list.get(position).getGoldNum());
         }else {
             //支出

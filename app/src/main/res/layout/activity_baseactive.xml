@@ -4,6 +4,12 @@
     android:layout_width="match_parent"
     android:background="@color/white"
     android:layout_height="match_parent">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_20"
+        android:background="@color/white"
+        />
     <RelativeLayout
         android:id="@+id/r2"
         android:layout_width="match_parent"
@@ -12,7 +18,7 @@
         <View
             android:id="@+id/v1"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_20"
+            android:layout_height="@dimen/dp_40"
             android:background="#FFFFFF"/>
         <RelativeLayout
             android:id="@+id/r1"
@@ -73,7 +79,7 @@
                     android:layout_centerVertical="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="89582"
+                    android:text="0"
                     android:textSize="@dimen/sp_23"
                     android:textColor="#F5F5F5"
                     >
@@ -86,7 +92,7 @@
                     android:layout_alignParentBottom="true"
                     android:gravity="bottom"
                     android:textColor="#F5F5F5"
-                    android:text="可提现金币（个）：825"
+                    android:text="可提现金币（个）；0"
                     android:textSize="@dimen/sp_12" />
 
                 <TextView
@@ -140,6 +146,7 @@
             android:textColor="#999999"
             />
         <TextView
+            android:id="@+id/tv_consume_income"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="总消费：￥234 总充值：￥1234"
@@ -162,6 +169,7 @@
         </RelativeLayout>
     </LinearLayout>
     <RelativeLayout
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/rl_default"
