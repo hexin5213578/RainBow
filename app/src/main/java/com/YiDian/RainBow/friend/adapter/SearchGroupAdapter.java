@@ -12,8 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
-import com.YiDian.RainBow.friend.bean.RecommendGroupBean;
-import com.YiDian.RainBow.imgroup.adapter.GroupMyCreateAdapter;
+import com.YiDian.RainBow.dynamic.bean.SelectFriendOrGroupBean;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
@@ -23,13 +22,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RecommendGroupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class SearchGroupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final Context context;
-    private final List<RecommendGroupBean.ObjectBean> list;
-    private RecommendGroupBean.ObjectBean listbean;
+    private final List<SelectFriendOrGroupBean.ObjectBean.GroupListBean> list;
+    private SelectFriendOrGroupBean.ObjectBean.GroupListBean listbean;
 
 
-    public RecommendGroupAdapter(Context context, List<RecommendGroupBean.ObjectBean> list) {
+    public SearchGroupAdapter(Context context, List<SelectFriendOrGroupBean.ObjectBean.GroupListBean> list) {
+
         this.context = context;
         this.list = list;
     }
@@ -59,20 +59,20 @@ public class RecommendGroupAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             ((ViewHolder)holder).tvAutograph.setText(listbean.getGroupInfo());
         }
         ((ViewHolder)holder).tvNum.setText(listbean.getUserNum()+"");
-
+        
         ((ViewHolder)holder).rlItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO: 2021/1/14 0014 跳转到群聊页
-
-
+                
+                
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return 3;
+        return list.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -90,7 +90,7 @@ public class RecommendGroupAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         RelativeLayout rlItem;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

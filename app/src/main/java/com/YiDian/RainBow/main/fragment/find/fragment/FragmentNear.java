@@ -26,6 +26,7 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.container.AliHeader;
 import com.liaoinstan.springview.widget.SpringView;
 
@@ -203,6 +204,7 @@ public class FragmentNear extends Fragment implements AMapLocationListener {
                 df.format(date);//定位时间
 
                 Log.d("xxx", "定位成功");
+                alllist.clear();
                 getNearPerson(page,size);
             } else {
                 //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
@@ -246,6 +248,9 @@ public class FragmentNear extends Fragment implements AMapLocationListener {
                                 sv.setVisibility(View.GONE);
                                 rlNodata.setVisibility(View.VISIBLE);
                             }
+                        }
+                        if (list.size()>14){
+                            sv.setFooter(new AliFooter(getContext()));
                         }
                     }
 

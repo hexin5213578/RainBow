@@ -3,6 +3,12 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
+    dexOptions {
+        dexInProcess true
+        preDexLibraries true
+        javaMaxHeapSize "6g"
+    }
+
     signingConfigs {
         release {
             storeFile file("rainbow.jks")
@@ -10,7 +16,7 @@ android {
             keyAlias "key0"
             keyPassword "caihong"
         }
-        debug {
+        sbGoogle {
             storeFile file("rainbow.jks")
             storePassword "caihong"
             keyAlias "key0"
@@ -46,7 +52,7 @@ android {
         debug{
             debuggable true
             minifyEnabled false  //不启用Proguard
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.sbGoogle
         }
     }
     compileOptions{

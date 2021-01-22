@@ -256,6 +256,10 @@ public interface Apis {
     @GET("user/searchFriendAndGroup")
     Observable<SelectFriendOrGroupBean> doGetFriendOrGroup(@Query("searchTerm")String msg,@Query("userId")int userid);
 
+    //搜索所有用户
+    @GET("user/seachAllInsert")
+    Observable<SelectFriendOrGroupBean> doGetAllUserAndGroup(@Query("searchTerm")String msg, @Query("userId")int userid);
+
     //获取热门动态
     @GET("topic/findHotTopic")
     Observable<HotTopicBean> dogetHotTopicBean();

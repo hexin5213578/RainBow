@@ -66,6 +66,7 @@ public class FriendsActivity extends BaseAvtivity implements RadioGroup.OnChecke
     private FragmentFans fragmentFans;
     private FragmentGroup fragmentGroup;
     private FragmentFollow fragmentAtt;
+    private Intent intent;
 
     @Override
     protected int getResId() {
@@ -193,11 +194,14 @@ public class FriendsActivity extends BaseAvtivity implements RadioGroup.OnChecke
 
                 break;
             case R.id.ll_addfriend:
-
+                //跳转至添加好友页
+                intent = new Intent(FriendsActivity.this,AddFriendActivity.class);
+                startActivity(intent);
+                finish();
                 break;
             case R.id.ll_addgroup:
                 //跳转至创建群聊页
-                Intent intent = new Intent(FriendsActivity.this, CreateGroupActivity.class);
+                intent = new Intent(FriendsActivity.this, CreateGroupActivity.class);
                 startActivity(intent);
                 break;
         }
