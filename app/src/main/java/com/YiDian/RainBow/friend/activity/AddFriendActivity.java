@@ -27,7 +27,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-
+//添加好友及群组
 public class AddFriendActivity extends BaseAvtivity implements View.OnClickListener {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -105,7 +105,7 @@ public class AddFriendActivity extends BaseAvtivity implements View.OnClickListe
                     public void onNext(RecommendUserBean recommendUserBean) {
                         List<RecommendUserBean.ObjectBean> list = recommendUserBean.getObject();
 
-                        
+
                     }
 
                     @Override
