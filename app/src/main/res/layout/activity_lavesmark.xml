@@ -40,7 +40,7 @@
     </RelativeLayout>
 <!--邀请建立关系 r11-->
     <RelativeLayout
-
+        android:visibility="visible"
         android:id="@+id/r11"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_80"
@@ -97,21 +97,20 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
             android:background="@color/f2f2f2"/>
-
-
     </RelativeLayout>
 <!--收到建立关系请求   等待中  r12-->
     <RelativeLayout
+        android:visibility="visible"
         android:id="@+id/r12"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_130"
         >
         <ImageView
             android:id="@+id/iv_headimg1"
-            android:layout_marginTop="@dimen/dp_10"
             android:layout_width="@dimen/dp_45"
             android:layout_height="@dimen/dp_45"
-            android:background="#555555"
+
+            android:layout_marginTop="@dimen/dp_12"
             android:layout_centerHorizontal="true"
             />
         <TextView
@@ -123,7 +122,8 @@
             android:textColor="#333333"
             android:layout_below="@+id/iv_headimg1"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/sp_7"
+            android:layout_marginTop="@dimen/dp_7"
+            android:layout_marginBottom="@dimen/sp_7"
             />
         <TextView
             android:id="@+id/tv_requestCon"
@@ -179,13 +179,19 @@
 
                 />
         </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/f2f2f2"
+            android:layout_alignParentBottom="true"
+            />
     </RelativeLayout>
 <!--    图片   r22-->
     <RelativeLayout
         android:id="@+id/r22"
         android:visibility="visible"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_182">
+        android:layout_height="@dimen/dp_160">
         <ImageView
             android:id="@+id/im1"
             android:layout_marginTop="@dimen/dp_40"
@@ -207,13 +213,13 @@
             android:layout_centerHorizontal="true"
             />
     </RelativeLayout>
-    <View
-        android:id="@+id/v2"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:background="@color/f2f2f2"
-        android:layout_below="@+id/r22"
-        />
+<!--    <View-->
+<!--        android:id="@+id/v2"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="@dimen/dp_1"-->
+<!--        android:background="@color/f2f2f2"-->
+<!--        android:layout_below="@+id/r22"-->
+<!--        />-->
 <!--    建立关系-->
     <RelativeLayout
         android:id="@+id/r13"
@@ -235,7 +241,7 @@
                 android:layout_width="@dimen/dp_45"
                 android:layout_height="@dimen/dp_45"
                 android:layout_centerVertical="true"
-                android:background="@color/color_8867E7"
+
                 >
                 <ImageView
                     android:id="@+id/iv_headimg"
