@@ -110,15 +110,13 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
         StatusBarUtil.setGradientColor(LavesMarkActivity.this, v1);
         StatusBarUtil.setDarkMode(LavesMarkActivity.this);
         //
-
         refresh();
-
     }
 
     //初始化，页面
     public void refresh() {
 
-        NetUtils.getInstance().getApis().doGetLoveState(1030).
+        NetUtils.getInstance().getApis().doGetLoveState(myid).
                 subscribeOn(Schedulers.io()).
                 observeOn(AndroidSchedulers.mainThread()).
                 subscribe(new Observer<LoveStateBean>() {
@@ -165,7 +163,7 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
                                     tvNicheng2.setText(loveStateBean.getObject().getUserInfo().getNickName());
                                     //签名
                                     if (infoBean.getExplains() != null) {
-                                        tvNicheng2.setText(infoBean.getExplains());
+                                        tvExplains.setText(infoBean.getExplains());
                                     }
                                     //头像
                                     String path3 = infoBean.getHeadImg();
