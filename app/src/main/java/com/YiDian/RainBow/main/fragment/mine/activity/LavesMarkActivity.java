@@ -104,7 +104,7 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
         tvTrue.setOnClickListener(this);
         tvFalse.setOnClickListener(this);
         tvRequestCon.setOnClickListener(this);
-//Integer.parseInt(Common.getUserId());
+        //Integer.parseInt(Common.getUserId());
         myid = Integer.parseInt(Common.getUserId());
         //设置状态栏颜色与字体颜色
         StatusBarUtil.setGradientColor(LavesMarkActivity.this, v1);
@@ -260,6 +260,9 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
 
                                     @Override
                                     public void onNext(UserInfoById userInfoById) {
+
+                                        String msg = userInfoById.getMsg();
+
                                         if (userInfoById.getType().equals("OK")) {
                                             //用户存在 弹出弹窗
                                             showChangeName(userInfoById, myid, Integer.parseInt(str));
@@ -275,20 +278,12 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
                                                     dialog.dismiss();
                                                 }
                                             });
+                                            builder.create().show();
                                         }
                                     }
 
                                     @Override
                                     public void onError(Throwable e) {
-                                        Log.d(TAG, "onError: 2132412432134·24·24213");
-                                        //用户不存在
-                                        EveryDayDialogDialog.Builder builder = new EveryDayDialogDialog.Builder(LavesMarkActivity.this);
-                                        builder.setMessage("该用户不存在").setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                //
-                                                dialog.dismiss();
-                                            }
-                                        });
 
                                     }
 
