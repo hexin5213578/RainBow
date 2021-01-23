@@ -83,12 +83,13 @@ public class FangkerecordActivity extends BaseAvtivity {
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {
+                page = 1;
+                allList.clear();
+                getMyFangke(page,size);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        page = 1;
-                        allList.clear();
-                        getMyFangke(page,size);
+
 
                         sv.onFinishFreshAndLoad();
                     }
@@ -97,11 +98,12 @@ public class FangkerecordActivity extends BaseAvtivity {
 
             @Override
             public void onLoadmore() {
+                page++;
+                getMyFangke(page,size);
+
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        page++;
-                        getMyFangke(page,size);
 
                         sv.onFinishFreshAndLoad();
                     }

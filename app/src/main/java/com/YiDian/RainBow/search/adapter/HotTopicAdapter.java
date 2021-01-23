@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.custom.HalfType;
-import com.YiDian.RainBow.search.activity.TopicDetailsActivity;
+import com.YiDian.RainBow.topic.TopicDetailsActivity;
 
 import java.util.List;
 

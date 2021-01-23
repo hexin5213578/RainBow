@@ -84,13 +84,14 @@ public class FragmentGroup extends BaseFragment {
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {
+                //刷新重新获取数据
+                getMyCreateGroup();
+                getMyJoinGroup();
+                getRecommendGroup();
+
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        //刷新重新获取数据
-                        getMyCreateGroup();
-                        getMyJoinGroup();
-                        getRecommendGroup();
 
 
                         sv.onFinishFreshAndLoad();

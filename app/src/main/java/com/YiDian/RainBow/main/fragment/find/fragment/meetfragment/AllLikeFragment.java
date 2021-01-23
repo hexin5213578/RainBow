@@ -75,14 +75,15 @@ public class AllLikeFragment extends BaseFragment {
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {
+                page = 1;
+
+                allList.clear();
+
+                getStr(page,size);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        page = 1;
 
-                        allList.clear();
-
-                        getStr(page,size);
                         sv.onFinishFreshAndLoad();
                     }
                 },1000);
@@ -90,12 +91,13 @@ public class AllLikeFragment extends BaseFragment {
 
             @Override
             public void onLoadmore() {
+                page++;
+
+                getStr(page,size);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        page++;
 
-                        getStr(page,size);
 
                         sv.onFinishFreshAndLoad();
                     }

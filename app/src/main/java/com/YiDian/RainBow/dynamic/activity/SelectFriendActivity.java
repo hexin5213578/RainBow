@@ -77,10 +77,11 @@ public class SelectFriendActivity extends BaseAvtivity implements View.OnClickLi
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {
+                getFriend();
+
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        getFriend();
                         sv.onFinishFreshAndLoad();
                     }
                 }, 1000);

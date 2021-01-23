@@ -99,12 +99,13 @@ public class UserDetailsActivity extends BaseAvtivity implements View.OnClickLis
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {
+                allList.clear();
+                page = 1;
+                getUserDynamic(page, size);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        allList.clear();
-                        page = 1;
-                        getUserDynamic(page, size);
+
                         sv.onFinishFreshAndLoad();
 
                     }
@@ -112,11 +113,12 @@ public class UserDetailsActivity extends BaseAvtivity implements View.OnClickLis
             }
             @Override
             public void onLoadmore() {
+                page++;
+                getUserDynamic(page, size);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        page++;
-                        getUserDynamic(page, size);
+
                         sv.onFinishFreshAndLoad();
                     }
                 },1000);

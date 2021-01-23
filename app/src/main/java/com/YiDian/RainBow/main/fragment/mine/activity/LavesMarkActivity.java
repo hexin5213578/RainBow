@@ -397,10 +397,10 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
                         });
                 builder.create().show();
                 break;
-            //同意建立关系
+                //同意建立关系
             case R.id.tv_true:
                 Log.d(TAG, "onClick: ------同意建立关系");
-                NetUtils.getInstance().getApis().doGetChackBuildLovers(myid, loveid, 1).
+                NetUtils.getInstance().getApis().doGetChackBuildLovers(myid,loveid,1).
                         subscribeOn(Schedulers.io()).
                         observeOn(AndroidSchedulers.mainThread()).
                         subscribe(new Observer<ChackBuildLovesBean>() {
@@ -411,10 +411,10 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
 
                             @Override
                             public void onNext(ChackBuildLovesBean chackBuildLovesBean) {
-                                if (chackBuildLovesBean.getType().equals("OK")) {
+                                if(chackBuildLovesBean.getType().equals("OK")){
 
                                     refresh();
-                                } else {
+                                }else {
                                     Log.d(TAG, "onNext: 服务器失败");
                                     refresh();
                                 }
@@ -431,10 +431,10 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
                             }
                         });
                 break;
-            // 拒绝建立关系
+                // 拒绝建立关系
             case R.id.tv_false:
                 Log.d(TAG, "onClick: ------拒绝建立关系");
-                NetUtils.getInstance().getApis().doGetChackBuildLovers(myid, loveid, 0).
+                NetUtils.getInstance().getApis().doGetChackBuildLovers(myid,loveid,0).
                         subscribeOn(Schedulers.io()).
                         observeOn(AndroidSchedulers.mainThread()).
                         subscribe(new Observer<ChackBuildLovesBean>() {
@@ -445,10 +445,10 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
 
                             @Override
                             public void onNext(ChackBuildLovesBean chackBuildLovesBean) {
-                                if (chackBuildLovesBean.getType().equals("OK")) {
+                                if(chackBuildLovesBean.getType().equals("OK")){
 
                                     refresh();
-                                } else {
+                                }else {
                                     Log.d(TAG, "onNext: 服务器失败");
                                     refresh();
                                 }

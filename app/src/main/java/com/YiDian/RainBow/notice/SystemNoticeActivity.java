@@ -82,11 +82,12 @@ public class SystemNoticeActivity extends BaseAvtivity {
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {
+                page++;
+                getSystemNotice(page,size);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        page++;
-                        getSystemNotice(page,size);
+
                         sv.onFinishFreshAndLoad();
                     }
                 },1000);

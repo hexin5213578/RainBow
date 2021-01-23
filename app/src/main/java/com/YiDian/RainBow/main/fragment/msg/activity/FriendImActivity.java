@@ -347,12 +347,13 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {
+                getListFromIm(page, size);
+
+                linearLayoutManager.scrollToPositionWithOffset(page - 5, 0);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        getListFromIm(page, size);
 
-                        linearLayoutManager.scrollToPositionWithOffset(page - 5, 0);
 
                         sv.onFinishFreshAndLoad();
                     }

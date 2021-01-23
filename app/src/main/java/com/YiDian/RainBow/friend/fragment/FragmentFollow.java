@@ -101,12 +101,13 @@ public class FragmentFollow extends BaseFragment {
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {
+                allList.clear();
+                page = 1;
+                getMyFollow(page,size);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        allList.clear();
-                        page = 1;
-                        getMyFollow(page,size);
+
                         sv.onFinishFreshAndLoad();
                     }
                 },1000);
@@ -114,11 +115,12 @@ public class FragmentFollow extends BaseFragment {
 
             @Override
             public void onLoadmore() {
+                page++;
+                getMyFollow(page,size);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        page++;
-                        getMyFollow(page,size);
+
                         sv.onFinishFreshAndLoad();
                     }
                 },1000);

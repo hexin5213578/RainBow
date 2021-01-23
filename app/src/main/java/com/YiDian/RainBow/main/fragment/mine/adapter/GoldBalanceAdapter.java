@@ -28,29 +28,36 @@ public class GoldBalanceAdapter extends RecyclerView.Adapter<GoldBalanceHolder> 
     @NonNull
     @Override
     public GoldBalanceHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        viewHolder = GoldBalanceHolder.createViewHolder(context, parent, R.layout.item_balance_text);
-        return viewHolder;
+        if (viewType == 0) {
+            viewHolder = GoldBalanceHolder.createViewHolder(context, parent, R.layout.item_balance_text);
+            return viewHolder;
+        } else {
+            viewHolder = GoldBalanceHolder.createViewHolder(context, parent, R.layout.item_balance_text1);
+            return viewHolder;
+        }
     }
 
     @Override
     public void onBindViewHolder(@NonNull GoldBalanceHolder holder, int position) {
-        //绑定数据
-        if(list.get(position).getRecordType()==1){
-            //收入
-            holder.tvGift.setText("收入");
-            holder.tvConsumption.setText(list.get(position).getCreateTime()+"");
-            holder.tvTvConsumptionCount.setTextColor(Color.parseColor("#D42626"));
-            holder.tvTvConsumptionCount.setText("+"+list.get(position).getGoldNum());
-        }else {
-            //支出
-            holder.tvGift.setText("支出");
-            holder.tvConsumption.setText(list.get(position).getCreateTime()+"");
-            holder.tvTvConsumptionCount.setText("-"+list.get(position).getGoldNum());
-        }
+        //收入
+        holder.tvGift.setText(list.get(position).getRecordContent());
+        holder.tvConsumption.setText(list.get(position).getCreateTime() + "");
+        holder.tvTvConsumptionCount.setText("+" + list.get(position).getGoldNum());
     }
 
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (list.get(position).getRecordType() == 1) {
+            //收入
+            return 0;
+        } else {
+            //支出
+            return 1;
+        }
     }
 }

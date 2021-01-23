@@ -282,13 +282,14 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {
+                AllList.clear();
+                page = 1;
+                getComment(page, count);
+                getDetails();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        AllList.clear();
-                        page = 1;
-                        getComment(page, count);
-                        getDetails();
+
                         sv.onFinishFreshAndLoad();
                     }
                 },1000);
@@ -296,11 +297,12 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
 
             @Override
             public void onLoadmore() {
+                page++;
+                getComment(page, count);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        page++;
-                        getComment(page, count);
+
                         sv.onFinishFreshAndLoad();
                     }
                 },1000);

@@ -121,12 +121,13 @@ public class FragmentNear extends Fragment implements AMapLocationListener {
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {
+                int page = 1;
+                alllist.clear();
+                getNearPerson(page,size);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        int page = 1;
-                        alllist.clear();
-                        getNearPerson(page,size);
+
                         sv.onFinishFreshAndLoad();
                     }
                 },1000);
@@ -134,11 +135,12 @@ public class FragmentNear extends Fragment implements AMapLocationListener {
 
             @Override
             public void onLoadmore() {
+                page++;
+                getNearPerson(page,size);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        page++;
-                        getNearPerson(page,size);
+
                         sv.onFinishFreshAndLoad();
                     }
                 },1000);

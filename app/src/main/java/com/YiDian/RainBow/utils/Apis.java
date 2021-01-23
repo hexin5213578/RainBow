@@ -54,6 +54,7 @@ import com.YiDian.RainBow.setup.bean.CheckNickNameBean;
 import com.YiDian.RainBow.setup.bean.GetBindPhoneMsgBean;
 import com.YiDian.RainBow.setup.bean.GetRealDataBean;
 import com.YiDian.RainBow.setup.bean.InsertRealBean;
+import com.YiDian.RainBow.topic.TopicBean;
 import com.YiDian.RainBow.user.bean.UserMsgBean;
 
 import io.reactivex.Observable;
@@ -434,4 +435,6 @@ public interface Apis {
     @POST("lovers/checkBuildLovers")
     Observable<ChackBuildLovesBean>doGetChackBuildLovers(@Query("userPId")int userPId, @Query("userTId")int userTId, @Query("isAgree") int isAgree);
 
+    @GET("content/getContentByTopicTitle")
+    Observable<TopicBean>doGetTopicByKey(@Query("userId")int userid,@Query("topicTitle")String title,@Query("page")int page,@Query("pageSize")int size);
 }
