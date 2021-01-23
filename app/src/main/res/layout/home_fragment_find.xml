@@ -45,6 +45,7 @@
         <RelativeLayout
             android:layout_width="@dimen/dp_50"
             android:id="@+id/iv_filter"
+            android:visibility="gone"
             android:layout_alignParentRight="true"
             android:layout_height="match_parent">
             <ImageView
