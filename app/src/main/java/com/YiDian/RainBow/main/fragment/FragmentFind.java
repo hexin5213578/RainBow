@@ -162,7 +162,7 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
             //设置切换页面及选中字体大小
             case R.id.rbMatch:
                 vp.setCurrentItem(0);
-                ivFilter.setVisibility(View.VISIBLE);
+                //ivFilter.setVisibility(View.VISIBLE);
 
                 rbMatch.setTextSize(18);
                 rbMatch.setTextAppearance(R.style.txt_bold);
@@ -178,7 +178,7 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
                 vp.setCurrentItem(1);
 
 
-                ivFilter.setVisibility(View.GONE);
+              //  ivFilter.setVisibility(View.GONE);
 
                 rbMeet.setTextSize(18);
                 rbMeet.setTextAppearance(R.style.txt_bold);
@@ -191,7 +191,7 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
             case R.id.rbNear:
                 vp.setCurrentItem(2);
                 //附近关闭筛选按钮
-                ivFilter.setVisibility(View.GONE);
+               // ivFilter.setVisibility(View.GONE);
 
                 rbNear.setTextSize(18);
                 rbNear.setTextAppearance(R.style.txt_bold);

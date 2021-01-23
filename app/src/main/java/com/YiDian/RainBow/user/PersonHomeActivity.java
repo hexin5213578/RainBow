@@ -689,7 +689,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
         String upToken;
         String serverPath = "http://img.rianbow.cn/";
 
-        upToken = SPUtil.getInstance().getData(PersonHomeActivity.this, SPUtil.FILE_NAME, SPUtil.UPTOKEN);
+        upToken = Common.getToken();
 
         // 图片上传到七牛 重用 uploadManager。一般地，只需要创建一个 uploadManager 对象
         UploadManager uploadManager = new UploadManager();
@@ -742,6 +742,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             }
                         } else {
                             Log.i("xxx", "Upload Fail");
+                            Log.i("xxx", ""+info);
                             //如果失败，这里可以把 info 信息上报自己的服务器，便于后面分析上传错误原因
                         }
                         Log.i("xxx", img1);
