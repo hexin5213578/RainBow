@@ -2,6 +2,7 @@ package com.YiDian.RainBow.main.fragment.find.adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -17,6 +18,8 @@ import com.YiDian.RainBow.custom.customDialog.CustomDialogCancleFollow;
 import com.YiDian.RainBow.main.fragment.find.bean.NearPersonBean;
 import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
 import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
+import com.YiDian.RainBow.topic.SaveIntentMsgBean;
+import com.YiDian.RainBow.user.PersonHomeActivity;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
@@ -71,6 +74,23 @@ public class NearPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             //已关注 取消关注
             ((ViewHolder)holder).btGuanzhu.setText("已关注");
         }
+
+        //跳转到用户详情页
+        ((ViewHolder)holder).ivHeadimg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listBean = list.get(position);
+
+                Intent intent = new Intent(context, PersonHomeActivity.class);
+                SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
+                saveIntentMsgBean.setId(listBean.getId());
+                //2标记传入姓名  1标记传入id
+                saveIntentMsgBean.setFlag(1);
+                intent.putExtra("msg",saveIntentMsgBean);
+                context.startActivity(intent);
+            }
+        });
+
         ((ViewHolder)holder).btGuanzhu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

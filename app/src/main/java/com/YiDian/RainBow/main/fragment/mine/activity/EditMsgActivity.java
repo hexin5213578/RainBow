@@ -147,7 +147,7 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
         ivBack.setOnClickListener(this);
 
         userid = Integer.parseInt(Common.getUserId());
-        token = SPUtil.getInstance().getData(EditMsgActivity.this, SPUtil.FILE_NAME, SPUtil.UPTOKEN);
+        token = Common.getToken();
 
 
         username = Common.getUserName();

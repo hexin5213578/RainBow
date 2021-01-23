@@ -1,6 +1,9 @@
 package com.YiDian.RainBow.main.fragment.msg.activity;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -27,8 +30,12 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -59,6 +66,7 @@ import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.audiorecord.AudioRecorderButton;
 import com.YiDian.RainBow.dynamic.activity.DevelopmentDynamicActivity;
 import com.YiDian.RainBow.dynamic.adapter.DevelogmentImgAdapter;
+import com.YiDian.RainBow.friend.activity.FriendsActivity;
 import com.YiDian.RainBow.main.fragment.msg.adapter.FriendImAdapter;
 import com.YiDian.RainBow.main.fragment.msg.adapter.GridViewAdapter;
 import com.YiDian.RainBow.main.fragment.msg.adapter.ViewPagerAdapter;
@@ -213,6 +221,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
     private int selectnum=-1;
     private TextView tv_balance;
+    private Animation anim;
 
     @Override
     protected int getResId() {
@@ -687,7 +696,6 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                     intent.putExtra("imgfile","http://img.rianbow.cn/20210113103522202909.png");
                 }else{
                     intent.putExtra("imgfile",avatarFile.toString());
-
                 }
 
                 intent.putExtra("name",title);
@@ -929,30 +937,43 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                     int screenWidth = ScreenUtils.getScreenHeight(FriendImActivity.this);//获取屏幕宽度
                     Log.d("xxx","屏幕高度为"+screenWidth);
 
-                    Animation translateAnimation = AnimationUtils.loadAnimation(FriendImActivity.this, R.anim.gift_anim);
+                    ObjectAnimator Animator1 = ObjectAnimator.ofFloat(iv_anim, "translationY", -700);
+                    Animator1.setInterpolator(new LinearInterpolator());
+                    Animator1.setDuration(1000);
 
-                    translateAnimation.setDuration(2000);//动画持续的时间为10s
-                    translateAnimation.setFillEnabled(true);//使其可以填充效果从而不回到原地
-                    translateAnimation.setFillAfter(true);//不回到起始位置
-                    //如果不添加setFillEnabled和setFillAfter则动画执行结束后会自动回到远点
-                    iv_anim.setAnimation(translateAnimation);//给imageView添加的动画效果
-                    translateAnimation.startNow();//动画开始执行 放在最后即可
+                    ObjectAnimator Animator2 = ObjectAnimator.ofFloat(iv_anim, "rotation", 0.0F, 1080.0f);
+                    Animator2.setInterpolator(new LinearInterpolator());
+                    Animator2.setDuration(1500);
 
-                    //动画监听
-                    translateAnimation.setAnimationListener(new Animation.AnimationListener() {
+                    AnimatorSet set=new AnimatorSet();
+                    set.play(Animator1).before(Animator2);
+
+                    set.start();
+                    set.addListener(new Animator.AnimatorListener() {
                         @Override
-                        public void onAnimationStart(Animation animation) {
+                        public void onAnimationStart(Animator animation) {
 
                         }
 
                         @Override
-                        public void onAnimationEnd(Animation animation) {
-                            translateAnimation.cancel();
+                        public void onAnimationEnd(Animator animation) {
+                            animation.cancel();
+
                             iv_anim.setVisibility(View.GONE);
+                            ObjectAnimator Animator = ObjectAnimator.ofFloat(iv_anim, "translationY", 700);
+                            Animator.setInterpolator(new LinearInterpolator());
+                            Animator.setDuration(200);
+
+                            Animator.start();
                         }
 
                         @Override
-                        public void onAnimationRepeat(Animation animation) {
+                        public void onAnimationCancel(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
 
                         }
                     });

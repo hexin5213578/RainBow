@@ -46,53 +46,63 @@
             android:textStyle="bold" />
     </RelativeLayout>
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_below="@id/rl_top"
+        android:id="@+id/l3"
         android:orientation="horizontal"
-        android:layout_below="@id/rl_top"
-        android:id="@+id/ll_shuru"
         android:layout_marginLeft="@dimen/dp_15"
-        android:layout_width="@dimen/dp_295"
-        android:background="@drawable/home_search_bg"
         android:layout_height="@dimen/dp_30">
-        <ImageView
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/ll_shuru"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginRight="@dimen/dp_12"
+            android:background="@drawable/home_search_bg"
+            android:layout_height="@dimen/dp_30">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:src="@mipmap/search"
+                android:layout_marginLeft="@dimen/dp_12"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content">
+            </ImageView>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:textSize="@dimen/sp_12"
+                android:background="@null"
+                android:hint="输入昵称或者群名搜索"
+                android:id="@+id/et_text"
+                android:textColor="#999999"
+                android:layout_marginLeft="@dimen/dp_12"
+                android:layout_height="wrap_content">
+            </EditText>
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:src="@mipmap/search"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content">
-        </ImageView>
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_gravity="center"
-            android:textSize="@dimen/sp_12"
-            android:background="@null"
-            android:hint="输入昵称或者群名搜索"
-            android:id="@+id/et_text"
-            android:textColor="#999999"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_height="wrap_content">
-        </EditText>
+            android:layout_below="@id/rl_top"
+            android:id="@+id/ll_search"
+            android:layout_marginRight="@dimen/dp_15"
+            android:layout_alignParentRight="true"
+            android:layout_height="@dimen/dp_30">
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="搜索"
+                android:layout_gravity="center"
+                android:textColor="@color/color_999999"
+                android:textSize="@dimen/sp_12"
+                android:layout_height="wrap_content">
+            </TextView>
+        </LinearLayout>
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_below="@id/rl_top"
-        android:id="@+id/ll_search"
-        android:layout_marginRight="@dimen/dp_15"
-        android:layout_alignParentRight="true"
-        android:layout_height="@dimen/dp_30">
-        <TextView
-            android:layout_width="wrap_content"
-            android:text="搜索"
-            android:layout_gravity="center"
-            android:textColor="@color/color_999999"
-            android:textSize="@dimen/sp_12"
-            android:layout_height="wrap_content">
-        </TextView>
-    </LinearLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:id="@+id/rl_middle"
+        android:visibility="gone"
         android:layout_height="match_parent"
-        android:layout_below="@id/ll_search">
+        android:layout_below="@id/l3">
 
         <RelativeLayout
             android:id="@+id/l1"
@@ -137,6 +147,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rc_searchfriend"
             android:layout_width="match_parent"
+            android:overScrollMode="never"
             android:layout_height="wrap_content"
             android:layout_below="@id/l1"
             android:layout_marginLeft="@dimen/dp_15"
@@ -187,29 +198,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/l2"
+            android:overScrollMode="never"
             android:layout_marginLeft="@dimen/dp_15"
             android:layout_marginRight="@dimen/dp_15">
         </androidx.recyclerview.widget.RecyclerView>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:visibility="gone"
-            android:id="@+id/rl_nodata"
-            android:layout_height="match_parent">
-            <ImageView
-                android:layout_width="@dimen/dp_187"
-                android:src="@mipmap/noperson"
-                android:id="@+id/tv"
-                android:layout_centerInParent="true"
-                android:layout_height="@dimen/dp_169">
-            </ImageView>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_below="@+id/tv"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/dp_30"
-                android:text="没有找到该用户或群组"
-                android:layout_height="wrap_content">
-            </TextView>
-        </RelativeLayout>
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/rl_nodata"
+        android:layout_below="@id/l3"
+        android:visibility="gone"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_width="@dimen/dp_187"
+            android:src="@mipmap/noperson"
+            android:id="@+id/tv"
+            android:layout_centerInParent="true"
+            android:layout_height="@dimen/dp_169">
+        </ImageView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_below="@+id/tv"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_30"
+            android:text="没有找到该用户或群组"
+            android:layout_height="wrap_content">
+        </TextView>
     </RelativeLayout>
 </RelativeLayout>

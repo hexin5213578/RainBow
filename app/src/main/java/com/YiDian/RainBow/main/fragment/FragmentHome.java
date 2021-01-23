@@ -26,6 +26,7 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.dynamic.activity.DevelopmentDynamicActivity;
+import com.YiDian.RainBow.friend.activity.AddFriendActivity;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentAttDynamic;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentHotDynamic;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentNearDynamic;
@@ -33,6 +34,7 @@ import com.YiDian.RainBow.main.fragment.home.fragment.FragmentNewDynamic;
 import com.YiDian.RainBow.search.SearchActivity;
 import com.leaf.library.StatusBarUtil;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,7 +101,7 @@ public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedCh
             @Override
             public void onClick(View v) {
                 //跳转到搜索页
-                startActivity(new Intent(getContext(), SearchActivity.class));
+                startActivity(new Intent(getContext(), AddFriendActivity.class));
             }
         });
         ivAdd.setOnClickListener(new View.OnClickListener() {

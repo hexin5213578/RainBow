@@ -64,18 +64,28 @@ public class MyLikeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         //设置头像
         Glide.with(context).load(bean.getHeadImg()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder) holder).ivHeadimg);
         //设置签名
-        ((ViewHolder)holder).tvAutograph.setText(bean.getExplains());
+        String explains = bean.getExplains();
+        if (explains!=null){
+            ((ViewHolder)holder).tvAutograph.setText(explains);
+        }else{
+            ((ViewHolder)holder).tvAutograph.setText("还没有设置签名哦");
+        }
         //设置时间
         ((ViewHolder)holder).tvTime.setText(bean.getCreateTime());
 
         //判断角色
         String userRole = bean.getUserRole();
-        if(userRole.equals("保密")){
-            ((ViewHolder)holder).tvXingbie.setVisibility(View.GONE);
+        if (userRole!=null){
+            if(userRole.equals("保密")){
+                ((ViewHolder)holder).tvXingbie.setVisibility(View.GONE);
+            }else{
+                ((ViewHolder)holder).tvXingbie.setVisibility(View.VISIBLE);
+                ((ViewHolder)holder).tvXingbie.setText(userRole);
+            }
         }else{
-            ((ViewHolder)holder).tvXingbie.setVisibility(View.VISIBLE);
-            ((ViewHolder)holder).tvXingbie.setText(userRole);
+            ((ViewHolder)holder).tvXingbie.setVisibility(View.GONE);
         }
+
         //跳转到用户详情页
         ((ViewHolder)holder).ivHeadimg.setOnClickListener(new View.OnClickListener() {
             @Override

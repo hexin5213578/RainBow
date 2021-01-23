@@ -228,7 +228,7 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
         ivFanm.setOnClickListener(this);
         btReconfirm.setOnClickListener(this);
         userid = Integer.valueOf(Common.getUserId());
-        upToken = SPUtil.getInstance().getData(RealnameActivity.this, SPUtil.FILE_NAME, SPUtil.UPTOKEN);
+        upToken = Common.getToken();
 
         //获取状态
         doGetRealStatus();

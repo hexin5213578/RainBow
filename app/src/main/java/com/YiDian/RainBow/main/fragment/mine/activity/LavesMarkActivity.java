@@ -19,6 +19,9 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.widget.Toolbar;
+
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
@@ -44,8 +47,6 @@ import io.reactivex.schedulers.Schedulers;
 
 public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListener {
     private static final String TAG = "xxx";
-    @BindView(R.id.l_return)
-    LinearLayout lReturn;
     @BindView(R.id.ed_inputid)
     EditText edInputid;
     @BindView(R.id.r11)
@@ -76,8 +77,6 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
     TextView tvBangding;
     PopupWindow mPopupWindow1;
     int myid;
-    @BindView(R.id.v1)
-    View v1;
     @BindView(R.id.tv_jiechu)
     TextView tvJiechu;
     int loveid;
@@ -89,6 +88,10 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
     TextView tvTrue;
     @BindView(R.id.tv_false)
     TextView tvFalse;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.iv_back)
+    LinearLayout ivBack;
 
     @Override
     protected int getResId() {
@@ -99,15 +102,21 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
     protected void getData() {
         //事件注册
         tvBangding.setOnClickListener(this);
-        lReturn.setOnClickListener(this);
         tvJiechu.setOnClickListener(this);
         tvTrue.setOnClickListener(this);
         tvFalse.setOnClickListener(this);
         tvRequestCon.setOnClickListener(this);
+
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         //Integer.parseInt(Common.getUserId());
         myid = Integer.parseInt(Common.getUserId());
         //设置状态栏颜色与字体颜色
-        StatusBarUtil.setGradientColor(LavesMarkActivity.this, v1);
+        StatusBarUtil.setGradientColor(LavesMarkActivity.this, toolbar);
         StatusBarUtil.setDarkMode(LavesMarkActivity.this);
         //
         refresh();
@@ -150,7 +159,7 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
                                     tvNicheng.setText(infoBean.getNickName());
                                     String path2 = infoBean.getHeadImg();
                                     Glide.with(LavesMarkActivity.this).load(path2).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg1);
-                                    tvAll.setText(infoBean.getNickName()+"请求与您成为情侣");
+                                    tvAll.setText(infoBean.getNickName() + "请求与您成为情侣");
                                     loveid = infoBean.getId();
                                     break;
                                 case "11":
@@ -239,14 +248,14 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
                         }
                     });
                     builder.create().show();
-                } else if(myid==Integer.parseInt(str)){
+                } else if (myid == Integer.parseInt(str)) {
                     builder.setMessage("不能添加自己为情侣").setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
                     });
                     builder.create().show();
-                }else{
+                } else {
                     if (str.length() == 6) {
                         //查询这个用户是否存在，存在准备发送信息
                         NetUtils.getInstance().getApis().doGetUserInfobyId(Integer.parseInt(str)).
@@ -269,7 +278,7 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
                                             //把键盘收回去
                                             KeyBoardUtils.closeKeyboard(LavesMarkActivity.this);
 
-                                        }else {
+                                        } else {
                                             //用户不存在
                                             EveryDayDialogDialog.Builder builder = new EveryDayDialogDialog.Builder(LavesMarkActivity.this);
                                             builder.setMessage("该用户不存在").setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -304,7 +313,7 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
                     }
                 }
                 break;
-                //解除关系
+            //解除关系
             case R.id.tv_jiechu:
                 builder.setMessage("确定解除关系？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -346,7 +355,7 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
                         });
                 builder.create().show();
                 break;
-                //撤销请求
+            //撤销请求
             case R.id.tv_requestCon:
                 builder.setMessage("撤回建立关系请求？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -388,10 +397,10 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
                         });
                 builder.create().show();
                 break;
-                //同意建立关系
+            //同意建立关系
             case R.id.tv_true:
                 Log.d(TAG, "onClick: ------同意建立关系");
-                NetUtils.getInstance().getApis().doGetChackBuildLovers(myid,loveid,1).
+                NetUtils.getInstance().getApis().doGetChackBuildLovers(myid, loveid, 1).
                         subscribeOn(Schedulers.io()).
                         observeOn(AndroidSchedulers.mainThread()).
                         subscribe(new Observer<ChackBuildLovesBean>() {
@@ -402,10 +411,10 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
 
                             @Override
                             public void onNext(ChackBuildLovesBean chackBuildLovesBean) {
-                                if(chackBuildLovesBean.getType().equals("OK")){
+                                if (chackBuildLovesBean.getType().equals("OK")) {
 
                                     refresh();
-                                }else {
+                                } else {
                                     Log.d(TAG, "onNext: 服务器失败");
                                     refresh();
                                 }
@@ -422,10 +431,10 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
                             }
                         });
                 break;
-                // 拒绝建立关系
+            // 拒绝建立关系
             case R.id.tv_false:
                 Log.d(TAG, "onClick: ------拒绝建立关系");
-                NetUtils.getInstance().getApis().doGetChackBuildLovers(myid,loveid,0).
+                NetUtils.getInstance().getApis().doGetChackBuildLovers(myid, loveid, 0).
                         subscribeOn(Schedulers.io()).
                         observeOn(AndroidSchedulers.mainThread()).
                         subscribe(new Observer<ChackBuildLovesBean>() {
@@ -436,10 +445,10 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
 
                             @Override
                             public void onNext(ChackBuildLovesBean chackBuildLovesBean) {
-                                if(chackBuildLovesBean.getType().equals("OK")){
+                                if (chackBuildLovesBean.getType().equals("OK")) {
 
                                     refresh();
-                                }else {
+                                } else {
                                     Log.d(TAG, "onNext: 服务器失败");
                                     refresh();
                                 }

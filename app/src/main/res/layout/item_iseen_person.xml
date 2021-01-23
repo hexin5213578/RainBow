@@ -5,6 +5,7 @@
     android:background="@color/white">
     <RelativeLayout
         android:layout_width="match_parent"
+        android:id="@+id/rl_item"
         android:layout_height="wrap_content">
         <RelativeLayout
             android:layout_width="@dimen/dp_45"
@@ -42,11 +43,14 @@
             android:layout_height="wrap_content">
         </TextView>
         <TextView
-            android:layout_width="wrap_content"
-            android:text="创造机会的人是勇者"
+            android:layout_width="match_parent"
+            android:layout_marginRight="@dimen/dp_70"
+            android:text="创造机会的人是勇者123132123123123123123123123"
             android:textSize="@dimen/sp_12"
             android:layout_marginLeft="@dimen/dp_10"
+            android:ellipsize="end"
             android:id="@+id/tv_autograph"
+            android:maxLines="1"
             android:layout_marginTop="@dimen/dp_7"
             android:layout_below="@id/tv_name"
             android:textColor="#666666"

@@ -26,7 +26,7 @@
         </ImageView>
         <TextView
             android:layout_width="@dimen/dp_207"
-            android:text="附近没有更多的人了,更改筛选条件查找 更多用户配对。"
+            android:text="没有更多的人了,快去附近看一看吧"
             android:textColor="@color/color_999999"
             android:textSize="@dimen/sp_12"
             android:layout_marginTop="@dimen/dp_29"

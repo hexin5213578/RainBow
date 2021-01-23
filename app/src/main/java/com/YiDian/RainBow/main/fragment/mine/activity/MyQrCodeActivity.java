@@ -134,6 +134,7 @@ public class MyQrCodeActivity extends BaseAvtivity implements View.OnClickListen
         //获取用户ID
         //先获取用户信息  设置数据
 
+        tvId.setText("ID:"+userid);
         //设置二维码
         ivQrcode.setImageBitmap(qrCode);
 

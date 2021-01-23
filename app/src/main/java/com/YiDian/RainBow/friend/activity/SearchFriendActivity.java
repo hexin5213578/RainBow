@@ -1,6 +1,8 @@
 package com.YiDian.RainBow.friend.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -27,6 +29,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +73,7 @@ public class SearchFriendActivity extends BaseAvtivity implements View.OnClickLi
     private List<SelectFriendOrGroupBean.ObjectBean.GroupListBean> groupList;
     private List<SelectFriendOrGroupBean.ObjectBean.UserListBean> userList;
     private String s;
+    private Intent intent;
 
     @Override
     protected int getResId() {
@@ -116,10 +120,14 @@ public class SearchFriendActivity extends BaseAvtivity implements View.OnClickLi
                 KeyBoardUtils.openKeyBoard(etText);
                 break;
             case R.id.ll_seemore1:
-
+                intent = new Intent(SearchFriendActivity.this,MoreUserActivity.class);
+                intent.putExtra("list", (Serializable) userList);
+                startActivity(intent);
                 break;
             case R.id.ll_seemore2:
-
+                intent = new Intent(SearchFriendActivity.this,MoreGroupActivity.class);
+                intent.putExtra("list", (Serializable) groupList);
+                startActivity(intent);
                 break;
         }
     }
@@ -162,6 +170,8 @@ public class SearchFriendActivity extends BaseAvtivity implements View.OnClickLi
                         groupList = selectFriendOrGroupBean.getObject().getGroupList();
                         userList = selectFriendOrGroupBean.getObject().getUserList();
 
+                        KeyBoardUtils.closeKeyboard(SearchFriendActivity.this);
+
                         if (userList != null && userList.size() > 0) {
                             rlMiddle.setVisibility(View.VISIBLE);
 
@@ -184,6 +194,8 @@ public class SearchFriendActivity extends BaseAvtivity implements View.OnClickLi
                                 SearchFriendAdapter searchFriendAdapter = new SearchFriendAdapter(SearchFriendActivity.this, list);
                                 rcSearchfriend.setAdapter(searchFriendAdapter);
                             } else {
+                                llSeemore1.setVisibility(View.GONE);
+
                                 if (userList.size()<=2 && userList.size()>0){
                                     //长度在0与2中间传全部
                                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(SearchFriendActivity.this, RecyclerView.VERTICAL, false);
@@ -221,6 +233,8 @@ public class SearchFriendActivity extends BaseAvtivity implements View.OnClickLi
                                 SearchGroupAdapter searchGroupAdapter = new SearchGroupAdapter(SearchFriendActivity.this, list);
                                 rcSearchgroup.setAdapter(searchGroupAdapter);
                             } else {
+                                llSeemore2.setVisibility(View.GONE);
+
                                 if (groupList.size()>0 && groupList.size()<2){
                                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(SearchFriendActivity.this, RecyclerView.VERTICAL, false);
                                     rcSearchgroup.setLayoutManager(linearLayoutManager);
@@ -238,13 +252,9 @@ public class SearchFriendActivity extends BaseAvtivity implements View.OnClickLi
                         }
 
 
-                        if (userList.size() < 0 && groupList.size() < 0) {
-                            rlMiddle.setVisibility(View.VISIBLE);
+                        if (userList.size() == 0 && groupList.size() == 0) {
 
-                            l1.setVisibility(View.GONE);
-                            rcSearchfriend.setVisibility(View.GONE);
-                            l2.setVisibility(View.GONE);
-                            rcSearchgroup.setVisibility(View.GONE);
+                            rlMiddle.setVisibility(View.GONE);
                             rlNodata.setVisibility(View.VISIBLE);
                         }
 
@@ -263,10 +273,4 @@ public class SearchFriendActivity extends BaseAvtivity implements View.OnClickLi
                 });
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
 }

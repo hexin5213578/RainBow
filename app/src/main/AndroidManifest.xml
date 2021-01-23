@@ -377,6 +377,21 @@
             android:name=".friend.activity.AddFriendActivity"
             android:screenOrientation="portrait" />
 
+        <!-- 搜索好友 -->
+        <activity
+            android:name=".friend.activity.SearchFriendActivity"
+            android:screenOrientation="portrait" />
+
+        <!-- 查询群组详情 -->
+        <activity
+            android:name=".friend.activity.MoreGroupActivity"
+            android:screenOrientation="portrait" />
+
+        <!-- 查询用户详情 -->
+        <activity
+            android:name=".friend.activity.MoreUserActivity"
+            android:screenOrientation="portrait" />
+
         <!-- 创建群组 -->
         <activity
             android:name=".imgroup.CreateGroupActivity"
@@ -480,5 +495,21 @@
             android:name=".main.fragment.mine.activity.LavesMarkActivity"
             android:screenOrientation="portrait"
             />
+
+        <!-- bugly版本更新-->
+        <activity
+            android:name="com.tencent.bugly.beta.ui.BetaActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|locale"
+            android:theme="@android:style/Theme.Translucent" />
+
+        <provider
+            android:name="com.tencent.bugly.beta.utils.BuglyFileProvider"
+            android:authorities="${applicationId}.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
     </application>
 </manifest>

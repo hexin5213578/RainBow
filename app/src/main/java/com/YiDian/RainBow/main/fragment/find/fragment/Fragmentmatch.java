@@ -472,7 +472,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
                         hideDialog();
                         list = allUserInfoBean.getObject().getList();
 
-                        if (list.size() > 0 && list != null) {
+                        if (list.size() > 1 && list != null) {
                             rlNodata.setVisibility(View.GONE);
                             container.setVisibility(View.VISIBLE);
 

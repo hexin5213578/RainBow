@@ -22,6 +22,8 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
+import com.tencent.bugly.Bugly;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
@@ -58,8 +60,7 @@ public class App extends Application {
         //imageloader初始化
         initImageloader();
 
-
-       // Bugly.init(getApplicationContext(), "c11555727a", false);
+        Bugly.init(getApplicationContext(), "9d9b5f2a2f", false);
 
         Context context = getApplicationContext();
         // 获取当前包名
@@ -67,13 +68,12 @@ public class App extends Application {
         // 获取当前进程名
         String processName = getProcessName(android.os.Process.myPid());
         // 设置是否为上报进程
-       // CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
-       // strategy.setUploadProcess(processName == null || processName.equals(packageName));
-        // 初始化Bugly
-        //CrashReport.initCrashReport(getApplicationContext(), "c11555727a", false);
+        CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
+        strategy.setUploadProcess(processName == null || processName.equals(packageName));
+         //初始化Bugly
+        CrashReport.initCrashReport(getApplicationContext(), "c11555727a", false);
         // 如果通过“AndroidManifest.xml”来配置APP信息，初始化方法如下
-        // CrashReport.initCrashReport(context, strategy);
-
+         CrashReport.initCrashReport(context, strategy);
 
         initWX();
         //初始化极光

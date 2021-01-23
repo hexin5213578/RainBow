@@ -25,8 +25,8 @@
             android:id="@+id/capture_crop_view"
             android:layout_width="@dimen/dp_250"
             android:layout_height="@dimen/dp_250"
-            android:layout_centerHorizontal="true"
             android:layout_below="@id/capture_mask_top"
+            android:layout_centerHorizontal="true"
             android:background="@drawable/qr_code_bg" >
 
             <ImageView

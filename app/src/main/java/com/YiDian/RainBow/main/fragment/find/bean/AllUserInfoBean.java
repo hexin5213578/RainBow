@@ -253,7 +253,7 @@ public class AllUserInfoBean {
             private String phoneNum;
             private String nickName;
             private String headImg;
-            private Object backImg;
+            private String backImg;
             private String explains;
             private String birthday;
             private int userType;
@@ -303,11 +303,11 @@ public class AllUserInfoBean {
                 this.headImg = headImg;
             }
 
-            public Object getBackImg() {
+            public String getBackImg() {
                 return backImg;
             }
 
-            public void setBackImg(Object backImg) {
+            public void setBackImg(String backImg) {
                 this.backImg = backImg;
             }
 
