@@ -177,14 +177,14 @@ public class GoldBalance extends BaseAvtivity implements View.OnClickListener {
 
                         } else {
                             Log.d(TAG, "onNext: --------"+alllist.size());
-                            if(alllist==null||alllist.size()==0){
-                                Log.d(TAG, "onNext: --------size==0");
-                                rlDefault.setVisibility(View.VISIBLE);
-                                sv.setVisibility(View.GONE);
-                            }else {
+                            if(alllist!=null&&alllist.size()>0){
                                 recyclerViewRecord.setLayoutManager(manager);
                                 adapter = new GoldBalanceAdapter(GoldBalance.this, alllist);
                                 recyclerViewRecord.setAdapter(adapter);
+                            }else {
+                                Log.d(TAG, "onNext: --------size==0");
+                                rlDefault.setVisibility(View.VISIBLE);
+                                sv.setVisibility(View.GONE);
                             }
 
                             Log.d(TAG, "onNext: 查询数据失败");
@@ -219,6 +219,8 @@ public class GoldBalance extends BaseAvtivity implements View.OnClickListener {
 
                     @Override
                     public void onNext(ConsumeRecordBean consumeRecordBean) {
+                        GoldBalanceAdapter adapter;
+                        LinearLayoutManager manager = new LinearLayoutManager(GoldBalance.this, RecyclerView.VERTICAL, false);
                         if (consumeRecordBean.getType().equals("OK")) {
                             rlDefault.setVisibility(View.GONE);
                             sv.setVisibility(View.VISIBLE);
@@ -237,16 +239,23 @@ public class GoldBalance extends BaseAvtivity implements View.OnClickListener {
                             tvTimePeriod.setText("全部账单");
 
                             List<ConsumeRecordBean.ObjectBean.PageInfoBean.ListBean> list = consumeRecordBean.getObject().getPageInfo().getList();
-                            GoldBalanceAdapter adapter = new GoldBalanceAdapter(GoldBalance.this, list);
-                            LinearLayoutManager manager = new LinearLayoutManager(GoldBalance.this, RecyclerView.VERTICAL, false);
+                            adapter = new GoldBalanceAdapter(GoldBalance.this, list);
                             recyclerViewRecord.setLayoutManager(manager);
                             recyclerViewRecord.setAdapter(adapter);
 
                         } else {
-                            rlDefault.setVisibility(View.VISIBLE);
-                            sv.setVisibility(View.GONE);
-                            Log.d(TAG, "onNext: 查询数据失败");
+                            Log.d(TAG, "onNext: --------"+alllist.size());
+                            if(alllist!=null&&alllist.size()>0){
+                                recyclerViewRecord.setLayoutManager(manager);
+                                adapter = new GoldBalanceAdapter(GoldBalance.this, alllist);
+                                recyclerViewRecord.setAdapter(adapter);
+                            }else {
+                                Log.d(TAG, "onNext: --------size==0");
+                                rlDefault.setVisibility(View.VISIBLE);
+                                sv.setVisibility(View.GONE);
+                            }
 
+                            Log.d(TAG, "onNext: 查询数据失败");
                         }
 
                     }

@@ -19,7 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
@@ -29,8 +28,11 @@ import com.YiDian.RainBow.main.fragment.mine.bean.ChackBuildLovesBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.LoveBulidBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.LoveStateBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.UserInfoById;
+import com.YiDian.RainBow.utils.KeyBoardUtils;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.leaf.library.StatusBarUtil;
 
 import butterknife.BindView;
@@ -103,7 +105,7 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
         tvFalse.setOnClickListener(this);
         tvRequestCon.setOnClickListener(this);
 //Integer.parseInt(Common.getUserId());
-        myid = 1030;
+        myid = Integer.parseInt(Common.getUserId());
         //设置状态栏颜色与字体颜色
         StatusBarUtil.setGradientColor(LavesMarkActivity.this, v1);
         StatusBarUtil.setDarkMode(LavesMarkActivity.this);
@@ -149,7 +151,7 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
                                     rlConsentRefusal.setVisibility(View.VISIBLE);
                                     tvNicheng.setText(infoBean.getNickName());
                                     String path2 = infoBean.getHeadImg();
-                                    Glide.with(LavesMarkActivity.this).load(path2).into(ivHeadimg1);
+                                    Glide.with(LavesMarkActivity.this).load(path2).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg1);
                                     tvAll.setText(infoBean.getNickName()+"请求与您成为情侣");
                                     loveid = infoBean.getId();
                                     break;
@@ -167,7 +169,7 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
                                     }
                                     //头像
                                     String path3 = infoBean.getHeadImg();
-                                    Glide.with(LavesMarkActivity.this).load(path3).into(ivHeadimg);
+                                    Glide.with(LavesMarkActivity.this).load(path3).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
                                     //角色
                                     if (infoBean.getUserRole() != null && (!infoBean.getUserRole().equals("保密"))) {
                                         tvRole.setText(infoBean.getUserRole());
@@ -186,7 +188,7 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
                                     tvAll.setText("请求已发送，等待对方接收中");
                                     tvNicheng.setText(infoBean.getNickName());
                                     String path = infoBean.getHeadImg();
-                                    Glide.with(LavesMarkActivity.this).load(path).into(ivHeadimg1);
+                                    Glide.with(LavesMarkActivity.this).load(path).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg1);
                                     tvRequestCon.setVisibility(View.VISIBLE);
                                     rlConsentRefusal.setVisibility(View.GONE);
                                     loveid = infoBean.getId();
@@ -239,8 +241,15 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
                         }
                     });
                     builder.create().show();
-                } else {
-                    if (str.length() == 4) {
+                } else if(myid==Integer.parseInt(str)){
+                    builder.setMessage("不能添加自己为情侣").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.create().show();
+                }else{
+                    if (str.length() == 6) {
                         //查询这个用户是否存在，存在准备发送信息
                         NetUtils.getInstance().getApis().doGetUserInfobyId(Integer.parseInt(str)).
                                 subscribeOn(Schedulers.io()).
@@ -256,8 +265,10 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
                                         if (userInfoById.getType().equals("OK")) {
                                             //用户存在 弹出弹窗
                                             showChangeName(userInfoById, myid, Integer.parseInt(str));
-                                        }
-                                        {
+                                            //把键盘收回去
+                                            KeyBoardUtils.closeKeyboard(LavesMarkActivity.this);
+
+                                        }else {
                                             //用户不存在
                                             EveryDayDialogDialog.Builder builder = new EveryDayDialogDialog.Builder(LavesMarkActivity.this);
                                             builder.setMessage("该用户不存在").setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -271,6 +282,15 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
 
                                     @Override
                                     public void onError(Throwable e) {
+                                        Log.d(TAG, "onError: 2132412432134·24·24213");
+                                        //用户不存在
+                                        EveryDayDialogDialog.Builder builder = new EveryDayDialogDialog.Builder(LavesMarkActivity.this);
+                                        builder.setMessage("该用户不存在").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                //
+                                                dialog.dismiss();
+                                            }
+                                        });
 
                                     }
 
@@ -463,7 +483,7 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
         //绑定弹窗头像 昵称
         nicheng.setText(userInfoById.getObject().getNickName());
         String path = userInfoById.getObject().getHeadImg();
-        Glide.with(LavesMarkActivity.this).load(path).into(im);
+        Glide.with(LavesMarkActivity.this).load(path).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(im);
 
         //设置弹窗中的监听事件  发送建立关系请求
         tvtrue.setOnClickListener(new View.OnClickListener() {
