@@ -128,14 +128,14 @@ public class FragmentAttDynamic extends BaseFragment {
 
             @Override
             public void onLoadmore() {
+                page++;
+                getDynamic(page, size);
 
+                GSYVideoManager.releaseAllVideos();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        page++;
-                        getDynamic(page, size);
 
-                        GSYVideoManager.releaseAllVideos();
                         sv.onFinishFreshAndLoad();
                     }
                 }, 1000);

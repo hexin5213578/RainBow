@@ -128,13 +128,14 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {
+                allList.clear();
+                page = 1;
+                dogetDynamicById(page);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
 
-                        allList.clear();
-                        page = 1;
-                        dogetDynamicById(page);
+
                         //等待2.5秒后结束刷新
                         sv.onFinishFreshAndLoad();
                     }
@@ -143,11 +144,12 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
 
             @Override
             public void onLoadmore() {
+                page++;
+                dogetDynamicById(page);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        page++;
-                        dogetDynamicById(page);
+
                         sv.onFinishFreshAndLoad();
                     }
                 },1000);

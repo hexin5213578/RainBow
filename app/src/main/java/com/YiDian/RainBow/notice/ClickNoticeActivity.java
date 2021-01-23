@@ -87,12 +87,13 @@ public class ClickNoticeActivity extends BaseAvtivity implements View.OnClickLis
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {
+                allList.clear();
+                page=  1;
+                getNotice(page,size);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        allList.clear();
-                        page=  1;
-                        getNotice(page,size);
+
                         sv.onFinishFreshAndLoad();
                     }
                 },1000);
@@ -100,11 +101,12 @@ public class ClickNoticeActivity extends BaseAvtivity implements View.OnClickLis
 
             @Override
             public void onLoadmore() {
+                page++;
+                getNotice(page,size);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        page++;
-                        getNotice(page,size);
+
                         sv.onFinishFreshAndLoad();
                     }
                 },1000);

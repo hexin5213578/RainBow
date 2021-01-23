@@ -59,16 +59,14 @@
             <RelativeLayout
                 android:layout_marginLeft="@dimen/dp_15"
                 android:layout_marginRight="@dimen/dp_15"
-                android:layout_marginTop="@dimen/dp_25"
-                android:layout_marginBottom="@dimen/dp_25"
                 android:layout_width="match_parent"
-
                 android:layout_height="match_parent">
 
                 <TextView
                     android:id="@+id/t1"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_23"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_26"
                     android:text="金币余额（个）"
                     android:textSize="@dimen/sp_12"
                     android:textColor="#F5F5F5"
@@ -76,29 +74,39 @@
                 </TextView>
                 <TextView
                     android:id="@+id/tv_balance"
-                    android:layout_centerVertical="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"
+                    android:layout_below="@id/t1"
                     android:textSize="@dimen/sp_23"
                     android:textColor="#F5F5F5"
                     >
                 </TextView>
 
                 <TextView
-                    android:id="@+id/tv_ableuse"
+                    android:id="@+id/tv1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
+                    android:layout_below="@id/tv_balance"
                     android:gravity="bottom"
+                    android:layout_marginTop="@dimen/dp_5"
                     android:textColor="#F5F5F5"
-                    android:text="可提现金币（个）；0"
+                    android:text="可提现金币（个）："
                     android:textSize="@dimen/sp_12" />
-
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="0"
+                    android:id="@+id/tv_ableuse"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:textColor="#F5F5F5"
+                    android:layout_below="@id/tv1"
+                    android:layout_height="wrap_content">
+                </TextView>
                 <TextView
                     android:id="@+id/tv_Recharge"
                     android:layout_marginRight="@dimen/dp_10"
                     android:gravity="center"
+                    android:layout_marginBottom="@dimen/dp_15"
                     android:layout_width="@dimen/dp_65"
                     android:layout_height="@dimen/dp_27"
                     android:layout_toLeftOf="@+id/tv_cash"
@@ -107,7 +115,6 @@
                     android:textSize="@dimen/sp_12"
                     android:background="@drawable/balance_bg1"
                     android:textColor="#8866E7"
-
                     />
                 <TextView
                     android:id="@+id/tv_cash"
@@ -115,48 +122,65 @@
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
                     android:textSize="@dimen/sp_12"
+                    android:layout_marginBottom="@dimen/dp_15"
+                    android:textColor="@color/white"
                     android:layout_width="@dimen/dp_65"
                     android:layout_height="@dimen/dp_27"
                     android:text="提现"
                     android:background="@drawable/balance_bg2"
-
                     />
             </RelativeLayout>
 
         </RelativeLayout>
 
     </RelativeLayout>
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/l1"
         android:layout_below="@+id/r2"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_36"
-        android:orientation="horizontal"
-        android:gravity="center"
-
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginRight="@dimen/dp_15"
+        android:gravity="center_vertical"
         >
         
         <TextView
             android:id="@+id/tv_time_period"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2018-01-04~2020-02-03"
-            android:textSize="@dimen/sp_10"
-            android:layout_marginRight="@dimen/sp_17"
+            android:text="全部账单"
+            android:textSize="@dimen/sp_12"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
             android:textColor="#999999"
             />
         <TextView
             android:id="@+id/tv_consume_income"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="总消费：￥234 总充值：￥1234"
+            android:text="总消费：￥234"
             android:textSize="@dimen/sp_12"
+            android:layout_toRightOf="@+id/tv_time_period"
+            android:layout_centerVertical="true"
+            android:textColor="#999999"
+            android:layout_marginLeft="@dimen/dp_16"
+            />
+        <TextView
+            android:id="@+id/tv_consume_income2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="总充值：￥1234"
+            android:textSize="@dimen/sp_12"
+            android:layout_toRightOf="@+id/tv_consume_income"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_16"
             android:textColor="#999999"
             />
         <RelativeLayout
             android:id="@+id/iv_date"
             android:layout_width="@dimen/dp_36"
             android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
             android:gravity="center"
             >
             <ImageView
@@ -164,10 +188,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/date1"
+
                 />
 
         </RelativeLayout>
-    </LinearLayout>
+    </RelativeLayout>
     <RelativeLayout
 
         android:layout_width="match_parent"
@@ -179,13 +204,12 @@
         <ImageView
             android:id="@+id/iv2"
             android:layout_marginTop="@dimen/dp_25"
-            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/account_default"
             />
         <TextView
-
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#333333"
@@ -208,12 +232,11 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_record"
                 android:layout_below="@+id/l1"
+                android:overScrollMode="never"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </androidx.recyclerview.widget.RecyclerView>
         </androidx.core.widget.NestedScrollView>
     </com.liaoinstan.springview.widget.SpringView>
-
-
 
 </RelativeLayout>

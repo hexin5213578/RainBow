@@ -173,13 +173,13 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
             sv.setListener(new SpringView.OnFreshListener() {
                 @Override
                 public void onRefresh() {
+                    bandpageinfo(myId, name);
+                    allList.clear();
+                    page = 1;
+                    dogetDynamicByName(page, name);
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            bandpageinfo(myId, name);
-                            allList.clear();
-                            page = 1;
-                            dogetDynamicByName(page, name);
                             //等待2.5秒后结束刷新
                             sv.onFinishFreshAndLoad();
                         }
@@ -188,11 +188,12 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
                 @Override
                 public void onLoadmore() {
+                    page++;
+                    dogetDynamicByName(page, name);
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            page++;
-                            dogetDynamicByName(page, name);
+
                             sv.onFinishFreshAndLoad();
                         }
                     },1000);
@@ -220,13 +221,14 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
             sv.setListener(new SpringView.OnFreshListener() {
                 @Override
                 public void onRefresh() {
+                    bandpageinfo(myId, thePageuserId);
+                    allList.clear();
+                    page =1;
+                    dogetDynamicById(page, thePageuserId);
                         new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            bandpageinfo(myId, thePageuserId);
-                            allList.clear();
-                            page =1;
-                            dogetDynamicById(page, thePageuserId);
+
                             sv.onFinishFreshAndLoad();
                         }
                     },1000);
@@ -234,11 +236,12 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
                 @Override
                 public void onLoadmore() {
+                    page++;
+                    dogetDynamicById(page, thePageuserId);
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            page++;
-                            dogetDynamicById(page, thePageuserId);
+
                             sv.onFinishFreshAndLoad();
                         }
                     },1000);

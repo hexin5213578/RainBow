@@ -24,8 +24,6 @@ public class TopicsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final Context context;
     private final List<DynamicDetailsBean.ObjectBean.TopicsBean> list;
 
-
-
     public TopicsAdapter(Context context, List<DynamicDetailsBean.ObjectBean.TopicsBean> list) {
 
         this.context = context;

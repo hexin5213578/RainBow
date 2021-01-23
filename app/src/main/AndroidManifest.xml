@@ -258,11 +258,6 @@
             android:name=".search.activity.SearchMsgActivity"
             android:screenOrientation="portrait" />
 
-        <!-- 话题详情 -->
-        <activity
-            android:name=".search.activity.TopicDetailsActivity"
-            android:screenOrientation="portrait" />
-
         <!-- 设置 -->
         <activity
             android:name=".setup.activity.SetupActivity"

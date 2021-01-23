@@ -103,12 +103,13 @@ public class FragmentFans extends BaseFragment {
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {
+                allList.clear();
+                page = 1;
+                getMyFans(page,size);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        allList.clear();
-                        page = 1;
-                        getMyFans(page,size);
+
                         sv.onFinishFreshAndLoad();
                     }
                 },1000);
@@ -116,11 +117,12 @@ public class FragmentFans extends BaseFragment {
 
             @Override
             public void onLoadmore() {
+                page++;
+                getMyFans(page,size);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        page++;
-                        getMyFans(page,size);
+
                         sv.onFinishFreshAndLoad();
                     }
                 },1000);

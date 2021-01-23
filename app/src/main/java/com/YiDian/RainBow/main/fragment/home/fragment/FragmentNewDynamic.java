@@ -149,12 +149,12 @@ public class FragmentNewDynamic extends BaseFragment {
 
             @Override
             public void onLoadmore() {
+                page++;
+                getNew(page, count);
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        page++;
-                        getNew(page, count);
 
                         sv.onFinishFreshAndLoad();
                     }

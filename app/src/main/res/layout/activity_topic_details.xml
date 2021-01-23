@@ -1,5 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+    <com.liaoinstan.springview.widget.SpringView
+        android:id="@+id/sv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <RelativeLayout
+                    android:id="@+id/r2"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_213"
+                    android:background="@drawable/background_gradient1"
+
+                    >
+
+                    <RelativeLayout
+                        android:id="@+id/rl_top"
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="@dimen/dp_20"
+                        android:layout_height="@dimen/dp_58">
+                        <LinearLayout
+                            android:id="@+id/iv_back"
+                            android:layout_width="@dimen/dp_50"
+                            android:layout_height="@dimen/dp_42"
+                            android:layout_alignParentBottom="true">
+
+                            <ImageView
+                                android:layout_width="@dimen/dp_8"
+                                android:layout_height="@dimen/dp_15"
+                                android:layout_gravity="bottom"
+                                android:layout_marginLeft="@dimen/dp_15"
+                                android:layout_marginBottom="@dimen/dp_16"
+                                android:src="@mipmap/back_white" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:visibility="gone"
+                            android:id="@+id/ll_caidan"
+                            android:layout_width="@dimen/dp_50"
+                            android:layout_height="@dimen/dp_42"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentBottom="true"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:id="@+id/iv_caidan"
+                                android:layout_width="@dimen/dp_18"
+                                android:layout_height="@dimen/dp_15"
+                                android:src="@mipmap/sandianwhite" />
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_60"
+                        android:layout_below="@+id/rl_top"
+                        android:layout_marginLeft="@dimen/sp_15"
+                        android:layout_marginTop="@dimen/dp_25"
+                        android:layout_marginRight="@dimen/sp_15">
+
+
+
+                        <TextView
+                            android:id="@+id/tv_topic"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="#话题"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/sp_18" />
+
+                        <TextView
+                            android:id="@+id/tv_llcount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tv_topic"
+                            android:layout_marginTop="@dimen/dp_2"
+                            android:text="浏览量：2345"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/sp_12"
+                            android:layout_alignParentBottom="true"
+                            android:gravity="center"
+                            />
+
+                    </RelativeLayout>
+
+
+                </RelativeLayout>
+                <androidx.recyclerview.widget.RecyclerView
+
+                    android:id="@+id/rc_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                </androidx.recyclerview.widget.RecyclerView>
+
+            </LinearLayout>
+
+
+        </androidx.core.widget.NestedScrollView>
+    </com.liaoinstan.springview.widget.SpringView>
+
 
 </RelativeLayout>
