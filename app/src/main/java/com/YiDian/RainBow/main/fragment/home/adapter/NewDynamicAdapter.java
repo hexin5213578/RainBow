@@ -585,7 +585,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<ViewHolder> {
         if (imgType == 3) {
             //设置播放视频
             String contentImg = list.get(position).getContentImg();
-
+            //fst  -- 获取网络视频的第一帧
             Bitmap netVideoBitmap = getNetVideoBitmap(contentImg);
             //设置封面
             holder.videoPlayer.loadCoverImage(contentImg, netVideoBitmap);

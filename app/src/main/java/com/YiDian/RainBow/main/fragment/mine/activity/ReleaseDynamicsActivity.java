@@ -134,8 +134,6 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-
-
                         //等待2.5秒后结束刷新
                         sv.onFinishFreshAndLoad();
                     }

@@ -115,7 +115,7 @@ public class FragmentNewDynamic extends BaseFragment {
                 }
             }
             if(f.exists()){
-                if(SpList.size()>0 && SpList!=null){
+                if(SpList!=null && SpList.size()>0){
                     sv.setVisibility(View.VISIBLE);
                     noData.setVisibility(View.GONE);
 
