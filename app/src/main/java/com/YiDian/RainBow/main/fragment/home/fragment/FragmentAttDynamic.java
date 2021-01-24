@@ -97,6 +97,7 @@ public class FragmentAttDynamic extends BaseFragment {
 
         //腾讯AppId(替换你自己App Id)、上下文
         mTencent = Tencent.createInstance("101906973", getContext());
+        userid = Integer.parseInt(Common.getUserId());
 
         //直接取消动画
         RecyclerView.ItemAnimator animator = rcNewDynamic.getItemAnimator();
@@ -128,21 +129,20 @@ public class FragmentAttDynamic extends BaseFragment {
 
             @Override
             public void onLoadmore() {
-                page++;
-                getDynamic(page, size);
+
 
                 GSYVideoManager.releaseAllVideos();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-
+                        page++;
+                        getDynamic(page, size);
                         sv.onFinishFreshAndLoad();
                     }
                 }, 1000);
             }
         });
 
-        userid = Integer.parseInt(Common.getUserId());
         //判断是否有网 有网加载数据 无网展示缺省页
         if (NetWork(getContext())) {
             sv.setVisibility(View.VISIBLE);
@@ -223,7 +223,6 @@ public class FragmentAttDynamic extends BaseFragment {
                                     noData.setVisibility(View.GONE);
 
                                     sv.setHeader(new AliHeader(getContext()));
-                                    sv.setFooter(new AliFooter(getContext()));
                                     //创建最新动态适配器
                                     linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
                                     rcNewDynamic.setLayoutManager(linearLayoutManager);
@@ -240,6 +239,9 @@ public class FragmentAttDynamic extends BaseFragment {
                                         sv.setVisibility(View.GONE);
                                         noData.setVisibility(View.VISIBLE);
                                     }
+                                }
+                                if (list.size()>4){
+                                    sv.setFooter(new AliFooter(getContext()));
                                 }
                             }
 

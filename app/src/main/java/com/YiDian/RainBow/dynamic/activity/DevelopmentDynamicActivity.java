@@ -300,14 +300,19 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                     @Override
                     public void onNext(HotTopicBean hotTopicBean) {
                         List<String> list = hotTopicBean.getObject();
+                        if (list!=null && list.size()>0){
+                            rcHotHuati.setVisibility(View.VISIBLE);
 
-                        //热门话题
-                        GridLayoutManager gridLayoutManager = new GridLayoutManager(DevelopmentDynamicActivity.this, 4);
-                        rcHotHuati.setLayoutManager(gridLayoutManager);
+                            //热门话题
+                            GridLayoutManager gridLayoutManager = new GridLayoutManager(DevelopmentDynamicActivity.this, 4);
+                            rcHotHuati.setLayoutManager(gridLayoutManager);
+                            //创建适配器
+                            HotHuatiAdapter hotHuatiAdapter = new HotHuatiAdapter(DevelopmentDynamicActivity.this, list);
+                            rcHotHuati.setAdapter(hotHuatiAdapter);
+                        }else{
+                            rcHotHuati.setVisibility(View.GONE);
+                        }
 
-                        //创建适配器
-                        HotHuatiAdapter hotHuatiAdapter = new HotHuatiAdapter(DevelopmentDynamicActivity.this, list);
-                        rcHotHuati.setAdapter(hotHuatiAdapter);
                     }
 
                     @Override
@@ -333,7 +338,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
         });
 
         //获取七牛云uptoken
-        upToken = SPUtil.getInstance().getData(DevelopmentDynamicActivity.this,SPUtil.FILE_NAME,SPUtil.UPTOKEN);
+        upToken = Common.getToken();
     }
 
     //获取热门话题
@@ -558,7 +563,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                             public void complete(String key, ResponseInfo info,
                                                  JSONObject res) {
                                 // res 包含hash、key等信息，具体字段取决于上传策略的设置。
-                                Log.i("xxx", key + ",\r\n " + info + ",\r\n "
+                                Log.i("xxx", "成功"+key + ",\r\n " + info + ",\r\n "
                                         + res);
                                 try {
                                     // 七牛返回的文件名
@@ -575,7 +580,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
-                                    Log.d("xxx",e.getMessage());
+                                    Log.d("xxx","错误原因为"+e.getMessage());
                                 }
                             }
                         }, null);
@@ -869,7 +874,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                                     Bundle bundle = msg.getData();
                                                     if(null != bundle){
                                                         list = bundle.getStringArrayList("resultImagePath");
-                                                        Log.d("xxx",list.size()+"======"+list.toString());
+                                                        Log.d("xxx",list.size()+"纯视频发布草稿======"+list.toString());
 
                                                         String s = list.toString().substring(1, list.toString().length() - 1);
 
@@ -979,7 +984,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                         Bundle bundle = msg.getData();
                                         if(null != bundle){
                                             list = bundle.getStringArrayList("resultImagePath");
-                                            Log.d("xxx",list.size()+"======"+list.toString());
+                                            Log.d("xxx",list.size()+"文本加视频发布======"+list.toString());
 
                                             String s = list.toString().substring(1, list.toString().length() - 1);
 
@@ -1041,7 +1046,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                         Bundle bundle = msg.getData();
                                         if(null != bundle){
                                             list = bundle.getStringArrayList("resultImagePath");
-                                            Log.d("xxx",list.size()+"======"+list.toString());
+                                            Log.d("xxx",list.size()+"纯视频发布======"+list.toString());
 
                                             String s = list.toString().substring(1, list.toString().length() - 1);
 

@@ -144,12 +144,12 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
 
             @Override
             public void onLoadmore() {
-                page++;
-                dogetDynamicById(page);
+
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-
+                        page++;
+                        dogetDynamicById(page);
                         sv.onFinishFreshAndLoad();
                     }
                 },1000);
@@ -176,9 +176,8 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
 
                         if ( list != null && list.size() > 0) {
                             //RelativeLayout rlNodata;
+                            sv.setVisibility(View.VISIBLE);
                             rlNodata.setVisibility(View.GONE);
-                            //RecyclerView  rcDynamic
-                            rcMydraftDevelopment.setVisibility(View.VISIBLE);
 
                             sv.setHeader(new AliHeader(ReleaseDynamicsActivity.this));
 
@@ -200,8 +199,8 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
                             if (allList.size() > 0) {
                                 Toast.makeText(ReleaseDynamicsActivity.this, "没有更多内容了", Toast.LENGTH_SHORT).show();
                             } else {
+                                sv.setVisibility(View.GONE);
                                 rlNodata.setVisibility(View.VISIBLE);
-                                rcMydraftDevelopment.setVisibility(View.GONE);
                             }
                         }
                         if (list.size() > 4) {

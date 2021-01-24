@@ -368,7 +368,6 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                                             if (comPleteMsgBean.getMsg().equals("数据修改成功！")){
                                                 tvAge.setText(time);
                                                 SPUtil.getInstance().saveData(EditMsgActivity.this,SPUtil.FILE_NAME,SPUtil.BIRTHDAY,time);
-                                                
                                             }
                                         }
 

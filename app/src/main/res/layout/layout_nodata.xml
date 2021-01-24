@@ -16,7 +16,7 @@
         </ImageView>
         <TextView
             android:layout_width="wrap_content"
-            android:text="暂无数据"
+            android:text="暂无动态"
             android:layout_below="@id/iv"
             android:textSize="@dimen/sp_18"
             android:textColor="#999999"

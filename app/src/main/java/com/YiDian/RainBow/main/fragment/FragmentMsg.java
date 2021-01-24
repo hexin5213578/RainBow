@@ -115,7 +115,6 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
         }
 
     };
-
     protected void getData() {
         //设置状态栏颜色与字体颜色
         StatusBarUtil.setGradientColor(getActivity(), toolbar);
@@ -132,6 +131,8 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
         timer.schedule(timerTask, 0, 1000 * 60);
 
         firstInit  = true;
+        //获取当前登录的用户
+        userid = Integer.valueOf(Common.getUserId());
 
         //申请开启麦克风权限
         if (Build.VERSION.SDK_INT >= 23) {
@@ -193,11 +194,8 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
                 startActivity(intent);
             }
         });
-        //获取聊天列表
-        getImList();
 
-        //获取当前登录的用户
-        userid = Integer.valueOf(Common.getUserId());
+
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getMsg(String str){
@@ -263,9 +261,11 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
+        Log.d("xxx","重新进入了");
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
+        getImList();
     }
 
     @Override

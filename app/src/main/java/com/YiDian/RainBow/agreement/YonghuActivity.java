@@ -24,7 +24,7 @@ public class YonghuActivity extends BaseAvtivity {
     LinearLayout ivBack;
     @BindView(R.id.webView)
     WebView webView;
-    String str = "http://81.71.121.177/protocol.html";
+    String str = "http://81.71.121.177/rainbow/protocol.html";
     @Override
     protected int getResId() {
         return R.layout.activity_yonghu;

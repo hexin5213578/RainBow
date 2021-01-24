@@ -712,6 +712,8 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 etContent.setText("");
                 //发送成功关闭键盘
                 KeyBoardUtils.closeKeyboard(etContent);
+
+                rcImlist.scrollToPosition(0);
                 break;
             case R.id.iv_yuyin:
                 //展示语音录入框
@@ -758,7 +760,6 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
             case R.id.iv_liwu:
                 // TODO: 2021/1/13 0013 展示选择礼物框
                 getGiftMsg();
-
                 break;
             case R.id.iv_keyborad:
                 rlSendmsg.setVisibility(View.VISIBLE);
@@ -931,53 +932,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                     GiftMsgBean.ObjectBean giftbean = list.get(selectnum);
                     Log.d("xxx","当前选中为"+selectnum);
 
-                    //展示动画
-                    iv_anim.setVisibility(View.VISIBLE);
-                    Glide.with(FriendImActivity.this).load(giftbean.getGiftImg()).into(iv_anim);
 
-                    int screenWidth = ScreenUtils.getScreenHeight(FriendImActivity.this);//获取屏幕宽度
-                    Log.d("xxx","屏幕高度为"+screenWidth);
-
-                    ObjectAnimator Animator1 = ObjectAnimator.ofFloat(iv_anim, "translationY", -700);
-                    Animator1.setInterpolator(new LinearInterpolator());
-                    Animator1.setDuration(1000);
-
-                    ObjectAnimator Animator2 = ObjectAnimator.ofFloat(iv_anim, "rotation", 0.0F, 1080.0f);
-                    Animator2.setInterpolator(new LinearInterpolator());
-                    Animator2.setDuration(1500);
-
-                    AnimatorSet set=new AnimatorSet();
-                    set.play(Animator1).before(Animator2);
-
-                    set.start();
-                    set.addListener(new Animator.AnimatorListener() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            animation.cancel();
-
-                            iv_anim.setVisibility(View.GONE);
-                            ObjectAnimator Animator = ObjectAnimator.ofFloat(iv_anim, "translationY", 700);
-                            Animator.setInterpolator(new LinearInterpolator());
-                            Animator.setDuration(200);
-
-                            Animator.start();
-                        }
-
-                        @Override
-                        public void onAnimationCancel(Animator animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animator animation) {
-
-                        }
-                    });
                     //发起赠送礼物的接口
                     NetUtils.getInstance().getApis()
                             .doSendGift(Integer.parseInt(conversation.getTargetId()),userid,giftbean.getId())
@@ -994,6 +949,56 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                                     if (insertRealBean.getMsg().equals("送出成功")){
                                         //送出成功 刷新余额
                                         getGlodNum();
+
+                                        //展示动画
+                                        iv_anim.setVisibility(View.VISIBLE);
+                                        Glide.with(FriendImActivity.this).load(giftbean.getGiftImg()).into(iv_anim);
+
+
+                                        ObjectAnimator Animator1 = ObjectAnimator.ofFloat(iv_anim, "translationY", -700);
+                                        Animator1.setInterpolator(new LinearInterpolator());
+                                        Animator1.setDuration(1000);
+
+                                        ObjectAnimator Animator2 = ObjectAnimator.ofFloat(iv_anim, "rotation", 0.0F, 1080.0f);
+                                        Animator2.setInterpolator(new LinearInterpolator());
+                                        Animator2.setDuration(1500);
+
+                                        AnimatorSet set=new AnimatorSet();
+                                        set.play(Animator1).before(Animator2);
+
+                                        set.start();
+                                        set.addListener(new Animator.AnimatorListener() {
+                                            @Override
+                                            public void onAnimationStart(Animator animation) {
+
+                                            }
+
+                                            @Override
+                                            public void onAnimationEnd(Animator animation) {
+                                                animation.cancel();
+
+                                                iv_anim.setVisibility(View.GONE);
+                                                ObjectAnimator Animator = ObjectAnimator.ofFloat(iv_anim, "translationY", 700);
+                                                Animator.setInterpolator(new LinearInterpolator());
+                                                Animator.setDuration(200);
+
+                                                Animator.start();
+                                            }
+
+                                            @Override
+                                            public void onAnimationCancel(Animator animation) {
+
+                                            }
+
+                                            @Override
+                                            public void onAnimationRepeat(Animator animation) {
+
+                                            }
+                                        });
+                                    }
+                                    if (insertRealBean.getMsg().equals("余额不足")){
+                                        // TODO: 2021/1/24 0024 接入充值功能提示去充值
+                                        Toast.makeText(FriendImActivity.this, "账户余额不足", Toast.LENGTH_SHORT).show();
                                     }
                                 }
 

@@ -9,12 +9,13 @@ import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
-import com.YiDian.RainBow.custom.videoplayer.SampleCoverVideo;
+import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.main.fragment.activity.SimplePlayerActivity;
 import com.YiDian.RainBow.main.fragment.home.activity.NewDynamicImage;
 import com.YiDian.RainBow.main.fragment.msg.bean.ImImageBean;
@@ -41,6 +42,7 @@ import cn.jpush.im.android.api.model.Message;
 
 
 public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
+
 
 
     private List<Message> list;
@@ -145,18 +147,17 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
         }
         holder.tvTime.setText(newChatTime);
 
+        String headImg = Common.getHeadImg();
+
         if (message.getDirect().name().equals("receive")) {
             Glide.with(context).load(file).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(holder.ivHeadimg);
         } else {
-            Glide.with(context).load(R.mipmap.headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(holder.ivHeadimg);
+            Glide.with(context).load(headImg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(holder.ivHeadimg);
         }
 
 
         gson = new Gson();
-        if (message.getDirect().name().equals("send"))
-        {
-
-
+        if (message.getDirect().name().equals("send")) {
             if (message.getContentType().name().equals("voice")) {
 
                 message = list.get(position);
@@ -201,29 +202,27 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                         });
                     }
                 });
-            }
-            else if (message.getContentType().name().equals("text")) {
+            } else if (message.getContentType().name().equals("text")) {
                 message = list.get(position);
                 ImMsgBean imMsgBean = gson.fromJson(message.toJson(), ImMsgBean.class);
 
                 //获取文本内容
                 holder.tvMsg.setText(imMsgBean.getContent().getText());
 
-            }
-            else if (message.getContentType().name().equals("image")) {
+            } else if (message.getContentType().name().equals("image")) {
                 message = list.get(position);
                 ImImageBean imImageBean = gson.fromJson(message.toJson(), ImImageBean.class);
 
                 String local_path = imImageBean.getContent().getLocal_path();
                 String localThumbnailPath = imImageBean.getContent().getLocalThumbnailPath();
 
-                if (local_path!=null){
+                if (local_path != null) {
                     if (local_path.contains(flag)) {
                         Glide.with(context).load(localThumbnailPath).into(holder.ivImg);
                     } else {
                         Glide.with(context).load(local_path).into(holder.ivImg);
                     }
-                }else{
+                } else {
                     Glide.with(context).load(localThumbnailPath).into(holder.ivImg);
                 }
                 holder.ivImg.setOnClickListener(new View.OnClickListener() {
@@ -233,13 +232,13 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                         imgUrl.clear();
                         intent = new Intent(context, NewDynamicImage.class);
 
-                        if (local_path!= null) {
+                        if (local_path != null) {
                             if (local_path.contains(flag)) {
                                 imgUrl.add(localThumbnailPath);
                             } else {
                                 imgUrl.add(local_path);
                             }
-                        }else{
+                        } else {
                             imgUrl.add(localThumbnailPath);
                         }
                         intent.putStringArrayListExtra("img", imgUrl);
@@ -247,8 +246,7 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
 
                     }
                 });
-            }
-            else if (message.getContentType().name().equals("video")) {
+            } else if (message.getContentType().name().equals("video")) {
                 message = list.get(position);
                 ImVideoBean imVideoBean = gson.fromJson(message.toJson(), ImVideoBean.class);
 
@@ -258,18 +256,18 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                 //设置封面
                 holder.videoPlayer.loadCoverImage(local_path, netVideoBitmap);
                 int duration = imVideoBean.getContent().getDuration();
-                if (duration<10){
-                    holder.videoPlayer.setDuration("00:0"+duration);
-                }else if(duration<60){
-                    holder.videoPlayer.setDuration("00:"+duration);
-                }else{
+                if (duration < 10) {
+                    holder.videoPlayer.setDuration("00:0" + duration);
+                } else if (duration < 60) {
+                    holder.videoPlayer.setDuration("00:" + duration);
+                } else {
                     int second = duration / 60;
                     int minute = duration % 60;
 
-                    if (minute==0){
-                        holder.videoPlayer.setDuration(second+":00");
-                    }else{
-                        holder.videoPlayer.setDuration(second+":"+minute);
+                    if (minute == 0) {
+                        holder.videoPlayer.setDuration(second + ":00");
+                    } else {
+                        holder.videoPlayer.setDuration(second + ":" + minute);
                     }
                 }
 
@@ -292,12 +290,11 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                     @Override
                     public void onClick(View v) {
                         intent = new Intent(context, SimplePlayerActivity.class);
-                        intent.putExtra("url",imVideoBean.getContent().getThumb().getLocal_path());
+                        intent.putExtra("url", imVideoBean.getContent().getThumb().getLocal_path());
                     }
                 });
             }
-        }
-        else {
+        } else {
             if (message.getContentType().name().equals("voice")) {
                 message = list.get(position);
                 ImVocieBean imVocieBean = gson.fromJson(message.toJson(), ImVocieBean.class);
@@ -338,34 +335,30 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                         });
                     }
                 });
-            }
-            else if (message.getContentType().name().equals("text")) {
+            } else if (message.getContentType().name().equals("text")) {
                 message = list.get(position);
                 ImMsgBean imMsgBean = gson.fromJson(message.toJson(), ImMsgBean.class);
 
                 //获取文本内容
                 holder.tvMsg.setText(imMsgBean.getContent().getText());
 
-            }
-            else if (message.getContentType().name().equals("image")) {
+            } else if (message.getContentType().name().equals("image")) {
                 message = list.get(position);
                 ImImageBean imImageBean = gson.fromJson(message.toJson(), ImImageBean.class);
 
                 String local_path = imImageBean.getContent().getLocal_path();
                 String localThumbnailPath = imImageBean.getContent().getLocalThumbnailPath();
 
-                if (local_path!=null){
+                if (local_path != null) {
                     if (local_path.contains(flag)) {
                         Glide.with(context).load(localThumbnailPath).into(holder.ivImg);
                     } else {
                         Glide.with(context).load(local_path).into(holder.ivImg);
                     }
-                }else{
+                } else {
                     Glide.with(context).load(localThumbnailPath).into(holder.ivImg);
 
                 }
-
-
 
                 holder.ivImg.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -374,13 +367,13 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                         imgUrl.clear();
                         intent = new Intent(context, NewDynamicImage.class);
 
-                        if (local_path!= null) {
+                        if (local_path != null) {
                             if (local_path.contains(flag)) {
                                 imgUrl.add(localThumbnailPath);
                             } else {
                                 imgUrl.add(local_path);
                             }
-                        }else{
+                        } else {
                             imgUrl.add(localThumbnailPath);
                         }
 
@@ -389,8 +382,7 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                     }
                 });
 
-            }
-            else if (message.getContentType().name().equals("video")) {
+            } else if (message.getContentType().name().equals("video")) {
                 message = list.get(position);
                 ImVideoBean imVideoBean = gson.fromJson(message.toJson(), ImVideoBean.class);
 
@@ -402,18 +394,18 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
 
 
                 int duration = imVideoBean.getContent().getDuration();
-                if (duration<10){
-                    holder.videoPlayer.setDuration("00:0"+duration);
-                }else if(duration<60){
-                    holder.videoPlayer.setDuration("00:"+duration);
-                }else{
+                if (duration < 10) {
+                    holder.videoPlayer.setDuration("00:0" + duration);
+                } else if (duration < 60) {
+                    holder.videoPlayer.setDuration("00:" + duration);
+                } else {
                     int second = duration / 60;
                     int minute = duration % 60;
 
-                    if (minute==0){
-                        holder.videoPlayer.setDuration(second+":00");
-                    }else{
-                        holder.videoPlayer.setDuration(second+":"+minute);
+                    if (minute == 0) {
+                        holder.videoPlayer.setDuration(second + ":00");
+                    } else {
+                        holder.videoPlayer.setDuration(second + ":" + minute);
                     }
                 }
                 holder.videoPlayer.setUpLazy(media_id, true, null, null, "");
@@ -434,7 +426,7 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                     @Override
                     public void onClick(View v) {
                         intent = new Intent(context, SimplePlayerActivity.class);
-                        intent.putExtra("url",imVideoBean.getContent().getThumb().getLocal_path());
+                        intent.putExtra("url", imVideoBean.getContent().getThumb().getLocal_path());
                     }
                 });
             }
@@ -473,6 +465,7 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
         }
         return 8;
     }
+
     public static Bitmap getNetVideoBitmap(String videoUrl) {
         Bitmap bitmap = null;
 

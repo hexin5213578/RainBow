@@ -127,13 +127,12 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
 
             @Override
             public void onLoadmore() {
-                page++;
-                getDynamic(page, size);
+
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-
-
+                        page++;
+                        getDynamic(page, size);
                         sv.onFinishFreshAndLoad();
                     }
                 }, 1000);
@@ -328,7 +327,7 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getStr(String str) {
         if (str.equals("刷新界面")) {
-            if(alllist.size()>0){
+            if(alllist!=null && alllist.size()>0){
                 alllist.clear();
             }
             getDynamic(1, size);

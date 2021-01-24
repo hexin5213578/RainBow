@@ -56,7 +56,7 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
     @BindView(R.id.tv_nicheng)
     TextView tvNicheng;
     @BindView(R.id.r12)
-    RelativeLayout r12;
+    LinearLayout r12;
     @BindView(R.id.tv_all)
     TextView tvAll;
     @BindView(R.id.r22)
@@ -145,6 +145,7 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
                                     Log.d(TAG, "onNext: " + Common.getUserId());
                                     r11.setVisibility(View.VISIBLE);
                                     r12.setVisibility(View.GONE);
+                                    r22.setVisibility(View.VISIBLE);
                                     r13.setVisibility(View.GONE);
                                     tvMyid.setText("本人ID：" + Common.getUserId());
                                     tvAll.setText("您暂未绑定情侣");
@@ -154,6 +155,7 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
                                     r11.setVisibility(View.GONE);
                                     r12.setVisibility(View.VISIBLE);
                                     r13.setVisibility(View.GONE);
+                                    r22.setVisibility(View.VISIBLE);
                                     tvRequestCon.setVisibility(View.GONE);
                                     rlConsentRefusal.setVisibility(View.VISIBLE);
                                     tvNicheng.setText(infoBean.getNickName());
@@ -167,6 +169,7 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
                                     r11.setVisibility(View.GONE);
                                     r12.setVisibility(View.GONE);
                                     r13.setVisibility(View.VISIBLE);
+                                    r22.setVisibility(View.VISIBLE);
                                     tvAll.setText("您已绑定情侣");
                                     //昵称
                                     tvNicheng2.setText(loveStateBean.getObject().getUserInfo().getNickName());
@@ -190,6 +193,7 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
 
                                     //建立中 此时可以撤回
                                     r11.setVisibility(View.GONE);
+                                    r22.setVisibility(View.VISIBLE);
                                     r12.setVisibility(View.VISIBLE);
                                     r13.setVisibility(View.GONE);
                                     tvAll.setText("请求已发送，等待对方接收中");

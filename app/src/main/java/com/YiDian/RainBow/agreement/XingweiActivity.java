@@ -26,7 +26,7 @@ public class XingweiActivity extends BaseAvtivity {
     LinearLayout ivBack;
     @BindView(R.id.webView)
     WebView webView;
-    String str = "http://81.71.121.177/regularize.html";
+    String str = "http://81.71.121.177/rainbow/regularize.html";
 
     @Override
     protected int getResId() {
