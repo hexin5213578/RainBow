@@ -78,6 +78,7 @@
                 android:id="@+id/tv_balance"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/iv"
+                android:layout_marginLeft="@dimen/dp_5"
                 android:layout_height="wrap_content">
             </TextView>
 

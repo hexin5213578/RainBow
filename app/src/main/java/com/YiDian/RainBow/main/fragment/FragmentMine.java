@@ -221,6 +221,7 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
         }else{
             if (userrole !=null && !userrole.equals("") ){
                 tvAge.setText(userrole);
+                tvAge.setVisibility(View.VISIBLE);
             }else{
                 tvAge.setVisibility(View.GONE);
             }

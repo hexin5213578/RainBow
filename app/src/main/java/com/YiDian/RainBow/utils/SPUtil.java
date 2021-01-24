@@ -45,6 +45,8 @@ public class SPUtil {
     //存储是否已经登录  0已登录 1未登录或退出登录
     public static final String IS_LOGIN = "islogin";
     //是否完善资料  0已完善 1未完善
+    public static final String IS_SHOW = "showdialog";
+
     public static final String IS_PERFECT = "isperfect";
     public static final String HEAD_IMG = "headimg";
     public static final String BACK_IMG = "backimg";

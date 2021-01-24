@@ -1,5 +1,6 @@
 package com.YiDian.RainBow.dynamic.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class SelectFriendOrGroupBean {
@@ -38,7 +39,7 @@ public class SelectFriendOrGroupBean {
         this.object = object;
     }
 
-    public static class ObjectBean {
+    public static class ObjectBean{
         private List<UserListBean> userList;
         private List<GroupListBean> groupList;
 
@@ -58,7 +59,7 @@ public class SelectFriendOrGroupBean {
             this.groupList = groupList;
         }
 
-        public static class UserListBean {
+        public static class UserListBean implements Serializable{
             /**
              * id : 10301
              * phoneNum : 17912312111
@@ -224,7 +225,7 @@ public class SelectFriendOrGroupBean {
             }
         }
 
-        public static class GroupListBean {
+        public static class GroupListBean implements Serializable {
             /**
              * id : 103
              * jgGroupId : 0
@@ -249,7 +250,7 @@ public class SelectFriendOrGroupBean {
             private String baseMap;
             private int addType;
             private String createTime;
-            private Object userNum;
+            private int userNum;
             private Object userId;
             private Object isTop;
 
@@ -325,11 +326,11 @@ public class SelectFriendOrGroupBean {
                 this.createTime = createTime;
             }
 
-            public Object getUserNum() {
+            public int getUserNum() {
                 return userNum;
             }
 
-            public void setUserNum(Object userNum) {
+            public void setUserNum(int userNum) {
                 this.userNum = userNum;
             }
 

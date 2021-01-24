@@ -124,8 +124,12 @@ public class MyQrCodeActivity extends BaseAvtivity implements View.OnClickListen
         llSave.setOnClickListener(this);
         llShare.setOnClickListener(this);
 
+
+        String userName = Common.getUserName();
+        String headImg = Common.getHeadImg();
+
         //加载一张圆角头像
-        Glide.with(MyQrCodeActivity.this).load(R.mipmap.headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+        Glide.with(MyQrCodeActivity.this).load(headImg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
 
         userid = Integer.valueOf(Common.getUserId());
 
@@ -134,6 +138,8 @@ public class MyQrCodeActivity extends BaseAvtivity implements View.OnClickListen
         //获取用户ID
         //先获取用户信息  设置数据
 
+        tvId.setText("ID:"+userid);
+        tvName.setText(userName+"");
         //设置二维码
         ivQrcode.setImageBitmap(qrCode);
 

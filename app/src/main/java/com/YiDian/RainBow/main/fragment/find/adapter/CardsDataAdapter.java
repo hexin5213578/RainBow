@@ -72,11 +72,16 @@ public class CardsDataAdapter extends ArrayAdapter<AllUserInfoBean.ObjectBean.Li
         //设置用户名
         username.setText(bean.getNickName());
         //设置角色
-        if(bean.getUserRole().equals("保密")){
+        if (bean.getUserRole()==null){
             xingbie.setText("密");
         }else{
-            xingbie.setText(bean.getUserRole());
+            if(bean.getUserRole().equals("保密")){
+                xingbie.setText("密");
+            }else{
+                xingbie.setText(bean.getUserRole());
+            }
         }
+
         //设置个性签名
         tv_qianming.setText(bean.getExplains());
         return view;

@@ -132,7 +132,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             ((ContactHolder) holder).tv_xingbie.setText(userRole);
                         }
                     }else{
-                        ((MyFollowAdapter.ViewHolder)holder).tvXingbie.setVisibility(View.GONE);
+                        ((ContactHolder)holder).tv_xingbie.setVisibility(View.GONE);
                     }
                     int finalI = i;
 

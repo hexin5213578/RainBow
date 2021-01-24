@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,11 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.custom.customDialog.CustomDialogCancleFollow;
 import com.YiDian.RainBow.main.fragment.find.bean.AllLikeBean;
-import com.YiDian.RainBow.main.fragment.find.bean.UserMySeeBean;
 import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
+import com.YiDian.RainBow.main.fragment.msg.activity.FriendImActivity;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.user.PersonHomeActivity;
 import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.Utils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
@@ -39,6 +41,7 @@ public class AllLikeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private final Context context;
     private final List<AllLikeBean.ObjectBean.ListBean> list;
+
     private AllLikeBean.ObjectBean.ListBean bean;
 
     public AllLikeAdapter(Context context, List<AllLikeBean.ObjectBean.ListBean> list) {
@@ -58,24 +61,35 @@ public class AllLikeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         bean = list.get(position);
         //设置用户名
-        ((ViewHolder)holder).tvName.setText(bean.getNickName());
+        ((ViewHolder) holder).tvName.setText(bean.getNickName());
         //设置头像
         Glide.with(context).load(bean.getHeadImg()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder) holder).ivHeadimg);
-        //设置签名
-        ((ViewHolder)holder).tvAutograph.setText(bean.getExplains());
+        //设置签名\
+        String explains = bean.getExplains();
+        if (explains != null) {
+            ((ViewHolder) holder).tvAutograph.setText(explains);
+        } else {
+            ((ViewHolder) holder).tvAutograph.setText("还没有设置签名哦");
+
+        }
         //设置时间
-        ((ViewHolder)holder).tvTime.setText(bean.getCreateTime());
+        ((ViewHolder) holder).tvTime.setText(bean.getCreateTime());
 
         //判断角色
         String userRole = bean.getUserRole();
-        if(userRole.equals("保密")){
-            ((ViewHolder)holder).tvXingbie.setVisibility(View.GONE);
-        }else{
-            ((ViewHolder)holder).tvXingbie.setVisibility(View.VISIBLE);
-            ((ViewHolder)holder).tvXingbie.setText(userRole);
+        if (userRole != null) {
+            if (userRole.equals("保密")) {
+                ((ViewHolder) holder).tvXingbie.setVisibility(View.GONE);
+            } else {
+                ((ViewHolder) holder).tvXingbie.setVisibility(View.VISIBLE);
+                ((ViewHolder) holder).tvXingbie.setText(userRole);
+            }
+        } else {
+            ((ViewHolder) holder).tvXingbie.setVisibility(View.GONE);
         }
+
         //跳转到用户详情页
-        ((ViewHolder)holder).ivHeadimg.setOnClickListener(new View.OnClickListener() {
+        ((ViewHolder) holder).ivHeadimg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 bean = list.get(position);
@@ -85,29 +99,48 @@ public class AllLikeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 saveIntentMsgBean.setId(bean.getBuserId());
                 //2标记传入姓名  1标记传入id
                 saveIntentMsgBean.setFlag(1);
-                intent.putExtra("msg",saveIntentMsgBean);
+                intent.putExtra("msg", saveIntentMsgBean);
                 context.startActivity(intent);
             }
         });
 
 
         //判断是否关注
-        if (bean.getIsFans()==0){
+        if (bean.getIsFans() == 0) {
             //设置成未关注
-            ((ViewHolder)holder).btGuanzhu.setText("关注");
+            ((ViewHolder) holder).btGuanzhu.setText("关注");
             //未关注 发起关注
-        }else if(bean.getIsFans()==1){
+        } else if (bean.getIsFans() == 1) {
             //已关注 取消关注
-            ((ViewHolder)holder).btGuanzhu.setText("已关注");
+            ((ViewHolder) holder).btGuanzhu.setText("已关注");
         }
-        ((ViewHolder)holder).btGuanzhu.setOnClickListener(new View.OnClickListener() {
+        // TODO: 2020/12/27 0027 跳转到聊天页
+        ((ViewHolder) holder).rlItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 bean = list.get(position);
 
-                if (bean.getIsFans()==0){
+                String fansId = String.valueOf(bean.getBuserId());
+
+                Utils.createConversation(fansId);
+
+                EventBus.getDefault().post("收到了消息");
+
+                //将聊天对象的id作为参数传入
+                Intent intent = new Intent(context, FriendImActivity.class);
+                intent.putExtra("userid", fansId);
+                context.startActivity(intent);
+            }
+        });
+
+        ((ViewHolder) holder).btGuanzhu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bean = list.get(position);
+
+                if (bean.getIsFans() == 0) {
                     //未关注 发起关注
-                    ((ViewHolder)holder).btGuanzhu.setEnabled(false);
+                    ((ViewHolder) holder).btGuanzhu.setEnabled(false);
                     NetUtils.getInstance().getApis()
                             .doFollow(bean.getUserId(), bean.getBuserId())
                             .subscribeOn(Schedulers.io())
@@ -120,8 +153,8 @@ public class AllLikeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                                 @Override
                                 public void onNext(FollowBean followBean) {
-                                    ((ViewHolder)holder).btGuanzhu.setEnabled(true);
-                                    ((ViewHolder)holder).btGuanzhu.setText("已关注");
+                                    ((ViewHolder) holder).btGuanzhu.setEnabled(true);
+                                    ((ViewHolder) holder).btGuanzhu.setText("已关注");
                                     bean.setIsFans(1);
 
                                     EventBus.getDefault().post("匹配过的刷新界面");
@@ -137,15 +170,15 @@ public class AllLikeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                                 }
                             });
-                }else if(bean.getIsFans()==1){
+                } else if (bean.getIsFans() == 1) {
                     //已关注 取消关注
-                    ((ViewHolder)holder).btGuanzhu.setEnabled(false);
+                    ((ViewHolder) holder).btGuanzhu.setEnabled(false);
 
                     CustomDialogCancleFollow.Builder builder = new CustomDialogCancleFollow.Builder(context);
                     builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             //已关注 取消关注
-                            ((ViewHolder)holder).btGuanzhu.setEnabled(false);
+                            ((ViewHolder) holder).btGuanzhu.setEnabled(false);
                             dialog.dismiss();
 
                             NetUtils.getInstance().getApis()
@@ -160,8 +193,8 @@ public class AllLikeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                                         @Override
                                         public void onNext(FollowBean followBean) {
-                                            ((ViewHolder)holder).btGuanzhu.setEnabled(true);
-                                            ((ViewHolder)holder).btGuanzhu.setText("关注");
+                                            ((ViewHolder) holder).btGuanzhu.setEnabled(true);
+                                            ((ViewHolder) holder).btGuanzhu.setText("关注");
                                             bean.setIsFans(0);
 
                                             EventBus.getDefault().post("我喜欢的刷新界面");
@@ -180,7 +213,7 @@ public class AllLikeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         }
                     });
                     builder.setNegativeButton("取消",
-                            new android.content.DialogInterface.OnClickListener() {
+                            new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
                                 }
@@ -190,10 +223,12 @@ public class AllLikeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
         });
     }
+
     @Override
     public int getItemCount() {
         return list.size();
     }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.iv_headimg)
         ImageView ivHeadimg;
@@ -207,10 +242,11 @@ public class AllLikeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         TextView tvTime;
         @BindView(R.id.bt_guanzhu)
         Button btGuanzhu;
-
+        @BindView(R.id.rl_item)
+        RelativeLayout rlItem;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

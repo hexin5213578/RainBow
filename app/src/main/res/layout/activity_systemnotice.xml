@@ -95,6 +95,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:id="@+id/rc_notice"
+                    android:overScrollMode="never"
                     android:layout_height="wrap_content">
                 </androidx.recyclerview.widget.RecyclerView>
         </com.liaoinstan.springview.widget.SpringView>

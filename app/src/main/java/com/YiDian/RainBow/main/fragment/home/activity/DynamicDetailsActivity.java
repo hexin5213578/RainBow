@@ -82,6 +82,7 @@ import com.leaf.library.StatusBarUtil;
 import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.container.AliHeader;
 import com.liaoinstan.springview.widget.SpringView;
+import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.tencent.connect.share.QQShare;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.modelmsg.WXImageObject;
@@ -814,12 +815,18 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                         //设置姓名
                         tvUsername.setText(userInfo.getNickName());
                         //设置角色
-                        tvAge.setText(userInfo.getUserRole());
                         //判断性别是否保密
                         String userRole = userInfo.getUserRole();
-                        if (userRole.equals("保密")) {
+                        if (userRole!=null){
+                            if (userRole.equals("保密")) {
+                                tvAge.setVisibility(View.GONE);
+                            }else{
+                                tvAge.setText(userInfo.getUserRole());
+                            }
+                        }else{
                             tvAge.setVisibility(View.GONE);
                         }
+
                         //判断当前用户与动态发布者 是一人 隐藏关注按钮
                         if(userId==userInfo.getId()){
                             tvGuanzhu.setVisibility(View.GONE);
@@ -1591,4 +1598,9 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        GSYVideoManager.releaseAllVideos();
+    }
 }

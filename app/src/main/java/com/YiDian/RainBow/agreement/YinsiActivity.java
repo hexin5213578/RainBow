@@ -25,7 +25,7 @@ public class YinsiActivity extends BaseAvtivity {
     LinearLayout ivBack;
     @BindView(R.id.webView)
     WebView webView;
-    String str = "http://81.71.121.177/privacy.html";
+    String str = "http://81.71.121.177/rainbow/privacy.html";
     @Override
     protected int getResId() {
         return R.layout.activity_yinsi;

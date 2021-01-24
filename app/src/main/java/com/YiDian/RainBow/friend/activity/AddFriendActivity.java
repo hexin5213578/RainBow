@@ -127,12 +127,13 @@ public class AddFriendActivity extends BaseAvtivity implements View.OnClickListe
                     @Override
                     public void onNext(RecommendUserBean recommendUserBean) {
                         List<RecommendUserBean.ObjectBean> list = recommendUserBean.getObject();
+                        if (list!=null && list.size()>0){
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(AddFriendActivity.this, RecyclerView.VERTICAL, false);
+                            rcRecommendfriend.setLayoutManager(linearLayoutManager);
 
-                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(AddFriendActivity.this, RecyclerView.VERTICAL, false);
-                        rcRecommendfriend.setLayoutManager(linearLayoutManager);
-
-                        RecommendUserAdapter adapter = new RecommendUserAdapter(AddFriendActivity.this, list);
-                        rcRecommendfriend.setAdapter(adapter);
+                            RecommendUserAdapter adapter = new RecommendUserAdapter(AddFriendActivity.this, list);
+                            rcRecommendfriend.setAdapter(adapter);
+                        }
                     }
 
                     @Override
@@ -163,13 +164,14 @@ public class AddFriendActivity extends BaseAvtivity implements View.OnClickListe
                     @Override
                     public void onNext(RecommendGroupBean recommendGroupBean) {
                         List<RecommendGroupBean.ObjectBean> list = recommendGroupBean.getObject();
+                        if (list!=null && list.size()>0){
+                            //创建布局管理器
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(AddFriendActivity.this, RecyclerView.VERTICAL, false);
+                            rcRecommendgroup.setLayoutManager(linearLayoutManager);
 
-                        //创建布局管理器
-                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(AddFriendActivity.this, RecyclerView.VERTICAL, false);
-                        rcRecommendgroup.setLayoutManager(linearLayoutManager);
-
-                        RecommendGroupAdapter adapter = new RecommendGroupAdapter(AddFriendActivity.this, list);
-                        rcRecommendgroup.setAdapter(adapter);
+                            RecommendGroupAdapter adapter = new RecommendGroupAdapter(AddFriendActivity.this, list);
+                            rcRecommendgroup.setAdapter(adapter);
+                        }
                     }
 
                     @Override

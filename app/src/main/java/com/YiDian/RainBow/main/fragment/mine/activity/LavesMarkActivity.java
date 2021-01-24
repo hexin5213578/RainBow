@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,6 +19,8 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.widget.Toolbar;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
@@ -46,8 +47,6 @@ import io.reactivex.schedulers.Schedulers;
 
 public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListener {
     private static final String TAG = "xxx";
-    @BindView(R.id.l_return)
-    LinearLayout lReturn;
     @BindView(R.id.ed_inputid)
     EditText edInputid;
     @BindView(R.id.r11)
@@ -57,7 +56,7 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
     @BindView(R.id.tv_nicheng)
     TextView tvNicheng;
     @BindView(R.id.r12)
-    RelativeLayout r12;
+    LinearLayout r12;
     @BindView(R.id.tv_all)
     TextView tvAll;
     @BindView(R.id.r22)
@@ -78,8 +77,6 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
     TextView tvBangding;
     PopupWindow mPopupWindow1;
     int myid;
-    @BindView(R.id.v1)
-    View v1;
     @BindView(R.id.tv_jiechu)
     TextView tvJiechu;
     int loveid;
@@ -91,7 +88,10 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
     TextView tvTrue;
     @BindView(R.id.tv_false)
     TextView tvFalse;
-
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.iv_back)
+    LinearLayout ivBack;
 
     @Override
     protected int getResId() {
@@ -102,15 +102,21 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
     protected void getData() {
         //事件注册
         tvBangding.setOnClickListener(this);
-        lReturn.setOnClickListener(this);
         tvJiechu.setOnClickListener(this);
         tvTrue.setOnClickListener(this);
         tvFalse.setOnClickListener(this);
         tvRequestCon.setOnClickListener(this);
+
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         //Integer.parseInt(Common.getUserId());
         myid = Integer.parseInt(Common.getUserId());
         //设置状态栏颜色与字体颜色
-        StatusBarUtil.setGradientColor(LavesMarkActivity.this, v1);
+        StatusBarUtil.setGradientColor(LavesMarkActivity.this, toolbar);
         StatusBarUtil.setDarkMode(LavesMarkActivity.this);
         //
         refresh();
@@ -139,8 +145,8 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
                                     Log.d(TAG, "onNext: " + Common.getUserId());
                                     r11.setVisibility(View.VISIBLE);
                                     r12.setVisibility(View.GONE);
-                                    r13.setVisibility(View.GONE);
                                     r22.setVisibility(View.VISIBLE);
+                                    r13.setVisibility(View.GONE);
                                     tvMyid.setText("本人ID：" + Common.getUserId());
                                     tvAll.setText("您暂未绑定情侣");
                                     break;
@@ -187,9 +193,9 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
 
                                     //建立中 此时可以撤回
                                     r11.setVisibility(View.GONE);
+                                    r22.setVisibility(View.VISIBLE);
                                     r12.setVisibility(View.VISIBLE);
                                     r13.setVisibility(View.GONE);
-                                    r22.setVisibility(View.VISIBLE);
                                     tvAll.setText("请求已发送，等待对方接收中");
                                     tvNicheng.setText(infoBean.getNickName());
                                     String path = infoBean.getHeadImg();
@@ -235,33 +241,24 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
             case R.id.l_return:
                 finish();
                 break;
-//              绑定关系
+//                绑定关系
             case R.id.tv_bangding:
                 String str = edInputid.getText().toString();
                 Log.d(TAG, "onClick: " + str);
                 if (str.equals("")) {
-                    showChangeName1("请输入ID");
-                    //把键盘收回去
-                    KeyBoardUtils.closeKeyboard(LavesMarkActivity.this);
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            dismiss1();
+                    builder.setMessage("请输入ID").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
                         }
-                    }, 2000);
-
+                    });
+                    builder.create().show();
                 } else if (myid == Integer.parseInt(str)) {
-                    showChangeName1("不能添加自己为情侣");
-                    //把键盘收回去
-                    KeyBoardUtils.closeKeyboard(LavesMarkActivity.this);
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            dismiss1();
+                    builder.setMessage("不能添加自己为情侣").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
                         }
-                    }, 2000);
+                    });
+                    builder.create().show();
                 } else {
                     if (str.length() == 6) {
                         //查询这个用户是否存在，存在准备发送信息
@@ -287,13 +284,14 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
 
                                         } else {
                                             //用户不存在
-                                            showChangeName1("该用户不存在");
-                                            new Handler().postDelayed(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    dismiss1();
+                                            EveryDayDialogDialog.Builder builder = new EveryDayDialogDialog.Builder(LavesMarkActivity.this);
+                                            builder.setMessage("该用户不存在").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    //
+                                                    dialog.dismiss();
                                                 }
-                                            }, 2000);
+                                            });
+                                            builder.create().show();
                                         }
                                     }
 
@@ -309,17 +307,13 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
                                 });
 
                     } else {
-
-                        showChangeName1("输入ID错误");
-                        //把键盘收回去
-                        KeyBoardUtils.closeKeyboard(LavesMarkActivity.this);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dismiss1();
+                        Log.d(TAG, "onClick: 用户ID错误");
+                        builder.setMessage("输入ID错误").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
                             }
-                        }, 2000);
-
+                        });
+                        builder.create().show();
                     }
                 }
                 break;
@@ -407,10 +401,10 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
                         });
                 builder.create().show();
                 break;
-            //同意建立关系
+                //同意建立关系
             case R.id.tv_true:
                 Log.d(TAG, "onClick: ------同意建立关系");
-                NetUtils.getInstance().getApis().doGetChackBuildLovers(myid, loveid, 1).
+                NetUtils.getInstance().getApis().doGetChackBuildLovers(myid,loveid,1).
                         subscribeOn(Schedulers.io()).
                         observeOn(AndroidSchedulers.mainThread()).
                         subscribe(new Observer<ChackBuildLovesBean>() {
@@ -421,10 +415,10 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
 
                             @Override
                             public void onNext(ChackBuildLovesBean chackBuildLovesBean) {
-                                if (chackBuildLovesBean.getType().equals("OK")) {
+                                if(chackBuildLovesBean.getType().equals("OK")){
 
                                     refresh();
-                                } else {
+                                }else {
                                     Log.d(TAG, "onNext: 服务器失败");
                                     refresh();
                                 }
@@ -441,10 +435,10 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
                             }
                         });
                 break;
-            // 拒绝建立关系
+                // 拒绝建立关系
             case R.id.tv_false:
                 Log.d(TAG, "onClick: ------拒绝建立关系");
-                NetUtils.getInstance().getApis().doGetChackBuildLovers(myid, loveid, 0).
+                NetUtils.getInstance().getApis().doGetChackBuildLovers(myid,loveid,0).
                         subscribeOn(Schedulers.io()).
                         observeOn(AndroidSchedulers.mainThread()).
                         subscribe(new Observer<ChackBuildLovesBean>() {
@@ -455,10 +449,10 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
 
                             @Override
                             public void onNext(ChackBuildLovesBean chackBuildLovesBean) {
-                                if (chackBuildLovesBean.getType().equals("OK")) {
+                                if(chackBuildLovesBean.getType().equals("OK")){
 
                                     refresh();
-                                } else {
+                                }else {
                                     Log.d(TAG, "onNext: 服务器失败");
                                     refresh();
                                 }
@@ -578,90 +572,6 @@ public class LavesMarkActivity extends BaseAvtivity implements View.OnClickListe
 
     //设置透明度
     public void setWindowAlpa(boolean isopen) {
-        if (Build.VERSION.SDK_INT < 11) {
-            return;
-        }
-        final Window window = this.getWindow();
-        final WindowManager.LayoutParams lp = window.getAttributes();
-        window.setFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND, WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        ValueAnimator animator;
-        if (isopen) {
-            animator = ValueAnimator.ofFloat(1.0f, 0.5f);
-        } else {
-            animator = ValueAnimator.ofFloat(0.5f, 1.0f);
-        }
-        animator.setDuration(400);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-            @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float alpha = (float) animation.getAnimatedValue();
-                lp.alpha = alpha;
-                window.setAttributes(lp);
-            }
-        });
-        animator.start();
-    }
-
-
-    // 弹出弹出框
-    public void showChangeName1(String str) {
-
-        Log.d(TAG, "showChangeName: -------->");
-        //创建popwiondow弹出框
-        mPopupWindow1 = new PopupWindow();
-        mPopupWindow1.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        mPopupWindow1.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
-        View view = LayoutInflater.from(this).inflate(R.layout.dialog_tishi, null);
-        ImageView cha = view.findViewById(R.id.iv_cha);
-        TextView textView = view.findViewById(R.id.tv_info);
-        ///判空
-        Log.d(TAG, "showChangeName1: "+str);
-        textView.setText(str);
-        cha.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss1();
-            }
-        });
-
-        //popwindow设置属性
-        mPopupWindow1.setContentView(view);
-        mPopupWindow1.setBackgroundDrawable(new BitmapDrawable());
-        mPopupWindow1.setFocusable(true);
-        mPopupWindow1.setOutsideTouchable(true);
-        mPopupWindow1.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                setWindowAlpa1(false);
-            }
-        });
-        show1(view);
-    }
-
-    /**
-     * 显示PopupWindow
-     */
-    private void show1(View v) {
-        if (mPopupWindow1 != null && !mPopupWindow1.isShowing()) {
-            mPopupWindow1.showAtLocation(v, Gravity.CENTER, 0, 0);
-        }
-        setWindowAlpa(true);
-
-    }
-
-    /**
-     * 消失PopupWindow
-     */
-    public void dismiss1() {
-        if (mPopupWindow1 != null && mPopupWindow1.isShowing()) {
-            mPopupWindow1.dismiss();
-        }
-    }
-
-    //设置透明度
-    public void setWindowAlpa1(boolean isopen) {
         if (Build.VERSION.SDK_INT < 11) {
             return;
         }

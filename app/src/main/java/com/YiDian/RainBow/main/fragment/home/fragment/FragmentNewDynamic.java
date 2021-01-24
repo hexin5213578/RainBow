@@ -149,13 +149,12 @@ public class FragmentNewDynamic extends BaseFragment {
 
             @Override
             public void onLoadmore() {
-                page++;
-                getNew(page, count);
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-
+                        page++;
+                        getNew(page, count);
                         sv.onFinishFreshAndLoad();
                     }
                 }, 1000);
@@ -322,7 +321,7 @@ public class FragmentNewDynamic extends BaseFragment {
     //获取传过来的信息 刷新界面
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getStr(String str) {
-        if (str.equals("刷新界面")) {
+        if (str.equals("刷新界面") ||str.equals("重新获取我的基本信息")) {
             if(alllist.size()>0){
                 alllist.clear();
             }

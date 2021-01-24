@@ -139,12 +139,12 @@ public class CollectActivity extends BaseAvtivity {
 
             @Override
             public void onLoadmore() {
-                page++;
-                getDynamic(page,size);
+
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-
+                        page++;
+                        getDynamic(page,size);
                         sv.onFinishFreshAndLoad();
                     }
                 }, 1000);

@@ -128,18 +128,28 @@ public class UserDetailsActivity extends BaseAvtivity implements View.OnClickLis
         getUserDynamic(page, size);
         //设置数据
         InitData();
-        Glide.with(UserDetailsActivity.this).load(bean.getBackImg()).into(ivBg);
+        String backImg = bean.getBackImg();
+        if (backImg!=null){
+            Glide.with(UserDetailsActivity.this).load(bean.getBackImg()).into(ivBg);
+        }else{
+            ivBg.setBackgroundColor(UserDetailsActivity.this.getResources().getColor(R.color.color_8867E7));
+        }
     }
 
     public void InitData() {
 
 
         tvUsername.setText(bean.getNickName());
-        if (bean.getUserRole().equals("保密")) {
+        if (bean.getUserRole()==null){
             tvAge.setText(bean.getAge() + "");
-        } else {
-            tvAge.setText(bean.getUserRole() + "  " + bean.getAge());
+        }else{
+            if (bean.getUserRole().equals("保密")) {
+                tvAge.setText(bean.getAge() + "");
+            } else {
+                tvAge.setText(bean.getUserRole() + "  " + bean.getAge());
+            }
         }
+
         //设置距离
         int distance = bean.getDistance();
         if (distance < 1000) {

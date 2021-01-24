@@ -78,12 +78,17 @@ public class SearchFriendAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         //判断角色
         String userRole = bean.getUserRole();
-        if(userRole.equals("保密")){
-            ((ViewHolder)holder).tvXingbie.setVisibility(View.GONE);
+        if (userRole!=null){
+            if(userRole.equals("保密")){
+                ((ViewHolder)holder).tvXingbie.setVisibility(View.GONE);
+            }else{
+                ((ViewHolder)holder).tvXingbie.setVisibility(View.VISIBLE);
+                ((ViewHolder)holder).tvXingbie.setText(userRole);
+            }
         }else{
-            ((ViewHolder)holder).tvXingbie.setVisibility(View.VISIBLE);
-            ((ViewHolder)holder).tvXingbie.setText(userRole);
+            ((ViewHolder)holder).tvXingbie.setVisibility(View.GONE);
         }
+
         //跳转到用户详情页
         ((ViewHolder)holder).ivHeadimg.setOnClickListener(new View.OnClickListener() {
             @Override

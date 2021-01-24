@@ -51,6 +51,8 @@ public class FragmentGroup extends BaseFragment {
     TextView tv2;
     @BindView(R.id.sv)
     SpringView sv;
+    @BindView(R.id.rl3)
+    RelativeLayout rl3;
     private int userid;
     String TAG = "xxx";
 
@@ -96,7 +98,7 @@ public class FragmentGroup extends BaseFragment {
 
                         sv.onFinishFreshAndLoad();
                     }
-                },1000);
+                }, 1000);
             }
 
             @Override
@@ -122,13 +124,21 @@ public class FragmentGroup extends BaseFragment {
                     @Override
                     public void onNext(RecommendGroupBean recommendGroupBean) {
                         List<RecommendGroupBean.ObjectBean> list = recommendGroupBean.getObject();
+                        if (list != null && list.size() > 0) {
+                            //创建布局管理器
+                            rl3.setVisibility(View.VISIBLE);
+                            rcComment.setVisibility(View.VISIBLE);
 
-                        //创建布局管理器
-                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                        rcComment.setLayoutManager(linearLayoutManager);
 
-                        RecommendGroupAdapter adapter = new RecommendGroupAdapter(getContext(), list);
-                        rcComment.setAdapter(adapter);
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+                            rcComment.setLayoutManager(linearLayoutManager);
+
+                            RecommendGroupAdapter adapter = new RecommendGroupAdapter(getContext(), list);
+                            rcComment.setAdapter(adapter);
+                        } else {
+                            rl3.setVisibility(View.GONE);
+                            rcComment.setVisibility(View.GONE);
+                        }
                     }
 
                     @Override

@@ -28,7 +28,7 @@
         </LinearLayout>
         <TextView
             android:layout_width="wrap_content"
-            android:text="隐私权政策"
+            android:text="隐私政策"
             android:layout_centerHorizontal="true"
             android:textSize="@dimen/sp_18"
             android:layout_centerVertical="true"
@@ -40,6 +40,7 @@
     <WebView
         android:layout_width="match_parent"
         android:layout_below="@id/rl_top"
+        android:overScrollMode="never"
         android:id="@+id/webView"
         android:layout_height="match_parent">
     </WebView>

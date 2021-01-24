@@ -139,11 +139,12 @@ public class MydraftActivity extends BaseAvtivity implements View.OnClickListene
 
             @Override
             public void onLoadmore() {
-                page++;
-                getData(page,pagesize);
+
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        page++;
+                        getData(page,pagesize);
                         sv.onFinishFreshAndLoad();
                         GSYVideoManager.releaseAllVideos();
 

@@ -154,39 +154,41 @@ public class GoldBalance extends BaseAvtivity implements View.OnClickListener {
                         GoldBalanceAdapter adapter;
                         LinearLayoutManager manager = new LinearLayoutManager(GoldBalance.this, RecyclerView.VERTICAL, false);
                         List<ConsumeRecordBean.ObjectBean.PageInfoBean.ListBean> list = consumeRecordBean.getObject().getPageInfo().getList();
-                        if (list!=null&&list.size()>0) {
 
+                        //总金币
+                        int total = consumeRecordBean.getObject().getGoldNum().getGoldAll();
+                        tvBalance.setText(total + "");
+                        //可提现金币
+                        Integer goldUsable = consumeRecordBean.getObject().getGoldNum().getGoldUsable();
+                        tvAbleuse.setText(goldUsable+"");
+
+                        //总消费
+                        String totalconsume = consumeRecordBean.getObject().getSpendingGoldNum() + "";
+                        //总收入
+                        String totalIncome = consumeRecordBean.getObject().getIncomeGoldNum() + "";
+                        tvConsumeIncome.setText("总消费：￥" + totalconsume);
+                        tvConsumeIncome2.setText("总充值：￥" + totalIncome);
+                        if (list!=null&&list.size()>0) {
                             sv.setVisibility(View.VISIBLE);
-                            //总金币
-                            int total = consumeRecordBean.getObject().getGoldNum().getGoldAll();
-                            tvBalance.setText(total + "");
-                            //可提现金币
-                            Integer goldUsable = consumeRecordBean.getObject().getGoldNum().getGoldUsable();
-                            tvAbleuse.setText(goldUsable+"");
-                            //总消费
-                            String totalconsume = consumeRecordBean.getObject().getSpendingGoldNum() + "";
-                            //总收入
-                            String totalIncome = consumeRecordBean.getObject().getIncomeGoldNum() + "";
-                            tvConsumeIncome.setText("总消费：￥" + totalconsume);
-                            tvConsumeIncome2.setText("总充值：￥" + totalIncome);
+                            rlDefault.setVisibility(View.GONE);
 
                             alllist.addAll(list);
                             adapter = new GoldBalanceAdapter(GoldBalance.this, alllist);
                             //查出数据放入list
-                            rlDefault.setVisibility(View.GONE);
                             recyclerViewRecord.setLayoutManager(manager);
                             recyclerViewRecord.setAdapter(adapter);
-                            recyclerViewRecord.setVisibility(View.VISIBLE);
                         } else {
                             if (alllist.size()>0){
                                 Toast.makeText(GoldBalance.this, "没有更多内容了", Toast.LENGTH_SHORT).show();
                             }else{
                                 Log.d(TAG, "onNext: 没有数据");
+                                sv.setVisibility(View.GONE);
                                 rlDefault.setVisibility(View.VISIBLE);
-                                recyclerViewRecord.setVisibility(View.GONE);
                             }
                         }
-
+                        if (list.size()>10){
+                            sv.setFooter(new AliFooter(GoldBalance.this));
+                        }
                     }
 
                     @Override
@@ -219,36 +221,34 @@ public class GoldBalance extends BaseAvtivity implements View.OnClickListener {
                         GoldBalanceAdapter adapter;
                         LinearLayoutManager manager = new LinearLayoutManager(GoldBalance.this, RecyclerView.VERTICAL, false);
                         List<ConsumeRecordBean.ObjectBean.PageInfoBean.ListBean> list = consumeRecordBean.getObject().getPageInfo().getList();
+                        //总金币
+                        int total = consumeRecordBean.getObject().getGoldNum().getGoldAll();
+                        tvBalance.setText(total + "");
+                        //可提现金币
+                        Integer goldUsable = consumeRecordBean.getObject().getGoldNum().getGoldUsable();
+                        tvAbleuse.setText(goldUsable+"");
+                        //总消费
+                        String totalconsume = consumeRecordBean.getObject().getSpendingGoldNum() + "";
+                        //总收入
+                        String totalIncome = consumeRecordBean.getObject().getIncomeGoldNum() + "";
+                        tvConsumeIncome.setText("总消费：￥" + totalconsume);
+                        tvConsumeIncome2.setText("总充值：￥" + totalIncome);
 
                         if (list!=null&&list.size()>0) {
-
-                            //总金币
-                            int total = consumeRecordBean.getObject().getGoldNum().getGoldAll();
-                            tvBalance.setText(total + "");
-                            //可提现金币
-                            Integer goldUsable = consumeRecordBean.getObject().getGoldNum().getGoldUsable();
-                            tvAbleuse.setText(goldUsable+"");
-                            //总消费
-                            String totalconsume = consumeRecordBean.getObject().getSpendingGoldNum() + "";
-                            //总收入
-                            String totalIncome = consumeRecordBean.getObject().getIncomeGoldNum() + "";
-                            tvConsumeIncome.setText("总消费：￥" + totalconsume);
-                            tvConsumeIncome2.setText("总充值：￥" + totalIncome);
-                            //
+                            rlDefault.setVisibility(View.GONE);
+                            sv.setVisibility(View.VISIBLE);
 
                             alllist.addAll(list);
                             adapter = new GoldBalanceAdapter(GoldBalance.this, alllist);
                             recyclerViewRecord.setLayoutManager(manager);
                             recyclerViewRecord.setAdapter(adapter);
                             recyclerViewRecord.setVisibility(View.VISIBLE);
-                            rlDefault.setVisibility(View.GONE);
-                            sv.setVisibility(View.VISIBLE);
+
                         } else {
                             if (alllist.size()>0){
                                 Toast.makeText(GoldBalance.this, "没有更多内容了", Toast.LENGTH_SHORT).show();
                             }else{
                                 rlDefault.setVisibility(View.VISIBLE);
-                                recyclerViewRecord.setVisibility(View.GONE);
                                 sv.setVisibility(View.GONE);
                             }
                             Log.d(TAG, "onNext: 查询数据失败");
@@ -329,7 +329,7 @@ public class GoldBalance extends BaseAvtivity implements View.OnClickListener {
                 nowday = formatter.format(currentTime);
                 datelist = nowday.split("-");
                 //如果用户更改日期。拿到用户更改日期的时间段 刷新数据
-                BasisTimesUtils.showDatePickerDialog(GoldBalance.this, "请选择年月日", Integer.valueOf(datelist[0]),
+                BasisTimesUtils.showDatePickerDialog(GoldBalance.this, "请选择日期", Integer.valueOf(datelist[0]),
                         Integer.valueOf(datelist[1]), Integer.valueOf(datelist[2]), new BasisTimesUtils.OnDatePickerListener() {
 
                             @Override

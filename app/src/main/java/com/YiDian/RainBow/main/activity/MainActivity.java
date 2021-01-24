@@ -128,7 +128,9 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
         userid = Integer.parseInt(Common.getUserId());
 
         //设置别名
-        //setAlias();
+        setAlias();
+
+
         boolean ignoringBatteryOptimizations = isIgnoringBatteryOptimizations(MainActivity.this);
         //判断是否存在于白名单
         if (!ignoringBatteryOptimizations) {
@@ -287,7 +289,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     }
 
     public void setAlias() {
-        JPushInterface.setAlias(MainActivity.this, "1038", new TagAliasCallback() {
+        JPushInterface.setAlias(MainActivity.this, String.valueOf(userid), new TagAliasCallback() {
             @Override
             public void gotResult(int i, String s, Set<String> set) {
                 Log.d("xxx", "回调是" + i);

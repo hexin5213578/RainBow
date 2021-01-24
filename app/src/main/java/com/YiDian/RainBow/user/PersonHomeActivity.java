@@ -1,11 +1,29 @@
 package com.YiDian.RainBow.user;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.LinearInterpolator;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,6 +31,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
@@ -21,14 +40,19 @@ import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.friend.activity.FriendsActivity;
 import com.YiDian.RainBow.login.bean.ComPleteMsgBean;
 import com.YiDian.RainBow.main.fragment.home.adapter.UserDetailsDynamicAdapter;
+import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.main.fragment.mine.activity.MyGiftActivity;
+import com.YiDian.RainBow.main.fragment.msg.activity.FriendImActivity;
+import com.YiDian.RainBow.main.fragment.msg.adapter.GridViewAdapter;
+import com.YiDian.RainBow.main.fragment.msg.adapter.ViewPagerAdapter;
+import com.YiDian.RainBow.main.fragment.msg.bean.GiftMsgBean;
+import com.YiDian.RainBow.main.fragment.msg.bean.GlodNumBean;
 import com.YiDian.RainBow.setup.bean.InsertRealBean;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.user.bean.UserMsgBean;
 import com.YiDian.RainBow.utils.MD5Utils;
 import com.YiDian.RainBow.utils.NetUtils;
-import com.YiDian.RainBow.utils.SPUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
@@ -56,6 +80,7 @@ import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -104,16 +129,32 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
     View v1;
     @BindView(R.id.rl_nodata)
     RelativeLayout rlNodata;
+    @BindView(R.id.bt_send)
+    Button btSend;
+    @BindView(R.id.bt_guanzhu)
+    Button btGuanzhu;
     private String img1;
     private int myId;
     private Intent intent;
-    int page  =1;
-    List<NewDynamicBean.ObjectBean.ListBean> allList ;
+    int page = 1;
+    List<NewDynamicBean.ObjectBean.ListBean> allList;
     private Tencent mTencent;
     private int flag;
     private String name;
     private int thePageuserId;
-
+    private PopupWindow mPopupWindow1;
+    private ViewPager vp;
+    private LinearLayout lldot;
+    private TextView tv_balance;
+    private int pageCount;
+    private GridViewAdapter[] arr;
+    /*当前显示的是第几页*/
+    private int curIndex = 0;
+    private List<GiftMsgBean.ObjectBean> list;
+    private LayoutInflater inflater;
+    private int reciveid = 0;
+    private boolean isfollow = false;
+    private int selectnum=-1;
     @Override
     protected int getResId() {
         return R.layout.activity_personhome;
@@ -130,6 +171,8 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
         llGuanzhu.setOnClickListener(this);
         llCandian.setOnClickListener(this);
         IvBeijing.setOnClickListener(this);
+        btSend.setOnClickListener(this);
+        btGuanzhu.setOnClickListener(this);
 
 
         allList = new ArrayList<>();
@@ -183,20 +226,20 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             //等待2.5秒后结束刷新
                             sv.onFinishFreshAndLoad();
                         }
-                    },1000);
+                    }, 1000);
                 }
 
                 @Override
                 public void onLoadmore() {
-                    page++;
-                    dogetDynamicByName(page, name);
+
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-
+                            page++;
+                            dogetDynamicByName(page, name);
                             sv.onFinishFreshAndLoad();
                         }
-                    },1000);
+                    }, 1000);
                 }
             });
         } else {
@@ -223,20 +266,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                 public void onRefresh() {
                     bandpageinfo(myId, thePageuserId);
                     allList.clear();
-                    page =1;
-                    dogetDynamicById(page, thePageuserId);
-                        new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            sv.onFinishFreshAndLoad();
-                        }
-                    },1000);
-                }
-
-                @Override
-                public void onLoadmore() {
-                    page++;
+                    page = 1;
                     dogetDynamicById(page, thePageuserId);
                     new Handler().postDelayed(new Runnable() {
                         @Override
@@ -244,25 +274,38 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
                             sv.onFinishFreshAndLoad();
                         }
-                    },1000);
+                    }, 1000);
+                }
+
+                @Override
+                public void onLoadmore() {
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            page++;
+                            dogetDynamicById(page, thePageuserId);
+                            sv.onFinishFreshAndLoad();
+                        }
+                    }, 1000);
                 }
             });
         }
-
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (!EventBus.getDefault().isRegistered(this)){
+        if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
     }
 
-    public void doInsert(String str){
+    //增加访客
+    public void doInsert(String str) {
         NetUtils.getInstance().getApis()
-                .doInsertFangke(str,myId)
+                .doInsertFangke(str, myId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<InsertRealBean>() {
@@ -287,6 +330,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                     }
                 });
     }
+
     //true 是别人的主页   false  是自己的主页
     public void isotherpage(boolean ischeck) {
         llFensi.setEnabled(ischeck);
@@ -296,16 +340,17 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getStr(String str){
+    public void getStr(String str) {
         allList.clear();
-        if (str.equals("刷新界面")){
-            if (flag==2){
+        if (str.equals("刷新界面")) {
+            if (flag == 2) {
                 dogetDynamicByName(page, name);
-            }else{
+            } else {
                 dogetDynamicById(page, thePageuserId);
             }
         }
     }
+
     //动态信息填充到列表里面
     public void dogetDynamicById(int page, int thePageuserId) {
         showDialog();//显示加载圈
@@ -325,7 +370,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                         hideDialog();//隐藏加载圈
                         List<NewDynamicBean.ObjectBean.ListBean> list = newDynamicBean.getObject().getList();
 
-                        if (list.size()>0 && list!=null){
+                        if (list.size() > 0 && list != null) {
                             //RelativeLayout rlNodata;
                             rlNodata.setVisibility(View.GONE);
                             //RecyclerView  rcDynamic
@@ -335,17 +380,17 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(PersonHomeActivity.this, RecyclerView.VERTICAL, false);
                             rcDynamic.setLayoutManager(linearLayoutManager);
 
-                            UserDetailsDynamicAdapter userDetailsDynamicAdapter = new UserDetailsDynamicAdapter(PersonHomeActivity.this, allList,mTencent);
+                            UserDetailsDynamicAdapter userDetailsDynamicAdapter = new UserDetailsDynamicAdapter(PersonHomeActivity.this, allList, mTencent);
                             rcDynamic.setAdapter(userDetailsDynamicAdapter);
-                        }else{
-                            if (allList.size()>0){
+                        } else {
+                            if (allList.size() > 0) {
                                 Toast.makeText(PersonHomeActivity.this, "没有更多内容了", Toast.LENGTH_SHORT).show();
-                            }else{
+                            } else {
                                 rlNodata.setVisibility(View.VISIBLE);
                                 rcDynamic.setVisibility(View.GONE);
                             }
                         }
-                        if (list.size()>4){
+                        if (list.size() > 4) {
                             //设置底部
                             sv.setFooter(new AliFooter(PersonHomeActivity.this));
                         }
@@ -362,6 +407,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                     }
                 });
     }
+
     public void dogetDynamicByName(int page, String name) {
         showDialog();
         //展示话题
@@ -381,7 +427,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                         hideDialog();
                         List<NewDynamicBean.ObjectBean.ListBean> list = newDynamicBean.getObject().getList();
 
-                        if (list.size()>0 && list!=null){
+                        if (list.size() > 0 && list != null) {
                             rlNodata.setVisibility(View.GONE);
                             rcDynamic.setVisibility(View.VISIBLE);
 
@@ -389,17 +435,17 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(PersonHomeActivity.this, RecyclerView.VERTICAL, false);
                             rcDynamic.setLayoutManager(linearLayoutManager);
 
-                            UserDetailsDynamicAdapter userDetailsDynamicAdapter = new UserDetailsDynamicAdapter(PersonHomeActivity.this, allList,mTencent);
+                            UserDetailsDynamicAdapter userDetailsDynamicAdapter = new UserDetailsDynamicAdapter(PersonHomeActivity.this, allList, mTencent);
                             rcDynamic.setAdapter(userDetailsDynamicAdapter);
-                        }else{
-                            if (allList.size()>0){
+                        } else {
+                            if (allList.size() > 0) {
                                 Toast.makeText(PersonHomeActivity.this, "没有更多内容了", Toast.LENGTH_SHORT).show();
-                            }else{
+                            } else {
                                 rlNodata.setVisibility(View.VISIBLE);
                                 rcDynamic.setVisibility(View.GONE);
                             }
                         }
-                        if (list.size()>4){
+                        if (list.size() > 4) {
                             sv.setFooter(new AliFooter(PersonHomeActivity.this));
                         }
                     }
@@ -415,6 +461,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                     }
                 });
     }
+
     //获取用户（好友或自己）信息 并绑定的到页面
     public void bandpageinfo(int myId, int thePageuserId) {
         //自己id   要查询id   并绑定到标签上面
@@ -436,6 +483,15 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             UserMsgBean.ObjectBean object = userMsgBean.getObject();
                             UserMsgBean.ObjectBean.UserInfoBean userInfo = userMsgBean.getObject().getUserInfo();
 
+                            if (userInfo.getIsFans()==0){
+                                isfollow=  false;
+                                btGuanzhu.setText("关注");
+                            }else{
+                                isfollow = true;
+                                btGuanzhu.setText("私信");
+                            }
+                            reciveid = userInfo.getId();
+
                             String fenSiCount = object.getCountFansNum() + "";
                             String guanzhu = object.getCountFavoriteNum() + "";
                             String liwu = object.getCountGiftNum() + "";
@@ -449,30 +505,30 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             String headImg = userInfo.getHeadImg();//头像
 
                             String explains = userInfo.getExplains();
-                            if (explains==null){
+                            if (explains == null) {
                                 String gxQianMing = "";//个性签名
                                 tvGxqianming.setText(gxQianMing);
-                            }else{
+                            } else {
                                 String gxQianMing = "个性签名：" + explains;//个性签名
                                 tvGxqianming.setText(gxQianMing);
                             }
 
                             if (userRole == null) {
-                                if (friendAge!=null){
+                                if (friendAge != null) {
                                     userRoleAge = friendAge + "";
-                                }else{
+                                } else {
                                     userRoleAge = 0 + "";
                                 }
                             } else if (userRole.equals("保密")) {
-                                if (friendAge!=null){
+                                if (friendAge != null) {
                                     userRoleAge = friendAge + "";
-                                }else{
+                                } else {
                                     userRoleAge = 0 + "";
                                 }
                             } else {
-                                if (friendAge!=null){
+                                if (friendAge != null) {
                                     userRoleAge = userRole + " " + friendAge;
-                                }else{
+                                } else {
                                     userRoleAge = 0 + "";
                                 }
                             }
@@ -494,6 +550,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
                         }
                     }
+
                     @Override
                     public void onError(Throwable e) {
 
@@ -526,6 +583,16 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             UserMsgBean.ObjectBean object = userMsgBean.getObject();
                             UserMsgBean.ObjectBean.UserInfoBean userInfo = userMsgBean.getObject().getUserInfo();
 
+                            reciveid = userInfo.getId();
+
+                            if (userInfo.getIsFans()==0){
+                                isfollow=  false;
+                                btGuanzhu.setText("关注");
+                            }else{
+                                isfollow = true;
+                                btGuanzhu.setText("私信");
+                            }
+
                             String fenSiCount = object.getCountFansNum() + "";
                             String guanzhu = object.getCountFavoriteNum() + "";
                             String liwu = object.getCountGiftNum() + "";
@@ -539,30 +606,30 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             String headImg = userInfo.getHeadImg();//头像
 
                             String explains = userInfo.getExplains();
-                            if (explains.equals("null")){
+                            if (explains.equals("null")) {
                                 tvGxqianming.setText("");
-                            }else{
+                            } else {
                                 String gxQianMing = "个性签名：" + explains;//个性签名
                                 tvGxqianming.setText(gxQianMing);
                             }
 
 
                             if (userRole == null) {
-                                if (friendAge==null){
+                                if (friendAge == null) {
                                     userRoleAge = 0 + "";
-                                }else{
+                                } else {
                                     userRoleAge = friendAge + "";
                                 }
                             } else if (userRole.equals("保密")) {
-                                if (friendAge==null){
+                                if (friendAge == null) {
                                     userRoleAge = 0 + "";
-                                }else{
+                                } else {
                                     userRoleAge = friendAge + "";
                                 }
                             } else {
-                                if (friendAge==null){
+                                if (friendAge == null) {
                                     userRoleAge = userRole + " " + 0;
-                                }else{
+                                } else {
                                     userRoleAge = userRole + " " + friendAge;
                                 }
                             }
@@ -610,7 +677,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (EventBus.getDefault().isRegistered(this)){
+        if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
     }
@@ -622,30 +689,29 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
             //粉丝被点击
             case R.id.ll_fensi:
                 intent = new Intent(PersonHomeActivity.this, FriendsActivity.class);
-                intent.putExtra("flag",2);
+                intent.putExtra("flag", 2);
                 startActivity(intent);
                 break;
-                //关注被点击
+            //关注被点击
             case R.id.ll_guanzhu:
                 intent = new Intent(PersonHomeActivity.this, FriendsActivity.class);
-                intent.putExtra("flag",4);
+                intent.putExtra("flag", 4);
                 startActivity(intent);
                 break;
-                //礼物被点击
+            //礼物被点击
             case R.id.ll_liwu:
-
                 intent = new Intent(PersonHomeActivity.this, MyGiftActivity.class);
                 startActivity(intent);
                 break;
-                //返回
+            //返回
             case R.id.ll_back:
                 finish();
                 break;
-                //菜单
+            //菜单
             case R.id.ll_candian:
 
                 break;
-                //点击背景  是自己的主页可以进行更换
+            //点击背景  是自己的主页可以进行更换
             case R.id.Iv_beijing:
                 Log.d(TAG, "onClick: ------->" + "点击背景");
                 intent = new Intent(PersonHomeActivity.this, PickerActivity.class);
@@ -656,11 +722,54 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                 intent.putExtra("type", 1);
                 startActivityForResult(intent, 1);
                 break;
+                //赠送礼物
+            case R.id.bt_send:
+                // TODO: 2021/1/13 0013 展示选择礼物框
+                getGiftMsg();
+                break;
+            case R.id.bt_guanzhu:
+                if (isfollow){
+                    Log.d("xxx","已关注 私信");
 
 
+
+                }else{
+                    Log.d("xxx","未关注，发起关注");
+                    btGuanzhu.setEnabled(false);
+                    //关注
+                    NetUtils.getInstance().getApis()
+                            .doFollow(myId, reciveid)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Observer<FollowBean>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
+
+                                }
+
+                                @Override
+                                public void onNext(FollowBean followBean) {
+                                    //处理结束后恢复点击
+                                    btGuanzhu.setEnabled(true);
+                                    if (followBean.getMsg().equals("关注成功")) {
+                                        btGuanzhu.setText("私信");
+                                        isfollow = true;
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+
+                                }
+                            });
+                }
+                break;
         }
-
-
     }
 
     //设置背景图
@@ -714,7 +823,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
                                 //转化成功 更新本地服务器用户信息
                                 NetUtils.getInstance().getApis()
-                                        .doComPleteBackImg(myId,img1)
+                                        .doComPleteBackImg(myId, img1)
                                         .subscribeOn(Schedulers.io())
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .subscribe(new Observer<ComPleteMsgBean>() {
@@ -725,7 +834,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
                                             @Override
                                             public void onNext(ComPleteMsgBean comPleteMsgBean) {
-                                                if (comPleteMsgBean.getMsg().equals("数据修改成功！")){
+                                                if (comPleteMsgBean.getMsg().equals("数据修改成功！")) {
                                                     Toast.makeText(PersonHomeActivity.this, "背景修改成功", Toast.LENGTH_SHORT).show();
                                                 }
                                             }
@@ -745,12 +854,345 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             }
                         } else {
                             Log.i("xxx", "Upload Fail");
-                            Log.i("xxx", ""+info);
+                            Log.i("xxx", "" + info);
                             //如果失败，这里可以把 info 信息上报自己的服务器，便于后面分析上传错误原因
                         }
                         Log.i("xxx", img1);
                     }
                 }, null);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
+    }
+    public  void getGiftMsg(){
+        showDialog();
+        NetUtils.getInstance().getApis()
+                .doGetAllGiftMsg()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GiftMsgBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(GiftMsgBean giftMsgBean) {
+                        hideDialog();
+                        if (giftMsgBean.getMsg().equals("查询成功")){
+                            list = giftMsgBean.getObject();
+                            showSelectGift();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        hideDialog();
+                        Toast.makeText(PersonHomeActivity.this, "获取礼物列表失败", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+    //获取金币数
+    public void  getGlodNum(){
+        NetUtils.getInstance().getApis()
+                .dogetGldNum(myId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GlodNumBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(GlodNumBean glodNumBean) {
+                        if (glodNumBean.getMsg().equals("查询成功")){
+                            tv_balance.setText(glodNumBean.getObject().getGoldAll()+"");
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(PersonHomeActivity.this, "获取余额失败", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    //弹出选择礼物列表弹出框
+    public void showSelectGift() {
+        //添加成功后处理  63 50
+        mPopupWindow1 = new PopupWindow();
+        mPopupWindow1.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        mPopupWindow1.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+        View view = LayoutInflater.from(PersonHomeActivity.this).inflate(R.layout.dialog_sendgift, null);
+
+        vp = view.findViewById(R.id.vp);
+        lldot = view.findViewById(R.id.ll_dot);
+        LinearLayout llrecharge= view.findViewById(R.id.ll_recharge);
+        RelativeLayout ll_close = view.findViewById(R.id.ll_close);
+        ImageView iv_anim = view.findViewById(R.id.iv_anim);
+        tv_balance = view.findViewById(R.id.tv_balance);
+        RelativeLayout rl_send = view.findViewById(R.id.rl_send);
+
+
+        //获取金币数
+        getGlodNum();
+
+        //总的页数=总数/每页数量，并取整
+        pageCount = (int) Math.ceil(list.size() * 1.0 / 8);
+        inflater = LayoutInflater.from(PersonHomeActivity.this);
+
+        //页面集合
+        List<View> mPagerList= new ArrayList<>();
+        arr = new GridViewAdapter[pageCount];
+
+        for (int j = 0; j < pageCount; j++) {
+            final GridView gridview = (GridView) inflater.inflate(R.layout.bottom_vp_gridview, vp, false);
+            final GridViewAdapter gridAdapter = new GridViewAdapter(PersonHomeActivity.this, list, j);
+            gridview.setAdapter(gridAdapter);
+            arr[j] = gridAdapter;
+            gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                    selectnum = (int) id;
+
+                    for (int i = 0; i < list.size(); i++) {
+                        GiftMsgBean.ObjectBean model = list.get(i);
+                        if (i == id) {
+                            if (model.isSelected()) {
+                                model.setSelected(false);
+                                selectnum = -1;
+                            } else {
+                                model.setSelected(true);
+                            }
+                        } else {
+                            model.setSelected(false);
+//                            Log.i("tag","==位置2："+i+"..id:"+id);
+                        }
+                    }
+                    gridAdapter.notifyDataSetChanged();
+                }
+            });
+            mPagerList.add(gridview);
+        }
+        vp.setAdapter(new ViewPagerAdapter(mPagerList, PersonHomeActivity.this));
+
+        setOvalLayout();
+
+        rl_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //送出当前选中的礼物
+                if (selectnum==-1){
+                    Toast.makeText(PersonHomeActivity.this, "请先选择礼物", Toast.LENGTH_SHORT).show();
+                }else{
+                    GiftMsgBean.ObjectBean giftbean = list.get(selectnum);
+                    Log.d("xxx","当前选中为"+selectnum);
+
+
+                    //发起赠送礼物的接口
+                    NetUtils.getInstance().getApis()
+                            .doSendGift(reciveid,myId,giftbean.getId())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Observer<InsertRealBean>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
+
+                                }
+
+                                @Override
+                                public void onNext(InsertRealBean insertRealBean) {
+                                    if (insertRealBean.getMsg().equals("送出成功")){
+                                        //送出成功 刷新余额
+                                        getGlodNum();
+
+                                        //展示动画
+                                        iv_anim.setVisibility(View.VISIBLE);
+                                        Glide.with(PersonHomeActivity.this).load(giftbean.getGiftImg()).into(iv_anim);
+
+
+                                        ObjectAnimator Animator1 = ObjectAnimator.ofFloat(iv_anim, "translationY", -700);
+                                        Animator1.setInterpolator(new LinearInterpolator());
+                                        Animator1.setDuration(1000);
+
+                                        ObjectAnimator Animator2 = ObjectAnimator.ofFloat(iv_anim, "rotation", 0.0F, 1080.0f);
+                                        Animator2.setInterpolator(new LinearInterpolator());
+                                        Animator2.setDuration(1500);
+
+                                        AnimatorSet set=new AnimatorSet();
+                                        set.play(Animator1).before(Animator2);
+
+                                        set.start();
+                                        set.addListener(new Animator.AnimatorListener() {
+                                            @Override
+                                            public void onAnimationStart(Animator animation) {
+
+                                            }
+
+                                            @Override
+                                            public void onAnimationEnd(Animator animation) {
+                                                animation.cancel();
+
+                                                iv_anim.setVisibility(View.GONE);
+                                                ObjectAnimator Animator = ObjectAnimator.ofFloat(iv_anim, "translationY", 700);
+                                                Animator.setInterpolator(new LinearInterpolator());
+                                                Animator.setDuration(200);
+
+                                                Animator.start();
+                                            }
+
+                                            @Override
+                                            public void onAnimationCancel(Animator animation) {
+
+                                            }
+
+                                            @Override
+                                            public void onAnimationRepeat(Animator animation) {
+
+                                            }
+                                        });
+                                    }
+                                    if (insertRealBean.getMsg().equals("余额不足")){
+                                        // TODO: 2021/1/24 0024 接入充值功能提示去充值
+                                        Toast.makeText(PersonHomeActivity.this, "账户余额不足", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+
+                                }
+                            });
+                }
+            }
+        });
+
+        ll_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+        llrecharge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //去充值
+                Toast.makeText(PersonHomeActivity.this, "充值通道未开启，请关注后续通知哦", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //popwindow设置属性
+        mPopupWindow1.setAnimationStyle(R.style.popwindow_anim_style);
+        mPopupWindow1.setContentView(view);
+        mPopupWindow1.setBackgroundDrawable(new BitmapDrawable());
+        mPopupWindow1.setFocusable(true);
+        mPopupWindow1.setOutsideTouchable(true);
+        mPopupWindow1.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                setWindowAlpa(false);
+            }
+        });
+        show(view);
+    }
+    /**
+     * 设置圆点
+     */
+    public void setOvalLayout() {
+        for (int i = 0; i < pageCount; i++) {
+            lldot.addView(inflater.inflate(R.layout.dot, null));
+        }
+        // 默认显示第一页
+        lldot.getChildAt(0).findViewById(R.id.v_dot)
+                .setBackgroundResource(R.drawable.dot_selected);
+        vp.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            public void onPageSelected(int position) {
+                arr[0].notifyDataSetChanged();
+                arr[1].notifyDataSetChanged();
+                arr[2].notifyDataSetChanged();
+
+                // 取消圆点选中
+                lldot.getChildAt(curIndex)
+                        .findViewById(R.id.v_dot)
+                        .setBackgroundResource(R.drawable.dot_normal);
+                // 圆点选中
+                lldot.getChildAt(position)
+                        .findViewById(R.id.v_dot)
+                        .setBackgroundResource(R.drawable.dot_selected);
+                curIndex = position;
+            }
+
+            public void onPageScrolled(int arg0, float arg1, int arg2) {
+            }
+
+            public void onPageScrollStateChanged(int arg0) {
+            }
+        });
+    }
+    //设置透明度
+    public void setWindowAlpa(boolean isopen) {
+        if (Build.VERSION.SDK_INT < 11) {
+            return;
+        }
+
+        final Window window = PersonHomeActivity.this.getWindow();
+        final WindowManager.LayoutParams lp = window.getAttributes();
+        window.setFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND, WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        ValueAnimator animator;
+        if (isopen) {
+            animator = ValueAnimator.ofFloat(1.0f, 0.5f);
+        } else {
+            animator = ValueAnimator.ofFloat(0.5f, 1.0f);
+        }
+        animator.setDuration(400);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float alpha = (float) animation.getAnimatedValue();
+                lp.alpha = alpha;
+                window.setAttributes(lp);
+            }
+        });
+        animator.start();
+    }
+
+    private void show(View v) {
+        if (mPopupWindow1 != null && !mPopupWindow1.isShowing()) {
+            mPopupWindow1.showAtLocation(v, Gravity.BOTTOM, 0, 0);
+        }
+        setWindowAlpa(true);
+    }
+    /**
+     * 消失PopupWindow
+     */
+    public void dismiss() {
+        if (mPopupWindow1 != null && mPopupWindow1.isShowing()) {
+            mPopupWindow1.dismiss();
+        }
     }
 }
 

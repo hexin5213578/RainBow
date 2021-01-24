@@ -40,9 +40,18 @@ public class GoldBalanceAdapter extends RecyclerView.Adapter<GoldBalanceHolder> 
     @Override
     public void onBindViewHolder(@NonNull GoldBalanceHolder holder, int position) {
         //收入
-        holder.tvGift.setText(list.get(position).getRecordContent());
-        holder.tvConsumption.setText(list.get(position).getCreateTime() + "");
-        holder.tvTvConsumptionCount.setText("+" + list.get(position).getGoldNum());
+
+        if (list.get(position).getRecordType() == 1) {
+            //收入
+            holder.tvGift.setText(list.get(position).getRecordContent());
+            holder.tvConsumption.setText(list.get(position).getCreateTime() + "");
+            holder.tvTvConsumptionCount.setText("+" + list.get(position).getGoldNum());
+        } else {
+            //支出
+            holder.tvGift.setText(list.get(position).getRecordContent());
+            holder.tvConsumption.setText(list.get(position).getCreateTime() + "");
+            holder.tvTvConsumptionCount.setText("-" + list.get(position).getGoldNum());
+        }
     }
 
     @Override

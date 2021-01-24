@@ -89,17 +89,18 @@ public class TopicDetailsActivity extends BaseAvtivity implements View.OnClickLi
             sv.setListener(new SpringView.OnFreshListener() {
                 @Override
                 public void onRefresh() {
+                    alllist.clear();
                     refresh(name, 1);
                 }
 
                 @Override
                 public void onLoadmore() {
-                    page++;
-                    refresh(name, page);
+
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-
+                            page++;
+                            refresh(name, page);
                             sv.onFinishFreshAndLoad();
                         }
                     }, 2000);
@@ -137,7 +138,6 @@ public class TopicDetailsActivity extends BaseAvtivity implements View.OnClickLi
                             TopicAdapter adapter = new TopicAdapter(TopicDetailsActivity.this, alllist, mTencent);
                             rcList.setLayoutManager(layoutManager);
                             rcList.setAdapter(adapter);
-
                         }
                     }
 
