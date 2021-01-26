@@ -64,6 +64,7 @@ import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.audiorecord.AudioRecorderButton;
+import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.dynamic.activity.DevelopmentDynamicActivity;
 import com.YiDian.RainBow.dynamic.adapter.DevelogmentImgAdapter;
 import com.YiDian.RainBow.friend.activity.FriendsActivity;
@@ -222,6 +223,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     private int selectnum=-1;
     private TextView tv_balance;
     private Animation anim;
+    private CustomDialog dialog;
 
     @Override
     protected int getResId() {
@@ -280,6 +282,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         select = new ArrayList<>();
         select1 = new ArrayList<>();
 
+        dialog = new CustomDialog(this, "正在加载");
         Request();
 
         mediaPlayer1 = new MediaPlayer();
@@ -796,7 +799,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         }
     }
     public  void getGiftMsg(){
-        showDialog();
+        dialog.show();
         NetUtils.getInstance().getApis()
                 .doGetAllGiftMsg()
                 .subscribeOn(Schedulers.io())
@@ -809,7 +812,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
                     @Override
                     public void onNext(GiftMsgBean giftMsgBean) {
-                        hideDialog();
+                        dialog.dismiss();
                         if (giftMsgBean.getMsg().equals("查询成功")){
                             list = giftMsgBean.getObject();
                             showSelectGift();
@@ -818,7 +821,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
                     @Override
                     public void onError(Throwable e) {
-                        hideDialog();
+                        dialog.dismiss();
                         Toast.makeText(FriendImActivity.this, "获取礼物列表失败", Toast.LENGTH_SHORT).show();
                     }
 

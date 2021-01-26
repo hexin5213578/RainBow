@@ -1,5 +1,8 @@
 package com.YiDian.RainBow.main.fragment.find.fragment;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -11,6 +14,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +24,7 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.main.fragment.find.adapter.NearPersonAdapter;
 import com.YiDian.RainBow.main.fragment.find.bean.NearPersonBean;
 import com.YiDian.RainBow.utils.NetUtils;
@@ -72,6 +78,8 @@ public class FragmentNear extends Fragment implements AMapLocationListener {
     private boolean isViewInit;//view视图是否加载过
     private boolean isDataLoad;//耗时操作是否加载过
     private Unbinder bind;
+    private CustomDialog dialog1;
+    private CustomDialog dialog2;
 
     @Nullable
     @Override
@@ -116,6 +124,10 @@ public class FragmentNear extends Fragment implements AMapLocationListener {
     protected void getData() {
         userid = Integer.valueOf(Common.getUserId());
         alllist = new ArrayList<>();
+
+        dialog1 = new CustomDialog(getContext(),"正在获取位置信息...");
+        dialog2 = new CustomDialog(getContext(),"正在加载...");
+
         //进入定位 定位成功获取第一次数据
         doLocation();
         sv.setListener(new SpringView.OnFreshListener() {
@@ -188,6 +200,7 @@ public class FragmentNear extends Fragment implements AMapLocationListener {
         // 在单次定位情况下，定位无论成功与否，都无需调用stopLocation()方法移除请求，定位sdk内部会移除
         //启动定位
         mlocationClient.startLocation();
+        dialog1.show();
     }
 
     @Override
@@ -207,8 +220,22 @@ public class FragmentNear extends Fragment implements AMapLocationListener {
 
                 Log.d("xxx", "定位成功");
                 alllist.clear();
+                dialog1.dismiss();
+                page = 1;
                 getNearPerson(page,size);
             } else {
+                dialog1.dismiss();
+                Toast.makeText(getContext(), "获取位置信息失败", Toast.LENGTH_SHORT).show();
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (aMapLocation.getErrorCode()==12){
+                            Request();
+                        }
+                    }
+                },1000);
+
                 //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
                 Log.e("AmapError", "location Error, ErrCode:"
                         + aMapLocation.getErrorCode() + ", errInfo:"
@@ -216,8 +243,39 @@ public class FragmentNear extends Fragment implements AMapLocationListener {
             }
         }
     }
+    //安卓10.0定位权限
+    public void Request() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            int request = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
+            if (request != PackageManager.PERMISSION_GRANTED)//缺少权限，进行权限申请
+            {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
+                return;//
+            } else {
+
+            }
+        } else {
+
+        }
+    }
+    //参数 requestCode是我们在申请权限的时候使用的唯一的申请码
+    //String[] permission则是权限列表，一般用不到
+    //int[] grantResults 是用户的操作响应，包含这权限是够请求成功
+    //由于在权限申请的时候，我们就申请了一个权限，所以此处的数组的长度都是1
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 100) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                Toast.makeText(getContext(), "权限申请失败，用户拒绝权限", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
     //获取数据
     public void getNearPerson(int page,int size){
+        dialog2.show();
         NetUtils.getInstance().getApis()
                 .doGetNearPerson(userid,longitude,latitude,page,size)
                 .subscribeOn(Schedulers.io())
@@ -230,6 +288,8 @@ public class FragmentNear extends Fragment implements AMapLocationListener {
 
                     @Override
                     public void onNext(NearPersonBean nearPersonBean) {
+                        dialog2.dismiss();
+
                         List<NearPersonBean.ObjectBean.ListBean> list = nearPersonBean.getObject().getList();
                         if(list.size()>0 && list!=null){
 
@@ -251,14 +311,15 @@ public class FragmentNear extends Fragment implements AMapLocationListener {
                                 rlNodata.setVisibility(View.VISIBLE);
                             }
                         }
-                        if (list.size()>14){
+                        if (list.size()>8){
                             sv.setFooter(new AliFooter(getContext()));
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        dialog2.dismiss();
+                        Toast.makeText(getContext(), "数据请求失败", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

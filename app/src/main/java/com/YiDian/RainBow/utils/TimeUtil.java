@@ -250,4 +250,21 @@ public class TimeUtil {
         }
         return strDate;
     }
+
+    /**
+     *
+     * @param time 日期转long
+     */
+    public static  long TimeToLong(String time){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        // 1.Date类型转Long类型
+        // parse()方法把字符串'2011-09-20 12:30:45'转成Date类型,getTime()方法把Date类型转成Long类型
+        long timeStart = 0;
+        try {
+            timeStart = sdf.parse(time).getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return timeStart;
+    }
 }

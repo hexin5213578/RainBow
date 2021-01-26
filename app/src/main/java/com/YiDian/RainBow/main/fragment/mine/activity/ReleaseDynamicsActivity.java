@@ -1,7 +1,5 @@
 package com.YiDian.RainBow.main.fragment.mine.activity;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -17,9 +15,9 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
-import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
+import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
-import com.YiDian.RainBow.main.fragment.mine.adapter.MyDynamicAdapter;
+import com.YiDian.RainBow.main.fragment.mine.adapter.mydynamicviewholder.MyDynamicAdapter;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.YiDian.RainBow.utils.SPUtil;
 import com.google.gson.Gson;
@@ -38,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -66,6 +63,8 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
     List<NewDynamicBean.ObjectBean.ListBean> allList;
     File f = new File(
             "/data/data/com.YiDian.RainBow/shared_prefs/relesedynamic.xml");
+    private CustomDialog dialog;
+
     @Override
     protected int getResId() {
         return R.layout.activity_release_dynameics;
@@ -82,6 +81,9 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
+
+
+        dialog = new CustomDialog(this, "正在加载...");
 
         Gson gson = new Gson();
         List<NewDynamicBean.ObjectBean.ListBean> SpList = new ArrayList<>();
@@ -157,6 +159,7 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
 
     //动态信息填充到列表里面
     public void dogetDynamicById(int page) {
+        dialog.show();
         NetUtils.getInstance().getApis().
                 doGetDynamicByUserid(myId, myId, page, 5).
                 subscribeOn(Schedulers.io()).
@@ -170,6 +173,7 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
 
                     @Override
                     public void onNext(NewDynamicBean newDynamicBean) {
+                        dialog.dismiss();
                         List<NewDynamicBean.ObjectBean.ListBean> list = newDynamicBean.getObject().getList();
 
                         if ( list != null && list.size() > 0) {
@@ -208,9 +212,9 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
                     }
                     @Override
                     public void onError(Throwable e) {
-                        hideDialog();
-                    }
+                        dialog.dismiss();
 
+                    }
                     @Override
                     public void onComplete() {
 

@@ -22,6 +22,8 @@ import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.user.PersonHomeActivity;
 import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.StringUtil;
+import com.YiDian.RainBow.utils.TimeUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
@@ -70,8 +72,13 @@ public class MyLikeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }else{
             ((ViewHolder)holder).tvAutograph.setText("还没有设置签名哦");
         }
+
+        String createTime = bean.getCreateTime();
+        long l = TimeUtil.TimeToLong(createTime);
+        String newChatTime = StringUtil.getNewChatTime(l);
+
         //设置时间
-        ((ViewHolder)holder).tvTime.setText(bean.getCreateTime());
+        ((ViewHolder)holder).tvTime.setText(newChatTime);
 
         //判断角色
         String userRole = bean.getUserRole();

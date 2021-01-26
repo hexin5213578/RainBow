@@ -35,6 +35,7 @@ import com.YiDian.RainBow.base.App;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.feedback.activity.FeedBackActivity;
 import com.YiDian.RainBow.login.bean.ComPleteMsgBean;
 import com.YiDian.RainBow.login.bean.LoginBean;
@@ -130,6 +131,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
     private String nickName;
     private String openId;
     private cn.jpush.im.android.api.model.UserInfo userInfo;
+    private CustomDialog dialog;
 
     @Override
     protected int getResId() {
@@ -139,6 +141,9 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void getData() {
+
+
+        dialog = new CustomDialog(this, "正在登录...");
 
         StatusBarUtil.setTransparentForWindow(LoginActivity.this);
 
@@ -356,6 +361,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                             Request();
                             Toast.makeText(LoginActivity.this, "正在获取当前位置信息，请稍后再试", Toast.LENGTH_SHORT).show();
                         } else {
+                            dialog.show();
                             NetUtils.getInstance().getApis().doPwdLogin(phone, pwd, 1, longitude, latitude)
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
@@ -379,6 +385,8 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                                                     public void gotResult(int i, String s) {
                                                         Log.d("xxx", id+"极光登录状态为" + i + "原因为" + s);
                                                         if (i == 0) {
+
+                                                            dialog.dismiss();
                                                             //记录登录后的信息
                                                             SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_ID, id);
                                                             SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME, object.getNickName());
@@ -444,6 +452,9 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                                                                 startActivity(new Intent(LoginActivity.this, CompleteMsgActivity.class));
                                                                 finish();
                                                             }
+                                                        }else{
+                                                            dialog.dismiss();
+                                                            Toast.makeText(LoginActivity.this, "极光登录失败", Toast.LENGTH_SHORT).show();
                                                         }
                                                     }
                                                 });
@@ -456,6 +467,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
 
                                         @Override
                                         public void onError(Throwable e) {
+                                            dialog.dismiss();
 
                                         }
 
@@ -538,6 +550,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
 
             Log.e("xxx", "openid" + openid1 + "    name" + wechatName + "    头像" + wechatHeadimgurl);
 
+            dialog.show();
             //获取完用户信息调用微信登录接口
             NetUtils.getInstance().getApis().doWechatLogin(2, openid1, longitude, latitude)
                     .subscribeOn(Schedulers.io())
@@ -579,6 +592,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
 
                                                                     @Override
                                                                     public void onNext(ComPleteMsgBean comPleteMsgBean) {
+                                                                        dialog.dismiss();
                                                                         if (comPleteMsgBean.getMsg().equals("数据修改成功！")) {
 
                                                                             SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.IS_LOGIN, "0");
@@ -654,9 +668,15 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                                                             startActivity(new Intent(LoginActivity.this, CompleteMsgActivity.class));
                                                             finish();
                                                         }
+                                                    }else{
+                                                        Toast.makeText(LoginActivity.this, "极光登录失败", Toast.LENGTH_SHORT).show();
+                                                        dialog.dismiss();
                                                     }
                                                 }
                                             });
+                                        }else{
+                                            Toast.makeText(LoginActivity.this, "极光注册失败", Toast.LENGTH_SHORT).show();
+                                            dialog.dismiss();
                                         }
                                     }
                                 });
@@ -666,7 +686,8 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
 
                         @Override
                         public void onError(Throwable e) {
-
+                            dialog.dismiss();
+                            Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
@@ -708,6 +729,8 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
 
             @Override
             public void onError(UiError uiError) {
+                dialog.dismiss();
+                Toast.makeText(LoginActivity.this, "QQ登录失败", Toast.LENGTH_SHORT).show();
                 //登录失败
                 Log.e(TAG, "登录失败" + uiError.errorDetail);
                 Log.e(TAG, "登录失败" + uiError.errorMessage);
@@ -800,6 +823,9 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
 
                     SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME, nickName);
                     SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG, avatar);
+
+
+                    dialog.show();
                     //获取完用户信息调用QQ登录接口
                     NetUtils.getInstance().getApis().doQqLogin(3, openId, longitude, latitude)
                             .subscribeOn(Schedulers.io())
@@ -827,6 +853,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                                                         public void gotResult(int i, String s) {
                                                             Log.d("xxx", id+"极光登录状态为" + i + "原因为" + s);
                                                             if (i == 0) {
+                                                                dialog.dismiss();
 
                                                                 NetUtils.getInstance().getApis()
                                                                         .doComPlteThiredLogin(object.getId(),nickName,avatar)
@@ -910,9 +937,15 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                                                                     startActivity(new Intent(LoginActivity.this, CompleteMsgActivity.class));
                                                                     finish();
                                                                 }
+                                                            }else{
+                                                                dialog.dismiss();
+                                                                Toast.makeText(LoginActivity.this, "极光登录失败", Toast.LENGTH_SHORT).show();
                                                             }
                                                         }
                                                     });
+                                                }else{
+                                                    dialog.dismiss();
+                                                    Toast.makeText(LoginActivity.this, "极光注册失败", Toast.LENGTH_SHORT).show();
                                                 }
                                             }
                                         });
@@ -924,9 +957,9 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
 
                                 @Override
                                 public void onError(Throwable e) {
+                                    dialog.dismiss();
 
                                 }
-
                                 @Override
                                 public void onComplete() {
 

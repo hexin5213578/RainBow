@@ -37,6 +37,7 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.custom.zbar.CaptureActivity;
 import com.YiDian.RainBow.dynamic.bean.SaveMsgSuccessBean;
 import com.YiDian.RainBow.main.fragment.FragmentFind;
@@ -129,6 +130,9 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
 
         //设置别名
         setAlias();
+
+
+
 
 
         boolean ignoringBatteryOptimizations = isIgnoringBatteryOptimizations(MainActivity.this);

@@ -86,6 +86,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.YiDian.RainBow.base.Common.decodeUriAsBitmapFromNet;
+
 public class CollectDynamicAdapter extends RecyclerView.Adapter<CollectViewHolder> {
     private final Activity context;
     private final List<NewDynamicBean.ObjectBean.ListBean> list;
@@ -517,7 +519,8 @@ public class CollectDynamicAdapter extends RecyclerView.Adapter<CollectViewHolde
             //设置播放视频
             String contentImg = list.get(position).getContentImg();
 
-            Bitmap netVideoBitmap = getNetVideoBitmap(contentImg);
+            Bitmap netVideoBitmap = decodeUriAsBitmapFromNet(contentImg+"?vframe/jpg/offset/1/w/480/h/360");
+
             //设置封面
             holder.videoPlayer.loadCoverImage(contentImg, netVideoBitmap);
 
@@ -553,7 +556,8 @@ public class CollectDynamicAdapter extends RecyclerView.Adapter<CollectViewHolde
             //设置播放视频
             String contentImg = list.get(position).getContentImg();
 
-            Bitmap netVideoBitmap = getNetVideoBitmap(contentImg);
+            Bitmap netVideoBitmap = decodeUriAsBitmapFromNet(contentImg+"?vframe/jpg/offset/1/w/480/h/360");
+
             //设置封面
             holder.videoPlayer.loadCoverImage(contentImg, netVideoBitmap);
 
@@ -646,23 +650,6 @@ public class CollectDynamicAdapter extends RecyclerView.Adapter<CollectViewHolde
             }
         });
         show(view);
-    }
-
-    public static Bitmap getNetVideoBitmap(String videoUrl) {
-        Bitmap bitmap = null;
-
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        try {
-            //根据url获取缩略图
-            retriever.setDataSource(videoUrl, new HashMap());
-            //获得第一帧图片
-            bitmap = retriever.getFrameAtTime();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } finally {
-            retriever.release();
-        }
-        return bitmap;
     }
 
     //分享到QQ信息
@@ -880,7 +867,8 @@ public class CollectDynamicAdapter extends RecyclerView.Adapter<CollectViewHolde
                 WXMediaMessage msg = new WXMediaMessage(video);
                 msg.title = userInfo.getNickName() + "的动态";
 
-                Bitmap netVideoBitmap = getNetVideoBitmap(listBean.getContentImg());
+                Bitmap netVideoBitmap = decodeUriAsBitmapFromNet(listBean.getContentImg()+"?vframe/jpg/offset/1/w/480/h/360");
+
                 //设置封面
                 msg.thumbData = getBitmapBytes(netVideoBitmap, false);
 
@@ -902,7 +890,8 @@ public class CollectDynamicAdapter extends RecyclerView.Adapter<CollectViewHolde
                 WXMediaMessage msg = new WXMediaMessage(video);
                 msg.title = userInfo.getNickName() + "的动态";
                 msg.description = listBean.getContentInfo();
-                Bitmap netVideoBitmap = getNetVideoBitmap(listBean.getContentImg());
+                Bitmap netVideoBitmap = decodeUriAsBitmapFromNet(listBean.getContentImg()+"?vframe/jpg/offset/1/w/480/h/360");
+
                 //设置封面
                 msg.thumbData = getBitmapBytes(netVideoBitmap, false);
 
@@ -1006,7 +995,8 @@ public class CollectDynamicAdapter extends RecyclerView.Adapter<CollectViewHolde
                 WXMediaMessage msg = new WXMediaMessage(video);
                 msg.title = userInfo.getNickName() + "的动态";
 
-                Bitmap netVideoBitmap = getNetVideoBitmap(listBean.getContentImg());
+                Bitmap netVideoBitmap = decodeUriAsBitmapFromNet(listBean.getContentImg()+"?vframe/jpg/offset/1/w/480/h/360");
+
                 //设置封面
                 msg.thumbData = getBitmapBytes(netVideoBitmap, false);
 
@@ -1028,7 +1018,8 @@ public class CollectDynamicAdapter extends RecyclerView.Adapter<CollectViewHolde
                 WXMediaMessage msg = new WXMediaMessage(video);
                 msg.title = userInfo.getNickName() + "的动态";
                 msg.description = listBean.getContentInfo();
-                Bitmap netVideoBitmap = getNetVideoBitmap(listBean.getContentImg());
+                Bitmap netVideoBitmap = decodeUriAsBitmapFromNet(listBean.getContentImg()+"?vframe/jpg/offset/1/w/480/h/360");
+
                 //设置封面
                 msg.thumbData = getBitmapBytes(netVideoBitmap, false);
 

@@ -18,6 +18,7 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.main.fragment.find.bean.AllUserInfoBean;
 import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
@@ -69,6 +70,8 @@ public class UserDetailsActivity extends BaseAvtivity implements View.OnClickLis
     private NewDynamicAdapter newDynamicAdapter;
     private Tencent mTencent;
     List<NewDynamicBean.ObjectBean.ListBean> allList;
+    private CustomDialog dialog;
+
     @Override
     protected int getResId() {
         return R.layout.activity_user_details;
@@ -92,6 +95,8 @@ public class UserDetailsActivity extends BaseAvtivity implements View.OnClickLis
         bean = (AllUserInfoBean.ObjectBean.ListBean) intent.getSerializableExtra("bean");
         id = bean.getId();
         userid = Integer.valueOf(Common.getUserId());
+
+        dialog = new CustomDialog(this, "正在加载...");
 
         allList = new ArrayList<>();
         
@@ -167,7 +172,7 @@ public class UserDetailsActivity extends BaseAvtivity implements View.OnClickLis
 
     //获取网络数据
     public void getUserDynamic(int page, int size) {
-        showDialog();
+        dialog.show();
         NetUtils.getInstance().getApis()
                 .doGetDynamicByUserid(id, userid, page, size)
                 .subscribeOn(Schedulers.io())
@@ -180,7 +185,7 @@ public class UserDetailsActivity extends BaseAvtivity implements View.OnClickLis
 
                     @Override
                     public void onNext(NewDynamicBean newDynamicBean) {
-                        hideDialog();
+                        dialog.dismiss();
                         List<NewDynamicBean.ObjectBean.ListBean> list =
                                 newDynamicBean.getObject().getList();
                         if (list.size() > 0 && list != null) {
@@ -190,7 +195,8 @@ public class UserDetailsActivity extends BaseAvtivity implements View.OnClickLis
                             //创建最新动态适配器
                             linearLayoutManager = new LinearLayoutManager(UserDetailsActivity.this, RecyclerView.VERTICAL, false);
                             rcDynamic.setLayoutManager(linearLayoutManager);
-                            newDynamicAdapter = new NewDynamicAdapter(UserDetailsActivity.this, allList, mTencent);
+                            newDynamicAdapter = new NewDynamicAdapter(UserDetailsActivity.this, mTencent);
+                            newDynamicAdapter.setData(allList);
                             rcDynamic.setAdapter(newDynamicAdapter);
                         } else {
                             if(allList.size()>0 && allList!=null){
@@ -207,8 +213,8 @@ public class UserDetailsActivity extends BaseAvtivity implements View.OnClickLis
 
                     @Override
                     public void onError(Throwable e) {
-                        hideDialog();
-                        Toast.makeText(UserDetailsActivity.this, "请求失败", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                        Toast.makeText(UserDetailsActivity.this, "数据请求失败", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

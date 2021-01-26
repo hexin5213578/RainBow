@@ -12,6 +12,7 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.main.fragment.find.adapter.LikeMineAdapter;
 import com.YiDian.RainBow.main.fragment.find.adapter.MyLikeAdapter;
 import com.YiDian.RainBow.main.fragment.find.bean.UserMySeeBean;
@@ -48,6 +49,8 @@ public class LikeMineFragment extends BaseFragment {
     private List<UserMySeeBean.ObjectBean> allList;
     private LinearLayoutManager linearLayoutManager;
     private LikeMineAdapter likeMineAdapter;
+    private CustomDialog dialog;
+
     @Override
     protected void getid(View view) {
 
@@ -67,8 +70,9 @@ public class LikeMineFragment extends BaseFragment {
     protected void getData() {
         allList = new ArrayList<>();
         userid = Integer.valueOf(Common.getUserId());
+        dialog = new CustomDialog(getContext(), "正在加载...");
 
-        getStr(page,size);
+        getStr(page, size);
         isfirst = true;
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
@@ -77,119 +81,120 @@ public class LikeMineFragment extends BaseFragment {
 
                 allList.clear();
 
-                getStr(page,size);
+                getStr(page, size);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
 
                         sv.onFinishFreshAndLoad();
                     }
-                },1000);
+                }, 1000);
             }
 
             @Override
             public void onLoadmore() {
                 page++;
-                getStr(page,size);
+                getStr(page, size);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
 
                         sv.onFinishFreshAndLoad();
                     }
-                },1000);
+                }, 1000);
             }
         });
+
     }
+
     public void getStr(int page, int size) {
-        showDialog();
+        dialog.show();
+        NetUtils.getInstance().getApis()
+                .dogetLikeMine(userid, page, size)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<UserMySeeBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                NetUtils.getInstance().getApis()
-                        .dogetLikeMine(userid, page, size)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<UserMySeeBean>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
+                    }
 
+                    @Override
+                    public void onNext(UserMySeeBean userMySeeBean) {
+                        dialog.dismiss();
+                        List<UserMySeeBean.ObjectBean> list = userMySeeBean.getObject();
+                        if (list.size() > 0 && list != null) {
+                            sv.setVisibility(View.VISIBLE);
+                            rlNodata.setVisibility(View.GONE);
+
+                            sv.setHeader(new AliHeader(getContext()));
+                            allList.addAll(list);
+                            linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+                            rclikeMine.setLayoutManager(linearLayoutManager);
+                            likeMineAdapter = new LikeMineAdapter(getContext(), allList);
+                            rclikeMine.setAdapter(likeMineAdapter);
+                        } else {
+                            if (allList.size() > 0 && allList != null) {
+                                Toast.makeText(getContext(), "没有更多内容了", Toast.LENGTH_SHORT).show();
+
+                            } else {
+                                rlNodata.setVisibility(View.VISIBLE);
+                                sv.setVisibility(View.GONE);
                             }
+                        }
+                        if (list.size() > 8) {
+                            sv.setFooter(new AliFooter(getContext()));
+                        }
+                    }
 
-                            @Override
-                            public void onNext(UserMySeeBean userMySeeBean) {
-                                hideDialog();
-                                List<UserMySeeBean.ObjectBean> list = userMySeeBean.getObject();
-                                if (list.size() > 0 && list != null) {
-                                    sv.setVisibility(View.VISIBLE);
-                                    rlNodata.setVisibility(View.GONE);
+                    @Override
+                    public void onError(Throwable e) {
+                        dialog.dismiss();
 
-                                    sv.setHeader(new AliHeader(getContext()));
-                                    allList.addAll(list);
-                                    linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                                    rclikeMine.setLayoutManager(linearLayoutManager);
-                                    likeMineAdapter = new LikeMineAdapter(getContext(), allList);
-                                    rclikeMine.setAdapter(likeMineAdapter);
-                                }else{
-                                    if(allList.size()>0 && allList!=null){
-                                        Toast.makeText(getContext(), "没有更多内容了", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "请求失败", Toast.LENGTH_SHORT).show();
+                    }
 
-                                    }else{
-                                        rlNodata.setVisibility(View.VISIBLE);
-                                        sv.setVisibility(View.GONE);
-                                    }
-                                }
-                                if(list.size()>14){
-                                    sv.setFooter(new AliFooter(getContext()));
-                                }
-                            }
+                    @Override
+                    public void onComplete() {
 
-                            @Override
-                            public void onError(Throwable e) {
-                                hideDialog();
-                                Toast.makeText(getContext(), "请求失败", Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onComplete() {
-
-                            }
-                        });
-            }
-        }).start();
+                    }
+                });
     }
+
     //接收关注成功 取消关注成功后的处理
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getStr(String str){
-        if(str.equals("喜欢我的刷新界面")){
+    public void getStr(String str) {
+        if (str.equals("喜欢我的刷新界面")) {
             allList.clear();
-            getStr(1,15);
+            getStr(1, 15);
         }
     }
+
     @Override
     public void onResume() {
         super.onResume();
-        if(!EventBus.getDefault().isRegistered(this)){
+        if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
     }
+
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser){
-            if (isfirst){
+        if (isVisibleToUser) {
+            if (isfirst) {
                 allList.clear();
 
-                getStr(1,size);
+                getStr(1, size);
 
             }
         }
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(EventBus.getDefault().isRegistered(this)){
+        if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
     }

@@ -38,7 +38,6 @@ public class Fragmentmeet extends BaseFragment {
     ViewPager vp;
     private List<String> tabs = new ArrayList<>();
     List<Fragment> fragments = new ArrayList<>();
-    private LinearGradient mLinearGradient;
 
     @Override
     protected void getid(View view) {

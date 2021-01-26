@@ -12,12 +12,14 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.customDialog.CustomDialogCleanNotice;
+import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.notice.adapter.ClickNoticeAdapter;
 import com.YiDian.RainBow.notice.bean.CleanNoticeBean;
 import com.YiDian.RainBow.notice.bean.ClickNoticeBean;
@@ -63,6 +65,7 @@ public class ClickNoticeActivity extends BaseAvtivity implements View.OnClickLis
     int size = 15;
     private List<ClickNoticeBean.ObjectBean> allList;
     private ClickNoticeAdapter clickNoticeAdapter;
+    private CustomDialog dialog;
 
     @Override
     protected int getResId() {
@@ -75,14 +78,23 @@ public class ClickNoticeActivity extends BaseAvtivity implements View.OnClickLis
         StatusBarUtil.setGradientColor(ClickNoticeActivity.this,toolbar);
         StatusBarUtil.setDarkMode(ClickNoticeActivity.this);
 
+        //直接取消动画
+        RecyclerView.ItemAnimator animator = rcNotice.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
+
         ivBack.setOnClickListener(this);
         llClear.setOnClickListener(this);
+        dialog = new CustomDialog(this, "正在加载...");
+
 
         allList = new ArrayList<>();
         //获取当前登录的userid
         userid = Integer.valueOf(Common.getUserId());
         //获取数据
         getNotice(page,size);
+
 
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
@@ -206,7 +218,7 @@ public class ClickNoticeActivity extends BaseAvtivity implements View.OnClickLis
     }
     //获取所有点赞通知
     public void getNotice(int page,int size){
-        showDialog();
+        dialog.show();
         NetUtils.getInstance().getApis()
                 .doGetClickNotice(userid,page,size)
                 .subscribeOn(Schedulers.io())
@@ -219,7 +231,7 @@ public class ClickNoticeActivity extends BaseAvtivity implements View.OnClickLis
 
                     @Override
                     public void onNext(ClickNoticeBean clickNoticeBean) {
-                        hideDialog();
+                        dialog.dismiss();
                         List<ClickNoticeBean.ObjectBean> list = clickNoticeBean.getObject();
                         if (list.size()>0 && list!=null){
                             llClear.setEnabled(true);
@@ -252,7 +264,8 @@ public class ClickNoticeActivity extends BaseAvtivity implements View.OnClickLis
 
                     @Override
                     public void onError(Throwable e) {
-                        hideDialog();
+                        dialog.dismiss();
+                        Toast.makeText(ClickNoticeActivity.this, "请求数据失败", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

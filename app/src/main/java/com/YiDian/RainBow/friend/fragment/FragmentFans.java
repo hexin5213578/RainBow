@@ -8,11 +8,13 @@ import android.widget.Toast;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.friend.adapter.ContactAdapter;
 import com.YiDian.RainBow.friend.adapter.MyFansAdapter;
 import com.YiDian.RainBow.friend.bean.FriendBean;
@@ -54,6 +56,7 @@ public class FragmentFans extends BaseFragment {
     File f = new File(
             "/data/data/com.YiDian.RainBow/shared_prefs/fans.xml");
     private List<MyFansBean.ObjectBean.ListBean> spList;
+    private CustomDialog dialog;
 
     @Override
     protected void getid(View view) {
@@ -74,6 +77,15 @@ public class FragmentFans extends BaseFragment {
     protected void getData() {
         userid = Integer.valueOf(Common.getUserId());
         allList = new ArrayList<>();
+        //直接取消动画
+        RecyclerView.ItemAnimator animator = rcFans.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
+
+
+        dialog = new CustomDialog(getContext(), "正在加载...");
+
 
         //进入先展示缓存
         Gson gson = new Gson();
@@ -130,7 +142,7 @@ public class FragmentFans extends BaseFragment {
         });
     }
     public void getMyFans(int page,int size){
-        showDialog();
+        dialog.show();
         NetUtils.getInstance().getApis()
                 .doGetMyFans(userid,page,size)
                 .subscribeOn(Schedulers.io())
@@ -144,7 +156,7 @@ public class FragmentFans extends BaseFragment {
                     @Override
                     public void onNext(MyFansBean myFansBean) {
 
-                        hideDialog();
+                        dialog.dismiss();
 
                         List<MyFansBean.ObjectBean.ListBean> list =
                                 myFansBean.getObject().getList();
@@ -192,7 +204,8 @@ public class FragmentFans extends BaseFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        hideDialog();
+                        dialog.dismiss();
+
                         Toast.makeText(getContext(), "请求数据失败", Toast.LENGTH_SHORT).show();
                     }
 

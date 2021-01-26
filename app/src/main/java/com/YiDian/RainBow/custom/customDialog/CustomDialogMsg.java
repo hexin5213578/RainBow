@@ -16,12 +16,12 @@ import com.YiDian.RainBow.R;
  * @Author:hmy
  * @Description:java类作用描述
  */
-public class CustomDialog extends Dialog {
-    public CustomDialog(Context context) {
+public class CustomDialogMsg extends Dialog {
+    public CustomDialogMsg(Context context) {
         super(context);
     }
 
-    public CustomDialog(Context context, int theme) {
+    public CustomDialogMsg(Context context, int theme) {
         super(context, theme);
     }
 
@@ -119,11 +119,11 @@ public class CustomDialog extends Dialog {
             return this;
         }
 
-        public CustomDialog create() {
+        public CustomDialogMsg create() {
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             // instantiate the dialog with the custom Theme
-            final CustomDialog dialog = new CustomDialog(context, R.style.dialog_custom);
+            final CustomDialogMsg dialog = new CustomDialogMsg(context, R.style.dialog_custom);
             View layout = inflater.inflate(R.layout.dialog_tongyong, null);
             dialog.addContentView(layout, new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));

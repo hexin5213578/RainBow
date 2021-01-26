@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -52,31 +51,25 @@ import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.customDialog.CustomDialogCancleFollow;
 import com.YiDian.RainBow.custom.image.NineGridTestLayout;
+import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.custom.videoplayer.SampleCoverVideo;
 import com.YiDian.RainBow.main.fragment.home.adapter.CommentAdapter;
 import com.YiDian.RainBow.main.fragment.home.bean.CollectDynamicBean;
 import com.YiDian.RainBow.main.fragment.home.bean.CommentBean;
-import com.YiDian.RainBow.main.fragment.home.bean.FirstCommentBean;
 import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
 import com.YiDian.RainBow.main.fragment.home.adapter.TopicsAdapter;
 import com.YiDian.RainBow.main.fragment.home.bean.DianzanBean;
 import com.YiDian.RainBow.main.fragment.home.bean.DynamicDetailsBean;
 import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
-import com.YiDian.RainBow.main.fragment.mine.adapter.MyDraftsAdapter;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.topic.TopicDetailsActivity;
 import com.YiDian.RainBow.user.PersonHomeActivity;
 import com.YiDian.RainBow.utils.KeyBoardUtils;
 import com.YiDian.RainBow.utils.NetUtils;
-import com.YiDian.RainBow.utils.StringUtil;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.leaf.library.StatusBarUtil;
 import com.liaoinstan.springview.container.AliFooter;
@@ -85,16 +78,12 @@ import com.liaoinstan.springview.widget.SpringView;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.tencent.connect.share.QQShare;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
-import com.tencent.mm.opensdk.modelmsg.WXImageObject;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
-import com.tencent.mm.opensdk.modelmsg.WXTextObject;
 import com.tencent.mm.opensdk.modelmsg.WXVideoObject;
 import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
@@ -107,13 +96,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter.getNetVideoBitmap;
+import static com.YiDian.RainBow.base.Common.decodeUriAsBitmapFromNet;
 
 //动态详情页
 public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClickListener {
@@ -211,6 +199,8 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
     private Tencent mTencent;
     String wechatUrl = "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973";
     private List<CommentBean.ObjectBean> AllList = new ArrayList<>();
+    private CustomDialog dialog;
+
     @Override
     protected int getResId() {
         return R.layout.activity_dynamicdetails;
@@ -268,6 +258,8 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
         ivCollection.setOnClickListener(this);
         btConfirm.setOnClickListener(this);
         rlPinglun.setOnClickListener(this);
+
+        dialog = new CustomDialog(this, "正在加载...");
 
         mTencent = Tencent.createInstance("101906973", this);
 
@@ -790,8 +782,8 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                 });
     }
     public void getDetails() {
+        dialog.show();
         //获取指定id下动态的详情
-        showDialog();
         NetUtils.getInstance().getApis()
                 .dogetDynamicDetails(id, userId)
                 .subscribeOn(Schedulers.io())
@@ -805,7 +797,7 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                     @SuppressLint({"ResourceAsColor", "SetTextI18n"})
                     @Override
                     public void onNext(DynamicDetailsBean dynamicDetailsBean) {
-                        hideDialog();
+                        dialog.dismiss();
                         userInfo = dynamicDetailsBean.getObject().getUserInfo();
                         bean = dynamicDetailsBean.getObject();
                         List<DynamicDetailsBean.ObjectBean.TopicsBean> topics =
@@ -820,7 +812,10 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                         if (userRole!=null){
                             if (userRole.equals("保密")) {
                                 tvAge.setVisibility(View.GONE);
-                            }else{
+                            }else  if (userRole.equals("")){
+                                tvAge.setVisibility(View.GONE);
+                            }
+                            else{
                                 tvAge.setText(userInfo.getUserRole());
                             }
                         }else{
@@ -985,7 +980,7 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                             //设置播放视频
                             String contentImg = bean.getContentImg();
 
-                            Bitmap netVideoBitmap = getNetVideoBitmap(contentImg);
+                            Bitmap netVideoBitmap = decodeUriAsBitmapFromNet(contentImg+"?vframe/jpg/offset/1/w/480/h/360");
                             //设置封面
                             videoPlayer1.loadCoverImage(contentImg, netVideoBitmap);
 
@@ -1036,7 +1031,8 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                             //设置播放视频
                             String contentImg = bean.getContentImg();
 
-                            Bitmap netVideoBitmap = getNetVideoBitmap(contentImg);
+                            Bitmap netVideoBitmap = decodeUriAsBitmapFromNet(contentImg+"?vframe/jpg/offset/1/w/480/h/360");
+
                             //设置封面
                             videoPlayer2.loadCoverImage(contentImg, netVideoBitmap);
 
@@ -1074,7 +1070,8 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
 
                     @Override
                     public void onError(Throwable e) {
-                        hideDialog();
+                        dialog.dismiss();
+
                         Toast.makeText(DynamicDetailsActivity.this, "获取数据失败", Toast.LENGTH_SHORT).show();
                     }
 
@@ -1351,7 +1348,8 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                 WXMediaMessage msg = new WXMediaMessage(video);
                 msg.title =userInfo.getNickName()+"的动态";
 
-                Bitmap netVideoBitmap = getNetVideoBitmap(bean.getContentImg());
+                Bitmap netVideoBitmap = decodeUriAsBitmapFromNet(bean.getContentImg()+"?vframe/jpg/offset/1/w/480/h/360");
+
                 //设置封面
                 msg.thumbData =getBitmapBytes(netVideoBitmap, false);
 
@@ -1373,7 +1371,8 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                 WXMediaMessage msg = new WXMediaMessage(video);
                 msg.title =userInfo.getNickName()+"的动态";
                 msg.description= bean.getContentInfo();
-                Bitmap netVideoBitmap = getNetVideoBitmap(bean.getContentImg());
+                Bitmap netVideoBitmap = decodeUriAsBitmapFromNet(bean.getContentImg()+"?vframe/jpg/offset/1/w/480/h/360");
+
                 //设置封面
                 msg.thumbData =getBitmapBytes(netVideoBitmap, false);
 
@@ -1478,7 +1477,8 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                 WXMediaMessage msg = new WXMediaMessage(video);
                 msg.title =userInfo.getNickName()+"的动态";
 
-                Bitmap netVideoBitmap = getNetVideoBitmap(bean.getContentImg());
+                Bitmap netVideoBitmap = decodeUriAsBitmapFromNet(bean.getContentImg()+"?vframe/jpg/offset/1/w/480/h/360");
+
                 //设置封面
                 msg.thumbData =getBitmapBytes(netVideoBitmap, false);
 
@@ -1500,7 +1500,8 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                 WXMediaMessage msg = new WXMediaMessage(video);
                 msg.title =userInfo.getNickName()+"的动态";
                 msg.description= bean.getContentInfo();
-                Bitmap netVideoBitmap = getNetVideoBitmap(bean.getContentImg());
+                Bitmap netVideoBitmap = decodeUriAsBitmapFromNet(bean.getContentImg()+"?vframe/jpg/offset/1/w/480/h/360");
+
                 //设置封面
                 msg.thumbData =getBitmapBytes(netVideoBitmap, false);
 

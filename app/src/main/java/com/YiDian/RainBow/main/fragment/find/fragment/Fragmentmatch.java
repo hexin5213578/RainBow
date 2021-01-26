@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -21,6 +22,7 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.main.fragment.find.activity.UserDetailsActivity;
 import com.YiDian.RainBow.main.fragment.find.adapter.CardsDataAdapter;
 import com.YiDian.RainBow.main.fragment.find.bean.AllUserInfoBean;
@@ -73,6 +75,8 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
     private String role;
     int single = 0;
     boolean isfirst;
+    private CustomDialog dialog;
+    private CustomDialog dialog1;
 
     @Override
     protected void getid(View view) {
@@ -95,8 +99,13 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
         //是否是第一次点击
         isfirst = true;
 
+        dialog1 = new CustomDialog(getContext(), "正在加载...");
+
+        doLocation();
+
         userid = Integer.valueOf(Common.getUserId());
         container.setStackMargin(20);
+
 
         cardsDataAdapter = new CardsDataAdapter(getContext(), R.layout.card_layout);
 
@@ -131,6 +140,10 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
             public void discarded(int i, int i1) {
                 Log.e("xxx", i + "   " + i1);
 
+                if (list.size()-1<14 && i==list.size()-1){
+                    getUserData();
+                }
+
                 if (i % 14 == 0 && DataType) {
                     NetUtils.getInstance().getApis()
                             .doGetAllUserInfo(userid, longitude, latitude, 1, 15)
@@ -157,43 +170,6 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
                                         container.setAdapter(cardsDataAdapter);
                                     }
 
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-
-                                }
-
-                                @Override
-                                public void onComplete() {
-
-                                }
-                            });
-                } else if (i % 14 == 0 && !DataType) {
-                    //获取筛选后的数据
-                    NetUtils.getInstance().getApis().doGetFilterUser(userid, age, distance, single, role, longitude, latitude, 1, 15)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Observer<AllUserInfoBean>() {
-                                @Override
-                                public void onSubscribe(Disposable d) {
-
-                                }
-
-                                @Override
-                                public void onNext(AllUserInfoBean allUserInfoBean) {
-                                    list = allUserInfoBean.getObject().getList();
-
-                                    if (list.size() > 0 && list != null) {
-                                        rlNodata.setVisibility(View.GONE);
-                                        container.setVisibility(View.VISIBLE);
-
-                                        for (int i = 1; i < list.size() - 1; i++) {
-                                            cardsDataAdapter.add(list.get(i));
-                                            Alllist.add(list.get(i));
-                                        }
-                                        container.setAdapter(cardsDataAdapter);
-                                    }
                                 }
 
                                 @Override
@@ -321,51 +297,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
         } else if (isSingle.equals("否")) {
             single = 2;
         }
-        NetUtils.getInstance().getApis().doGetFilterUser(userid, age, distance, single, role, longitude, latitude, 1, 15)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<AllUserInfoBean>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
 
-                    }
-
-                    @Override
-                    public void onNext(AllUserInfoBean allUserInfoBean) {
-                        String msg = allUserInfoBean.getMsg();
-                        if (msg.equals("暂无数据")) {
-                            Alllist.clear();
-
-                            rlNodata.setVisibility(View.VISIBLE);
-                            container.setVisibility(View.GONE);
-                        } else {
-                            if (list.size() > 0 && list != null) {
-                                rlNodata.setVisibility(View.GONE);
-                                container.setVisibility(View.VISIBLE);
-
-                                cardsDataAdapter.clear();
-                                cardsDataAdapter.notifyDataSetChanged();
-
-                                for (int i = 0; i < list.size() - 1; i++) {
-                                    cardsDataAdapter.add(list.get(i));
-                                    Alllist.add(list.get(i));
-                                }
-                                container.setAdapter(cardsDataAdapter);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-        // TODO: 2020/11/18 0018 设置给左滑右滑数据源
     }
 
     public void doLocation() {
@@ -386,7 +318,8 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
         // 在单次定位情况下，定位无论成功与否，都无需调用stopLocation()方法移除请求，定位sdk内部会移除
         //启动定位
         mlocationClient.startLocation();
-        showDialog();
+        dialog = new CustomDialog(getContext(), "正在获取位置信息...");
+        dialog.show();
     }
 
     @Override
@@ -405,8 +338,21 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
                 df.format(date);//定位时间
 
                 Log.d("xxx", "定位成功");
+                dialog.dismiss();
                 getUserData();
             } else {
+                dialog.dismiss();
+                Toast.makeText(getContext(), "获取位置信息失败", Toast.LENGTH_SHORT).show();
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (aMapLocation.getErrorCode()==12){
+                            Request();
+                        }
+                    }
+                },1000);
+
                 //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
                 Log.e("AmapError", "location Error, ErrCode:"
                         + aMapLocation.getErrorCode() + ", errInfo:"
@@ -415,12 +361,40 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
         }
     }
 
+    //安卓10.0定位权限
+    public void Request() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            int request = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
+            if (request != PackageManager.PERMISSION_GRANTED)//缺少权限，进行权限申请
+            {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
+                return;//
+            } else {
 
+            }
+        } else {
 
+        }
+    }
+    //参数 requestCode是我们在申请权限的时候使用的唯一的申请码
+    //String[] permission则是权限列表，一般用不到
+    //int[] grantResults 是用户的操作响应，包含这权限是够请求成功
+    //由于在权限申请的时候，我们就申请了一个权限，所以此处的数组的长度都是1
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 100) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                Toast.makeText(getContext(), "权限申请失败，用户拒绝权限", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("hmy", "onResume");
+        Log.d("hmy", "fragmentmatch的onResume");
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
@@ -436,27 +410,15 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
             EventBus.getDefault().unregister(this);
         }
     }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         Log.d("hmy", "onDestroyView");
     }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getStr(String str) {
-        if (str.equals("重新请求数据")) {
-            if (Alllist.size() > 0 && Alllist != null) {
-
-            } else {
-                doLocation();
-            }
-        }
-    }
-
     //获取用户信息
     public void getUserData() {
         DataType = true;
+        dialog1.show();
         NetUtils.getInstance().getApis()
                 .doGetAllUserInfo(userid, longitude, latitude, 1, 15)
                 .subscribeOn(Schedulers.io())
@@ -469,13 +431,12 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
 
                     @Override
                     public void onNext(AllUserInfoBean allUserInfoBean) {
-                        hideDialog();
+                        dialog1.dismiss();
                         list = allUserInfoBean.getObject().getList();
 
                         if (list.size() > 1 && list != null) {
                             rlNodata.setVisibility(View.GONE);
                             container.setVisibility(View.VISIBLE);
-
 
                             for (int i = 0; i < list.size() - 1; i++) {
                                 cardsDataAdapter.add(list.get(i));
@@ -490,7 +451,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
 
                     @Override
                     public void onError(Throwable e) {
-                        hideDialog();
+                        dialog1.dismiss();
                         Toast.makeText(getContext(), "请求失败", Toast.LENGTH_SHORT).show();
                     }
 

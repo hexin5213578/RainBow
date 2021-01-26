@@ -226,7 +226,9 @@ public class FragmentAttDynamic extends BaseFragment {
                                     //创建最新动态适配器
                                     linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
                                     rcNewDynamic.setLayoutManager(linearLayoutManager);
-                                    newDynamicAdapter = new NewDynamicAdapter(getActivity(), alllist,mTencent);
+                                    newDynamicAdapter = new NewDynamicAdapter(getActivity(),mTencent);
+
+                                    newDynamicAdapter.setData(alllist);
 
                                     newDynamicAdapter.setHasStableIds(true);
 

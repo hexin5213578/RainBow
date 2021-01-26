@@ -12,6 +12,7 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.main.fragment.find.adapter.AllLikeAdapter;
 import com.YiDian.RainBow.main.fragment.find.adapter.MyLikeAdapter;
 import com.YiDian.RainBow.main.fragment.find.bean.AllLikeBean;
@@ -49,6 +50,7 @@ public class AllLikeFragment extends BaseFragment {
     private LinearLayoutManager linearLayoutManager;
     private AllLikeAdapter allLikeAdapter;
     private int userid;
+    private CustomDialog dialog;
 
     @Override
     protected void getid(View view) {
@@ -69,9 +71,10 @@ public class AllLikeFragment extends BaseFragment {
     protected void getData() {
         allList = new ArrayList<>();
         userid = Integer.valueOf(Common.getUserId());
+        dialog = new CustomDialog(getContext(), "正在加载...");
 
         isfirst = true;
-        getStr(page,size);
+        getStr(page, size);
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {
@@ -79,21 +82,21 @@ public class AllLikeFragment extends BaseFragment {
 
                 allList.clear();
 
-                getStr(page,size);
+                getStr(page, size);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
 
                         sv.onFinishFreshAndLoad();
                     }
-                },1000);
+                }, 1000);
             }
 
             @Override
             public void onLoadmore() {
                 page++;
 
-                getStr(page,size);
+                getStr(page, size);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -101,82 +104,79 @@ public class AllLikeFragment extends BaseFragment {
 
                         sv.onFinishFreshAndLoad();
                     }
-                },1000);
+                }, 1000);
             }
         });
     }
 
     public void getStr(int page, int size) {
-        showDialog();
+        dialog.show();
+        NetUtils.getInstance().getApis()
+                .doGetAllLike(userid, page, size)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<AllLikeBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                NetUtils.getInstance().getApis()
-                        .doGetAllLike(userid, page, size)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<AllLikeBean>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
+                    }
 
+                    @Override
+                    public void onNext(AllLikeBean bean) {
+                        dialog.dismiss();
+                        List<AllLikeBean.ObjectBean.ListBean> list = bean.getObject().getList();
+                        if (list.size() > 0 && list != null) {
+                            sv.setVisibility(View.VISIBLE);
+                            rlNodata.setVisibility(View.GONE);
+
+                            sv.setHeader(new AliHeader(getContext()));
+                            allList.addAll(list);
+                            linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+                            rcallLike.setLayoutManager(linearLayoutManager);
+
+                            allLikeAdapter = new AllLikeAdapter(getContext(), allList);
+
+                            rcallLike.setAdapter(allLikeAdapter);
+                        } else {
+                            if (allList.size() > 0 && allList != null) {
+                                Toast.makeText(getContext(), "没有更多内容了", Toast.LENGTH_SHORT).show();
+                            } else {
+                                rlNodata.setVisibility(View.VISIBLE);
+                                sv.setVisibility(View.GONE);
                             }
+                        }
+                        if (list.size() > 14) {
+                            sv.setFooter(new AliFooter(getContext()));
+                        }
+                    }
 
-                            @Override
-                            public void onNext(AllLikeBean bean) {
-                                hideDialog();
-                                List<AllLikeBean.ObjectBean.ListBean> list = bean.getObject().getList();
-                                if (list.size() > 0 && list != null) {
-                                    sv.setVisibility(View.VISIBLE);
-                                    rlNodata.setVisibility(View.GONE);
+                    @Override
+                    public void onError(Throwable e) {
+                        dialog.dismiss();
 
-                                    sv.setHeader(new AliHeader(getContext()));
-                                    allList.addAll(list);
-                                    linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                                    rcallLike.setLayoutManager(linearLayoutManager);
+                        Toast.makeText(getContext(), "请求失败", Toast.LENGTH_SHORT).show();
+                    }
 
-                                    allLikeAdapter = new AllLikeAdapter(getContext(), allList);
+                    @Override
+                    public void onComplete() {
 
-                                    rcallLike.setAdapter(allLikeAdapter);
-                                }else{
-                                    if(allList.size()>0 && allList!=null){
-                                        Toast.makeText(getContext(), "没有更多内容了", Toast.LENGTH_SHORT).show();
-                                    }else{
-                                        rlNodata.setVisibility(View.VISIBLE);
-                                        sv.setVisibility(View.GONE);
-                                    }
-                                }
-                                if(list.size()>14){
-                                    sv.setFooter(new AliFooter(getContext()));
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                hideDialog();
-                                Toast.makeText(getContext(), "请求失败", Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onComplete() {
-
-                            }
-                        });
-            }
-        }).start();
+                    }
+                });
     }
+
     //接收关注成功 取消关注成功后的处理
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getStr(String str){
-        if(str.equals("匹配过的刷新界面")){
+    public void getStr(String str) {
+        if (str.equals("匹配过的刷新界面")) {
             allList.clear();
-            getStr(1,15);
+            getStr(1, 15);
         }
     }
+
     @Override
     public void onResume() {
         super.onResume();
-        if(!EventBus.getDefault().isRegistered(this)){
+        if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
     }
@@ -184,10 +184,10 @@ public class AllLikeFragment extends BaseFragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser){
-            if (isfirst){
+        if (isVisibleToUser) {
+            if (isfirst) {
                 allList.clear();
-                getStr(1,size);
+                getStr(1, size);
 
             }
         }
@@ -196,7 +196,7 @@ public class AllLikeFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(EventBus.getDefault().isRegistered(this)){
+        if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
     }

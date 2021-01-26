@@ -31,12 +31,14 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.viewpager.widget.ViewPager;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.friend.activity.FriendsActivity;
 import com.YiDian.RainBow.login.bean.ComPleteMsgBean;
 import com.YiDian.RainBow.main.fragment.home.adapter.UserDetailsDynamicAdapter;
@@ -155,6 +157,8 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
     private int reciveid = 0;
     private boolean isfollow = false;
     private int selectnum=-1;
+    private CustomDialog dialog;
+
     @Override
     protected int getResId() {
         return R.layout.activity_personhome;
@@ -173,6 +177,12 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
         IvBeijing.setOnClickListener(this);
         btSend.setOnClickListener(this);
         btGuanzhu.setOnClickListener(this);
+
+        //直接取消动画
+        RecyclerView.ItemAnimator animator = rcDynamic.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
 
 
         allList = new ArrayList<>();
@@ -194,6 +204,8 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
         myId = Integer.parseInt(Common.getUserId());
         String myName = Common.getUserName();
+
+        dialog = new CustomDialog(this, "正在加载");
 
         //2标记传入姓名  1标记传入id
         if (flag == 2) {
@@ -345,15 +357,17 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
         if (str.equals("刷新界面")) {
             if (flag == 2) {
                 dogetDynamicByName(page, name);
+                bandpageinfo(myId,name);
             } else {
                 dogetDynamicById(page, thePageuserId);
+                bandpageinfo(myId,thePageuserId);
             }
         }
     }
 
     //动态信息填充到列表里面
     public void dogetDynamicById(int page, int thePageuserId) {
-        showDialog();//显示加载圈
+        dialog.show();
         NetUtils.getInstance().getApis().
                 doGetDynamicByUserid(thePageuserId, myId, page, 5).
                 subscribeOn(Schedulers.io()).
@@ -367,7 +381,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
                     @Override
                     public void onNext(NewDynamicBean newDynamicBean) {
-                        hideDialog();//隐藏加载圈
+                        dialog.dismiss();
                         List<NewDynamicBean.ObjectBean.ListBean> list = newDynamicBean.getObject().getList();
 
                         if (list.size() > 0 && list != null) {
@@ -398,7 +412,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
                     @Override
                     public void onError(Throwable e) {
-                        hideDialog();
+                        dialog.dismiss();
                     }
 
                     @Override
@@ -409,7 +423,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
     }
 
     public void dogetDynamicByName(int page, String name) {
-        showDialog();
+        dialog.show();
         //展示话题
         NetUtils.getInstance().getApis().
                 doGetDynamicByName(name, myId, page, 5).
@@ -424,7 +438,8 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
                     @Override
                     public void onNext(NewDynamicBean newDynamicBean) {
-                        hideDialog();
+                        dialog.dismiss();
+
                         List<NewDynamicBean.ObjectBean.ListBean> list = newDynamicBean.getObject().getList();
 
                         if (list.size() > 0 && list != null) {
@@ -452,7 +467,8 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
                     @Override
                     public void onError(Throwable e) {
-                        hideDialog();
+                        dialog.dismiss();
+
                     }
 
                     @Override
@@ -869,7 +885,8 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
         ButterKnife.bind(this);
     }
     public  void getGiftMsg(){
-        showDialog();
+        dialog.show();
+
         NetUtils.getInstance().getApis()
                 .doGetAllGiftMsg()
                 .subscribeOn(Schedulers.io())
@@ -882,7 +899,8 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
                     @Override
                     public void onNext(GiftMsgBean giftMsgBean) {
-                        hideDialog();
+                        dialog.dismiss();
+
                         if (giftMsgBean.getMsg().equals("查询成功")){
                             list = giftMsgBean.getObject();
                             showSelectGift();
@@ -891,7 +909,8 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
                     @Override
                     public void onError(Throwable e) {
-                        hideDialog();
+                        dialog.dismiss();
+
                         Toast.makeText(PersonHomeActivity.this, "获取礼物列表失败", Toast.LENGTH_SHORT).show();
                     }
 
