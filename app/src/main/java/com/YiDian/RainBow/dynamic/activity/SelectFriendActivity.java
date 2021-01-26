@@ -16,6 +16,7 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.dynamic.adapter.FriendAdapter;
 import com.YiDian.RainBow.dynamic.bean.SaveAiteBean;
 import com.YiDian.RainBow.dynamic.bean.SelectFriendOrGroupBean;
@@ -57,6 +58,7 @@ public class SelectFriendActivity extends BaseAvtivity implements View.OnClickLi
     private List<FriendBean.ObjectBean> list;
     private int userid;
     private List<SelectFriendOrGroupBean.ObjectBean.UserListBean> searchlist;
+    private CustomDialog dialog;
 
     @Override
     protected int getResId() {
@@ -70,6 +72,8 @@ public class SelectFriendActivity extends BaseAvtivity implements View.OnClickLi
         //设置状态栏颜色及字体颜色
         StatusBarUtil.setGradientColor(SelectFriendActivity.this, toolbar);
         StatusBarUtil.setDarkMode(SelectFriendActivity.this);
+
+        dialog = new CustomDialog(this, "正在加载...");
 
         getFriend();
 
@@ -104,7 +108,7 @@ public class SelectFriendActivity extends BaseAvtivity implements View.OnClickLi
 
     public void getFriend() {
         //获取我的好友列表
-        showDialog();
+        dialog.show();
         NetUtils.getInstance().getApis().doGetMyFriend(userid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -116,7 +120,7 @@ public class SelectFriendActivity extends BaseAvtivity implements View.OnClickLi
 
                     @Override
                     public void onNext(FriendBean friendBean) {
-                        hideDialog();
+                        dialog.dismiss();
                         list = friendBean.getObject();
                         if (friendBean.getMsg().equals("查询成功")) {
                             if (list != null && list.size() > 0) {
@@ -144,7 +148,8 @@ public class SelectFriendActivity extends BaseAvtivity implements View.OnClickLi
 
                     @Override
                     public void onError(Throwable e) {
-                        hideDialog();
+                        dialog.dismiss();
+                        Toast.makeText(SelectFriendActivity.this, "数据请求失败", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

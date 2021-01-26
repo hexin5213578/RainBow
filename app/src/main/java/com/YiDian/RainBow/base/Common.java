@@ -2,6 +2,7 @@ package com.YiDian.RainBow.base;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -23,6 +24,11 @@ import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,7 +45,11 @@ import java.util.regex.Pattern;
  * @since 2019/4/1
  */
 public  class Common {
+
     private static final String JG_APP_KEY = "87ce5706efafab51ddd2be08";
+    private static Bitmap bitmap;
+    private static URL fileUrl;
+
     /**
      * 获取token,不为空内种
      *
@@ -234,6 +244,43 @@ public  class Common {
         } finally {
             retriever.release();
         }
+        return bitmap;
+    }
+
+    /**
+     *
+     * @param url
+     * @return  图片路径转bitmap
+     */
+    public static  Bitmap decodeUriAsBitmapFromNet(String url) {
+        bitmap = null;
+        fileUrl = null;
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    fileUrl = new URL(url);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    HttpURLConnection conn = (HttpURLConnection) fileUrl
+                            .openConnection();
+                    conn.setDoInput( true);
+                    conn.connect();
+                    InputStream is = conn.getInputStream();
+
+                    bitmap = BitmapFactory. decodeStream(is);
+
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }).start();
         return bitmap;
     }
 }

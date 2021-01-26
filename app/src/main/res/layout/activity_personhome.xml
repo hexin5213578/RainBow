@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     >
-
     <com.liaoinstan.springview.widget.SpringView
         android:id="@+id/sv"
         android:layout_width="match_parent"
@@ -250,12 +249,14 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rc_dynamic"
                     android:layout_width="match_parent"
+                    android:layout_marginBottom="@dimen/dp_48"
                     android:layout_height="match_parent">
                 </androidx.recyclerview.widget.RecyclerView>
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:id="@+id/rl_nodata"
                     android:visibility="gone"
+                    android:layout_marginBottom="@dimen/dp_48"
                     android:layout_height="@dimen/dp_300">
                     <ImageView
                         android:layout_width="@dimen/dp_153"

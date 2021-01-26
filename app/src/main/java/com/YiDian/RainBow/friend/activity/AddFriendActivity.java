@@ -2,11 +2,11 @@ package com.YiDian.RainBow.friend.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
@@ -22,13 +22,10 @@ import com.YiDian.RainBow.friend.adapter.RecommendGroupAdapter;
 import com.YiDian.RainBow.friend.adapter.RecommendUserAdapter;
 import com.YiDian.RainBow.friend.bean.RecommendGroupBean;
 import com.YiDian.RainBow.friend.bean.RecommendUserBean;
-import com.YiDian.RainBow.main.activity.MainActivity;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.user.PersonHomeActivity;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.leaf.library.StatusBarUtil;
-import com.liaoinstan.springview.container.AliHeader;
-import com.liaoinstan.springview.widget.SpringView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -57,6 +54,10 @@ public class AddFriendActivity extends BaseAvtivity implements View.OnClickListe
     RecyclerView rcRecommendgroup;
     @BindView(R.id.rl_saoyisao)
     RelativeLayout rlSaoyisao;
+    @BindView(R.id.tv1)
+    TextView tv1;
+    @BindView(R.id.tv2)
+    TextView tv2;
     private int userid;
     private Intent intent;
 
@@ -71,7 +72,6 @@ public class AddFriendActivity extends BaseAvtivity implements View.OnClickListe
         StatusBarUtil.setDarkMode(AddFriendActivity.this);
 
         userid = Integer.valueOf(Common.getUserId());
-
 
 
         //获取数据
@@ -127,12 +127,15 @@ public class AddFriendActivity extends BaseAvtivity implements View.OnClickListe
                     @Override
                     public void onNext(RecommendUserBean recommendUserBean) {
                         List<RecommendUserBean.ObjectBean> list = recommendUserBean.getObject();
-                        if (list!=null && list.size()>0){
+                        if (list != null && list.size() > 0) {
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(AddFriendActivity.this, RecyclerView.VERTICAL, false);
                             rcRecommendfriend.setLayoutManager(linearLayoutManager);
 
                             RecommendUserAdapter adapter = new RecommendUserAdapter(AddFriendActivity.this, list);
                             rcRecommendfriend.setAdapter(adapter);
+                        }else{
+                            rcRecommendfriend.setVisibility(View.GONE);
+                            tv1.setVisibility(View.GONE);
                         }
                     }
 
@@ -164,13 +167,16 @@ public class AddFriendActivity extends BaseAvtivity implements View.OnClickListe
                     @Override
                     public void onNext(RecommendGroupBean recommendGroupBean) {
                         List<RecommendGroupBean.ObjectBean> list = recommendGroupBean.getObject();
-                        if (list!=null && list.size()>0){
+                        if (list != null && list.size() > 0) {
                             //创建布局管理器
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(AddFriendActivity.this, RecyclerView.VERTICAL, false);
                             rcRecommendgroup.setLayoutManager(linearLayoutManager);
 
                             RecommendGroupAdapter adapter = new RecommendGroupAdapter(AddFriendActivity.this, list);
                             rcRecommendgroup.setAdapter(adapter);
+                        }else{
+                            rcRecommendgroup.setVisibility(View.GONE);
+                            tv2.setVisibility(View.GONE);
                         }
                     }
 
@@ -195,10 +201,10 @@ public class AddFriendActivity extends BaseAvtivity implements View.OnClickListe
                 break;
             case R.id.ll_tosearch:
                 //跳转到搜索好友页
-                intent = new Intent(AddFriendActivity.this,SearchFriendActivity.class);
+                intent = new Intent(AddFriendActivity.this, SearchFriendActivity.class);
                 startActivity(intent);
                 break;
-                //扫一扫添加好友
+            //扫一扫添加好友
             case R.id.rl_saoyisao:
                 //扫描二维码
                 intent = new Intent(AddFriendActivity.this, CaptureActivity.class);
@@ -234,10 +240,17 @@ public class AddFriendActivity extends BaseAvtivity implements View.OnClickListe
                     saveIntentMsgBean.setFlag(1);
                     intent.putExtra("msg", saveIntentMsgBean);
                     startActivity(intent);
-                }else{
+                } else {
                     Toast.makeText(this, "请扫描用户的二维码", Toast.LENGTH_SHORT).show();
                 }
             }
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }

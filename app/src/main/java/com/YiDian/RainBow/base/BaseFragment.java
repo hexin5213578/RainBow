@@ -30,7 +30,6 @@ import butterknife.Unbinder;
 public abstract class BaseFragment<P extends BasePresenter> extends Fragment implements BaseView {
     private P presenter;
     private Unbinder bind;
-    private Loading_view loading_view;
     //加载的试图
     private View mContentView;
     //三个核心变量
@@ -70,20 +69,6 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
         isViewInit = true;
         loadData();
     }
-    // 展示loading圈
-    public void showDialog() {
-        if(loading_view==null){
-            loading_view = new Loading_view(getContext(), R.style.CustomDialog);
-        }
-        loading_view.show();
-    }
-    //  隐藏loading圈
-    public void hideDialog() {
-        if (loading_view != null && loading_view.isShowing()) {
-            loading_view.dismiss();
-        }
-    }
-
     public P getPresenter() {
         return presenter;
     }

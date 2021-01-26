@@ -20,6 +20,8 @@ import com.YiDian.RainBow.notice.bean.FriendNoticeBean;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.user.PersonHomeActivity;
 import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.StringUtil;
+import com.YiDian.RainBow.utils.TimeUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
@@ -66,7 +68,12 @@ public class FriendNoticeAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         //设置名字
         ((ViewHolder)holder).tvName.setText(listBean.getNickName());
         //设置时间
-        ((ViewHolder)holder).tvTime.setText(listBean.getCreateTime());
+        String createTime = listBean.getCreateTime();
+        long l = TimeUtil.TimeToLong(createTime);
+        String newChatTime = StringUtil.getNewChatTime(l);
+
+        //设置时间
+        ((ViewHolder)holder).tvTime.setText(newChatTime);
 
         //跳转到用户主页
         ((ViewHolder)holder).ivHeadimg.setOnClickListener(new View.OnClickListener() {

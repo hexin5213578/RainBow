@@ -21,6 +21,8 @@ import com.YiDian.RainBow.main.fragment.msg.activity.FriendImActivity;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.user.PersonHomeActivity;
 import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.StringUtil;
+import com.YiDian.RainBow.utils.TimeUtil;
 import com.YiDian.RainBow.utils.Utils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
@@ -73,7 +75,12 @@ public class AllLikeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         }
         //设置时间
-        ((ViewHolder) holder).tvTime.setText(bean.getCreateTime());
+        String createTime = bean.getCreateTime();
+        long l = TimeUtil.TimeToLong(createTime);
+        String newChatTime = StringUtil.getNewChatTime(l);
+
+        //设置时间
+        ((ViewHolder)holder).tvTime.setText(newChatTime);
 
         //判断角色
         String userRole = bean.getUserRole();

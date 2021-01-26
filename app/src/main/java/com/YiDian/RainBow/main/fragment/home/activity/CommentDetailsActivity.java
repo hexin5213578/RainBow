@@ -445,7 +445,6 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
 
                     @Override
                     public void onError(Throwable e) {
-                        hideDialog();
 
                     }
 

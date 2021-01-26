@@ -11,12 +11,14 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.customDialog.CustomDialogCleanNotice;
+import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.notice.adapter.CommentNoticeAdapter;
@@ -69,6 +71,7 @@ public class CommentNoticeActivity extends BaseAvtivity implements View.OnClickL
     private List<CommentNoticeBean.ObjectBean> allList;
     private CommentNoticeAdapter commentNoticeAdapter;
     private LinearLayoutManager linearLayoutManager;
+    private CustomDialog dialog;
 
     @Override
     protected int getResId() {
@@ -85,6 +88,13 @@ public class CommentNoticeActivity extends BaseAvtivity implements View.OnClickL
         userid = Integer.valueOf(Common.getUserId());
         allList = new ArrayList<>();
 
+        //直接取消动画
+        RecyclerView.ItemAnimator animator = rcNotice.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
+
+        dialog = new CustomDialog(this, "正在加载...");
         getNotice(page, size);
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
@@ -207,7 +217,7 @@ public class CommentNoticeActivity extends BaseAvtivity implements View.OnClickL
         });
     }
     public void getNotice(int page, int size){
-        showDialog();
+        dialog.show();
         NetUtils.getInstance().getApis()
                 .doGetContentNotice(userid,page,size)
                 .subscribeOn(Schedulers.io())
@@ -220,7 +230,7 @@ public class CommentNoticeActivity extends BaseAvtivity implements View.OnClickL
 
                     @Override
                     public void onNext(CommentNoticeBean contentNoticeBean) {
-                        hideDialog();
+                        dialog.dismiss();
                         List<CommentNoticeBean.ObjectBean> list = contentNoticeBean.getObject();
                         if(list.size()>0 && list!=null){
                             sv.setHeader(new AliHeader(CommentNoticeActivity.this));
@@ -257,8 +267,9 @@ public class CommentNoticeActivity extends BaseAvtivity implements View.OnClickL
 
                     @Override
                     public void onError(Throwable e) {
-                        hideDialog();
-                        Toast.makeText(CommentNoticeActivity.this, "请求失败", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+
+                        Toast.makeText(CommentNoticeActivity.this, "请求数据失败", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

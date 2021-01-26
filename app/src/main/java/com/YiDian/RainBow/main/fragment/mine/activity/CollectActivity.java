@@ -1,6 +1,5 @@
 package com.YiDian.RainBow.main.fragment.mine.activity;
 
-import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -18,10 +17,7 @@ import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.main.fragment.mine.adapter.CollectDynamicAdapter;
-import com.YiDian.RainBow.main.fragment.mine.adapter.MyDynamicAdapter;
 import com.YiDian.RainBow.utils.NetUtils;
-import com.YiDian.RainBow.utils.SPUtil;
-import com.google.gson.Gson;
 import com.leaf.library.StatusBarUtil;
 import com.liaoinstan.springview.container.AliHeader;
 import com.liaoinstan.springview.widget.SpringView;
@@ -36,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;

@@ -1,4 +1,4 @@
-package com.YiDian.RainBow.main.fragment.mine.adapter;
+package com.YiDian.RainBow.main.fragment.home.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,22 +9,20 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
-import com.YiDian.RainBow.custom.image.NineGridTestLayout;
 import com.YiDian.RainBow.custom.videoplayer.SampleCoverVideo;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MyViewHolder extends RecyclerView.ViewHolder {
+public class ViewHolderVideoAndText extends RecyclerView.ViewHolder {
 
     private  Context context;
     private  View itemView;
 
-    public MyViewHolder(Context context, View itemView) {
+    public ViewHolderVideoAndText(Context context, View itemView) {
         super(itemView);
         this.context = context;
         this.itemView = itemView;
@@ -43,11 +41,12 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
     TextView tvTime;
     @BindView(R.id.isattaction)
     ImageView isattaction;
-    @BindView(R.id.tv_delete)
-    TextView tvDelete;
-    @Nullable
+    @BindView(R.id.tv_guanzhu)
+    TextView tvGuanzhu;
     @BindView(R.id.tv_dynamic_text)
     TextView tvDynamicText;
+    @BindView(R.id.video_player)
+    SampleCoverVideo videoPlayer;
     @BindView(R.id.ll_huati)
     LinearLayout llHuati;
     @BindView(R.id.iv_dianzan)
@@ -72,17 +71,10 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
     TextView tvDistance;
     @BindView(R.id.rl_item)
     RelativeLayout rlItem;
-    @Nullable
-    @BindView(R.id.video_player)
-    SampleCoverVideo videoPlayer;
-    @Nullable
-    @BindView(R.id.rc_image)
-    NineGridTestLayout layout;
-
-    public static MyViewHolder createViewHolder(Context context,
-                                                ViewGroup parent, int layoutId) {
+    public static ViewHolderVideoAndText createViewHolder(Context context,
+                                                          ViewGroup parent, int layoutId) {
         View itemView = LayoutInflater.from(context).inflate(layoutId, parent,
                 false);
-        return new MyViewHolder(context, itemView);
+        return new ViewHolderVideoAndText(context, itemView);
     }
 }

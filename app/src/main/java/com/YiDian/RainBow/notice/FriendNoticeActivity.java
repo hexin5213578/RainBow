@@ -12,12 +12,14 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.customDialog.CustomDialogCleanNotice;
+import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.notice.adapter.FriendNoticeAdapter;
 import com.YiDian.RainBow.notice.bean.CleanNoticeBean;
 import com.YiDian.RainBow.notice.bean.FriendNoticeBean;
@@ -66,6 +68,7 @@ public class FriendNoticeActivity extends BaseAvtivity implements View.OnClickLi
     int page = 1;
     int size = 15;
     private FriendNoticeAdapter friendNoticeAdapter;
+    private CustomDialog dialog;
 
     @Override
     protected int getResId() {
@@ -80,6 +83,13 @@ public class FriendNoticeActivity extends BaseAvtivity implements View.OnClickLi
         ivBack.setOnClickListener(this);
         llClear.setOnClickListener(this);
 
+        //直接取消动画
+        RecyclerView.ItemAnimator animator = rcNotice.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
+
+        dialog = new CustomDialog(this, "正在加载...");
         userid = Integer.valueOf(Common.getUserId());
 
         allList = new ArrayList<>();
@@ -179,7 +189,7 @@ public class FriendNoticeActivity extends BaseAvtivity implements View.OnClickLi
 
     //获取数据
     public void getNotice(int page, int size) {
-        showDialog();
+        dialog.show();
         NetUtils.getInstance().getApis()
                 .doGetFriendNoticeMsg(userid, page, size)
                 .subscribeOn(Schedulers.io())
@@ -192,7 +202,7 @@ public class FriendNoticeActivity extends BaseAvtivity implements View.OnClickLi
 
                     @Override
                     public void onNext(FriendNoticeBean friendNoticeBean) {
-                        hideDialog();
+                        dialog.dismiss();
                         List<FriendNoticeBean.ObjectBean.ListBean> list = friendNoticeBean.getObject().getList();
                         if (list.size() > 0 && list != null) {
                             sv.setHeader(new AliHeader(FriendNoticeActivity.this));
@@ -228,7 +238,8 @@ public class FriendNoticeActivity extends BaseAvtivity implements View.OnClickLi
 
                     @Override
                     public void onError(Throwable e) {
-                        hideDialog();
+                        dialog.dismiss();
+
                         Toast.makeText(FriendNoticeActivity.this, "请求失败", Toast.LENGTH_SHORT).show();
                     }
 

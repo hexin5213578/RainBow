@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.notice.bean.NoticeMsgBean;
+import com.YiDian.RainBow.utils.StringUtil;
+import com.YiDian.RainBow.utils.TimeUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
@@ -50,9 +52,11 @@ public class SystemNoticeAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         ((ViewHolder)holder).tvMsg.setText(bean.getMsgContent());
         //设置时间
         String createTime = bean.getCreateTime();
-        String substring = createTime.substring(0, createTime.length() - 3);
+        long l = TimeUtil.TimeToLong(createTime);
+        String newChatTime = StringUtil.getNewChatTime(l);
 
-        ((ViewHolder)holder).tvTime.setText(substring);
+        //设置时间
+        ((ViewHolder)holder).tvTime.setText(newChatTime);
     }
 
     @Override

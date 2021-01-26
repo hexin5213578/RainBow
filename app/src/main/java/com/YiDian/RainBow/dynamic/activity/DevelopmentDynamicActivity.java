@@ -4,7 +4,6 @@ import android.Manifest;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,7 +18,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
@@ -50,23 +48,19 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
-import com.YiDian.RainBow.custom.customDialog.CustomDialog;
+import com.YiDian.RainBow.custom.customDialog.CustomDialogMsg;
+import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.dynamic.adapter.DevelogmentImgAdapter;
 import com.YiDian.RainBow.dynamic.adapter.HotHuatiAdapter;
 import com.YiDian.RainBow.dynamic.bean.HotTopicBean;
 import com.YiDian.RainBow.dynamic.bean.SaveAiteBean;
 import com.YiDian.RainBow.dynamic.bean.SaveHotHuatiBean;
-import com.YiDian.RainBow.dynamic.bean.SaveMsgSuccessBean;
 import com.YiDian.RainBow.dynamic.bean.SaveWhoCanseeBean;
 import com.YiDian.RainBow.dynamic.bean.WriteDevelopmentBean;
-import com.YiDian.RainBow.feedback.activity.PathUtil;
 import com.YiDian.RainBow.main.fragment.activity.SimplePlayerActivity;
-import com.YiDian.RainBow.remember.bean.RememberPwdBean;
-import com.YiDian.RainBow.utils.Base64;
 import com.YiDian.RainBow.utils.KeyBoardUtils;
 import com.YiDian.RainBow.utils.MD5Utils;
 import com.YiDian.RainBow.utils.NetUtils;
-import com.YiDian.RainBow.utils.SPUtil;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
@@ -79,13 +73,9 @@ import com.hw.videoprocessor.VideoUtil;
 import com.hw.videoprocessor.util.CL;
 import com.jaygoo.widget.RangeSeekBar;
 import com.leaf.library.StatusBarUtil;
-import com.qiniu.android.common.Config;
 import com.qiniu.android.http.ResponseInfo;
-import com.qiniu.android.storage.Configuration;
 import com.qiniu.android.storage.UpCompletionHandler;
-import com.qiniu.android.storage.UpProgressHandler;
 import com.qiniu.android.storage.UploadManager;
-import com.qiniu.android.storage.UploadOptions;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -96,27 +86,14 @@ import org.json.JSONObject;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.crypto.Mac;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.reactivex.Observer;
-import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 
 //发布动态
 public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnClickListener, AMapLocationListener {
@@ -174,7 +151,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
     private DevelogmentImgAdapter develogmentImgAdapter;
     private String filePath;
     private Uri selectedVideoUri;
-    private ProgressDialog progressDialog;
+    private CustomDialog progressDialog;
     //压缩后的视频路径
     private String strUri;
 
@@ -190,6 +167,8 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
     private ArrayList<String> upimg_key_list;
     private Handler handler;
     private static final String serverPath = "http://img.rianbow.cn/";
+    private CustomDialog dialog;
+
     @Override
     protected int getResId() {
         return R.layout.activity_development_dynamic;
@@ -204,10 +183,9 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
         StatusBarUtil.setGradientColor(DevelopmentDynamicActivity.this, toolbar);
         StatusBarUtil.setDarkMode(DevelopmentDynamicActivity.this);
 
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle(null);
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("正在压缩视频，请耐心等待..");
+        progressDialog = new CustomDialog(this,"正在压缩视频...");
+
+        dialog = new CustomDialog(this, "正在发表...");
 
         CL.setLogEnable(true);
         userid = Integer.parseInt(Common.getUserId());
@@ -443,6 +421,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
     }
 
     public void doOkHttp(int userid,String content,String img,Double log,Double lat,int whocansee,int type,int status,String area){
+        dialog.show();
         NetUtils.getInstance().getApis().doWriteDevelopment(userid, content, img, log, lat, whocansee, type, status, area)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -454,7 +433,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
 
                     @Override
                     public void onNext(WriteDevelopmentBean writeDevelopmentBean) {
-                        hideDialog();
+                        dialog.show();
                         Toast.makeText(DevelopmentDynamicActivity.this, "动态发表成功", Toast.LENGTH_SHORT).show();
                         //发表成功退出界面
                         finish();
@@ -463,6 +442,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
 
                     @Override
                     public void onError(Throwable e) {
+                        dialog.show();
 
                     }
 
@@ -474,6 +454,8 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
     }
 
     public void doOkHttpCaogao(int userid,String content,String img,Double log,Double lat,int whocansee,int type,int status,String area){
+        dialog.show();
+
         NetUtils.getInstance().getApis().doWriteDevelopment(userid, content, img, log, lat, whocansee, type, status, area)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -485,13 +467,15 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
 
                     @Override
                     public void onNext(WriteDevelopmentBean writeDevelopmentBean) {
-                        hideDialog();
+                        dialog.show();
+
                         //发表成功退出界面
                         finish();
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        dialog.show();
 
                     }
 
@@ -596,11 +580,10 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
 
                 // TODO: 2020/11/21 0021 判断是否有内容可以保存到草稿箱 有内容保存 无内容直接退出\
                 if(etContent.getText().toString().length()>0 || select.size()>0 || select1.size()>0){
-                    CustomDialog.Builder builder = new CustomDialog.Builder(this);
+                    CustomDialogMsg.Builder builder = new CustomDialogMsg.Builder(this);
                     builder.setPositiveButton("保存", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            showDialog();
                             // TODO: 2020/11/21 0021 获取内容 判断发布类型  1纯文本 2纯图片 3纯视频  21文本加图片 31文本加视频
                             switch (tvWhocansee.getText().toString()) {
                                 case "所有人可见":
@@ -909,8 +892,6 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                 break;
             //发布
             case R.id.tv_release:
-
-                showDialog();
                 // TODO: 2020/11/21 0021 获取内容 判断发布类型  1纯文本 2纯图片 3纯视频  21文本加图片 31文本加视频
                 switch (tvWhocansee.getText().toString()) {
                     case "所有人可见":

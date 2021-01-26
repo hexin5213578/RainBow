@@ -7,11 +7,13 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.friend.adapter.MyFansAdapter;
 import com.YiDian.RainBow.friend.adapter.MyFollowAdapter;
 import com.YiDian.RainBow.friend.bean.MyFansBean;
@@ -53,6 +55,8 @@ public class FragmentFollow extends BaseFragment {
     private List<MyfollowBean.ObjectBean.ListBean> spList;
     File f = new File(
             "/data/data/com.YiDian.RainBow/shared_prefs/follow.xml");
+    private CustomDialog dialog;
+
     @Override
     protected void getid(View view) {
 
@@ -73,6 +77,13 @@ public class FragmentFollow extends BaseFragment {
         userid = Integer.valueOf(Common.getUserId());
         allList = new ArrayList<>();
 
+        //直接取消动画
+        RecyclerView.ItemAnimator animator = rcFollow.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
+
+        dialog = new CustomDialog(getContext(), "正在加载...");
         //进入先展示缓存
         Gson gson = new Gson();
         spList = new ArrayList<>();
@@ -128,7 +139,7 @@ public class FragmentFollow extends BaseFragment {
         });
     }
     public void getMyFollow(int page,int size){
-        showDialog();
+        dialog.show();
         NetUtils.getInstance().getApis()
                 .doGetMyFollow(userid,page,size)
                 .subscribeOn(Schedulers.io())
@@ -142,7 +153,7 @@ public class FragmentFollow extends BaseFragment {
                     @Override
                     public void onNext(MyfollowBean myFollowBean) {
 
-                        hideDialog();
+                        dialog.dismiss();
 
                         List<MyfollowBean.ObjectBean.ListBean> list =
                                 myFollowBean.getObject().getList();
@@ -190,7 +201,7 @@ public class FragmentFollow extends BaseFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        hideDialog();
+                        dialog.dismiss();
                         Toast.makeText(getContext(), "请求数据失败", Toast.LENGTH_SHORT).show();
                     }
 

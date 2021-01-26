@@ -1,9 +1,7 @@
 package com.YiDian.RainBow.main.fragment.mine.activity;
 
-import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -17,9 +15,8 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
-import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
-import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
-import com.YiDian.RainBow.main.fragment.mine.adapter.MyDraftsAdapter;
+import com.YiDian.RainBow.custom.loading.CustomDialog;
+import com.YiDian.RainBow.main.fragment.mine.adapter.draftviewholder.MyDraftsAdapter;
 import com.YiDian.RainBow.main.fragment.mine.bean.SelectAllDraftsBean;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.YiDian.RainBow.utils.SPUtil;
@@ -39,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -65,6 +61,8 @@ public class MydraftActivity extends BaseAvtivity implements View.OnClickListene
     int pagesize = 5;
     File f = new File(
             "/data/data/com.YiDian.RainBow/shared_prefs/drafts.xml");
+    private CustomDialog dialog;
+
     @Override
     protected int getResId() {
         return R.layout.activity_my_draft;
@@ -76,6 +74,7 @@ public class MydraftActivity extends BaseAvtivity implements View.OnClickListene
         StatusBarUtil.setGradientColor(this,toolbar);
         StatusBarUtil.setDarkMode(this);
 
+        dialog = new CustomDialog(this, "正在加载...");
 
         Gson gson = new Gson();
         List<SelectAllDraftsBean.ObjectBean.ListBean> SpList = new ArrayList<>();
@@ -174,7 +173,7 @@ public class MydraftActivity extends BaseAvtivity implements View.OnClickListene
         return null;
     }
     public void getData(int page,int size){
-        showDialog();
+        dialog.show();
         NetUtils.getInstance().getApis()
                 .doGetAllDraftsBy(userid,page,size)
                 .subscribeOn(Schedulers.io())
@@ -187,7 +186,7 @@ public class MydraftActivity extends BaseAvtivity implements View.OnClickListene
 
                     @Override
                     public void onNext(SelectAllDraftsBean selectAllDraftsBean) {
-                        hideDialog();
+                        dialog.dismiss();
                         List<SelectAllDraftsBean.ObjectBean.ListBean> list = selectAllDraftsBean.getObject().getList();
                         if(list.size()>0 && list!=null){
                             AllList.addAll(list);
@@ -233,7 +232,7 @@ public class MydraftActivity extends BaseAvtivity implements View.OnClickListene
                     }
                     @Override
                     public void onError(Throwable e) {
-                        hideDialog();
+                        dialog.dismiss();
                         Toast.makeText(MydraftActivity.this, "请求失败", Toast.LENGTH_SHORT).show();
                     }
 

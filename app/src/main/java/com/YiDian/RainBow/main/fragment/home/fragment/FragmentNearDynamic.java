@@ -71,7 +71,7 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
     private LinearLayoutManager linearLayoutManager;
     private NewDynamicAdapter newDynamicAdapter;
     private List<NewDynamicBean.ObjectBean.ListBean> alllist;
-    int page =1;
+    int page = 1;
     int size = 5;
     private Tencent mTencent;
 
@@ -156,6 +156,7 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
         });
         rcNewDynamic.addOnScrollListener(new RecyclerView.OnScrollListener() {
             int firstVisibleItem, lastVisibleItem;
+
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -164,7 +165,7 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                firstVisibleItem   = linearLayoutManager.findFirstVisibleItemPosition();
+                firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
                 lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
                 //大于0说明有播放
                 if (GSYVideoManager.instance().getPlayPosition() >= 0) {
@@ -176,7 +177,7 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
 
                         //如果滑出去了上面和下面就是否，和今日头条一样
                         //是否全屏
-                        if(!GSYVideoManager.isFullState(getActivity())) {
+                        if (!GSYVideoManager.isFullState(getActivity())) {
                             GSYVideoManager.releaseAllVideos();
                             newDynamicAdapter.notifyItemChanged(position);
                         }
@@ -186,67 +187,65 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
         });
 
     }
+
     //获取数据
-    public void getDynamic(int page,int size){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                NetUtils.getInstance().getApis()
-                        .getNearDynamic(userid,latitude,longitude,page,size)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<NewDynamicBean>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
+    public void getDynamic(int page, int size) {
+        NetUtils.getInstance().getApis()
+                .getNearDynamic(userid, latitude, longitude, page, size)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<NewDynamicBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
+                    }
+
+                    @Override
+                    public void onNext(NewDynamicBean newDynamicBean) {
+                        NewDynamicBean.ObjectBean object = newDynamicBean.getObject();
+                        List<NewDynamicBean.ObjectBean.ListBean> list = object.getList();
+                        if (list != null && list.size() > 0) {
+
+                            alllist.addAll(list);
+                            sv.setVisibility(View.VISIBLE);
+                            noData.setVisibility(View.GONE);
+
+                            sv.setHeader(new AliHeader(getContext()));
+
+                            sv.setFooter(new AliFooter(getContext()));
+                            //创建最新动态适配器
+                            linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+                            rcNewDynamic.setLayoutManager(linearLayoutManager);
+                            newDynamicAdapter = new NewDynamicAdapter(getActivity(), mTencent);
+
+                            newDynamicAdapter.setData(alllist);
+
+                            newDynamicAdapter.setHasStableIds(true);
+
+                            rcNewDynamic.setAdapter(newDynamicAdapter);
+                        } else {
+                            if (alllist != null && alllist.size() > 0) {
+                                //创建最新动态适配器
+                                Toast.makeText(getContext(), "没有更多内容了", Toast.LENGTH_SHORT).show();
+                            } else {
+                                sv.setVisibility(View.GONE);
+                                noData.setVisibility(View.VISIBLE);
                             }
+                        }
+                    }
 
-                            @Override
-                            public void onNext(NewDynamicBean newDynamicBean) {
-                                NewDynamicBean.ObjectBean object = newDynamicBean.getObject();
-                                List<NewDynamicBean.ObjectBean.ListBean> list = object.getList();
-                                if (list.size() > 0 && list != null) {
+                    @Override
+                    public void onError(Throwable e) {
 
-                                    alllist.addAll(list);
-                                    sv.setVisibility(View.VISIBLE);
-                                    noData.setVisibility(View.GONE);
+                    }
 
-                                    sv.setHeader(new AliHeader(getContext()));
+                    @Override
+                    public void onComplete() {
 
-                                    sv.setFooter(new AliFooter(getContext()));
-                                    //创建最新动态适配器
-                                    linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                                    rcNewDynamic.setLayoutManager(linearLayoutManager);
-                                    newDynamicAdapter = new NewDynamicAdapter(getActivity(), alllist,mTencent);
-
-                                    newDynamicAdapter.setHasStableIds(true);
-
-                                    rcNewDynamic.setAdapter(newDynamicAdapter);
-                                } else {
-                                    if (alllist.size() > 0 && alllist != null) {
-                                        //创建最新动态适配器
-                                        Toast.makeText(getContext(), "没有更多内容了", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        sv.setVisibility(View.GONE);
-                                        noData.setVisibility(View.VISIBLE);
-                                    }
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-
-                            }
-
-                            @Override
-                            public void onComplete() {
-
-                            }
-                        });
-            }
-        }).start();
-
+                    }
+                });
     }
+
     public void doLocation() {
         mlocationClient = new AMapLocationClient(getContext());
         //初始化定位参数
@@ -282,7 +281,7 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
                 Date date = new Date(aMapLocation.getTime());
                 df.format(date);//定位时间
                 //获取数据
-                getDynamic(page,size);
+                getDynamic(page, size);
             } else {
                 //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
                 Log.e("AmapError", "location Error, ErrCode:"
@@ -291,6 +290,7 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
             }
         }
     }
+
     @Override
     public void onPause() {
         super.onPause();
@@ -323,11 +323,12 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
             EventBus.getDefault().register(this);
         }
     }
+
     //获取传过来的信息 刷新界面
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getStr(String str) {
         if (str.equals("刷新界面")) {
-            if(alllist!=null && alllist.size()>0){
+            if (alllist != null && alllist.size() > 0) {
                 alllist.clear();
             }
             getDynamic(1, size);

@@ -39,8 +39,6 @@ import butterknife.Unbinder;
 public abstract class BaseAvtivity<P extends BasePresenter> extends AppCompatActivity implements BaseView  {
     private P presenter;
     private Unbinder bind;
-    Dialog mLoadingDialog;
-    private Loading_view loading_view;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,19 +52,6 @@ public abstract class BaseAvtivity<P extends BasePresenter> extends AppCompatAct
         getData();
     }
 
-    // 展示loading圈
-    public void showDialog() {
-        if(loading_view==null){
-            loading_view = new Loading_view(this, R.style.CustomDialog);
-        }
-        loading_view.show();
-    }
-    //  隐藏loading圈
-    public void hideDialog() {
-        if (loading_view != null && loading_view.isShowing()) {
-            loading_view.dismiss();
-        }
-    }
     public P getPresenter() {
         return presenter;
     }
