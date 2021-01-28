@@ -1,8 +1,6 @@
 package com.YiDian.RainBow.main.fragment.msg.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,15 +11,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
+
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
-import com.YiDian.RainBow.custom.customDialog.CustomDialogCleanNotice;
 import com.YiDian.RainBow.main.fragment.msg.bean.ReportActivityBean;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.leaf.library.StatusBarUtil;
+
 import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observer;
@@ -33,6 +33,17 @@ public class ReportActivity extends BaseAvtivity implements View.OnClickListener
     String TAG = "fst";
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
+    @BindView(R.id.ll_back)
+    LinearLayout llBack;
+    @BindView(R.id.tv_commit)
+    TextView tvCommit;
+    @BindView(R.id.rg_group)
+    RadioGroup rgGroup;
+    ArrayList<RadioButton> arraylist;
+    String userId;
+    Integer detailed;
+    String id;
     @BindView(R.id.rb_1)
     RadioButton rb1;
     @BindView(R.id.rb_2)
@@ -47,16 +58,7 @@ public class ReportActivity extends BaseAvtivity implements View.OnClickListener
     RadioButton rb6;
     @BindView(R.id.rb_7)
     RadioButton rb7;
-    @BindView(R.id.ll_back)
-    LinearLayout llBack;
-    @BindView(R.id.tv_commit)
-    TextView tvCommit;
-    @BindView(R.id.rg_group)
-    RadioGroup rgGroup;
-    ArrayList<RadioButton> arraylist;
-    String userId;
-    Integer detailed;
-    String id;
+
     @Override
     protected int getResId() {
         return R.layout.activity_report;
@@ -110,7 +112,7 @@ public class ReportActivity extends BaseAvtivity implements View.OnClickListener
 
                     @Override
                     public void onNext(ReportActivityBean reportActivityBean) {
-                        if(reportActivityBean.getType().equals("OK")){
+                        if (reportActivityBean.getType().equals("OK")) {
                             Toast.makeText(ReportActivity.this, "举报成功", Toast.LENGTH_SHORT).show();
                             finish();
                         }
@@ -128,10 +130,11 @@ public class ReportActivity extends BaseAvtivity implements View.OnClickListener
                     }
                 });
     }
-    public void chacked(RadioButton rb){
-        for(RadioButton r:arraylist){
+
+    public void chacked(RadioButton rb) {
+        for (RadioButton r : arraylist) {
             //Log.d(TAG, "chacked: ---->"+r.isChecked());
-            if(!(r == rb)){
+            if (!(r == rb)) {
                 r.setChecked(false);
             }
         }
@@ -197,5 +200,12 @@ public class ReportActivity extends BaseAvtivity implements View.OnClickListener
                 report();
                 break;
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }

@@ -385,7 +385,6 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                                                     public void gotResult(int i, String s) {
                                                         Log.d("xxx", id+"极光登录状态为" + i + "原因为" + s);
                                                         if (i == 0) {
-
                                                             dialog.dismiss();
                                                             //记录登录后的信息
                                                             SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_ID, id);
@@ -400,7 +399,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                                                             SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.IS_LOGIN, "0");
 
                                                             userInfo.setNickname(object.getNickName());
-
+                                                            Log.d("xxx", id+"---------------准备设置头像----------------");
                                                             //登陆成功设置极光用户名及头像
                                                             JMessageClient.updateMyInfo(cn.jpush.im.android.api.model.UserInfo.Field.nickname,userInfo,new BasicCallback() {
                                                                 @Override
@@ -419,8 +418,10 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                                                                     try {
                                                                         Bitmap bitmap = returnBitMap(object.getHeadImg());
                                                                         String name =  System.currentTimeMillis()+".jpg";
+                                                                        Log.d("xxx", "run:-------> "+bitmap);
                                                                         File file = saveFile(bitmap, name);
                                                                         Log.d("xxx","头像为"+file.toString());
+
                                                                         JMessageClient.updateUserAvatar(file, new BasicCallback() {
                                                                             @Override
                                                                             public void gotResult(int i, String s) {
@@ -1034,7 +1035,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
         }
         File myCaptureFile = new File(path + fileName);
         BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(myCaptureFile));
-        bm.compress(Bitmap.CompressFormat.JPEG, 80, bos);           //报错
+        bm.compress(Bitmap.CompressFormat.JPEG, 80, bos);
         bos.flush();
         bos.close();
         return myCaptureFile;

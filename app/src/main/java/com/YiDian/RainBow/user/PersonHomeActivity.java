@@ -199,9 +199,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
         thePageuserId = msg.getId();
         //接收到的name
         name = msg.getMsg();
-
         sv.setHeader(new AliHeader(this));
-
         myId = Integer.parseInt(Common.getUserId());
         String myName = Common.getUserName();
 

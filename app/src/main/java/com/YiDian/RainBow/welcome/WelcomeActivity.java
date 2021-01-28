@@ -1,10 +1,12 @@
 package com.YiDian.RainBow.welcome;
 
+import android.Manifest;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -33,6 +35,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.agreement.YinsiActivity;
@@ -200,6 +204,41 @@ public class WelcomeActivity extends BaseAvtivity {
             }, 200);
         }
     }
+
+    //安卓6.0请求悬浮弹出框权限
+    public void request(){
+        if(Build.VERSION.SDK_INT==23){
+            //判断是否获得权限
+            //检查是否具有某个权限   checkSelfPermission this上下文    权限类型   成功返回PackageManager.PERMISSION_GRANTED
+            //失败返回     PackageManager#PERMISSION_DENIED
+            int request = ContextCompat.checkSelfPermission(this, Manifest.permission.SYSTEM_ALERT_WINDOW);
+            if(request!=PackageManager.PERMISSION_GRANTED){
+                //准备获取权限
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SYSTEM_ALERT_WINDOW},105);
+                return;
+            }
+
+        }
+    }
+    //申请去权限回调函数
+    //参数 requestCode是我们在申请权限的时候使用的唯一的申请码
+    //String[] permission则是权限列表，一般用不到
+    //int[] grantResults 是用户的操作响应，包含这权限是够请求成功
+    //由于在权限申请的时候，我们就申请了一个权限，所以此处的数组的长度都是1
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode==105){
+            if(grantResults [0]== PackageManager.PERMISSION_GRANTED){
+
+            }else {
+                Toast.makeText(this, "权限申请失败，用户拒绝权限", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+
+    }
+
 
 
     @Override

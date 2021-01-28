@@ -37,7 +37,7 @@ public class GrayService extends Service {
         } else {
             Intent innerIntent = new Intent(this, GrayInnerService.class);
             startService(innerIntent);
-            startForeground(GRAY_SERVICE_ID, new Notification.Builder(this).setChannelId(CHANNEL_ONE_ID).getNotification());
+            startForeground(GRAY_SERVICE_ID, new Notification.Builder(this).setChannelId(CHANNEL_ONE_ID).build());
         }
         return super.onStartCommand(intent, flags, startId);
     }
