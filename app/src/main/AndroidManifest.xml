@@ -367,6 +367,13 @@
             android:name=".friend.activity.FriendsActivity"
             android:screenOrientation="portrait" />
 
+        <!-- 举报界面  -->
+        <activity
+            android:name=".main.fragment.msg.activity.ReportActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+
+
         <!-- 添加好友 -->
         <activity
             android:name=".friend.activity.AddFriendActivity"

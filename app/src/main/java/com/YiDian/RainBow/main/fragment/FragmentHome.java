@@ -14,12 +14,9 @@ import android.widget.RadioGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import com.YiDian.RainBow.R;
@@ -31,10 +28,8 @@ import com.YiDian.RainBow.main.fragment.home.fragment.FragmentAttDynamic;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentHotDynamic;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentNearDynamic;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentNewDynamic;
-import com.YiDian.RainBow.search.SearchActivity;
 import com.leaf.library.StatusBarUtil;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
-import com.tencent.bugly.crashreport.CrashReport;
 
 import java.util.ArrayList;
 import java.util.List;

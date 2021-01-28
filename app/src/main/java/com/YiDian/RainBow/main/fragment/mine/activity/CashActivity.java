@@ -13,6 +13,9 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.leaf.library.StatusBarUtil;
+import com.tencent.bugly.proguard.A;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,6 +42,7 @@ public class CashActivity extends BaseAvtivity implements View.OnClickListener {
     @BindView(R.id.l_return)
     LinearLayout lReturn;
 
+
     @Override
     protected int getResId() {
         return R.layout.activity_cash;
@@ -54,8 +58,6 @@ public class CashActivity extends BaseAvtivity implements View.OnClickListener {
         checkWechat.setOnClickListener(this);
         checkAlipay.setOnClickListener(this);
         tvInputCount.setOnClickListener(this);
-
-
 
     }
 

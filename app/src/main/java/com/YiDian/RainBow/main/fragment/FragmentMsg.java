@@ -214,7 +214,7 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
     public void getImList() {
         //聊天记录
         conversationList = JMessageClient.getConversationList();
-        if (conversationList.size() > 0  && conversationList !=null) {
+        if (conversationList !=null && conversationList.size() > 0) {
             rlNodata.setVisibility(View.GONE);
             sv.setVisibility(View.VISIBLE);
             Log.d("xxx", conversationList.size() + "");

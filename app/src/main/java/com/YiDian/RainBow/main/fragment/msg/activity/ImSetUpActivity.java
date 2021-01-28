@@ -238,7 +238,9 @@ public class ImSetUpActivity extends BaseAvtivity implements View.OnClickListene
                 break;
             //举报
             case R.id.l5:
-
+                Intent intent2 = new Intent(ImSetUpActivity.this, ReportActivity.class);
+                intent2.putExtra("id",id);
+                startActivity(intent2);
                 break;
         }
     }

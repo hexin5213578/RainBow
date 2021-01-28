@@ -41,6 +41,7 @@ import com.YiDian.RainBow.main.fragment.mine.bean.SigninMsgBean;
 import com.YiDian.RainBow.main.fragment.mine.bean.UserInfoById;
 import com.YiDian.RainBow.main.fragment.msg.bean.GiftMsgBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.GlodNumBean;
+import com.YiDian.RainBow.main.fragment.msg.bean.ReportActivityBean;
 import com.YiDian.RainBow.notice.bean.CleanNoticeBean;
 import com.YiDian.RainBow.notice.bean.ClickNoticeBean;
 import com.YiDian.RainBow.notice.bean.CommentNoticeBean;
@@ -437,4 +438,7 @@ public interface Apis {
 
     @GET("content/getContentByTopicTitle")
     Observable<TopicBean>doGetTopicByKey(@Query("userId")int userid,@Query("topicTitle")String title,@Query("page")int page,@Query("pageSize")int size);
+
+    @POST("report/insertReport")
+    Observable<ReportActivityBean>doGetInsertReport(@Query("reportType")Integer reportType, @Query("detailed")Integer detailed, @Query("userId")Integer userId, @Query("beId")Integer beId, @Query("exType")Integer exType);
 }
