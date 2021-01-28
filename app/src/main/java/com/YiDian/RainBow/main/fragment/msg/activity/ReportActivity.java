@@ -10,6 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.widget.Toolbar;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
@@ -70,8 +72,10 @@ public class ReportActivity extends BaseAvtivity implements View.OnClickListener
         rb5.setOnClickListener(this);
         rb6.setOnClickListener(this);
         rb7.setOnClickListener(this);
-        StatusBarUtil.setLightMode(this);
+        tvCommit.setOnClickListener(this);
+        StatusBarUtil.setDarkMode(ReportActivity.this);
         StatusBarUtil.setGradientColor(this, toolbar);
+
         arraylist = new ArrayList<>();
         arraylist.add(rb1);
         arraylist.add(rb2);
@@ -81,7 +85,7 @@ public class ReportActivity extends BaseAvtivity implements View.OnClickListener
         arraylist.add(rb6);
         arraylist.add(rb7);
         userId = Common.getUserId();
-        tvCommit.setEnabled(true);//设置提交按钮不可点击
+        tvCommit.setEnabled(false);//设置提交按钮不可点击
 
         Intent intent = getIntent();
         id = intent.getStringExtra("id");
@@ -91,14 +95,6 @@ public class ReportActivity extends BaseAvtivity implements View.OnClickListener
     @Override
     protected BasePresenter initPresenter() {
         return null;
-    }
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
     }
 
     public void report() {
@@ -115,12 +111,8 @@ public class ReportActivity extends BaseAvtivity implements View.OnClickListener
                     @Override
                     public void onNext(ReportActivityBean reportActivityBean) {
                         if(reportActivityBean.getType().equals("OK")){
-                            CustomDialogCleanNotice.Builder builder = new CustomDialogCleanNotice.Builder(ReportActivity.this);
-                            builder.setMessage("举报成功").setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
+                            Toast.makeText(ReportActivity.this, "举报成功", Toast.LENGTH_SHORT).show();
+                            finish();
                         }
 
                     }
@@ -143,64 +135,62 @@ public class ReportActivity extends BaseAvtivity implements View.OnClickListener
                 r.setChecked(false);
             }
         }
-
     }
 
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.l_black:
+            case R.id.ll_back:
                 finish();
-
                 break;
             case R.id.rb_1:
                 chacked(rb1);
                 detailed = 1;
                 tvCommit.setBackgroundResource(R.drawable.report_jubao_btu2);
-                tvCommit.setEnabled(false);
+                tvCommit.setEnabled(true);
                 tvCommit.setTextColor(this.getResources().getColor(R.color.white));
                 break;
             case R.id.rb_2:
                 chacked(rb2);
                 detailed = 2;
                 tvCommit.setBackgroundResource(R.drawable.report_jubao_btu2);
-                tvCommit.setEnabled(false);
+                tvCommit.setEnabled(true);
                 tvCommit.setTextColor(this.getResources().getColor(R.color.white));
                 break;
             case R.id.rb_3:
                 chacked(rb3);
                 detailed = 3;
                 tvCommit.setBackgroundResource(R.drawable.report_jubao_btu2);
-                tvCommit.setEnabled(false);
+                tvCommit.setEnabled(true);
                 tvCommit.setTextColor(this.getResources().getColor(R.color.white));
                 break;
             case R.id.rb_4:
                 chacked(rb4);
                 detailed = 4;
                 tvCommit.setBackgroundResource(R.drawable.report_jubao_btu2);
-                tvCommit.setEnabled(false);
+                tvCommit.setEnabled(true);
                 tvCommit.setTextColor(this.getResources().getColor(R.color.white));
                 break;
             case R.id.rb_5:
                 chacked(rb5);
                 detailed = 5;
                 tvCommit.setBackgroundResource(R.drawable.report_jubao_btu2);
-                tvCommit.setEnabled(false);
+                tvCommit.setEnabled(true);
                 tvCommit.setTextColor(this.getResources().getColor(R.color.white));
                 break;
             case R.id.rb_6:
                 chacked(rb6);
                 detailed = 6;
                 tvCommit.setBackgroundResource(R.drawable.report_jubao_btu2);
-                tvCommit.setEnabled(false);
+                tvCommit.setEnabled(true);
                 tvCommit.setTextColor(this.getResources().getColor(R.color.white));
                 break;
             case R.id.rb_7:
                 chacked(rb7);
                 detailed = 7;
                 tvCommit.setBackgroundResource(R.drawable.report_jubao_btu2);
-                tvCommit.setEnabled(false);
+                tvCommit.setEnabled(true);
                 tvCommit.setTextColor(this.getResources().getColor(R.color.white));
                 break;
             case R.id.tv_commit:
@@ -208,6 +198,4 @@ public class ReportActivity extends BaseAvtivity implements View.OnClickListener
                 break;
         }
     }
-
-
 }

@@ -70,7 +70,7 @@ public class FragmentAttDynamic extends BaseFragment {
     private LinearLayoutManager linearLayoutManager;
     private List<NewDynamicBean.ObjectBean.ListBean> alllist;
     private int page = 1;
-    private int size = 5;
+    private int size = 15;
     private Tencent mTencent;
     private boolean FirstInit;
     @Override
@@ -199,9 +199,6 @@ public class FragmentAttDynamic extends BaseFragment {
 
     //获取数据
     public void getDynamic(int page,int size){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
                 NetUtils.getInstance().getApis()
                         .getAttDynamic(userid,page,size)
                         .subscribeOn(Schedulers.io())
@@ -242,7 +239,7 @@ public class FragmentAttDynamic extends BaseFragment {
                                         noData.setVisibility(View.VISIBLE);
                                     }
                                 }
-                                if (list.size()>4){
+                                if (list.size()>8){
                                     sv.setFooter(new AliFooter(getContext()));
                                 }
                             }
@@ -257,9 +254,6 @@ public class FragmentAttDynamic extends BaseFragment {
 
                             }
                         });
-            }
-        }).start();
-
     }
     public void getAttUser(){
         //判断有无关注用户

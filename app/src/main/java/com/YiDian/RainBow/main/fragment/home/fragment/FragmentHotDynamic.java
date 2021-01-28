@@ -55,7 +55,7 @@ public class FragmentHotDynamic extends BaseFragment {
     @BindView(R.id.sv)
     SpringView sv;
     int page = 1;
-    int size = 5;
+    int size = 15;
     private int userid;
     private Tencent mTencent;
     private List<NewDynamicBean.ObjectBean.ListBean> alllist;
@@ -230,7 +230,7 @@ public class FragmentHotDynamic extends BaseFragment {
                                         noData.setVisibility(View.VISIBLE);
                                     }
                                 }
-                                if (list.size() > 4) {
+                                if (list.size() > 8) {
                                     sv.setFooter(new AliFooter(getContext()));
                                 }
 

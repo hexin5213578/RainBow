@@ -2,28 +2,26 @@ package com.YiDian.RainBow.main.fragment.msg.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
+import com.YiDian.RainBow.main.fragment.msg.activity.FriendImActivity;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.user.PersonHomeActivity;
 import com.YiDian.RainBow.utils.StringUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
-import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -45,9 +43,10 @@ public class MsgRecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.context = context;
     }
 
-    public void setData(List<Conversation> list){
+    public void setData(List<Conversation> list) {
         this.list = list;
     }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -64,21 +63,21 @@ public class MsgRecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         JMessageClient.getUserInfo(targetId, "87ce5706efafab51ddd2be08", new GetUserInfoCallback() {
             @Override
             public void gotResult(int i, String s, UserInfo userInfo) {
-                if (i==0){
+                if (i == 0) {
                     File avatarFile = userInfo.getAvatarFile();
 
-                    Log.d("xxx","获取用户信息成功,用户头像为"+avatarFile);
+                    Log.d("xxx", "获取用户信息成功,用户头像为" + avatarFile);
                     // TODO: 2021/1/14 0014 头像为空加载默认
-                    if (avatarFile==null){
-                        Glide.with(context).load(R.mipmap.headimg3).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder)holder).ivHeadimg);
-                    }else{
-                        Glide.with(context).load(avatarFile).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder)holder).ivHeadimg);
+                    if (avatarFile == null) {
+                        Glide.with(context).load(R.mipmap.headimg3).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder) holder).ivHeadimg);
+                    } else {
+                        Glide.with(context).load(avatarFile).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder) holder).ivHeadimg);
                     }
                 }
             }
         });
         //跳转到用户信息页
-        ((ViewHolder)holder).ivHeadimg.setOnClickListener(new View.OnClickListener() {
+        ((ViewHolder) holder).ivHeadimg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 conversation = list.get(position);
@@ -88,38 +87,54 @@ public class MsgRecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 saveIntentMsgBean.setId(Integer.parseInt(conversation.getTargetId()));
                 //2标记传入姓名  1标记传入id
                 saveIntentMsgBean.setFlag(1);
-                intent.putExtra("msg",saveIntentMsgBean);
+                intent.putExtra("msg", saveIntentMsgBean);
                 context.startActivity(intent);
             }
         });
-        ((ViewHolder)holder).tvUsername.setText(conversation.getTitle());
-        if (conversation.getLatestType().name().equals("voice")){
-            ((ViewHolder)holder).tvLastMsg.setText("[语音消息]");
+        ((ViewHolder)holder).rlItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: 2021/1/8 0008  跳转至聊天详情页
 
-        }else if (conversation.getLatestType().name().equals("text")){
+                Conversation conversation = list.get(position);
 
-            ((ViewHolder)holder).tvLastMsg.setText(conversation.getLatestText());
-        }else if(conversation.getLatestType().name().equals("image")){
+                //进入会话
+                JMessageClient.enterSingleConversation(conversation.getTargetId());
 
-            ((ViewHolder)holder).tvLastMsg.setText("[图片消息]");
+                //发送到聊天详情页
+                Intent intent = new Intent(context, FriendImActivity.class);
+                intent.putExtra("userid",conversation.getTargetId());
+                context.startActivity(intent);
+            }
+        });
+        ((ViewHolder) holder).tvUsername.setText(conversation.getTitle());
+        if (conversation.getLatestType().name().equals("voice")) {
+            ((ViewHolder) holder).tvLastMsg.setText("[语音消息]");
 
-        }else if(conversation.getLatestType().name().equals("video")){
+        } else if (conversation.getLatestType().name().equals("text")) {
 
-            ((ViewHolder)holder).tvLastMsg.setText("[视频消息]");
+            ((ViewHolder) holder).tvLastMsg.setText(conversation.getLatestText());
+        } else if (conversation.getLatestType().name().equals("image")) {
+
+            ((ViewHolder) holder).tvLastMsg.setText("[图片消息]");
+
+        } else if (conversation.getLatestType().name().equals("video")) {
+
+            ((ViewHolder) holder).tvLastMsg.setText("[视频消息]");
         }
 
         long lastMsgDate = conversation.getLastMsgDate();
 
         String newChatTime = StringUtil.getNewChatTime(lastMsgDate);
 
-        ((ViewHolder)holder).tvTime.setText(newChatTime);
+        ((ViewHolder) holder).tvTime.setText(newChatTime);
 
         //设置未读消息数
         int unReadMsgCnt = conversation.getUnReadMsgCnt();
-        if (unReadMsgCnt==0){
-            ((ViewHolder)holder).weiducount.setVisibility(View.GONE);
-        }else{
-            ((ViewHolder)holder).weiducount.setText(unReadMsgCnt+"");
+        if (unReadMsgCnt == 0) {
+            ((ViewHolder) holder).weiducount.setVisibility(View.GONE);
+        } else {
+            ((ViewHolder) holder).weiducount.setText(unReadMsgCnt + "");
         }
 
     }
@@ -140,9 +155,11 @@ public class MsgRecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         TextView tvTime;
         @BindView(R.id.weiducount)
         TextView weiducount;
+        @BindView(R.id.rl_item)
+        RelativeLayout rlItem;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 }
