@@ -1034,7 +1034,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
         }
         File myCaptureFile = new File(path + fileName);
         BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(myCaptureFile));
-        bm.compress(Bitmap.CompressFormat.JPEG, 80, bos);
+        bm.compress(Bitmap.CompressFormat.JPEG, 80, bos);           //报错
         bos.flush();
         bos.close();
         return myCaptureFile;

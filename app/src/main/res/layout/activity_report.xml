@@ -52,12 +52,6 @@
             android:layout_height="wrap_content"
             >
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_40"
-
-                >
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -66,7 +60,6 @@
                     android:text="广告"
                     android:textColor="#333333"
                     android:textSize="@dimen/sp_15" />
-
                 <RadioButton
                     android:id="@+id/rb_1"
                     android:layout_width="wrap_content"
@@ -81,13 +74,9 @@
                     android:layout_height="@dimen/dp_1"
                     android:layout_alignParentBottom="true"
                     android:background="#f7f7f7" />
-            </RelativeLayout>
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_40"
 
-                >
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -112,12 +101,7 @@
                     android:background="#f7f7f7"
                     android:layout_alignParentBottom="true"
                     />
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_40"
 
-                >
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -142,12 +126,7 @@
                     android:background="#f7f7f7"
                     android:layout_alignParentBottom="true"
                     />
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_40"
 
-                >
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -172,12 +151,7 @@
                     android:background="#f7f7f7"
                     android:layout_alignParentBottom="true"
                     />
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_40"
 
-                >
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -202,12 +176,7 @@
                     android:background="#f7f7f7"
                     android:layout_alignParentBottom="true"
                     />
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_40"
 
-                >
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -232,12 +201,8 @@
                     android:background="#f7f7f7"
                     android:layout_alignParentBottom="true"
                     />
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_40"
 
-                >
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -262,12 +227,7 @@
                     android:background="#f7f7f7"
                     android:layout_alignParentBottom="true"
                     />
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_50"
-                >
+
                 <TextView
                     android:id="@+id/tv_commit"
                     android:gravity="center"
@@ -282,8 +242,6 @@
 
 
 
-
-            </RelativeLayout>
 
 
         </RadioGroup>
