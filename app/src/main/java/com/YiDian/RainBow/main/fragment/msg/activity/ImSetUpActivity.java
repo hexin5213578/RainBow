@@ -66,6 +66,7 @@ public class ImSetUpActivity extends BaseAvtivity implements View.OnClickListene
     private String id;
     private CustomDialogCleanNotice.Builder builder;
     private int userid;
+    private Intent intent;
 
     @Override
     protected int getResId() {
@@ -113,7 +114,7 @@ public class ImSetUpActivity extends BaseAvtivity implements View.OnClickListene
             //跳转到用户主页
             case R.id.l1:
                 //跳转到用户信息页
-                Intent intent = new Intent(ImSetUpActivity.this, PersonHomeActivity.class);
+                intent = new Intent(ImSetUpActivity.this, PersonHomeActivity.class);
                 SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
                 saveIntentMsgBean.setId(Integer.parseInt(id));
                 //2标记传入姓名  1标记传入id
@@ -238,17 +239,10 @@ public class ImSetUpActivity extends BaseAvtivity implements View.OnClickListene
                 break;
             //举报
             case R.id.l5:
-                Intent intent2 = new Intent(ImSetUpActivity.this, ReportActivity.class);
-                intent2.putExtra("id",id);
-                startActivity(intent2);
+                intent = new Intent(ImSetUpActivity.this, ReportActivity.class);
+                intent.putExtra("id",id);
+                startActivity(intent);
                 break;
         }
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
     }
 }

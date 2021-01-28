@@ -181,17 +181,7 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
         rcMsgRecording.setSwipeItemClickListener(new SwipeItemClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
-                // TODO: 2021/1/8 0008  跳转至聊天详情页
 
-                Conversation conversation = conversationList.get(position);
-
-                //进入会话
-                JMessageClient.enterSingleConversation(conversation.getTargetId());
-
-                //发送到聊天详情页
-                Intent intent = new Intent(getContext(), FriendImActivity.class);
-                intent.putExtra("userid",conversation.getTargetId());
-                startActivity(intent);
             }
         });
 
