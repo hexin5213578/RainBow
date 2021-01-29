@@ -186,7 +186,7 @@ public class GoldBalance extends BaseAvtivity implements View.OnClickListener {
                                 rlDefault.setVisibility(View.VISIBLE);
                             }
                         }
-                        if (list.size()>10){
+                        if (list.size()>8){
                             sv.setFooter(new AliFooter(GoldBalance.this));
                         }
                     }

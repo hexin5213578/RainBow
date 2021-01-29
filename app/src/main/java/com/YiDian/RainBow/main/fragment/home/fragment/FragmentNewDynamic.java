@@ -284,7 +284,7 @@ public class FragmentNewDynamic extends BaseFragment {
                                 noData.setVisibility(View.VISIBLE);
                             }
                         }
-                        if (list.size() > 8) {
+                        if (list.size() > 5) {
                             sv.setFooter(new AliFooter(getContext()));
                         }
 

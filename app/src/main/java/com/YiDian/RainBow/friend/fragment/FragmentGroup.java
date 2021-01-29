@@ -57,9 +57,6 @@ public class FragmentGroup extends BaseFragment {
     @BindView(R.id.rl_nodata)
     RelativeLayout rlNodata;
     private int userid;
-    //判断三个列表是否为空
-    int flag = 0;
-    String TAG = "xxx";
 
     @Override
     protected void getid(View view) {
@@ -201,8 +198,6 @@ public class FragmentGroup extends BaseFragment {
                         }else{
                             //显示缺省页
                             rlNodata.setVisibility(View.VISIBLE);
-
-
                         }
 
 

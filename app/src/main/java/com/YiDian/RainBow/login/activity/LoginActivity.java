@@ -132,6 +132,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
     private String openId;
     private cn.jpush.im.android.api.model.UserInfo userInfo;
     private CustomDialog dialog;
+    private Intent intent;
 
     @Override
     protected int getResId() {
@@ -342,7 +343,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                 break;
             case R.id.tv_to_regist:
                 //跳转注册页
-                Intent intent = new Intent(LoginActivity.this, RegistActivity.class);
+                intent = new Intent(LoginActivity.this, RegistActivity.class);
                 startActivity(intent);
                 finish();
                 break;
@@ -446,11 +447,17 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                                                                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                                                     finish();
                                                                 } else {
-                                                                    startActivity(new Intent(LoginActivity.this, CompleteMsgActivity.class));
+                                                                    intent = new Intent(LoginActivity.this, CompleteMsgActivity.class);
+                                                                    intent.putExtra("headimg",object.getHeadImg());
+                                                                    intent.putExtra("name",object.getNickName());
+                                                                    startActivity(intent);
                                                                     finish();
                                                                 }
                                                             }else{
-                                                                startActivity(new Intent(LoginActivity.this, CompleteMsgActivity.class));
+                                                                intent = new Intent(LoginActivity.this, CompleteMsgActivity.class);
+                                                                intent.putExtra("headimg",object.getHeadImg());
+                                                                intent.putExtra("name",object.getNickName());
+                                                                startActivity(intent);
                                                                 finish();
                                                             }
                                                         }else{
@@ -490,7 +497,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                     Request();
                 } else {
                     //注意：此段非必要，如果手机未安装应用则会跳转网页进行授权
-                    if (!hasApp(LoginActivity.this, PACKAGE_QQ)) {
+                    if (!isQQClientAvailable(LoginActivity.this)) {
                         Toast.makeText(LoginActivity.this, "未安装QQ应用",
                                 Toast.LENGTH_SHORT).show();
                         return;
@@ -662,11 +669,17 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                                                                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                                                 finish();
                                                             } else {
-                                                                startActivity(new Intent(LoginActivity.this, CompleteMsgActivity.class));
+                                                                intent = new Intent(LoginActivity.this, CompleteMsgActivity.class);
+                                                                intent.putExtra("headimg",wechatHeadimgurl);
+                                                                intent.putExtra("name",wechatName);
+                                                                startActivity(intent);
                                                                 finish();
                                                             }
                                                         }else{
-                                                            startActivity(new Intent(LoginActivity.this, CompleteMsgActivity.class));
+                                                            intent = new Intent(LoginActivity.this, CompleteMsgActivity.class);
+                                                            intent.putExtra("headimg",wechatHeadimgurl);
+                                                            intent.putExtra("name",wechatName);
+                                                            startActivity(intent);
                                                             finish();
                                                         }
                                                     }else{
@@ -931,11 +944,17 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                                                                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                                                         finish();
                                                                     } else {
-                                                                        startActivity(new Intent(LoginActivity.this, CompleteMsgActivity.class));
+                                                                        intent = new Intent(LoginActivity.this, CompleteMsgActivity.class);
+                                                                        intent.putExtra("headimg",avatar);
+                                                                        intent.putExtra("name",nickName);
+                                                                        startActivity(intent);
                                                                         finish();
                                                                     }
                                                                 }else{
-                                                                    startActivity(new Intent(LoginActivity.this, CompleteMsgActivity.class));
+                                                                    intent = new Intent(LoginActivity.this, CompleteMsgActivity.class);
+                                                                    intent.putExtra("headimg",avatar);
+                                                                    intent.putExtra("name",nickName);
+                                                                    startActivity(intent);
                                                                     finish();
                                                                 }
                                                             }else{
@@ -983,21 +1002,25 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
     }
 
     /**
-     * true 安装了相应包名的app
+     * 判断qq是否可用
+     *
+     * @param context
+     * @return
      */
-    private boolean hasApp(Context context, String packName) {
-        boolean is = false;
-        List<PackageInfo> packages = context.getPackageManager()
-                .getInstalledPackages(0);
-        for (int i = 0; i < packages.size(); i++) {
-            PackageInfo packageInfo = packages.get(i);
-            String packageName = packageInfo.packageName;
-            if (packageName.equals(packName)) {
-                is = true;
+    public static boolean isQQClientAvailable(Context context) {
+        final PackageManager packageManager = context.getPackageManager();
+        List<PackageInfo> pinfo = packageManager.getInstalledPackages(0);
+        if (pinfo != null) {
+            for (int i = 0; i < pinfo.size(); i++) {
+                String pn = pinfo.get(i).packageName;
+                if (pn.equals("com.tencent.mobileqq")) {
+                    return true;
+                }
             }
         }
-        return is;
+        return false;
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

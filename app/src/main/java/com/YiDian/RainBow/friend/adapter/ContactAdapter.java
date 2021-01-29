@@ -117,7 +117,11 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     Glide.with(mContext).load(objectBean.getHeadImg()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ContactHolder) holder).ivimage);
                     //设置签名
                     if (objectBean.getExplains()!=null){
-                        ((ContactHolder) holder).tv_autograph.setText(objectBean.getExplains());
+                        if (objectBean.getExplains().equals("")){
+                            ((ContactHolder) holder).tv_autograph.setText("还没有设置签名哦");
+                        }else{
+                            ((ContactHolder) holder).tv_autograph.setText(objectBean.getExplains());
+                        }
                     }else{
                         ((ContactHolder) holder).tv_autograph.setText("还没有设置签名哦");
                     }

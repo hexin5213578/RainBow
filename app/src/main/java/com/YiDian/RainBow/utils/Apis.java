@@ -111,7 +111,7 @@ public interface Apis {
 
     //完善资料
     @POST("user/updateUserInfo")
-    Observable<ComPleteMsgBean> doComPlteAllMsg(@Query("id")int userid,@Query("nickName")String name,@Query("headImg")String headimg,@Query("birthday")String birthday,@Query("userRole")String role);
+    Observable<ComPleteMsgBean> doComPlteAllMsg(@Query("id")int userid,@Query("nickName")String name,@Query("birthday")String birthday,@Query("userRole")String role);
 
     //完善QQ微信登录信息
     @POST("user/updateUserInfo")
@@ -133,7 +133,11 @@ public interface Apis {
     @POST("user/updateUserInfo")
     Observable<ComPleteMsgBean> doComPleteUserRole(@Query("id")int userid,@Query("userRole")String role);
 
-    //修改用户角色
+    //修改年龄角色
+    @POST("user/updateUserInfo")
+    Observable<ComPleteMsgBean> doComPleteUserAgeAndRole(@Query("id")int userid,@Query("birthday")String birthday,@Query("userRole")String role);
+
+    //修改是否单身
     @POST("user/updateUserInfo")
     Observable<ComPleteMsgBean> doComPleteIsSingle(@Query("id")int userid,@Query("isSingle")int single);
 

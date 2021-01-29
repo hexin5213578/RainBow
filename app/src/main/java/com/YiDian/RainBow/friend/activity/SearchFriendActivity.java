@@ -250,10 +250,7 @@ public class SearchFriendActivity extends BaseAvtivity implements View.OnClickLi
                             l2.setVisibility(View.GONE);
                             rcSearchgroup.setVisibility(View.GONE);
                         }
-
-
-                        if (userList.size() == 0 && groupList.size() == 0) {
-
+                        if (userList!=null && groupList!=null && userList.size() == 0  && groupList.size() == 0) {
                             rlMiddle.setVisibility(View.GONE);
                             rlNodata.setVisibility(View.VISIBLE);
                         }

@@ -213,6 +213,7 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
                             sv.setHeader(new AliHeader(getContext()));
 
                             sv.setFooter(new AliFooter(getContext()));
+
                             //创建最新动态适配器
                             linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
                             rcNewDynamic.setLayoutManager(linearLayoutManager);

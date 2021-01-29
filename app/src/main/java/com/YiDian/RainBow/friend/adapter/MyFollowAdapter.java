@@ -65,8 +65,12 @@ public class MyFollowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         Glide.with(context).load(bean.getHeadImg()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder) holder).ivHeadimg);
         //设置签名
         if (bean.getExplains()!=null){
-            ((ViewHolder)holder).tvAutograph.setText(bean.getExplains());
+            if (bean.getExplains().equals("")){
+                ((ViewHolder)holder).tvAutograph.setText("还没有设置签名哦");
 
+            }else{
+                ((ViewHolder)holder).tvAutograph.setText(bean.getExplains());
+            }
         }else{
             ((ViewHolder)holder).tvAutograph.setText("还没有设置签名哦");
 

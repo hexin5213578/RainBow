@@ -15,7 +15,6 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,13 +29,8 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
-import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -53,7 +47,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
@@ -65,9 +58,6 @@ import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.audiorecord.AudioRecorderButton;
 import com.YiDian.RainBow.custom.loading.CustomDialog;
-import com.YiDian.RainBow.dynamic.activity.DevelopmentDynamicActivity;
-import com.YiDian.RainBow.dynamic.adapter.DevelogmentImgAdapter;
-import com.YiDian.RainBow.friend.activity.FriendsActivity;
 import com.YiDian.RainBow.main.fragment.msg.adapter.FriendImAdapter;
 import com.YiDian.RainBow.main.fragment.msg.adapter.GridViewAdapter;
 import com.YiDian.RainBow.main.fragment.msg.adapter.ViewPagerAdapter;
@@ -84,7 +74,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.dmcbig.mediapicker.PickerActivity;
 import com.dmcbig.mediapicker.PickerConfig;
 import com.dmcbig.mediapicker.entity.Media;
-import com.dmcbig.mediapicker.utils.ScreenUtils;
 import com.leaf.library.StatusBarUtil;
 import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.widget.SpringView;
@@ -99,7 +88,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -113,8 +101,6 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-
-import static android.view.animation.Animation.ABSOLUTE;
 //                       _oo0oo_
 //                      o8888888o
 //                      88" . "88
@@ -195,6 +181,8 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     RelativeLayout rlLayout;
     @BindView(R.id.rl_bottom)
     RelativeLayout rlBottom;
+    @BindView(R.id.tv_qianming)
+    TextView tvQianming;
     private String userName;
     private ArrayList<Media> select;
     private ArrayList<Media> select1;
@@ -220,7 +208,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     /*当前显示的是第几页*/
     private int curIndex = 0;
 
-    private int selectnum=-1;
+    private int selectnum = -1;
     private TextView tv_balance;
     private Animation anim;
     private CustomDialog dialog;
@@ -351,7 +339,6 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
             @Override
             public void onRefresh() {
                 getListFromIm(page, size);
-
                 linearLayoutManager.scrollToPositionWithOffset(page - 5, 0);
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -418,10 +405,10 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
             EventBus.getDefault().unregister(this);
         }
         //界面销毁 销毁播放音频
-        if (mediaPlayer1.isPlaying()){
+        if (mediaPlayer1.isPlaying()) {
             mediaPlayer1.stop();
             mediaPlayer1.release();
-            mediaPlayer1= null;
+            mediaPlayer1 = null;
         }
         GSYVideoManager.releaseAllVideos();
 
@@ -499,10 +486,24 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                                     //设置角色
                                     //判断性别是否保密
                                     String userRole = userInfo.getUserRole();
-                                    if (userRole.equals("保密")) {
-                                        tvRole.setVisibility(View.GONE);
+                                    if (userRole != null) {
+                                        if (userRole.equals("保密")) {
+                                            tvRole.setVisibility(View.GONE);
+                                        } else {
+                                            tvRole.setText(userInfo.getUserRole());
+                                        }
                                     } else {
-                                        tvRole.setText(userInfo.getUserRole());
+                                        tvRole.setVisibility(View.GONE);
+                                    }
+                                    String explains = userInfo.getExplains();
+                                    if (explains!=null){
+                                        if (explains.equals("")){
+                                            tvQianming.setText("还没有设置签名哦");
+                                        }else{
+                                            tvQianming.setText("个性签名:"+explains);
+                                        }
+                                    }else{
+                                        tvQianming.setText("还没有设置签名哦");
                                     }
                                 }
                             }
@@ -539,14 +540,14 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
             public void gotResult(int i, String s) {
                 Log.i("TAG", "register：code：" + i + "  msg：" + s);
                 if (i == 0) {
-                    Log.d("xxx","文本发送成功");
+                    Log.d("xxx", "文本发送成功");
 
                     allList.clear();
                     page = 0;
                     size = 50;
                     getListFromIm(page, size);
                 } else {
-                    Log.d("xxx","文本发送失败");
+                    Log.d("xxx", "文本发送失败");
                 }
             }
         });
@@ -575,14 +576,14 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 public void gotResult(int i, String s) {
                     Log.i("TAG", "register：code：" + i + "  msg：" + s);
                     if (i == 0) {
-                        Log.d("xxx","语音发送成功");
+                        Log.d("xxx", "语音发送成功");
 
                         allList.clear();
                         page = 0;
                         size = 50;
                         getListFromIm(page, size);
                     } else {
-                        Log.d("xxx","语音发送失败");
+                        Log.d("xxx", "语音发送失败");
 
                     }
                 }
@@ -603,11 +604,10 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     }
 
     /**
-     *
      * @param context
-     * @param imageFile  图片路径
+     * @param imageFile 图片路径
      */
-    public void SendImgMessage(Context context,File imageFile){
+    public void SendImgMessage(Context context, File imageFile) {
         try {
             Message message = JMessageClient.createSingleImageMessage(id, Common.get_JG(), imageFile);
 
@@ -616,14 +616,14 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 public void gotResult(int i, String s) {
                     Log.i("TAG", "register：code：" + i + "  msg：" + s);
                     if (i == 0) {
-                        Log.d("xxx","图片发送成功");
+                        Log.d("xxx", "图片发送成功");
 
                         allList.clear();
                         page = 0;
                         size = 50;
                         getListFromIm(page, size);
                     } else {
-                        Log.d("xxx","图片发送失败");
+                        Log.d("xxx", "图片发送失败");
 
                     }
                 }
@@ -642,30 +642,29 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     }
 
     /**
-     *
      * @param context
-     * @param VideoFile  视频文件
-     * @param thumbImage 视频缩略图
+     * @param VideoFile   视频文件
+     * @param thumbImage  视频缩略图
      * @param thumbFormat 缩略图格式
-     * @param duration 时长
+     * @param duration    时长
      */
-    public void SendVideoMessage(Context context, File VideoFile, Bitmap thumbImage, String thumbFormat,int duration){
+    public void SendVideoMessage(Context context, File VideoFile, Bitmap thumbImage, String thumbFormat, int duration) {
         try {
-            Message message = JMessageClient.createSingleVideoMessage(id, Common.get_JG(),thumbImage,thumbFormat, VideoFile,"",duration);
+            Message message = JMessageClient.createSingleVideoMessage(id, Common.get_JG(), thumbImage, thumbFormat, VideoFile, "", duration);
 
             message.setOnSendCompleteCallback(new BasicCallback() {
                 @Override
                 public void gotResult(int i, String s) {
                     Log.i("TAG", "register：code：" + i + "  msg：" + s);
                     if (i == 0) {
-                        Log.d("xxx","视频发送成功");
+                        Log.d("xxx", "视频发送成功");
 
                         allList.clear();
                         page = 0;
                         size = 50;
                         getListFromIm(page, size);
                     } else {
-                        Log.d("xxx","视频发送失败");
+                        Log.d("xxx", "视频发送失败");
 
                     }
                 }
@@ -682,6 +681,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
             e.printStackTrace();
         }
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -693,17 +693,17 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 break;
             case R.id.ll_more:
                 //跳转到设置页
-                intent = new Intent(FriendImActivity.this,ImSetUpActivity.class);
+                intent = new Intent(FriendImActivity.this, ImSetUpActivity.class);
                 File avatarFile = conversation.getAvatarFile();
                 String title = conversation.getTitle();
-                if (avatarFile==null){
-                    intent.putExtra("imgfile","http://img.rianbow.cn/20210113103522202909.png");
-                }else{
-                    intent.putExtra("imgfile",avatarFile.toString());
+                if (avatarFile == null) {
+                    intent.putExtra("imgfile", "http://img.rianbow.cn/20210113103522202909.png");
+                } else {
+                    intent.putExtra("imgfile", avatarFile.toString());
                 }
 
-                intent.putExtra("name",title);
-                intent.putExtra("userid",conversation.getTargetId());
+                intent.putExtra("name", title);
+                intent.putExtra("userid", conversation.getTargetId());
 
                 startActivity(intent);
                 break;
@@ -731,7 +731,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 if (isfirst) {
                     KeyBoardUtils.closeKeyboard(etContent);
                     rlMenu.setVisibility(View.VISIBLE);
-                    if (allList.size()>0){
+                    if (allList.size() > 0) {
                         linearLayoutManager.setStackFromEnd(true);
                         linearLayoutManager.scrollToPositionWithOffset(0, 0);
                     }
@@ -750,8 +750,8 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 {
                     Toast.makeText(this, "相机权限未开启", Toast.LENGTH_SHORT).show();
                 } else {
-                    intent = new Intent(FriendImActivity.this,JCameraViewActivity.class);
-                    intent.putExtra("userid",id);
+                    intent = new Intent(FriendImActivity.this, JCameraViewActivity.class);
+                    intent.putExtra("userid", id);
                     startActivity(intent);
                 }
                 break;
@@ -776,13 +776,15 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getAnim(AnimationDrawable drawable){
+    public void getAnim(AnimationDrawable drawable) {
         animationDrawable = drawable;
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getMedia(MediaPlayer mediaPlayer){
+    public void getMedia(MediaPlayer mediaPlayer) {
         mediaPlayer1 = mediaPlayer;
     }
+
     //安卓10.0定位权限
     public void Request() {
         if (Build.VERSION.SDK_INT >= 23) {
@@ -798,7 +800,8 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
         }
     }
-    public  void getGiftMsg(){
+
+    public void getGiftMsg() {
         dialog.show();
         NetUtils.getInstance().getApis()
                 .doGetAllGiftMsg()
@@ -813,7 +816,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                     @Override
                     public void onNext(GiftMsgBean giftMsgBean) {
                         dialog.dismiss();
-                        if (giftMsgBean.getMsg().equals("查询成功")){
+                        if (giftMsgBean.getMsg().equals("查询成功")) {
                             list = giftMsgBean.getObject();
                             showSelectGift();
                         }
@@ -831,8 +834,9 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                     }
                 });
     }
+
     //获取金币数
-    public void  getGlodNum(){
+    public void getGlodNum() {
         NetUtils.getInstance().getApis()
                 .dogetGldNum(userid)
                 .subscribeOn(Schedulers.io())
@@ -845,8 +849,8 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
                     @Override
                     public void onNext(GlodNumBean glodNumBean) {
-                        if (glodNumBean.getMsg().equals("查询成功")){
-                            tv_balance.setText(glodNumBean.getObject().getGoldAll()+"");
+                        if (glodNumBean.getMsg().equals("查询成功")) {
+                            tv_balance.setText(glodNumBean.getObject().getGoldAll() + "");
                         }
                     }
 
@@ -872,7 +876,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
         vp = view.findViewById(R.id.vp);
         lldot = view.findViewById(R.id.ll_dot);
-        LinearLayout llrecharge= view.findViewById(R.id.ll_recharge);
+        LinearLayout llrecharge = view.findViewById(R.id.ll_recharge);
         RelativeLayout ll_close = view.findViewById(R.id.ll_close);
         ImageView iv_anim = view.findViewById(R.id.iv_anim);
         tv_balance = view.findViewById(R.id.tv_balance);
@@ -887,7 +891,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         inflater = LayoutInflater.from(FriendImActivity.this);
 
         //页面集合
-        List<View> mPagerList= new ArrayList<>();
+        List<View> mPagerList = new ArrayList<>();
         arr = new GridViewAdapter[pageCount];
 
         for (int j = 0; j < pageCount; j++) {
@@ -929,16 +933,16 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
             @Override
             public void onClick(View v) {
                 //送出当前选中的礼物
-                if (selectnum==-1){
+                if (selectnum == -1) {
                     Toast.makeText(FriendImActivity.this, "请先选择礼物", Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
                     GiftMsgBean.ObjectBean giftbean = list.get(selectnum);
-                    Log.d("xxx","当前选中为"+selectnum);
+                    Log.d("xxx", "当前选中为" + selectnum);
 
 
                     //发起赠送礼物的接口
                     NetUtils.getInstance().getApis()
-                            .doSendGift(Integer.parseInt(conversation.getTargetId()),userid,giftbean.getId())
+                            .doSendGift(Integer.parseInt(conversation.getTargetId()), userid, giftbean.getId())
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Observer<InsertRealBean>() {
@@ -949,7 +953,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
                                 @Override
                                 public void onNext(InsertRealBean insertRealBean) {
-                                    if (insertRealBean.getMsg().equals("送出成功")){
+                                    if (insertRealBean.getMsg().equals("送出成功")) {
                                         //送出成功 刷新余额
                                         getGlodNum();
 
@@ -966,7 +970,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                                         Animator2.setInterpolator(new LinearInterpolator());
                                         Animator2.setDuration(1500);
 
-                                        AnimatorSet set=new AnimatorSet();
+                                        AnimatorSet set = new AnimatorSet();
                                         set.play(Animator1).before(Animator2);
 
                                         set.start();
@@ -999,7 +1003,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                                             }
                                         });
                                     }
-                                    if (insertRealBean.getMsg().equals("余额不足")){
+                                    if (insertRealBean.getMsg().equals("余额不足")) {
                                         // TODO: 2021/1/24 0024 接入充值功能提示去充值
                                         Toast.makeText(FriendImActivity.this, "账户余额不足", Toast.LENGTH_SHORT).show();
                                     }
@@ -1048,6 +1052,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         });
         show(view);
     }
+
     /**
      * 设置圆点
      */
@@ -1145,6 +1150,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         });
         show1(view);
     }
+
     public static Bitmap getNetVideoBitmap(String videoUrl) {
         Bitmap bitmap = null;
 
@@ -1163,19 +1169,20 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         }
         return bitmap;
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (data!=null){
+        if (data != null) {
             if (requestCode == 200 && resultCode == PickerConfig.RESULT_CODE) {
 
                 if (data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT).size() > 0) {
                     select1 = data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT);
 
-                    Log.d("xxx","获取到"+select1.size()+"条视频");
+                    Log.d("xxx", "获取到" + select1.size() + "条视频");
                     String path = select1.get(0).path;
-                    Log.d("xxx",select1.get(0).path);
+                    Log.d("xxx", select1.get(0).path);
                     //获取视频缩略图
                     Bitmap netVideoBitmap = getNetVideoBitmap(path);
 
@@ -1185,9 +1192,9 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                     MediaMetadataRetriever retriever = new MediaMetadataRetriever();
                     retriever.setDataSource(path);
                     String time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-                    Log.d("xxx","视频时长为"+Integer.parseInt(time)/1000);
+                    Log.d("xxx", "视频时长为" + Integer.parseInt(time) / 1000);
                     //发送一条视频文件
-                    SendVideoMessage(FriendImActivity.this,file,netVideoBitmap,"mp4", Integer.parseInt(time)/1000);
+                    SendVideoMessage(FriendImActivity.this, file, netVideoBitmap, "mp4", Integer.parseInt(time) / 1000);
                 }
 
             } else if (requestCode == 201 && resultCode == PickerConfig.RESULT_CODE) {
@@ -1195,16 +1202,16 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 if (data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT).size() > 0) {
                     select = data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT);
 
-                    if (select.size()>1){
-                        for (int i =0;i<select.size();i++){
+                    if (select.size() > 1) {
+                        for (int i = 0; i < select.size(); i++) {
                             //发送多张图片
                             File file = new File(select.get(i).path);
-                            SendImgMessage(FriendImActivity.this,file);
+                            SendImgMessage(FriendImActivity.this, file);
                         }
-                    }else{
+                    } else {
                         //发送单张图片
                         File file = new File(select.get(0).path);
-                        SendImgMessage(FriendImActivity.this,file);
+                        SendImgMessage(FriendImActivity.this, file);
                     }
 
                 }
@@ -1256,6 +1263,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         }
         setWindowAlpa(true);
     }
+
     /**
      * 消失PopupWindow
      */
@@ -1263,5 +1271,12 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         if (mPopupWindow1 != null && mPopupWindow1.isShowing()) {
             mPopupWindow1.dismiss();
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }

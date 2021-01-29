@@ -106,10 +106,6 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
     String str = "";
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.tv_jiance)
-    TextView tvJiance;
-    private String headimg;
-    private String username;
     private String path;
     private UploadManager uploadManager;
     private String token;
@@ -120,6 +116,9 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
     private int userid;
     private String time;
     private UserInfo userInfo;
+    private String headimg;
+    private String name;
+    private File file;
 
     @Override
     protected int getResId() {
@@ -133,6 +132,9 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
         StatusBarUtil.setGradientColor(this, toolbar);
         StatusBarUtil.setDarkMode(this);
 
+        Intent intent = getIntent();
+        headimg = intent.getStringExtra("headimg");
+        name = intent.getStringExtra("name");
 
         userInfo = new UserInfo() {
             @Override
@@ -248,12 +250,19 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
                     Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
 
-        //先加载头像
-        headimg = Common.getHeadImg();
-        Glide.with(CompleteMsgActivity.this).load(headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+        if (headimg!=null){
+            //先加载头像
+            Glide.with(CompleteMsgActivity.this).load(headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+        }else {
+            Glide.with(CompleteMsgActivity.this).load(Common.getHeadImg()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
 
-        username = Common.getUserName();
-        etName.setText(username);
+        }
+        if (name!=null){
+            etName.setText(name);
+        }else{
+            etName.setText(Common.getUserName());
+            name = Common.getUserName();
+        }
 
 
         String role = Common.getRole();
@@ -333,74 +342,10 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
                 }
             });
         }
-
-
         tvJumpMain.setOnClickListener(this);
         btconfirm.setOnClickListener(this);
         ivHeadimg.setOnClickListener(this);
-
-
         token = Common.getToken();
-        etName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                isjiance = false;
-            }
-        });
-
-        tvJiance.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String s = etName.getText().toString();
-                if (!TextUtils.isEmpty(s)) {
-                    // TODO: 2021/1/6 0006 检测名称是否存在
-                    NetUtils.getInstance().getApis()
-                            .doCheckName(s)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Observer<CheckNickNameBean>() {
-                                @Override
-                                public void onSubscribe(Disposable d) {
-
-                                }
-
-                                @Override
-                                public void onNext(CheckNickNameBean checkNickNameBean) {
-                                    isjiance = true;
-                                    if (checkNickNameBean.getMsg().equals("用户名已存在！")) {
-                                        Toast.makeText(CompleteMsgActivity.this, "用户名重复 换一个试试吧", Toast.LENGTH_SHORT).show();
-                                        isClick = false;
-                                    } else if (checkNickNameBean.getMsg().equals("用户名可用")) {
-                                        Toast.makeText(CompleteMsgActivity.this, "用户名可用", Toast.LENGTH_SHORT).show();
-                                        isClick = true;
-                                    }
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-
-                                }
-
-                                @Override
-                                public void onComplete() {
-
-                                }
-                            });
-                } else {
-                    Toast.makeText(CompleteMsgActivity.this, "请先输入昵称", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
     }
 
     @Override
@@ -451,20 +396,64 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
                 String name = etName.getText().toString();
                 String birth = tvBirth.getText().toString();
 
-                if (path != null) {
-                    //先发起更换极光的接口
-                    File file = new File(path);
-                    Log.d("xxx", file.getAbsolutePath());
-                    if (isjiance) {
-                        if (isClick) {
-                            JMessageClient.updateUserAvatar(file, new BasicCallback() {
+                if (name.equals(this.name)) {
+                    //没有改变  修改年龄角色
+                    NetUtils.getInstance().getApis()
+                            .doComPleteUserAgeAndRole(userid, birth, str)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Observer<ComPleteMsgBean>() {
                                 @Override
-                                public void gotResult(int i, String s) {
-                                    if (i == 0) {
-                                        Log.d("xxx", "当前登录用户头像设置成功");
+                                public void onSubscribe(Disposable d) {
+
+                                }
+
+                                @Override
+                                public void onNext(ComPleteMsgBean comPleteMsgBean) {
+                                    if (comPleteMsgBean.getMsg().equals("数据修改成功！")) {
+                                        Toast.makeText(CompleteMsgActivity.this, "资料已完善", Toast.LENGTH_SHORT).show();
+                                        //直接跳转到主页
+                                        startActivity(new Intent(CompleteMsgActivity.this, MainActivity.class));
+
+                                        SPUtil.getInstance().saveData(CompleteMsgActivity.this, SPUtil.FILE_NAME, SPUtil.IS_PERFECT, "0");
+
+                                        SPUtil.getInstance().saveData(CompleteMsgActivity.this, SPUtil.FILE_NAME, SPUtil.BIRTHDAY, birth);
+                                        SPUtil.getInstance().saveData(CompleteMsgActivity.this, SPUtil.FILE_NAME, SPUtil.ROLE, str);
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+
+                                }
+                            });
+                } else {
+                    // TODO: 2021/1/6 0006 检测名称是否存在
+                    NetUtils.getInstance().getApis()
+                            .doCheckName(name)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Observer<CheckNickNameBean>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
+
+                                }
+
+                                @Override
+                                public void onNext(CheckNickNameBean checkNickNameBean) {
+                                    if (checkNickNameBean.getMsg().equals("用户名已存在！")) {
+
+                                        Toast.makeText(CompleteMsgActivity.this, "用户名重复 换一个试试吧", Toast.LENGTH_SHORT).show();
+
+                                    } else if (checkNickNameBean.getMsg().equals("用户名可用")) {
                                         //再调用完善信息接口
                                         NetUtils.getInstance().getApis()
-                                                .doComPlteAllMsg(userid, name, url, birth, str)
+                                                .doComPlteAllMsg(userid, name, birth, str)
                                                 .subscribeOn(Schedulers.io())
                                                 .observeOn(AndroidSchedulers.mainThread())
                                                 .subscribe(new Observer<ComPleteMsgBean>() {
@@ -476,11 +465,11 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
                                                     @Override
                                                     public void onNext(ComPleteMsgBean comPleteMsgBean) {
                                                         if (comPleteMsgBean.getMsg().equals("数据修改成功！")) {
+                                                            Toast.makeText(CompleteMsgActivity.this, "资料已完善", Toast.LENGTH_SHORT).show();
 
                                                             SPUtil.getInstance().saveData(CompleteMsgActivity.this, SPUtil.FILE_NAME, SPUtil.IS_PERFECT, "0");
 
                                                             SPUtil.getInstance().saveData(CompleteMsgActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME, name);
-                                                            SPUtil.getInstance().saveData(CompleteMsgActivity.this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG, url);
                                                             SPUtil.getInstance().saveData(CompleteMsgActivity.this, SPUtil.FILE_NAME, SPUtil.BIRTHDAY, birth);
                                                             SPUtil.getInstance().saveData(CompleteMsgActivity.this, SPUtil.FILE_NAME, SPUtil.ROLE, str);
 
@@ -500,19 +489,6 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
                                                                     }
                                                                 }
                                                             });
-
-
-                                                            File file = new File(path);
-                                                            JMessageClient.updateUserAvatar(file, new BasicCallback() {
-                                                                @Override
-                                                                public void gotResult(int i, String s) {
-                                                                    if (i == 0) {
-                                                                        Log.d("xxx", "当前登录用户头像设置成功");
-                                                                    } else {
-                                                                        Log.d("xxx", s);
-                                                                    }
-                                                                }
-                                                            });
                                                         }
                                                     }
 
@@ -526,21 +502,24 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
 
                                                     }
                                                 });
-                                    } else {
-                                        Log.d("xxx", s);
+
                                     }
                                 }
-                            });
 
-                        } else {
-                            Toast.makeText(this, "名称不可用，请换一个试试吧", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(this, "请先检测昵称是否可用", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(this, "请选择要更换的头像", Toast.LENGTH_SHORT).show();
+                                @Override
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+
+                                }
+                            });
                 }
+
+
+
                 break;
         }
     }
@@ -555,7 +534,6 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
                 path = paths.get(0);
                 Glide.with(CompleteMsgActivity.this).load(path).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
 
-
                 //上传至七牛云
                 // 图片上传到七牛 重用 uploadManager。一般地，只需要创建一个 uploadManager 对象
                 uploadManager = new UploadManager();
@@ -563,7 +541,7 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
                 // 设置名字
                 String s = MD5Utils.string2Md5_16(path);
 
-                File file = new File(path);
+                file = new File(path);
                 String key = s + sdf.format(new Date()) + ".jpg";
                 uploadManager.put(file, key, token,
                         new UpCompletionHandler() {
@@ -588,6 +566,49 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
                             }
                         }, null);
             }
+
+            JMessageClient.updateUserAvatar(file, new BasicCallback() {
+                @Override
+                public void gotResult(int i, String s) {
+                    if (i == 0) {
+                        Log.d("xxx", "当前登录用户头像设置成功");
+                    } else {
+                        Log.d("xxx", s);
+                    }
+                }
+            });
+
+            //修改头像
+            NetUtils.getInstance().getApis()
+                    .doComPleteHeadImg(userid, url)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<ComPleteMsgBean>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(ComPleteMsgBean comPleteMsgBean) {
+                            Toast.makeText(CompleteMsgActivity.this, "头像修改成功", Toast.LENGTH_SHORT).show();
+
+
+                            SPUtil.getInstance().saveData(CompleteMsgActivity.this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG, url);
+
+                            SPUtil.getInstance().saveData(CompleteMsgActivity.this, SPUtil.FILE_NAME, SPUtil.IS_PERFECT, "0");
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
         }
     }
 }

@@ -236,6 +236,7 @@ public class UserDetailsDynamicAdapter extends RecyclerView.Adapter<RecyclerView
         }else if (holder instanceof ViewHolderVideoAndText){
             viewHolderVideoAndText = (ViewHolderVideoAndText) holder;
 
+            setData4(viewHolderVideoAndText,position);
             //设置文本
             //获取文本内容
             String contentInfo = listBean.getContentInfo();
@@ -924,26 +925,6 @@ public class UserDetailsDynamicAdapter extends RecyclerView.Adapter<RecyclerView
                 }
             }
         });
-        //跳转到用户信息页
-        holder.ivHeadimg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isget) {
-
-                } else {
-                    listBean = list.get(position);
-
-                    Intent intent = new Intent(context, PersonHomeActivity.class);
-                    SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
-                    saveIntentMsgBean.setId(listBean.getUserId());
-                    //2标记传入姓名  1标记传入id
-                    saveIntentMsgBean.setFlag(1);
-                    intent.putExtra("msg", saveIntentMsgBean);
-                    context.startActivity(intent);
-                }
-            }
-        });
-
         userInfo = list.get(position).getUserInfo();
         //设置用户名
         holder.tvUsername.setText(userInfo.getNickName());
@@ -1316,26 +1297,6 @@ public class UserDetailsDynamicAdapter extends RecyclerView.Adapter<RecyclerView
                 }
             }
         });
-        //跳转到用户信息页
-        holder.ivHeadimg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isget) {
-
-                } else {
-                    listBean = list.get(position);
-
-                    Intent intent = new Intent(context, PersonHomeActivity.class);
-                    SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
-                    saveIntentMsgBean.setId(listBean.getUserId());
-                    //2标记传入姓名  1标记传入id
-                    saveIntentMsgBean.setFlag(1);
-                    intent.putExtra("msg", saveIntentMsgBean);
-                    context.startActivity(intent);
-                }
-            }
-        });
-
         userInfo = list.get(position).getUserInfo();
         //设置用户名
         holder.tvUsername.setText(userInfo.getNickName());
@@ -2100,25 +2061,6 @@ public class UserDetailsDynamicAdapter extends RecyclerView.Adapter<RecyclerView
                 }
             }
         });
-        //跳转到用户信息页
-        holder.ivHeadimg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isget) {
-
-                } else {
-                    listBean = list.get(position);
-
-                    Intent intent = new Intent(context, PersonHomeActivity.class);
-                    SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
-                    saveIntentMsgBean.setId(listBean.getUserId());
-                    //2标记传入姓名  1标记传入id
-                    saveIntentMsgBean.setFlag(1);
-                    intent.putExtra("msg", saveIntentMsgBean);
-                    context.startActivity(intent);
-                }
-            }
-        });
 
         userInfo = list.get(position).getUserInfo();
         //设置用户名
@@ -2488,25 +2430,6 @@ public class UserDetailsDynamicAdapter extends RecyclerView.Adapter<RecyclerView
 
                     Intent intent = new Intent(context, DynamicDetailsActivity.class);
                     intent.putExtra("id", id);
-                    context.startActivity(intent);
-                }
-            }
-        });
-        //跳转到用户信息页
-        holder.ivHeadimg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isget) {
-
-                } else {
-                    listBean = list.get(position);
-
-                    Intent intent = new Intent(context, PersonHomeActivity.class);
-                    SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
-                    saveIntentMsgBean.setId(listBean.getUserId());
-                    //2标记传入姓名  1标记传入id
-                    saveIntentMsgBean.setFlag(1);
-                    intent.putExtra("msg", saveIntentMsgBean);
                     context.startActivity(intent);
                 }
             }

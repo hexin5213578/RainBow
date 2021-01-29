@@ -101,7 +101,7 @@
             android:id="@+id/tv_username"
             android:textStyle="bold"
             android:layout_marginTop="@dimen/dp_27"
-            android:layout_height="@dimen/dp_18">
+            android:layout_height="wrap_content">
         </TextView>
 
             <TextView

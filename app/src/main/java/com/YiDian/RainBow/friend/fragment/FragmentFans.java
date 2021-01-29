@@ -53,9 +53,7 @@ public class FragmentFans extends BaseFragment {
     private MyFansAdapter myFansAdapter;
     int page = 1;
     int size = 15;
-    File f = new File(
-            "/data/data/com.YiDian.RainBow/shared_prefs/fans.xml");
-    private List<MyFansBean.ObjectBean.ListBean> spList;
+
     private CustomDialog dialog;
 
     @Override
@@ -86,29 +84,6 @@ public class FragmentFans extends BaseFragment {
 
         dialog = new CustomDialog(getContext(), "正在加载...");
 
-
-        //进入先展示缓存
-        Gson gson = new Gson();
-        spList = new ArrayList<>();
-        for (int i = 1; i < 10; i++) {
-            String json = SPUtil.getInstance().getData(getContext(), SPUtil.JSON_Fans, "json" + i);
-            MyFansBean.ObjectBean.ListBean listBean = gson.fromJson(json, MyFansBean.ObjectBean.ListBean.class);
-            if(listBean!=null){
-                spList.add(listBean);
-            }
-        }
-        if(f.exists()){
-            if(spList.size()>0 && spList !=null){
-                sv.setVisibility(View.VISIBLE);
-                rlNodata.setVisibility(View.GONE);
-
-                linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                rcFans.setLayoutManager(linearLayoutManager);
-                myFansAdapter = new MyFansAdapter(getContext(), spList);
-
-                rcFans.setAdapter(myFansAdapter);
-            }
-        }
         //获取我的粉丝
         getMyFans(page,size);
 
@@ -163,14 +138,6 @@ public class FragmentFans extends BaseFragment {
 
                         if(list.size()>0 && list!=null){
                             allList.addAll(list);
-
-                            //存本地缓存
-                            for (int i = 1; i <= list.size(); i++) {
-                                MyFansBean.ObjectBean.ListBean listBean = list.get(i - 1);
-                                Gson gson = new Gson();
-                                String json1 = gson.toJson(listBean);
-                                SPUtil.getInstance().saveData(getContext(), SPUtil.JSON_Fans, "json"+i, json1);
-                            }
 
                             sv.setVisibility(View.VISIBLE);
                             rlNodata.setVisibility(View.GONE);

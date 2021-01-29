@@ -244,6 +244,8 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         } else if (holder instanceof ViewHolderVideoAndText) {
             viewHolderVideoAndText = (ViewHolderVideoAndText) holder;
 
+            setData4(viewHolderVideoAndText,position);
+
             //设置文本
             //获取文本内容
             String contentInfo = listBean.getContentInfo();

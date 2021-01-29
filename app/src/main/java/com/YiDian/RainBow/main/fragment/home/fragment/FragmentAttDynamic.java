@@ -116,7 +116,6 @@ public class FragmentAttDynamic extends BaseFragment {
             public void onRefresh() {
                 alllist.clear();
                 page = 1;
-                sv.onFinishFreshAndLoad();
                 getAttUser();
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -239,7 +238,7 @@ public class FragmentAttDynamic extends BaseFragment {
                                         noData.setVisibility(View.VISIBLE);
                                     }
                                 }
-                                if (list.size()>8){
+                                if (list.size()>5){
                                     sv.setFooter(new AliFooter(getContext()));
                                 }
                             }
@@ -257,10 +256,6 @@ public class FragmentAttDynamic extends BaseFragment {
     }
     public void getAttUser(){
         //判断有无关注用户
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
                 NetUtils.getInstance().getApis()
                         .doGetMyFollow(userid,1,1)
                         .subscribeOn(Schedulers.io())
@@ -297,15 +292,11 @@ public class FragmentAttDynamic extends BaseFragment {
 
                             }
                         });
-            }
-        }).start();
-
     }
     @Override
     public void onPause() {
         super.onPause();
         GSYVideoManager.onPause();
-
     }
 
     @Override

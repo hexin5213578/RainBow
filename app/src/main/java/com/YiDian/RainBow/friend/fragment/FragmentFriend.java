@@ -56,9 +56,6 @@ public class FragmentFriend extends Fragment {
     private ContactAdapter adapter;
     private int userid;
     private LinearLayoutManager layoutManager;
-    File f = new File(
-            "/data/data/com.YiDian.RainBow/shared_prefs/friend.xml");
-    private List<FriendBean.ObjectBean> spList;
     //加载的试图
     private View mContentView;
     //三个核心变量
@@ -131,28 +128,6 @@ public class FragmentFriend extends Fragment {
     protected void getData() {
         userid = Integer.valueOf(Common.getUserId());
 
-        //进入先展示缓存
-        Gson gson = new Gson();
-        spList = new ArrayList<>();
-        for (int i = 1; i < 10; i++) {
-            String json = SPUtil.getInstance().getData(getContext(), SPUtil.JSON_Friend, "json" + i);
-            FriendBean.ObjectBean listBean = gson.fromJson(json, FriendBean.ObjectBean.class);
-            if(listBean!=null){
-                spList.add(listBean);
-            }
-        }
-        if(f.exists()){
-            if(spList.size()>0 && spList !=null){
-
-                rlTop.setVisibility(View.VISIBLE);
-                rlNodata.setVisibility(View.GONE);
-                letterView.setVisibility(View.VISIBLE);
-                layoutManager = new LinearLayoutManager(getContext());
-                adapter = new ContactAdapter(getContext(),spList);
-                contactList.setLayoutManager(layoutManager);
-                contactList.setAdapter(adapter);
-            }
-        }
 
         //调用查找我的全部好友
         getMyFriend();
@@ -197,13 +172,7 @@ public class FragmentFriend extends Fragment {
                         List<FriendBean.ObjectBean> list =
                                 friendBean.getObject();
                         if (list.size() > 0 && list != null) {
-                            //存本地缓存
-                            for (int i = 1; i <= list.size(); i++) {
-                                FriendBean.ObjectBean objectBean = list.get(i - 1);
-                                Gson gson = new Gson();
-                                String json1 = gson.toJson(objectBean);
-                                SPUtil.getInstance().saveData(getContext(), SPUtil.JSON_Friend, "json"+i, json1);
-                            }
+
                             letterView.setVisibility(View.VISIBLE);
                             rlTop.setVisibility(View.VISIBLE);
                             rlNodata.setVisibility(View.GONE);
