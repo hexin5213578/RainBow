@@ -495,7 +495,7 @@ public class CommentDetailsActivity extends BaseAvtivity implements View.OnClick
 
                                 Intent intent = new Intent(CommentDetailsActivity.this, PersonHomeActivity.class);
                                 SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
-                                saveIntentMsgBean.setId(commentUserid);
+                                saveIntentMsgBean.setId(userInfo.getId());
                                 //2标记传入姓名  1标记传入id
                                 saveIntentMsgBean.setFlag(1);
                                 intent.putExtra("msg", saveIntentMsgBean);

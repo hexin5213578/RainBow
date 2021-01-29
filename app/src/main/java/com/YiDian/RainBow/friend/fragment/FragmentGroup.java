@@ -13,6 +13,7 @@ import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.friend.adapter.RecommendGroupAdapter;
+import com.YiDian.RainBow.friend.bean.InitGroupBean;
 import com.YiDian.RainBow.friend.bean.RecommendGroupBean;
 import com.YiDian.RainBow.imgroup.adapter.GroupMyCreateAdapter;
 import com.YiDian.RainBow.imgroup.adapter.GroupMyJoinAdapter;
@@ -53,7 +54,11 @@ public class FragmentGroup extends BaseFragment {
     SpringView sv;
     @BindView(R.id.rl3)
     RelativeLayout rl3;
+    @BindView(R.id.rl_nodata)
+    RelativeLayout rlNodata;
     private int userid;
+    //判断三个列表是否为空
+    int flag = 0;
     String TAG = "xxx";
 
     @Override
@@ -79,23 +84,17 @@ public class FragmentGroup extends BaseFragment {
         sv.setHeader(new AliHeader(getContext()));
 
         //首次进入获取数据
-        getMyCreateGroup();
-        getMyJoinGroup();
-        getRecommendGroup();
+        getGroup();
 
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {
                 //刷新重新获取数据
-                getMyCreateGroup();
-                getMyJoinGroup();
-                getRecommendGroup();
+                getGroup();
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-
-
                         sv.onFinishFreshAndLoad();
                     }
                 }, 1000);
@@ -108,50 +107,6 @@ public class FragmentGroup extends BaseFragment {
         });
     }
 
-    //获取推荐群组
-    public void getRecommendGroup() {
-        NetUtils.getInstance()
-                .getApis()
-                .dogetRecommendGroup(userid)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<RecommendGroupBean>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(RecommendGroupBean recommendGroupBean) {
-                        List<RecommendGroupBean.ObjectBean> list = recommendGroupBean.getObject();
-                        if (list != null && list.size() > 0) {
-                            //创建布局管理器
-                            rl3.setVisibility(View.VISIBLE);
-                            rcComment.setVisibility(View.VISIBLE);
-
-
-                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                            rcComment.setLayoutManager(linearLayoutManager);
-
-                            RecommendGroupAdapter adapter = new RecommendGroupAdapter(getContext(), list);
-                            rcComment.setAdapter(adapter);
-                        } else {
-                            rl3.setVisibility(View.GONE);
-                            rcComment.setVisibility(View.GONE);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
 
     @Override
     public void onResume() {
@@ -165,10 +120,7 @@ public class FragmentGroup extends BaseFragment {
     public void getString(String str) {
         if (str.equals("重新获取群组列表")) {
             userid = Integer.valueOf(Common.getUserId());
-
-
-            getMyJoinGroup();
-            getMyCreateGroup();
+            getGroup();
         }
     }
 
@@ -179,39 +131,82 @@ public class FragmentGroup extends BaseFragment {
             EventBus.getDefault().unregister(this);
         }
     }
-
-    //获取我创建的群组
-    public void getMyCreateGroup() {
-        NetUtils.getInstance().getApis()
-                .dogetMyJoinGroup(userid)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<MyCreateGroupMsgBean>() {
+    public void getGroup(){
+        NetUtils.getInstance().getApis().doGetGroup(userid).
+                subscribeOn(Schedulers.io()).
+                observeOn(AndroidSchedulers.mainThread()).
+                subscribe(new Observer<InitGroupBean>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(MyCreateGroupMsgBean myCreateGroupMsgBean) {
-                        List<MyCreateGroupMsgBean.ObjectBean> list = myCreateGroupMsgBean.getObject();
+                    public void onNext(InitGroupBean initGroupBean) {
+                        List<InitGroupBean.ObjectBean.GroupChuangJianBean> list1 = initGroupBean.getObject().getGroupChuangJian();
+                        List<InitGroupBean.ObjectBean.GroupTuiJianBean> list2 = initGroupBean.getObject().getGroupTuiJian();
+                        List<InitGroupBean.ObjectBean.GroupJiaRuBean> list3 = initGroupBean.getObject().getGroupJiaRu();
+                        if(list1.size()>0||list2.size()>0||list3.size()>0){
+                            rlNodata.setVisibility(View.GONE);
+                            //显示缺省页
+                            if (list1 != null && list1.size() > 0 ) {
+                                rl1.setVisibility(View.VISIBLE);
+                                rcMycreate.setVisibility(View.VISIBLE);
 
-                        if (list.size() > 0 && list != null) {
-                            rl1.setVisibility(View.VISIBLE);
-                            rcMycreate.setVisibility(View.VISIBLE);
+                                tv1.setText("我创建的(" + list1.size() + ")");
 
-                            tv1.setText("我创建的(" + list.size() + ")");
+                                //创建布局管理器
+                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+                                rcMycreate.setLayoutManager(linearLayoutManager);
 
-                            //创建布局管理器
-                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                            rcMycreate.setLayoutManager(linearLayoutManager);
+                                GroupMyCreateAdapter myJoinAdapter = new GroupMyCreateAdapter(getContext(), list1);
+                                rcMycreate.setAdapter(myJoinAdapter);
+                            } else {
+                                rl1.setVisibility(View.GONE);
+                                rcMycreate.setVisibility(View.GONE);
+                            }
+                            //我加入的
+                            if (list3.size() > 0 && list3 != null) {
+                                rl2.setVisibility(View.VISIBLE);
+                                rcMyjoin.setVisibility(View.VISIBLE);
 
-                            GroupMyCreateAdapter myJoinAdapter = new GroupMyCreateAdapter(getContext(), list);
-                            rcMycreate.setAdapter(myJoinAdapter);
-                        } else {
-                            rl1.setVisibility(View.GONE);
-                            rcMycreate.setVisibility(View.GONE);
+                                tv2.setText("我加入的(" + list3.size() + ")");
+
+                                //创建布局管理器
+                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+                                rcMyjoin.setLayoutManager(linearLayoutManager);
+
+                                GroupMyJoinAdapter myCreateAdapter = new GroupMyJoinAdapter(getContext(), list3);
+                                rcMyjoin.setAdapter(myCreateAdapter);
+
+                            } else {
+                                rl2.setVisibility(View.GONE);
+                                rcMyjoin.setVisibility(View.GONE);
+                            }
+                            //推荐
+                            if (list2 != null && list2.size() > 0) {
+                                //创建布局管理器
+                                rl3.setVisibility(View.VISIBLE);
+                                rcComment.setVisibility(View.VISIBLE);
+
+                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+                                rcComment.setLayoutManager(linearLayoutManager);
+
+                                RecommendGroupAdapter adapter = new RecommendGroupAdapter(getContext(), list2);
+                                rcComment.setAdapter(adapter);
+                            } else {
+                                rl3.setVisibility(View.GONE);
+                                rcComment.setVisibility(View.GONE);
+                            }
+                        }else{
+                            //显示缺省页
+                            rlNodata.setVisibility(View.VISIBLE);
+
+
                         }
+
+
+
                     }
 
                     @Override
@@ -224,53 +219,7 @@ public class FragmentGroup extends BaseFragment {
 
                     }
                 });
+
     }
 
-    //获取我加入的列表
-    public void getMyJoinGroup() {
-        NetUtils.getInstance().getApis()
-                .dogetMyCreateGroup(userid)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<MyJoinGroupMsgBean>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(MyJoinGroupMsgBean myJoinGroupMsgBean) {
-                        List<MyJoinGroupMsgBean.ObjectBean> list =
-                                myJoinGroupMsgBean.getObject();
-
-                        if (list.size() > 0 && list != null) {
-                            rl2.setVisibility(View.VISIBLE);
-                            rcMyjoin.setVisibility(View.VISIBLE);
-
-                            tv2.setText("我加入的(" + list.size() + ")");
-
-                            //创建布局管理器
-                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                            rcMyjoin.setLayoutManager(linearLayoutManager);
-
-                            GroupMyJoinAdapter myCreateAdapter = new GroupMyJoinAdapter(getContext(), list);
-                            rcMyjoin.setAdapter(myCreateAdapter);
-
-                        } else {
-                            rl2.setVisibility(View.GONE);
-                            rcMyjoin.setVisibility(View.GONE);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
 }

@@ -18,6 +18,8 @@ import com.YiDian.RainBow.main.fragment.mine.bean.FangkeMsgBean;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.user.PersonHomeActivity;
 import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.StringUtil;
+import com.YiDian.RainBow.utils.TimeUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
@@ -88,7 +90,13 @@ public class FangkeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             ((ViewHolder) holder).tvXingbie.setVisibility(View.GONE);
         }
 
-        ((ViewHolder) holder).tvTime.setText(bean.getCreateTime());
+
+        //设置访问时间
+        long l = TimeUtil.TimeToLong(bean.getCreateTime());
+        String newChatTime = StringUtil.getNewChatTime(l);
+        ((ViewHolder) holder).tvTime.setText(newChatTime);
+
+
         int isFans = bean.getIsFans();
         if (isFans == 1) {
             ((ViewHolder) holder).btGuanzhu.setVisibility(View.GONE);

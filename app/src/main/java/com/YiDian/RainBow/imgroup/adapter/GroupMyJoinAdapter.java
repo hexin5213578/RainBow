@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
+import com.YiDian.RainBow.friend.bean.InitGroupBean;
 import com.YiDian.RainBow.imgroup.bean.MyCreateGroupMsgBean;
 import com.YiDian.RainBow.imgroup.bean.MyJoinGroupMsgBean;
 import com.bumptech.glide.Glide;
@@ -25,10 +26,10 @@ import butterknife.ButterKnife;
 public class GroupMyJoinAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Context context;
-    private final List<MyJoinGroupMsgBean.ObjectBean> list;
-    private MyJoinGroupMsgBean.ObjectBean listbean;
+    private final List<InitGroupBean.ObjectBean.GroupJiaRuBean> list;
+    private InitGroupBean.ObjectBean.GroupJiaRuBean listbean;
 
-    public GroupMyJoinAdapter(Context context, List<MyJoinGroupMsgBean.ObjectBean> list) {
+    public GroupMyJoinAdapter(Context context, List<InitGroupBean.ObjectBean.GroupJiaRuBean> list) {
 
         this.context = context;
         this.list = list;

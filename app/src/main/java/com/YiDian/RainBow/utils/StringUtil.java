@@ -80,7 +80,7 @@ public class StringUtil {
     /**
      *  时间戳格式转换
      */
-    static String dayNames[] = {"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
+    static String dayNames[] = {"周日 ", "周一 ", "周二 ", "周三 ", "周四 ", "周五 ", "周六 "};
     public static String getNewChatTime(long timesamp) {
         String result = "";
         Calendar todayCalendar = Calendar.getInstance();

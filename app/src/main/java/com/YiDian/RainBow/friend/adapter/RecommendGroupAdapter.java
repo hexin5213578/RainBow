@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
+import com.YiDian.RainBow.friend.bean.InitGroupBean;
 import com.YiDian.RainBow.friend.bean.RecommendGroupBean;
 import com.YiDian.RainBow.imgroup.adapter.GroupMyCreateAdapter;
 import com.bumptech.glide.Glide;
@@ -25,11 +26,11 @@ import butterknife.ButterKnife;
 
 public class RecommendGroupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final Context context;
-    private final List<RecommendGroupBean.ObjectBean> list;
-    private RecommendGroupBean.ObjectBean listbean;
+    private final List<InitGroupBean.ObjectBean.GroupTuiJianBean> list;
+    private InitGroupBean.ObjectBean.GroupTuiJianBean listbean;
 
 
-    public RecommendGroupAdapter(Context context, List<RecommendGroupBean.ObjectBean> list) {
+    public RecommendGroupAdapter(Context context, List<InitGroupBean.ObjectBean.GroupTuiJianBean> list) {
         this.context = context;
         this.list = list;
     }
@@ -72,7 +73,12 @@ public class RecommendGroupAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemCount() {
-        return 3;
+        if(list.size()>3){
+            return 3;
+        }else {
+            return list.size();
+        }
+
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

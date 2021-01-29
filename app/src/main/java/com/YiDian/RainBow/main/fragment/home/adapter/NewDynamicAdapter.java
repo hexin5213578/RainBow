@@ -1277,14 +1277,10 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 //获取发布过的时长
                 long difference = l - time;
 
-                //时长大于12小时 显示日期
-                if (difference > 43200000) {
-                    holder.tvTime.setText(createTime);
-                }
                 //时长小于12小时 展示时间
-                if (difference > 1800000 && difference < 43200000) {
-                    String[] s = createTime.split(" ");
-                    holder.tvTime.setText(s[1]);
+                if (difference > 1800000) {
+                    String newChatTime = StringUtil.getNewChatTime(time);
+                    holder.tvTime.setText(newChatTime);
                 }
                 if (difference > 1200000 && difference < 1800000) {
                     holder.tvTime.setText("半小时前发布");

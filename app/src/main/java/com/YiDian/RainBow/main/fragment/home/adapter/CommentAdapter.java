@@ -114,13 +114,9 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 long difference = l - time;
 
                 //时长大于12小时 显示日期
-                if (difference > 43200000) {
-                    ((ViewHolder) holder).tvTime.setText(createTime);
-                }
-                //时长小于12小时 展示时间
-                if (difference > 1800000 && difference < 43200000) {
-                    String[] s = createTime.split(" ");
-                    ((ViewHolder) holder).tvTime.setText(s[1]);
+                if (difference > 1800000) {
+                    String newChatTime = StringUtil.getNewChatTime(time);
+                    ((ViewHolder) holder).tvTime.setText(newChatTime);
                 }
                 if (difference > 1200000 && difference < 1800000) {
                     ((ViewHolder) holder).tvTime.setText("半小时前发布");

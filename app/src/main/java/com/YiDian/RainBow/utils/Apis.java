@@ -4,6 +4,7 @@ package com.YiDian.RainBow.utils;
 import com.YiDian.RainBow.dynamic.bean.HotTopicBean;
 import com.YiDian.RainBow.dynamic.bean.SelectFriendOrGroupBean;
 import com.YiDian.RainBow.friend.bean.FriendBean;
+import com.YiDian.RainBow.friend.bean.InitGroupBean;
 import com.YiDian.RainBow.friend.bean.MyFansBean;
 import com.YiDian.RainBow.friend.bean.MyfollowBean;
 import com.YiDian.RainBow.friend.bean.RecommendGroupBean;
@@ -373,6 +374,10 @@ public interface Apis {
     //我创建的群聊
     @GET("groupInfo/selectGroupInfoByGroupId")
     Observable<MyCreateGroupMsgBean> dogetMyJoinGroup(@Query("holderId")int userid);
+
+    //初始化群组
+    @GET("groupInfo/selectGroupInfoByGroupId")
+    Observable<InitGroupBean> doGetGroup(@Query("userId")int userid);
 
     //我加入的群聊
     @GET("group/selectGroupInfo")

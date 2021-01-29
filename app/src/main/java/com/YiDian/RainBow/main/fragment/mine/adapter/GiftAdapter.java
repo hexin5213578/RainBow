@@ -43,10 +43,8 @@ public class GiftAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         //加载图片
         Glide.with(context).load(listbean.getGiftImg()).into(((ViewHolder)holder).imageView);
-
         //设置名称
         ((ViewHolder)holder).tvName.setText(listbean.getGiftName());
-
         //设置数量
         ((ViewHolder)holder).tvCount.setText("×"+listbean.getNums());
 

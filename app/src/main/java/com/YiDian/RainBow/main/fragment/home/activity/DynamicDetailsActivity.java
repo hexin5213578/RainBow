@@ -200,6 +200,7 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
     String wechatUrl = "http://web.p.qq.com/qqmpmobile/aio/app.html?id=101906973";
     private List<CommentBean.ObjectBean> AllList = new ArrayList<>();
     private CustomDialog dialog;
+    private int releseid;
 
     @Override
     protected int getResId() {
@@ -346,7 +347,7 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
             case R.id.iv_headimg:
                 Intent intent = new Intent(this, PersonHomeActivity.class);
                 SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
-                saveIntentMsgBean.setId(userId);
+                saveIntentMsgBean.setId(releseid);
                 //2标记传入姓名  1标记传入id
                 saveIntentMsgBean.setFlag(1);
                 intent.putExtra("msg",saveIntentMsgBean);
@@ -799,6 +800,8 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                     public void onNext(DynamicDetailsBean dynamicDetailsBean) {
                         dialog.dismiss();
                         userInfo = dynamicDetailsBean.getObject().getUserInfo();
+
+                        releseid = userInfo.getId();
                         bean = dynamicDetailsBean.getObject();
                         List<DynamicDetailsBean.ObjectBean.TopicsBean> topics =
                                 bean.getTopics();

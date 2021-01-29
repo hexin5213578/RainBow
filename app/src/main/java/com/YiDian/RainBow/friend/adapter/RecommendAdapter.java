@@ -1,9 +1,10 @@
-package com.YiDian.RainBow.imgroup.adapter;
+package com.YiDian.RainBow.friend.adapter;
 
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -12,7 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.friend.bean.InitGroupBean;
-import com.YiDian.RainBow.imgroup.bean.MyCreateGroupMsgBean;
+import com.YiDian.RainBow.friend.bean.RecommendGroupBean;
+import com.YiDian.RainBow.imgroup.adapter.GroupMyCreateAdapter;
 import com.YiDian.RainBow.imgroup.bean.MyJoinGroupMsgBean;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
@@ -23,15 +25,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class GroupMyCreateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-
+public class RecommendAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final Context context;
-    private final List<InitGroupBean.ObjectBean.GroupChuangJianBean> list;
-    private InitGroupBean.ObjectBean.GroupChuangJianBean listbean;
+    private final List<RecommendGroupBean.ObjectBean> list;
+    private RecommendGroupBean.ObjectBean listbean;
 
-    public GroupMyCreateAdapter(Context context, List<InitGroupBean.ObjectBean.GroupChuangJianBean> list) {
 
+    public RecommendAdapter(Context context, List<RecommendGroupBean.ObjectBean> list) {
         this.context = context;
         this.list = list;
     }
@@ -62,7 +62,6 @@ public class GroupMyCreateAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
         ((ViewHolder)holder).tvNum.setText(listbean.getUserNum()+"");
 
-
         ((ViewHolder)holder).rlItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,7 +74,11 @@ public class GroupMyCreateAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public int getItemCount() {
-        return list.size();
+        if(list.size()>3){
+            return 3;
+        }else {
+            return list.size();
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -85,6 +88,8 @@ public class GroupMyCreateAdapter extends RecyclerView.Adapter<RecyclerView.View
         TextView tvName;
         @BindView(R.id.tv_num)
         TextView tvNum;
+        @BindView(R.id.ll_num)
+        LinearLayout llNum;
         @BindView(R.id.tv_autograph)
         TextView tvAutograph;
         @BindView(R.id.rl_item)

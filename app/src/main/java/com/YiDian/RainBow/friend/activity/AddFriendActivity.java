@@ -18,6 +18,7 @@ import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.zbar.CaptureActivity;
+import com.YiDian.RainBow.friend.adapter.RecommendAdapter;
 import com.YiDian.RainBow.friend.adapter.RecommendGroupAdapter;
 import com.YiDian.RainBow.friend.adapter.RecommendUserAdapter;
 import com.YiDian.RainBow.friend.bean.RecommendGroupBean;
@@ -172,7 +173,7 @@ public class AddFriendActivity extends BaseAvtivity implements View.OnClickListe
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(AddFriendActivity.this, RecyclerView.VERTICAL, false);
                             rcRecommendgroup.setLayoutManager(linearLayoutManager);
 
-                            RecommendGroupAdapter adapter = new RecommendGroupAdapter(AddFriendActivity.this, list);
+                            RecommendAdapter adapter = new RecommendAdapter(AddFriendActivity.this, list);
                             rcRecommendgroup.setAdapter(adapter);
                         }else{
                             rcRecommendgroup.setVisibility(View.GONE);

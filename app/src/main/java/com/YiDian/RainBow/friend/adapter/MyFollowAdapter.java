@@ -68,7 +68,7 @@ public class MyFollowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ViewHolder)holder).tvAutograph.setText(bean.getExplains());
 
         }else{
-            ((ViewHolder)holder).tvAutograph.setText("");
+            ((ViewHolder)holder).tvAutograph.setText("还没有设置签名哦");
 
         }
 

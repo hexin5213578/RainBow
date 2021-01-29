@@ -70,7 +70,7 @@ public class MyFansAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if (bean.getExplains()!=null){
             ((ViewHolder)holder).tvAutograph.setText(bean.getExplains());
         }else{
-            ((ViewHolder)holder).tvAutograph.setText("");
+            ((ViewHolder)holder).tvAutograph.setText("还没有设置签名哦");
         }
         //跳转到用户详情页
         ((ViewHolder)holder).ivHeadimg.setOnClickListener(new View.OnClickListener() {

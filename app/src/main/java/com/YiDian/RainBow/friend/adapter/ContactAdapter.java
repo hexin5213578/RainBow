@@ -119,8 +119,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     if (objectBean.getExplains()!=null){
                         ((ContactHolder) holder).tv_autograph.setText(objectBean.getExplains());
                     }else{
-                        ((ContactHolder) holder).tv_autograph.setText("");
-
+                        ((ContactHolder) holder).tv_autograph.setText("还没有设置签名哦");
                     }
                     //设置性别
                     String userRole = objectBean.getUserRole();
