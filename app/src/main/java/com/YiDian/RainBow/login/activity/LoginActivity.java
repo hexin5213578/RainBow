@@ -337,10 +337,10 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_mt_pro:
-                //跳转遇到问题页
-                startActivity(new Intent(LoginActivity.this, FeedBackActivity.class));
-                break;
+//            case R.id.tv_mt_pro:
+//                //跳转遇到问题页
+//                startActivity(new Intent(LoginActivity.this, FeedBackActivity.class));
+//                break;
             case R.id.tv_to_regist:
                 //跳转注册页
                 intent = new Intent(LoginActivity.this, RegistActivity.class);

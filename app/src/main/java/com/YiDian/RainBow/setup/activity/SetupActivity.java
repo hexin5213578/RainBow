@@ -190,11 +190,11 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
                 startActivity(intent);
                 break;
                 //反馈
-            case R.id.rl_fankui:
-                //跳转到意见反馈页
-                intent = new Intent(SetupActivity.this, FeedBackActivity.class);
-                startActivity(intent);
-                break;
+//            case R.id.rl_fankui:
+//                //跳转到意见反馈页
+//                intent = new Intent(SetupActivity.this, FeedBackActivity.class);
+//                startActivity(intent);
+//                break;
                 //关于我们
             case R.id.rl_guanyu:
                 intent = new Intent(SetupActivity.this,AboutUsActivity.class);
