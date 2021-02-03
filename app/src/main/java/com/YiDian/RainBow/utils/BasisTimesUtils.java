@@ -187,7 +187,6 @@ public class BasisTimesUtils {
         // 格式化日期
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String lastDayOfMonth = sdf.format(cal.getTime());
-
         return lastDayOfMonth;
     }
 

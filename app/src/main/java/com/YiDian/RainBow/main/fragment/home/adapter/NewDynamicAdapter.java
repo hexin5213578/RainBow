@@ -1150,6 +1150,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             //开始执行设置不可点击 防止多次点击发生冲突
+                            Log.d(TAG, "onClick: "+userid+"-----------取消-------------"+listBean.getUserId());
                             holder.tvGuanzhu.setEnabled(false);
                             NetUtils.getInstance().getApis()
                                     .doCancleFollow(userid, listBean.getUserId())
@@ -1200,7 +1201,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 } else {
                     //开始执行设置不可点击 防止多次点击发生冲突
                     holder.tvGuanzhu.setEnabled(false);
-
+                    Log.d(TAG, "onClick: "+userid+"------------关注------------"+listBean.getUserId());
                     //关注
                     NetUtils.getInstance().getApis()
                             .doFollow(userid, listBean.getUserId())
