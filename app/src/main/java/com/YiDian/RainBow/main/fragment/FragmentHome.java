@@ -2,9 +2,11 @@ package com.YiDian.RainBow.main.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,19 +24,34 @@ import androidx.viewpager.widget.ViewPager;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.custom.customDialog.CustomDialogCleanNotice;
 import com.YiDian.RainBow.dynamic.activity.DevelopmentDynamicActivity;
 import com.YiDian.RainBow.friend.activity.AddFriendActivity;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentAttDynamic;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentHotDynamic;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentNearDynamic;
 import com.YiDian.RainBow.main.fragment.home.fragment.FragmentNewDynamic;
+import com.YiDian.RainBow.notice.ClickNoticeActivity;
+import com.YiDian.RainBow.notice.bean.CleanNoticeBean;
+import com.YiDian.RainBow.setup.activity.RealnameActivity;
+import com.YiDian.RainBow.setup.bean.GetRealDataBean;
+import com.YiDian.RainBow.utils.NetUtils;
 import com.leaf.library.StatusBarUtil;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedChangeListener {
     @BindView(R.id.ll_search)
@@ -67,6 +84,9 @@ public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedCh
     private FragmentAttDynamic fragmentAttDynamic;
     private FragmentHotDynamic fragmentHotDynamic;
     private List<Fragment> list;
+    private int userid;
+    private boolean isClick = false;
+    private CustomDialogCleanNotice.Builder builder;
 
     @Override
     protected void getid(View view) {
@@ -90,6 +110,10 @@ public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedCh
         StatusBarUtil.setGradientColor(getActivity(), toolbar);
         StatusBarUtil.setDarkMode(getActivity());
 
+
+        userid = Integer.valueOf(Common.getUserId());
+        getRealStatus();
+
         list = new ArrayList<>();
 
         llSearch.setOnClickListener(new View.OnClickListener() {
@@ -102,8 +126,24 @@ public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedCh
         ivAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //跳转到发布动态页
-                startActivity(new Intent(getContext(), DevelopmentDynamicActivity.class));
+                if (isClick){
+                    //跳转到发布动态页
+                    startActivity(new Intent(getContext(), DevelopmentDynamicActivity.class));
+                }else{
+                    builder = new CustomDialogCleanNotice.Builder(getContext());
+                    builder.setMessage("您还没有提交实名认证信息").setPositiveButton("去设置", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            startActivity(new Intent(getContext(), RealnameActivity.class));
+                        }
+                    });
+                    builder.setNegativeButton("取消",
+                            new android.content.DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    builder.create().show();
+                }
             }
         });
         //申请开启内存卡权限
@@ -150,6 +190,50 @@ public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedCh
         rbNewDynamic.setTextAppearance(getContext(), R.style.txt_bold);
 
     }
+
+    //获取实名认证状态
+    public void getRealStatus(){
+        NetUtils.getInstance().getApis()
+                .doGetRealMsg(userid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GetRealDataBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(GetRealDataBean getRealDataBean) {
+                        String msg = getRealDataBean.getMsg();
+                        if (msg.equals("您还没有提交实名信息")) {
+                            isClick = false;
+                        } else {
+                            int auditStatus = getRealDataBean.getObject().getAuditStatus();
+                            if (auditStatus == 2) {
+                                isClick = false;
+                            }
+                            if (auditStatus == 1) {
+                                isClick = true;
+                            }
+                            if (auditStatus==0){
+                                isClick = false;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
     public class MyAdapter extends FragmentPagerAdapter{
 
         public MyAdapter(@NonNull FragmentManager fm) {
@@ -242,17 +326,29 @@ public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedCh
         GSYVideoManager.onPause();
 
     }
-
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getStr(String str){
+        if (str.equals("重新获取我的基本信息")){
+            Log.d("xxx","走到这里了");
+            getRealStatus();
+        }
+    }
     @Override
     public void onDestroy() {
         super.onDestroy();
         GSYVideoManager.releaseAllVideos();
+        if (EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
         GSYVideoManager.onResume();
+        if (!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
     }
 
     @Override

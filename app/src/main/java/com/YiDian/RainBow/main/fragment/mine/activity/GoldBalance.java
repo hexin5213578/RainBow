@@ -167,7 +167,7 @@ public class GoldBalance extends BaseAvtivity implements View.OnClickListener {
                         //总收入
                         String totalIncome = consumeRecordBean.getObject().getIncomeGoldNum() + "";
                         tvConsumeIncome.setText("总消费：￥" + totalconsume);
-                        tvConsumeIncome2.setText("总充值：￥" + totalIncome);
+                        tvConsumeIncome2.setText("总收入：￥" + totalIncome);
                         if (list!=null&&list.size()>0) {
                             sv.setVisibility(View.VISIBLE);
                             rlDefault.setVisibility(View.GONE);
@@ -232,7 +232,7 @@ public class GoldBalance extends BaseAvtivity implements View.OnClickListener {
                         //总收入
                         String totalIncome = consumeRecordBean.getObject().getIncomeGoldNum() + "";
                         tvConsumeIncome.setText("总消费：￥" + totalconsume);
-                        tvConsumeIncome2.setText("总充值：￥" + totalIncome);
+                        tvConsumeIncome2.setText("总收入：￥" + totalIncome);
 
                         if (list!=null&&list.size()>0) {
                             rlDefault.setVisibility(View.GONE);

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -21,9 +23,14 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
+import com.YiDian.RainBow.base.App;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.feedback.adapter.FeedBackImgAdapter;
+import com.YiDian.RainBow.main.fragment.mine.bean.ChackBuildLovesBean;
+import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.StringUtil;
 import com.dmcbig.mediapicker.entity.Media;
 import com.leaf.library.StatusBarUtil;
 
@@ -37,6 +44,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 //问题反馈
 public class FeedBackActivity extends BaseAvtivity implements View.OnClickListener {
@@ -60,6 +71,7 @@ public class FeedBackActivity extends BaseAvtivity implements View.OnClickListen
     private FeedBackImgAdapter feedBackImgAdapter;
     private GridLayoutManager gridLayoutManager;
     private ArrayList<Media> select;
+    private CustomDialog dialog;
 
     @Override
     protected int getResId() {
@@ -69,6 +81,8 @@ public class FeedBackActivity extends BaseAvtivity implements View.OnClickListen
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void getData() {
+        dialog = new CustomDialog(this, "正在登录...");
+
         ivBack.setOnClickListener(this);
         btSubmit.setOnClickListener(this);
         rlSelectedimg.setOnClickListener(this);
@@ -106,9 +120,51 @@ public class FeedBackActivity extends BaseAvtivity implements View.OnClickListen
                 finish();
                 break;
             case R.id.bt_submit:
+                String str = etPro.getText().toString();
+
+                String phone = etContact.getText().toString();
                 // TODO: 2020/10/6 0006 携带提出的问题图片 描述 电话/邮箱 提交到服务器
+                if (paths!=null && paths.size()==0 || TextUtils.isEmpty(str)){
+                    Toast.makeText(this, "请先描述问题", Toast.LENGTH_SHORT).show();
+                }else{
+                    if (TextUtils.isEmpty(phone)) {
+                        Toast.makeText(App.getContext(), "请输入您的联系方式", Toast.LENGTH_SHORT).show();
+                    }else{
+                        dialog.show();
+                        NetUtils.getInstance().getApis()
+                                .doInsertFeedBack("12315646546541321")
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Observer<ChackBuildLovesBean>() {
+                                    @Override
+                                    public void onSubscribe(Disposable d) {
 
+                                    }
 
+                                    @Override
+                                    public void onNext(ChackBuildLovesBean chackBuildLovesBean) {
+                                        dialog.dismiss();
+                                        if (chackBuildLovesBean.getObject().equals("提交成功")){
+                                            Toast.makeText(FeedBackActivity.this, "问题反馈成功", Toast.LENGTH_SHORT).show();
+                                            finish();
+                                        }else{
+                                            Toast.makeText(FeedBackActivity.this, "问题反馈失败,请重新提交", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        dialog.dismiss();
+                                    }
+
+                                    @Override
+                                    public void onComplete() {
+
+                                    }
+                                });
+                    }
+
+                }
                 break;
             case R.id.rl_selectedimg:
                 //调用图片选择器选择多张图片

@@ -1,11 +1,14 @@
 package com.YiDian.RainBow.main.fragment.mine.activity;
 
+import android.Manifest;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -30,6 +33,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
@@ -56,6 +61,7 @@ import org.json.JSONObject;
 import org.lym.image.select.PictureSelector;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -110,7 +116,7 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
     private UploadManager uploadManager;
     private String token;
     private static final String serverPath = "http://img.rianbow.cn/";
-    private String url;
+    private String url="";
     private UserInfo userInfo;
     private int userid;
     private String username;
@@ -149,7 +155,21 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
         userid = Integer.parseInt(Common.getUserId());
         token = Common.getToken();
 
-
+        if (Build.VERSION.SDK_INT >= 23) {
+            int REQUEST_CODE_CONTACT = 101;
+            String[] permissions = {
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            //验证是否许可权限
+            for (String str : permissions) {
+                if (EditMsgActivity.this.checkSelfPermission(str) != PackageManager.PERMISSION_GRANTED) {
+                    //申请权限
+                    EditMsgActivity.this.requestPermissions(permissions, REQUEST_CODE_CONTACT);
+                    return;
+                } else {
+                    //这里就是权限打开之后自己要操作的逻辑
+                }
+            }
+        }
         username = Common.getUserName();
         qm = Common.getQM();
         birthday = Common.getBirthday();
@@ -314,17 +334,21 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                 break;
             //更换头像
             case R.id.rl_change_headimg:
-                PictureSelector
-                        .with(this)
-                        .selectSpec()
-                        .setOpenCamera()
-                        .needCrop()
-                        .setOutputX(200)
-                        .setOutputY(200)
-                        //开启拍照功能一定得设置该属性，为了兼容Android7.0相机拍照问题
-                        //在manifest文件中也需要注册该provider
-                        .setAuthority("com.YiDian.RainBow.utils.MyFileProvider")
-                        .startForResult(100);
+                if(Build.VERSION.SDK_INT==30){
+                    Toast.makeText(this, "Android11暂不支持更换头像", Toast.LENGTH_SHORT).show();
+                }else{
+                    PictureSelector
+                            .with(this)
+                            .selectSpec()
+                            .setOpenCamera()
+                            .needCrop()
+                            .setOutputX(200)
+                            .setOutputY(200)
+                            //开启拍照功能一定得设置该属性，为了兼容Android7.0相机拍照问题
+                            //在manifest文件中也需要注册该provider
+                            .setAuthority("com.YiDian.RainBow.utils.MyFileProvider")
+                            .startForResult(100);
+                }
                 break;
             //更换昵称
             case R.id.rl_name:
@@ -462,15 +486,27 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                 break;
         }
     }
+
+
+    private File creatfiles(){
+        String dir = "/sdcard/download/pictures"; // download和pictures都有可能不存在，所以是多级目录的判断
+        File file = new File(dir);
+        if (!file.exists())
+            file.mkdirs(); // 注意，此处要创建的可能是多级目录，所以一定要用mkdirs
+        return file;
+    }
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
-            if (null != data) {
+            if (data != null) {
                 //图片单选和多选数据都是以ArrayList的字符串数组返回的。
                 List<String> paths = PictureSelector.obtainPathResult(data);
                 path = paths.get(0);
                 Glide.with(EditMsgActivity.this).load(path).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+
 
                 //上传至七牛云
                 // 图片上传到七牛 重用 uploadManager。一般地，只需要创建一个 uploadManager 对象
@@ -479,7 +515,13 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
                 // 设置名字
                 String s = MD5Utils.string2Md5_16(path);
 
+
                 File file = new File(path);
+                if(!file.exists())
+                {
+                    Toast.makeText(this, "文件不存在", Toast.LENGTH_SHORT).show();
+                }
+
                 String key = s + sdf.format(new Date()) + ".jpg";
                 uploadManager.put(file, key, token,
                         new UpCompletionHandler() {

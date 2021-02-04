@@ -29,6 +29,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+//举报
 public class ReportActivity extends BaseAvtivity implements View.OnClickListener {
     String TAG = "fst";
     @BindView(R.id.toolbar)

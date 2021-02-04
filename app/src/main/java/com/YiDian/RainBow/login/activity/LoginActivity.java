@@ -122,13 +122,11 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
     private Tencent mTencent;
     //还需要一个IUiListener 的实现类（LogInListener implements IUiListener）
     private IUiListener listener;
-    private String wechatName;
     private String wechatHeadimgurl;
     private IWXAPI mWXApi;
     private String openid1;
     private static final String TAG = "LoginActivity";
     private String avatar;
-    private String nickName;
     private String openId;
     private cn.jpush.im.android.api.model.UserInfo userInfo;
     private CustomDialog dialog;
@@ -546,7 +544,6 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
         if (!responseInfo.isEmpty()) {
             try {
                 JSONObject jsonObject = new JSONObject(responseInfo);
-                wechatName = jsonObject.getString("nickname");
                 wechatHeadimgurl = jsonObject.getString("headimgurl");
                 openid1 = jsonObject.getString("openid");
             } catch (JSONException e) {
@@ -556,7 +553,6 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
             editor.clear();
             editor.commit();
 
-            Log.e("xxx", "openid" + openid1 + "    name" + wechatName + "    头像" + wechatHeadimgurl);
 
             dialog.show();
             //获取完用户信息调用微信登录接口
@@ -573,6 +569,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                             if (loginBean.getType().equals("OK")) {
                                 LoginBean.ObjectBean object = loginBean.getObject();
                                 String id = String.valueOf(object.getId());
+                                String nickName = object.getNickName();
                                 SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_ID, id);
                                 //极光注册登录
                                 JMessageClient.register(id, id, new BasicCallback() {
@@ -589,7 +586,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                                                         //更新用户信息
                                                         NetUtils.getInstance()
                                                                 .getApis()
-                                                                .doComPlteThiredLogin(object.getId(),wechatName,wechatHeadimgurl)
+                                                                .doComPleteHeadImg(object.getId(),wechatHeadimgurl)
                                                                 .subscribeOn(Schedulers.io())
                                                                 .observeOn(AndroidSchedulers.mainThread())
                                                                 .subscribe(new Observer<ComPleteMsgBean>() {
@@ -605,17 +602,17 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
 
                                                                             SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.IS_LOGIN, "0");
 
-                                                                            SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME, wechatName);
+                                                                            SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME, nickName);
                                                                             SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG, wechatHeadimgurl);
 
-                                                                            userInfo.setNickname(wechatName);
+                                                                            userInfo.setNickname(nickName);
 
                                                                             //登陆成功设置极光用户名及头像
                                                                             JMessageClient.updateMyInfo(cn.jpush.im.android.api.model.UserInfo.Field.nickname,userInfo,new BasicCallback() {
                                                                                 @Override
                                                                                 public void gotResult(int i, String s) {
                                                                                     if (i==0){
-                                                                                        Log.d("xxx",id+"极光昵称设置成"+wechatName);
+                                                                                        Log.d("xxx",id+"极光昵称设置成"+nickName);
                                                                                         //极光更换成功调用 上传到服务器
                                                                                     }else{
                                                                                         Log.d("xxx","设置失败，原因为"+s);
@@ -671,14 +668,14 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                                                             } else {
                                                                 intent = new Intent(LoginActivity.this, CompleteMsgActivity.class);
                                                                 intent.putExtra("headimg",wechatHeadimgurl);
-                                                                intent.putExtra("name",wechatName);
+                                                                intent.putExtra("name",nickName);
                                                                 startActivity(intent);
                                                                 finish();
                                                             }
                                                         }else{
                                                             intent = new Intent(LoginActivity.this, CompleteMsgActivity.class);
                                                             intent.putExtra("headimg",wechatHeadimgurl);
-                                                            intent.putExtra("name",wechatName);
+                                                            intent.putExtra("name",nickName);
                                                             startActivity(intent);
                                                             finish();
                                                         }
@@ -832,12 +829,9 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                     Log.e(TAG, "个人信息：" + object.toString());
                     //头像
                     avatar = ((JSONObject) object).getString("figureurl_2");
-                    nickName = ((JSONObject) object).getString("nickname");
 
 
-                    SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME, nickName);
                     SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.HEAD_IMG, avatar);
-
 
                     dialog.show();
                     //获取完用户信息调用QQ登录接口
@@ -855,6 +849,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                                     if (loginBean.getType().equals("OK")) {
                                         LoginBean.ObjectBean object = loginBean.getObject();
                                         String id = String.valueOf(object.getId());
+                                        String nickName = object.getNickName();
                                         SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_ID, id);
                                         //极光注册登录
                                         JMessageClient.register(id, id, new BasicCallback() {
@@ -870,7 +865,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
                                                                 dialog.dismiss();
 
                                                                 NetUtils.getInstance().getApis()
-                                                                        .doComPlteThiredLogin(object.getId(),nickName,avatar)
+                                                                        .doComPleteHeadImg(object.getId(),avatar)
                                                                         .subscribeOn(Schedulers.io())
                                                                         .observeOn(AndroidSchedulers.mainThread())
                                                                         .subscribe(new Observer<ComPleteMsgBean>() {
@@ -885,6 +880,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener,
 
                                                                                     //将登录状态改为已经登录
                                                                                     SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.IS_LOGIN, "0");
+                                                                                    SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_NAME, nickName);
 
                                                                                     userInfo.setNickname(nickName);
                                                                                     //登陆成功设置极光用户名及头像

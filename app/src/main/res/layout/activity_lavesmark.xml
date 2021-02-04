@@ -217,6 +217,7 @@
 <!--    建立关系-->
     <RelativeLayout
         android:id="@+id/r13"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
