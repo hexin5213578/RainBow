@@ -136,6 +136,10 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
         headimg = intent.getStringExtra("headimg");
         name = intent.getStringExtra("name");
 
+        userid = Integer.valueOf(Common.getUserId());
+
+
+
         userInfo = new UserInfo() {
             @Override
             public String getNotename() {
@@ -239,7 +243,6 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
         };
 
 
-        userid = Integer.valueOf(Common.getUserId());
 
         //申请开启内存卡权限
         if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) && (CompleteMsgActivity.this.checkSelfPermission
@@ -358,17 +361,21 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_headimg:
-                PictureSelector
-                        .with(this)
-                        .selectSpec()
-                        .setOpenCamera()
-                        .needCrop()
-                        .setOutputX(200)
-                        .setOutputY(200)
-                        //开启拍照功能一定得设置该属性，为了兼容Android7.0相机拍照问题
-                        //在manifest文件中也需要注册该provider
-                        .setAuthority("com.YiDian.RainBow.utils.MyFileProvider")
-                        .startForResult(100);
+                if(Build.VERSION.SDK_INT==30){
+                    Toast.makeText(this, "Android11暂不支持更换头像", Toast.LENGTH_SHORT).show();
+                }else{
+                    PictureSelector
+                            .with(this)
+                            .selectSpec()
+                            .setOpenCamera()
+                            .needCrop()
+                            .setOutputX(200)
+                            .setOutputY(200)
+                            //开启拍照功能一定得设置该属性，为了兼容Android7.0相机拍照问题
+                            //在manifest文件中也需要注册该provider
+                            .setAuthority("com.YiDian.RainBow.utils.MyFileProvider")
+                            .startForResult(100);
+                }
                 break;
             case R.id.tv_jump_main:
                 //修改SP完善资料状态为1

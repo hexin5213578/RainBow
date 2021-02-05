@@ -439,15 +439,23 @@ public interface Apis {
     @POST("lovers/cancelLovers")
     Observable<LoveBulidBean>doGetReleaseLove(@Query("userPId")int userPId, @Query("userTId")int userTId);
 
+    //邀请情侣
     @POST("lovers/breakLovers")
     Observable<LoveBulidBean>doGetInterruption(@Query("userPId")int userPId, @Query("userTId")int userTId);
 
+    //查询情侣状态
     @POST("lovers/checkBuildLovers")
     Observable<ChackBuildLovesBean>doGetChackBuildLovers(@Query("userPId")int userPId, @Query("userTId")int userTId, @Query("isAgree") int isAgree);
 
+    //通过话题名查动态
     @GET("content/getContentByTopicTitle")
     Observable<TopicBean>doGetTopicByKey(@Query("userId")int userid,@Query("topicTitle")String title,@Query("page")int page,@Query("pageSize")int size);
 
+    //举报用户
     @POST("report/insertReport")
     Observable<ReportActivityBean>doGetInsertReport(@Query("reportType")Integer reportType, @Query("detailed")Integer detailed, @Query("userId")Integer userId, @Query("beId")Integer beId, @Query("exType")Integer exType);
+
+    //问题反馈
+    @POST("feedback/insert")
+    Observable<ChackBuildLovesBean> doInsertFeedBack(@Query("info")String info);
 }

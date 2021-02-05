@@ -43,6 +43,7 @@
                         android:layout_width="@dimen/dp_50"
                         android:layout_alignParentRight="true"
                         android:id="@+id/sandian"
+                        android:visibility="gone"
                         android:layout_marginTop="@dimen/dp_30"
                         android:gravity="center"
                         android:layout_height="@dimen/dp_50">
