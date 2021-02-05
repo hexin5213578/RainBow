@@ -51,8 +51,6 @@ public class CardsDataAdapter extends ArrayAdapter<AllUserInfoBean.ObjectBean.Li
         View view = View.inflate(context, R.layout.card_layout,null);
 
         AllUserInfoBean.ObjectBean.ListBean bean = getItem(position);
-
-
         CustomRoundAngleImageView ivImg = view.findViewById(R.id.iv_img);
         TextView tvdistance = view.findViewById(R.id.tv_distance);
         TextView username = view.findViewById(R.id.tv_username);
