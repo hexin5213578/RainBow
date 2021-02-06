@@ -37,6 +37,8 @@ allprojects {
         flatDir {
             dirs 'libs'
         }
+        //fst导入卡片布局
+        maven { url 'https://jitpack.io' }
     }
 }
 

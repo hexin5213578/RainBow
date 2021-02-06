@@ -1,12 +1,9 @@
 package com.YiDian.RainBow.main.fragment.find.fragment;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -14,16 +11,14 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.loading.CustomDialog;
-import com.YiDian.RainBow.main.fragment.find.activity.UserDetailsActivity;
+import com.YiDian.RainBow.main.fragment.find.adapter.CardsAdapterFst;
 import com.YiDian.RainBow.main.fragment.find.adapter.CardsDataAdapter;
 import com.YiDian.RainBow.main.fragment.find.bean.AllUserInfoBean;
 import com.YiDian.RainBow.main.fragment.find.bean.LikeUserBean;
@@ -34,6 +29,9 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.fashare.stack_layout.StackLayout;
+import com.fashare.stack_layout.transformer.AngleTransformer;
+import com.fashare.stack_layout.transformer.StackPageTransformer;
 import com.wenchao.cardstack.CardStack;
 
 import org.greenrobot.eventbus.EventBus;
@@ -43,6 +41,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -53,11 +52,12 @@ import io.reactivex.schedulers.Schedulers;
 
 //匹配界面
 public class Fragmentmatch extends BaseFragment implements AMapLocationListener {
-    @BindView(R.id.container)
-    CardStack container;
+
     int index = 0;
     @BindView(R.id.rl_nodata)
     RelativeLayout rlNodata;
+    @BindView(R.id.stack_layout)
+    StackLayout stackLayout;
     private CardsDataAdapter cardsDataAdapter;
     private int userid;
     //声明mlocationClient对象
@@ -67,16 +67,18 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
     private double latitude;
     private double longitude;
     private List<AllUserInfoBean.ObjectBean.ListBean> list;
-    private List<AllUserInfoBean.ObjectBean.ListBean> Alllist;
+    private LinkedList<AllUserInfoBean.ObjectBean.ListBean> linkedList;
     private int id;
     private boolean DataType = true;
     private String age;
     private int distance;
     private String role;
     int single = 0;
-    boolean isfirst;
     private CustomDialog dialog;
     private CustomDialog dialog1;
+
+    public String TAG = "fst";
+    AllUserInfoBean.ObjectBean.ListBean topItem;
 
     @Override
     protected void getid(View view) {
@@ -95,105 +97,37 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
 
     @Override
     protected void getData() {
-        Alllist = new ArrayList<>();
-        //是否是第一次点击
-        isfirst = true;
-
-        dialog1 = new CustomDialog(getContext(), "正在加载...");
-
+        //从网络获取数据表后将其中的列表存放在这个链表中
+        linkedList = new LinkedList<>();
+        //dialog1 = new CustomDialog(getContext(), "正在加载...");
         doLocation();
-
         userid = Integer.valueOf(Common.getUserId());
-        container.setStackMargin(20);
+        initView();
 
 
-        cardsDataAdapter = new CardsDataAdapter(getContext(), R.layout.card_layout);
+    }
 
-        container.setListener(new CardStack.CardEventListener() {
+    //卡片数据
+    private void initView() {
+        stackLayout.addPageTransformer(
+//                minScale  最后一张卡片缩放比例    maxScale 第一张卡片缩放比例   stackCount   卡片显示数量
+                new StackPageTransformer(0.8f,1f,3),     // 堆叠
+                new MyAlphaTransformer(),       // 渐变  我没做
+                new AngleTransformer(-60,0)     // 角度  移开角度  ， 未移动角度
+        );
+        //卡片滑动事件监听
+        stackLayout.setOnSwipeListener(new StackLayout.OnSwipeListener() {
             @Override
-            public boolean swipeEnd(int i, float v) {
-                //if "return true" the dismiss animation will be triggered  如果“ return true”，则将触发关闭动画
-                //if false, the card will move back to stack  如果“ return false”，则卡将移回堆栈
-                //distance is finger swipe distance in dp  距离是手指滑动距离，以dp为单位
-                //the direction indicate swipe direction  方向指示滑动方向
-                //there are four directions  有四个方向
-                //  0  |  1
-                // ----------
-                //  2  |  3
-                return (v > 360) ? true : false;
-            }
+            public void onSwiped(View swipedView, int swipedItemPos, boolean isSwipeLeft, int itemLeft) {
+                //Log.d(TAG, isSwipeLeft+ "往左" + "往右" + "移除" + swipedItemPos + "." + "剩余" + itemLeft + "项");
+                //获取数据并渲染
+                getUserData();
 
-            @Override
-            public boolean swipeStart(int i, float v) {
-
-                return false;
-            }
-
-            @Override
-            public boolean swipeContinue(int i, float v, float v1) {
-
-                return false;
-            }
-
-            //关闭动画结束时调用此回调。
-            @Override
-            public void discarded(int i, int i1) {
-                Log.e("xxx", i + "   " + i1);
-
-                if (list.size()-1<14 && i==list.size()-1){
-                    getUserData();
-                }
-
-                if (i % 14 == 0 && DataType) {
+                Log.d(TAG, "onSwiped: "+swipedView.toString()+swipedItemPos);
+                if(isSwipeLeft){
+                    //左滑处理
                     NetUtils.getInstance().getApis()
-                            .doGetAllUserInfo(userid, longitude, latitude, 1, 15)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Observer<AllUserInfoBean>() {
-                                @Override
-                                public void onSubscribe(Disposable d) {
-
-                                }
-
-                                @Override
-                                public void onNext(AllUserInfoBean allUserInfoBean) {
-                                    list = allUserInfoBean.getObject().getList();
-
-                                    if (list.size() > 0 && list != null) {
-                                        rlNodata.setVisibility(View.GONE);
-                                        container.setVisibility(View.VISIBLE);
-
-                                        for (int i = 1; i < list.size(); i++) {
-                                            cardsDataAdapter.add(list.get(i));
-                                            Alllist.add(list.get(i));
-                                        }
-                                        container.setAdapter(cardsDataAdapter);
-                                    }
-
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-
-                                }
-
-                                @Override
-                                public void onComplete() {
-
-                                }
-                            });
-                }
-                index = i;
-
-                SPUtil.getInstance().saveData(getContext(), SPUtil.FILE_NAME, SPUtil.COUNT, String.valueOf(index));
-
-                id = 1;
-                //i   下标
-                if (i1 == 1 || i1 == 3) {
-                    // TODO: 2020/10/12 0012  右滑喜欢
-                    Log.d("xxx", "喜欢了" + Alllist.get(index - 1).getNickName());
-                    NetUtils.getInstance().getApis()
-                            .doLikeUser(userid, Alllist.get(index - 1).getId(), 1)
+                            .doLikeUser(userid, topItem.getId(), 0)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Observer<LikeUserBean>() {
@@ -217,11 +151,10 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
 
                                 }
                             });
-                } else {
-                    // TODO: 2020/10/12 0012  左滑不喜欢
-                    Log.d("xxx", "不喜欢" + Alllist.get(index - 1).getNickName());
+                }else {
+                    //右滑处理
                     NetUtils.getInstance().getApis()
-                            .doLikeUser(userid, Alllist.get(index - 1).getId(), 0)
+                            .doLikeUser(userid, topItem.getId(), 1)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Observer<LikeUserBean>() {
@@ -246,37 +179,27 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
                                 }
                             });
                 }
-            }
-
-            //当用户点击顶部卡片时调用此回调。
-            @Override
-            public void topCardTapped() {
-                if (id == 0) {
-                    // TODO: 2020/10/12 0012 传入需要使用的用户信息
-                    if (isfirst) {
-                        Intent intent = new Intent(getContext(), UserDetailsActivity.class);
-                        AllUserInfoBean.ObjectBean.ListBean listBean = Alllist.get(0);
-                        intent.putExtra("bean", listBean);
-                        startActivity(intent);
-                        isfirst = false;
-                    } else {
-                        Intent intent = new Intent(getContext(), UserDetailsActivity.class);
-                        AllUserInfoBean.ObjectBean.ListBean listBean = Alllist.get(index);
-                        intent.putExtra("bean", listBean);
-                        startActivity(intent);
-                    }
-                } else {
-                    // TODO: 2020/10/12 0012 传入需要使用的用户信息
-                    String count = SPUtil.getInstance().getData(getContext(), SPUtil.FILE_NAME, SPUtil.COUNT);
-                    int num = Integer.valueOf(count);
-                    Intent intent = new Intent(getContext(), UserDetailsActivity.class);
-                    AllUserInfoBean.ObjectBean.ListBean listBean = Alllist.get(num);
-                    intent.putExtra("bean", listBean);
-                    startActivity(intent);
-                }
-
             }
         });
+    }
+
+    //从链表获取数据，填充进适配器，并为stackLayout设置适配器
+    public void bindData(){
+        boolean f=true;   //true表示第一个数据，链表中用pop获取数据后从链表删除
+        ArrayList<AllUserInfoBean.ObjectBean.ListBean> list2 = new ArrayList();
+        for(int i=0;i<3;i++){
+            if(f){
+                //将第一个卡片的绑定数据先暂存一份，用户在确定喜欢不喜欢时获取用户ID
+                topItem = linkedList.peek();
+                list2.add(linkedList.poll());
+                f=false;
+            }else {
+                //后面两个数据获取后不从链表中删除
+                list2.add(linkedList.get(i-1));
+            }
+        }
+        CardsAdapterFst adapter= new CardsAdapterFst(getContext(),list2);
+        stackLayout.setAdapter(adapter);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -318,8 +241,8 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
         // 在单次定位情况下，定位无论成功与否，都无需调用stopLocation()方法移除请求，定位sdk内部会移除
         //启动定位
         mlocationClient.startLocation();
-        dialog = new CustomDialog(getContext(), "正在获取位置信息...");
-        dialog.show();
+//        dialog = new CustomDialog(getContext(), "正在获取位置信息...");
+//        dialog.show();
     }
 
     @Override
@@ -338,20 +261,20 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
                 df.format(date);//定位时间
 
                 Log.d("xxx", "定位成功");
-                dialog.dismiss();
+//                dialog.dismiss();
                 getUserData();
             } else {
-                dialog.dismiss();
+//                dialog.dismiss();
                 Toast.makeText(getContext(), "获取位置信息失败", Toast.LENGTH_SHORT).show();
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (aMapLocation.getErrorCode()==12){
+                        if (aMapLocation.getErrorCode() == 12) {
                             Request();
                         }
                     }
-                },1000);
+                }, 1000);
 
                 //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
                 Log.e("AmapError", "location Error, ErrCode:"
@@ -376,6 +299,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
 
         }
     }
+
     //参数 requestCode是我们在申请权限的时候使用的唯一的申请码
     //String[] permission则是权限列表，一般用不到
     //int[] grantResults 是用户的操作响应，包含这权限是够请求成功
@@ -391,6 +315,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
             }
         }
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -410,55 +335,72 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
             EventBus.getDefault().unregister(this);
         }
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         Log.d("hmy", "onDestroyView");
     }
-    //获取用户信息
+    //获取用户信息   将数据加载到链表
     public void getUserData() {
         DataType = true;
-        dialog1.show();
-        NetUtils.getInstance().getApis()
-                .doGetAllUserInfo(userid, longitude, latitude, 1, 15)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<AllUserInfoBean>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+//        dialog1.show();
+        // 少于5条, 往链表里面放入更多数据，如果链表里面有数据，则从链表里面获取
+        if(linkedList.size() < 6){
+            NetUtils.getInstance().getApis()
+                    .doGetAllUserInfo(userid, longitude, latitude, 1, 15)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<AllUserInfoBean>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-                    }
-
-                    @Override
-                    public void onNext(AllUserInfoBean allUserInfoBean) {
-                        dialog1.dismiss();
-                        list = allUserInfoBean.getObject().getList();
-
-                        if (list.size() > 1 && list != null) {
-                            rlNodata.setVisibility(View.GONE);
-                            container.setVisibility(View.VISIBLE);
-
-                            for (int i = 0; i < list.size() - 1; i++) {
-                                cardsDataAdapter.add(list.get(i));
-                                Alllist.add(list.get(i));
-                            }
-                            container.setAdapter(cardsDataAdapter);
-                        } else {
-                            rlNodata.setVisibility(View.VISIBLE);
-                            container.setVisibility(View.GONE);
                         }
-                    }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        dialog1.dismiss();
-                        Toast.makeText(getContext(), "请求失败", Toast.LENGTH_SHORT).show();
-                    }
+                        @Override
+                        public void onNext(AllUserInfoBean allUserInfoBean) {
+//                            dialog1.dismiss();
+                            list = allUserInfoBean.getObject().getList();
 
-                    @Override
-                    public void onComplete() {
+                            if (list.size() > 1 && list != null) {
+                                //从网络拿到数据准备加入链表
+                                for(AllUserInfoBean.ObjectBean.ListBean s:list){
+                                    linkedList.offer(s);
+                                }
 
-                    }
-                });
+                                Log.d(TAG, "onNext:"+linkedList.peek().getNickName());
+                                //拿到数据后再绑定
+                                bindData();
+                                //有数据，把page++准备下一页。
+                            } else {
+                                //拿不到数据
+//                              说明服务器已经没有了数据但是链表中还有一小部分，当链表中没有数据时，展示缺省页
+                                //从网络轻求数据后链表还是为0显示完展示缺省页
+                                if(linkedList.size()==0){
+                                    //展示缺省页
+                                    stackLayout.setVisibility(View.GONE);
+                                    rlNodata.setVisibility(View.VISIBLE);
+                                }
+                            }
+
+
+                        }
+                        @Override
+                        public void onError(Throwable e) {
+//                            dialog1.dismiss();
+                            Toast.makeText(getContext(), "请求失败", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+
+        }else {
+            //链表中数据大于6条直接从链表获取数据进行绑定
+            bindData();
+        }
+
     }
 }

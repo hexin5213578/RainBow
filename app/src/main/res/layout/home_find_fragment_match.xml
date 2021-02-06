@@ -4,14 +4,21 @@
     android:background="@color/white"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <com.wenchao.cardstack.CardStack
-        android:id="@+id/container"
+<!--    <com.wenchao.cardstack.CardStack-->
+<!--        android:id="@+id/container"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:padding = "20dp"-->
+<!--        android:clipChildren="false"-->
+<!--        android:clipToPadding="false">-->
+<!--    </com.wenchao.cardstack.CardStack>-->
+    <com.fashare.stack_layout.StackLayout
+        android:id="@+id/stack_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding = "20dp"
-        android:clipChildren="false"
-        android:clipToPadding="false">
-    </com.wenchao.cardstack.CardStack>
+
+        />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:id="@+id/rl_nodata"

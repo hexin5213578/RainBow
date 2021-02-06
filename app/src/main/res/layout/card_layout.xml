@@ -5,11 +5,14 @@
     xmlns:roundiv="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <RelativeLayout
+        android:id="@+id/rl_item"
         android:layout_width="@dimen/dp_280"
         android:layout_centerHorizontal="true"
         android:background="@drawable/find_match_car_bg"
         android:layout_marginTop="@dimen/dp_62"
-        android:layout_height="@dimen/dp_400">
+        android:layout_height="@dimen/dp_400"
+        android:elevation="@dimen/dp_5"
+        >
 
         <com.YiDian.RainBow.custom.image.CustomRoundAngleImageView
             android:id="@+id/iv_img"
@@ -65,7 +68,7 @@
                 android:textColor="#666666"
                 android:id="@+id/tv_qianming"
                 android:layout_marginTop="@dimen/dp_10"
-                android:text="创造机会的人是勇者，等待机会的人是愚者"
+                android:text="还未设置签名"
                 android:layout_height="wrap_content">
             </TextView>
         </RelativeLayout>

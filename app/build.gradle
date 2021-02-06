@@ -207,4 +207,8 @@ dependencies {
         exclude (group: 'com.squareup.okhttp3', module: 'okhttp')
     }
     implementation 'com.squareup.okhttp3:okhttp:4.2.2'
+
+    //fst导入卡片
+    implementation 'com.github.fashare2015:StackLayout:1.0.0'
+
 }
