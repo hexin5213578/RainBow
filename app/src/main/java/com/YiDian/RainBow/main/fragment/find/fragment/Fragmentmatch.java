@@ -99,7 +99,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
     protected void getData() {
         //从网络获取数据表后将其中的列表存放在这个链表中
         linkedList = new LinkedList<>();
-        //dialog1 = new CustomDialog(getContext(), "正在加载...");
+        dialog1 = new CustomDialog(getContext(), "正在加载...");
         doLocation();
         userid = Integer.valueOf(Common.getUserId());
         initView();
@@ -120,8 +120,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
             @Override
             public void onSwiped(View swipedView, int swipedItemPos, boolean isSwipeLeft, int itemLeft) {
                 //Log.d(TAG, isSwipeLeft+ "往左" + "往右" + "移除" + swipedItemPos + "." + "剩余" + itemLeft + "项");
-                //获取数据并渲染
-                getUserData();
+
 
                 Log.d(TAG, "onSwiped: "+swipedView.toString()+swipedItemPos);
                 if(isSwipeLeft){
@@ -179,8 +178,11 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
                                 }
                             });
                 }
+                //获取数据并渲染
+                getUserData();
             }
         });
+
     }
 
     //从链表获取数据，填充进适配器，并为stackLayout设置适配器
@@ -241,8 +243,8 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
         // 在单次定位情况下，定位无论成功与否，都无需调用stopLocation()方法移除请求，定位sdk内部会移除
         //启动定位
         mlocationClient.startLocation();
-//        dialog = new CustomDialog(getContext(), "正在获取位置信息...");
-//        dialog.show();
+        dialog = new CustomDialog(getContext(), "正在获取位置信息...");
+        dialog.show();
     }
 
     @Override
@@ -261,10 +263,10 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
                 df.format(date);//定位时间
 
                 Log.d("xxx", "定位成功");
-//                dialog.dismiss();
+                dialog.dismiss();
                 getUserData();
             } else {
-//                dialog.dismiss();
+                dialog.dismiss();
                 Toast.makeText(getContext(), "获取位置信息失败", Toast.LENGTH_SHORT).show();
 
                 new Handler().postDelayed(new Runnable() {
@@ -344,9 +346,10 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
     //获取用户信息   将数据加载到链表
     public void getUserData() {
         DataType = true;
-//        dialog1.show();
         // 少于5条, 往链表里面放入更多数据，如果链表里面有数据，则从链表里面获取
         if(linkedList.size() < 6){
+            dialog1.show();
+
             NetUtils.getInstance().getApis()
                     .doGetAllUserInfo(userid, longitude, latitude, 1, 15)
                     .subscribeOn(Schedulers.io())
@@ -359,7 +362,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
 
                         @Override
                         public void onNext(AllUserInfoBean allUserInfoBean) {
-//                            dialog1.dismiss();
+                            dialog1.dismiss();
                             list = allUserInfoBean.getObject().getList();
 
                             if (list.size() > 1 && list != null) {
@@ -387,7 +390,7 @@ public class Fragmentmatch extends BaseFragment implements AMapLocationListener 
                         }
                         @Override
                         public void onError(Throwable e) {
-//                            dialog1.dismiss();
+                            dialog1.dismiss();
                             Toast.makeText(getContext(), "请求失败", Toast.LENGTH_SHORT).show();
                         }
 
