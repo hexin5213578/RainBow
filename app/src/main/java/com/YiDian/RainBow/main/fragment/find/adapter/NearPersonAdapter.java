@@ -63,8 +63,19 @@ public class NearPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         userid = Integer.valueOf(Common.getUserId());
         //设置用户名
         ((ViewHolder)holder).tvName.setText(listBean.getNickName());
-        //设置签名
-        ((ViewHolder)holder).tvAutograph.setText(listBean.getExplains());
+
+        String explains = listBean.getExplains();
+        if (explains!=null){
+            if (explains.equals("")){
+                ((ViewHolder)holder).tvAutograph.setText("还没有设置签名哦");
+            }else{
+                //设置签名
+                ((ViewHolder)holder).tvAutograph.setText(listBean.getExplains());
+            }
+        }else{
+            ((ViewHolder)holder).tvAutograph.setText("还没有设置签名哦");
+        }
+
         //判断是否关注
         if (listBean.getIsFans()==0){
             //设置成未关注

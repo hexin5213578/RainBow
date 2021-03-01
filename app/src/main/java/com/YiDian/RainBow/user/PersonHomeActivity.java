@@ -5,6 +5,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
@@ -38,6 +39,7 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.custom.customDialog.CustomDialogCancleFollow;
 import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.friend.activity.FriendsActivity;
 import com.YiDian.RainBow.login.bean.ComPleteMsgBean;
@@ -496,13 +498,13 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             //拿到头像图片的路经  背景路径
                             UserMsgBean.ObjectBean object = userMsgBean.getObject();
                             UserMsgBean.ObjectBean.UserInfoBean userInfo = userMsgBean.getObject().getUserInfo();
-
+                            
                             if (userInfo.getIsFans()==0){
                                 isfollow=  false;
                                 btGuanzhu.setText("关注");
                             }else{
                                 isfollow = true;
-                                btGuanzhu.setText("私信");
+                                btGuanzhu.setText("已关注");
                             }
                             reciveid = userInfo.getId();
 
@@ -604,7 +606,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                                 btGuanzhu.setText("关注");
                             }else{
                                 isfollow = true;
-                                btGuanzhu.setText("私信");
+                                btGuanzhu.setText("已关注");
                             }
 
                             String fenSiCount = object.getCountFansNum() + "";
@@ -743,9 +745,54 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                 break;
             case R.id.bt_guanzhu:
                 if (isfollow){
-                    Log.d("xxx","已关注 私信");
+                    Log.d("xxx","已关注 已关注");
+                    //取消关注
+                    CustomDialogCancleFollow.Builder builder = new CustomDialogCancleFollow.Builder(PersonHomeActivity.this);
+                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            //开始执行设置不可点击 防止多次点击发生冲突
+                            btGuanzhu.setEnabled(false);
+                            NetUtils.getInstance().getApis()
+                                    .doCancleFollow(myId, reciveid)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Observer<FollowBean>() {
+                                        @Override
+                                        public void onSubscribe(Disposable d) {
 
+                                        }
 
+                                        @Override
+                                        public void onNext(FollowBean followBean) {
+                                            //处理结束后恢复点击
+                                            btGuanzhu.setEnabled(true);
+                                            if (followBean.getMsg().equals("取消关注成功")) {
+                                                btGuanzhu.setText("关注");
+                                                isfollow = false;
+                                                dialog.dismiss();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onError(Throwable e) {
+
+                                        }
+
+                                        @Override
+                                        public void onComplete() {
+
+                                        }
+                                    });
+
+                        }
+                    });
+                    builder.setNegativeButton("取消",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    builder.create().show();
 
                 }else{
                     Log.d("xxx","未关注，发起关注");
@@ -766,7 +813,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                                     //处理结束后恢复点击
                                     btGuanzhu.setEnabled(true);
                                     if (followBean.getMsg().equals("关注成功")) {
-                                        btGuanzhu.setText("私信");
+                                        btGuanzhu.setText("已关注");
                                         isfollow = true;
                                     }
                                 }

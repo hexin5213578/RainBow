@@ -119,6 +119,7 @@
                     <LinearLayout
                         android:id="@+id/ll_candian"
                         android:layout_width="@dimen/dp_50"
+                        android:visibility="gone"
                         android:layout_height="@dimen/dp_50"
                         android:layout_alignParentRight="true"
                         android:layout_marginTop="@dimen/dp_30"

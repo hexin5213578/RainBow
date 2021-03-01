@@ -13,15 +13,15 @@
         android:layout_below="@id/toolbar"
         android:background="@color/white"
         android:id="@+id/rl_top"
-        android:layout_height="@dimen/dp_42">
+        android:layout_height="@dimen/dp_50">
         <LinearLayout
             android:layout_width="@dimen/dp_50"
             android:id="@+id/iv_back"
-            android:layout_height="@dimen/dp_42">
+            android:layout_height="match_parent">
             <ImageView
                 android:layout_width="@dimen/dp_8"
                 android:src="@mipmap/back"
-                android:layout_gravity="bottom"
+                android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/dp_15"
                 android:layout_height="@dimen/dp_15">
             </ImageView>
@@ -31,8 +31,8 @@
             android:text="账户与安全"
             android:layout_centerHorizontal="true"
             android:textSize="@dimen/sp_18"
+            android:layout_centerVertical="true"
             android:textStyle="bold"
-            android:layout_alignParentBottom="true"
             android:textColor="@color/color_333333"
             android:layout_height="@dimen/dp_22">
         </TextView>
@@ -40,7 +40,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_below="@id/rl_top"
-        android:layout_marginTop="@dimen/dp_10"
         android:layout_height="match_parent">
         <RelativeLayout
             android:layout_width="match_parent"

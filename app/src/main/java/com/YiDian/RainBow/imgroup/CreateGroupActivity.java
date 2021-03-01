@@ -108,7 +108,7 @@ public class CreateGroupActivity extends BaseAvtivity implements View.OnClickLis
 
                 File file = getFile(bitmap);
                 //同步创建极光群聊
-                JMessageClient.createPublicGroup(groupname, "还没有描述哦", file, "jpg", new CreateGroupCallback() {
+                JMessageClient.createPublicGroup(groupname, "还没有简介，快来设置吧", file, "jpg", new CreateGroupCallback() {
                     @Override
                     public void gotResult(int i, String s, long l) {
                         if (i==0){

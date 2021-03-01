@@ -43,7 +43,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-
+//设置页
 public class SetupActivity extends BaseAvtivity implements View.OnClickListener {
     @BindView(R.id.toolbar)
     Toolbar toolbar;

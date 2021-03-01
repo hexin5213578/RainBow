@@ -191,8 +191,6 @@ public class FriendsActivity extends BaseAvtivity implements RadioGroup.OnChecke
                 EventBus.getDefault().post("收到了信息");
                 break;
             case R.id.ll_search:
-
-                break;
             case R.id.ll_addfriend:
                 //跳转至添加好友页
                 intent = new Intent(FriendsActivity.this,AddFriendActivity.class);

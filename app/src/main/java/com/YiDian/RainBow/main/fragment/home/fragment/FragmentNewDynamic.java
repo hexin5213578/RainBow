@@ -287,7 +287,6 @@ public class FragmentNewDynamic extends BaseFragment {
                         if (list.size() > 5) {
                             sv.setFooter(new AliFooter(getContext()));
                         }
-
                     }
 
                     @Override
