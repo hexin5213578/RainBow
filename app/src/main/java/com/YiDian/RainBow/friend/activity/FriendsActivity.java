@@ -20,7 +20,7 @@ import com.YiDian.RainBow.friend.fragment.FragmentFollow;
 import com.YiDian.RainBow.friend.fragment.FragmentFans;
 import com.YiDian.RainBow.friend.fragment.FragmentFriend;
 import com.YiDian.RainBow.friend.fragment.FragmentGroup;
-import com.YiDian.RainBow.imgroup.CreateGroupActivity;
+import com.YiDian.RainBow.imgroup.activity.CreateGroupActivity;
 import com.leaf.library.StatusBarUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -195,7 +195,6 @@ public class FriendsActivity extends BaseAvtivity implements RadioGroup.OnChecke
                 //跳转至添加好友页
                 intent = new Intent(FriendsActivity.this,AddFriendActivity.class);
                 startActivity(intent);
-                finish();
                 break;
             case R.id.ll_addgroup:
                 //跳转至创建群聊页

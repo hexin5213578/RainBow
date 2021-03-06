@@ -48,7 +48,7 @@ public class GroupMyCreateAdapter extends RecyclerView.Adapter<RecyclerView.View
         listbean = list.get(position);
         //设置头像
         if (listbean.getGroupImg()==null){
-            Glide.with(context).load(R.mipmap.headimg3).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder)holder).ivHeadimg);
+            Glide.with(context).load(R.mipmap.groupimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder)holder).ivHeadimg);
         }else{
             Glide.with(context).load(listbean.getGroupImg()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder)holder).ivHeadimg);
         }
@@ -62,12 +62,20 @@ public class GroupMyCreateAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
         ((ViewHolder)holder).tvNum.setText(listbean.getUserNum()+"");
 
+        ((ViewHolder)holder).ivHeadimg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //跳转到可管理群组主页
+                //当前用户为群主
 
+
+
+            }
+        });
         ((ViewHolder)holder).rlItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 2021/1/14 0014 跳转到群聊页
-
+                //跳转到群聊页
 
             }
         });

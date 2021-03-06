@@ -76,6 +76,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+/**
+ * 主页
+ * @author hmy
+ */
 public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedChangeListener {
 
     @BindView(R.id.rbHome)
@@ -262,7 +266,11 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
                 });
     }
 
-    //判断是否存在白名单
+    /**
+     * 判断是否存在白名单
+     * @param context
+     * @return
+     */
     @RequiresApi(Build.VERSION_CODES.M)
     public boolean isIgnoringBatteryOptimizations(Context context) {
         boolean isIgnoring = false;
@@ -308,7 +316,24 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
             }
         });
     }
+    //参数 requestCode是我们在申请权限的时候使用的唯一的申请码
+    //String[] permission则是权限列表，一般用不到
+    //int[] grantResults 是用户的操作响应，包含这权限是够请求成功
+    //由于在权限申请的时候，我们就申请了一个权限，所以此处的数组的长度都是1
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 100) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //开启定位
+                EventBus.getDefault().post("获取位置权限成功");
 
+            } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                EventBus.getDefault().post("获取位置权限失败");
+
+            }
+        }
+    }
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {

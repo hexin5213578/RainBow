@@ -17,7 +17,10 @@ import com.leaf.library.StatusBarUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-//隐私权政策
+/**
+ * 隐私权政策
+ * @author Administrator
+ */
 public class YinsiActivity extends BaseAvtivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;

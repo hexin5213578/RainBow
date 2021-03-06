@@ -91,15 +91,15 @@ public interface Apis {
 
     //密码登录
     @POST("user/userLogin")
-    Observable<LoginBean> doPwdLogin(@Query("phoneNum")String phone,@Query("password")String pwd,@Query("accountType") int type,@Query("lng")double lng,@Query("lat")double lat);
+    Observable<LoginBean> doPwdLogin(@Query("phoneNum")String phone,@Query("password")String pwd,@Query("accountType") int type);
 
     //QQ登录
     @POST("user/userLogin")
-    Observable<LoginBean> doQqLogin(@Query("accountType") int type,@Query("qqOpenID")String qqId,@Query("lng")double lng,@Query("lat")double lat);
+    Observable<LoginBean> doQqLogin(@Query("accountType") int type,@Query("qqOpenID")String qqId);
 
     //微信登录
     @POST("user/userLogin")
-    Observable<LoginBean> doWechatLogin(@Query("accountType") int type,@Query("weChatOpenId")String wechatId,@Query("lng")double lng,@Query("lat")double lat);
+    Observable<LoginBean> doWechatLogin(@Query("accountType") int type,@Query("weChatOpenId")String wechatId);
 
     //修改背景图
     @POST("user/updateUserInfo")
@@ -373,7 +373,7 @@ public interface Apis {
 
     //创建群聊
     @POST("groupInfo/addGroupInfo")
-    Observable<InsertRealBean> doCreatGroup(@Query("holderId") int userid,@Query("groupName")String name);
+    Observable<InsertRealBean> doCreatGroup(@Query("jgGroupId")long jgId,@Query("holderId") int userid,@Query("groupName")String name);
 
     //我创建的群聊
     @GET("groupInfo/selectGroupInfoByGroupId")

@@ -392,9 +392,24 @@
             android:name=".friend.activity.SearchFriendActivity"
             android:screenOrientation="portrait" />
 
+        <!-- 创建群组 -->
+        <activity
+            android:name=".imgroup.activity.CreateGroupActivity"
+            android:screenOrientation="portrait" />
+
         <!-- 查询群组详情 -->
         <activity
             android:name=".friend.activity.MoreGroupActivity"
+            android:screenOrientation="portrait" />
+
+        <!-- 群主查看群组信息 -->
+        <activity
+            android:name=".imgroup.activity.LordMsgActivity"
+            android:screenOrientation="portrait" />
+
+        <!-- 群成员查看群组信息 -->
+        <activity
+            android:name=".imgroup.activity.MemberMsgActivity"
             android:screenOrientation="portrait" />
 
         <!-- 查询用户详情 -->
@@ -402,10 +417,7 @@
             android:name=".friend.activity.MoreUserActivity"
             android:screenOrientation="portrait" />
 
-        <!-- 创建群组 -->
-        <activity
-            android:name=".imgroup.CreateGroupActivity"
-            android:screenOrientation="portrait" />
+
 
         <!-- 系统通知 -->
         <activity

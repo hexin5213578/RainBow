@@ -66,15 +66,12 @@ public abstract class BaseAvtivity<P extends BasePresenter> extends AppCompatAct
         bind.unbind();
     }
 
-    // 设置标题栏颜色
-    public void setTitleColor(Activity activity){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            Window window = activity.getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(activity.getResources().getColor(R.color.colorPrimary));
-        }
-    }
-    //判断网络状态
+
+    /**
+     * 判断网络状态
+     * @param context
+     * @return
+     */
     public boolean NetWork(Context context){
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
@@ -87,12 +84,16 @@ public abstract class BaseAvtivity<P extends BasePresenter> extends AppCompatAct
     protected abstract int getResId();
     protected abstract void getData();
     protected abstract P initPresenter();
-
-    //  关闭软键盘
+    /**
+     * 关闭软键盘
+     */
     public void closekeyboard(){
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); //得到InputMethodManager的实例
-        if (imm.isActive()) {//如果开启
-            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);//关闭软键盘，开启方法相同，这个方法是切换开启与关闭状态的
+        //得到InputMethodManager的实例
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        //如果开启
+        if (imm.isActive()) {
+            //关闭软键盘，开启方法相同，这个方法是切换开启与关闭状态的
+            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
 

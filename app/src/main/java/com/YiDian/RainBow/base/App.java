@@ -83,8 +83,10 @@ public class App extends Application {
         //注册全局事件监听类
         JMessageClient.registerEventReceiver(new GlobalEventListener(getApplicationContext()));
         //初始化极光推送
-        JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
-        JPushInterface.init(this);     		// 初始化 JPush
+        // 设置开启日志,发布时请关闭日志
+        JPushInterface.setDebugMode(true);
+        // 初始化 JPush
+        JPushInterface.init(this);
 
 
     }
@@ -131,35 +133,57 @@ public class App extends Application {
     }
     public void initImageloader() {
         DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .resetViewBeforeLoading(false)  // default 图片在下载前是否重置,复位
-                .delayBeforeLoading(100) // 图片开始加载前的延时.默认是0
-                .cacheInMemory(true) // default , 是否缓存在内存中, 默认不缓存
-                .cacheOnDisk(true) // default , 是否缓存在硬盘 , 默认不缓存
-                .considerExifParams(false) // default , 设置是否考虑JPEG图片的EXIF参数信息,默认不考虑
-                .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2) // default , 指定图片缩放的方式,ListView/GridView/Gallery推荐使用此默认值
-                .bitmapConfig(Bitmap.Config.RGB_565) // default , 指定图片的质量,默认是 ARGB_8888
-                .displayer(new SimpleBitmapDisplayer()) // default , 设置图片显示的方式,用于自定义
-                .handler(new Handler()) // default ,设置图片显示的方式和ImageLoadingListener的监听, 用于自定义
+                // default 图片在下载前是否重置,复位
+                .resetViewBeforeLoading(false)
+                // 图片开始加载前的延时.默认是0
+                .delayBeforeLoading(100)
+                // default , 是否缓存在内存中, 默认不缓存
+                .cacheInMemory(true)
+                // default , 是否缓存在硬盘 , 默认不缓存
+                .cacheOnDisk(true)
+                // default , 设置是否考虑JPEG图片的EXIF参数信息,默认不考虑
+                .considerExifParams(false)
+                // default , 指定图片缩放的方式,ListView/GridView/Gallery推荐使用此默认值
+                .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
+                // default , 指定图片的质量,默认是 ARGB_8888
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                // default , 设置图片显示的方式,用于自定义
+                .displayer(new SimpleBitmapDisplayer())
+                // default ,设置图片显示的方式和ImageLoadingListener的监听, 用于自定义
+                .handler(new Handler())
                 .build();
 
         File picPath = new File(Environment.getExternalStorageDirectory().getPath() + File.separator + "MyApp"
                 + File.separator + "files");
 
         ImageLoaderConfiguration config   = new ImageLoaderConfiguration.Builder(context)
-                .memoryCacheExtraOptions(480, 800) // 指定缓存到内存时图片的大小,默认是屏幕尺寸的长宽
-                .threadPoolSize(5) // default, 指定线程池大小
-                .threadPriority(Thread.NORM_PRIORITY - 2) // default ,指定线程优先级
-                .tasksProcessingOrder(QueueProcessingType.FIFO) // default , 指定加载显示图片的任务队列的类型
-                .denyCacheImageMultipleSizesInMemory() // 禁止在内存中缓存同一张图片的多个尺寸类型
-                .memoryCache(new LruMemoryCache(2 * 1024 * 1024)) // 指定内存缓存的大小,默认值为1/8 应用的最大可用内存
+                // 指定缓存到内存时图片的大小,默认是屏幕尺寸的长宽
+                .memoryCacheExtraOptions(480, 800)
+                // default, 指定线程池大小
+                .threadPoolSize(5)
+                // default ,指定线程优先级
+                .threadPriority(Thread.NORM_PRIORITY - 2)
+                // default , 指定加载显示图片的任务队列的类型
+                .tasksProcessingOrder(QueueProcessingType.FIFO)
+                // 禁止在内存中缓存同一张图片的多个尺寸类型
+                .denyCacheImageMultipleSizesInMemory()
+                // 指定内存缓存的大小,默认值为1/8 应用的最大可用内存
+                .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
                 .memoryCacheSize(2 * 1024 * 1024)
-                .memoryCacheSizePercentage(13) // default
-                .diskCache(new UnlimitedDiskCache(picPath)) // default , 指定硬盘缓存的地址
-                .diskCacheSize(200 * 1024 * 1024) // 指定硬盘缓存的大小
-                .diskCacheFileCount(100) // 指定硬盘缓存的文件个数
-                .diskCacheFileNameGenerator(new HashCodeFileNameGenerator()) // default , 指定硬盘缓存时文件名的生成器
-                .imageDownloader(new BaseImageDownloader(context)) // default , 指定图片下载器
-                .defaultDisplayImageOptions(DisplayImageOptions.createSimple()) // default , 指定图片显示的配置
+                // default
+                .memoryCacheSizePercentage(13)
+                // default , 指定硬盘缓存的地址
+                .diskCache(new UnlimitedDiskCache(picPath))
+                // 指定硬盘缓存的大小
+                .diskCacheSize(200 * 1024 * 1024)
+                // 指定硬盘缓存的文件个数
+                .diskCacheFileCount(100)
+                // default , 指定硬盘缓存时文件名的生成器
+                .diskCacheFileNameGenerator(new HashCodeFileNameGenerator())
+                // default , 指定图片下载器
+                .imageDownloader(new BaseImageDownloader(context))
+                // default , 指定图片显示的配置
+                .defaultDisplayImageOptions(DisplayImageOptions.createSimple())
                 .build();
 
         // 初始化配置

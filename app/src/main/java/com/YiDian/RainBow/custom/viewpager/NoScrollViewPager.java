@@ -8,6 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
 
+/**
+ * @author hmy
+ */
 public class NoScrollViewPager extends ViewPager {
     //true  是不可滑动    false  是可滑动
     private boolean noScroll = true;
@@ -30,18 +33,20 @@ public class NoScrollViewPager extends ViewPager {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (noScroll)
+        if (noScroll) {
             return false;
-        else
+        } else {
             return super.onTouchEvent(ev);
+        }
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent arg0) {
-        if (noScroll)
+        if (noScroll) {
             return false;
-        else
+        } else {
             return super.onInterceptTouchEvent(arg0);
+        }
     }
 
     @Override

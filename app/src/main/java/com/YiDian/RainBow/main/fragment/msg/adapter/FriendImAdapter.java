@@ -18,6 +18,7 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.main.fragment.activity.SimplePlayerActivity;
 import com.YiDian.RainBow.main.fragment.home.activity.NewDynamicImage;
+import com.YiDian.RainBow.main.fragment.msg.activity.ReportActivity;
 import com.YiDian.RainBow.main.fragment.msg.bean.ImImageBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.ImMsgBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.ImVideoBean;
@@ -57,6 +58,7 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
     private ArrayList<String> imgUrl;
     private Intent intent;
     public static final String TAG = "IMAdapter";
+    private Intent intent1;
 
     public FriendImAdapter(Context context) {
 
@@ -154,7 +156,6 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
         } else {
             Glide.with(context).load(headImg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(holder.ivHeadimg);
         }
-
 
         gson = new Gson();
         if (message.getDirect().name().equals("send")) {
@@ -301,6 +302,18 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
 
                 holder.tvDuration.setText(imVocieBean.getContent().getDuration() + "'");
 
+                //聊天信息长按事件
+                holder.llVocie.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+
+                        intent1 = new Intent(context, ReportActivity.class);
+                        intent1.putExtra("id",imVocieBean.getFrom_id());
+                        context.startActivity(intent1);
+                        return false;
+                    }
+                });
+
                 holder.llVocie.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -341,7 +354,16 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
 
                 //获取文本内容
                 holder.tvMsg.setText(imMsgBean.getContent().getText());
-
+                //文本信息长按事件
+                holder.tvMsg.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        intent1 = new Intent(context, ReportActivity.class);
+                        intent1.putExtra("id",imMsgBean.getFrom_id());
+                        context.startActivity(intent1);
+                        return false;
+                    }
+                });
             } else if (message.getContentType().name().equals("image")) {
                 message = list.get(position);
                 ImImageBean imImageBean = gson.fromJson(message.toJson(), ImImageBean.class);
@@ -357,8 +379,19 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                     }
                 } else {
                     Glide.with(context).load(localThumbnailPath).into(holder.ivImg);
-
                 }
+
+                //图片的长按事件
+                holder.ivImg.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        intent1 = new Intent(context, ReportActivity.class);
+                        intent1.putExtra("id",imImageBean.getFrom_id());
+                        context.startActivity(intent1);
+                        return false;
+                    }
+                });
+
 
                 holder.ivImg.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -422,6 +455,18 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                 holder.videoPlayer.setShowFullAnimation(true);
                 //小屏时不触摸滑动
                 holder.videoPlayer.setIsTouchWiget(false);
+
+                //视频的长按事件
+                holder.videoPlayer.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        intent1 = new Intent(context, ReportActivity.class);
+                        intent1.putExtra("id",imVideoBean.getFrom_id());
+                        context.startActivity(intent1);
+                        return false;
+                    }
+                });
+
                 holder.videoPlayer.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

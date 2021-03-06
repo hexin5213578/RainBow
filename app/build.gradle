@@ -108,6 +108,7 @@ dependencies {
     //eventBus依赖
     implementation 'org.greenrobot:eventbus:3.0.0'
     //butterknife依赖
+
     implementation 'com.jakewharton:butterknife:10.2.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
 

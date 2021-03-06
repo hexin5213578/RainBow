@@ -76,8 +76,9 @@ public class ReportActivity extends BaseAvtivity implements View.OnClickListener
         rb6.setOnClickListener(this);
         rb7.setOnClickListener(this);
         tvCommit.setOnClickListener(this);
-        StatusBarUtil.setDarkMode(ReportActivity.this);
+
         StatusBarUtil.setGradientColor(this, toolbar);
+        StatusBarUtil.setDarkMode(ReportActivity.this);
 
         arraylist = new ArrayList<>();
         arraylist.add(rb1);
@@ -93,6 +94,7 @@ public class ReportActivity extends BaseAvtivity implements View.OnClickListener
         Intent intent = getIntent();
         id = intent.getStringExtra("id");
 
+        Log.d("xxx","被举报用户为"+id);
     }
 
     @Override
@@ -110,16 +112,13 @@ public class ReportActivity extends BaseAvtivity implements View.OnClickListener
                     public void onSubscribe(Disposable d) {
 
                     }
-
                     @Override
                     public void onNext(ReportActivityBean reportActivityBean) {
                         if (reportActivityBean.getType().equals("OK")) {
-                            Toast.makeText(ReportActivity.this, "举报成功", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ReportActivity.this, "举报成功,请通过系统通知查看", Toast.LENGTH_SHORT).show();
                             finish();
                         }
-
                     }
-
                     @Override
                     public void onError(Throwable e) {
 

@@ -47,7 +47,7 @@ public class GroupMyJoinAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         listbean = list.get(position);
         //设置头像
         if (listbean.getGroupImg()==null){
-            Glide.with(context).load(R.mipmap.headimg3).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder)holder).ivHeadimg);
+            Glide.with(context).load(R.mipmap.groupimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder)holder).ivHeadimg);
         }else{
             Glide.with(context).load(listbean.getGroupImg()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder)holder).ivHeadimg);
         }

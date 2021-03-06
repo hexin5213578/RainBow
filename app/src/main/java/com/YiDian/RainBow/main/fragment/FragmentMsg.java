@@ -177,15 +177,6 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
                 getImList();
             }
         });
-        //点击事件
-        rcMsgRecording.setSwipeItemClickListener(new SwipeItemClickListener() {
-            @Override
-            public void onItemClick(View itemView, int position) {
-
-            }
-        });
-
-
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getMsg(String str){

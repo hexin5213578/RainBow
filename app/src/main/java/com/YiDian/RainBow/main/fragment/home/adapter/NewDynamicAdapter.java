@@ -46,6 +46,7 @@ import com.YiDian.RainBow.main.fragment.home.activity.DynamicDetailsActivity;
 import com.YiDian.RainBow.main.fragment.home.bean.DianzanBean;
 import com.YiDian.RainBow.main.fragment.home.bean.FollowBean;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
+import com.YiDian.RainBow.main.fragment.msg.adapter.MsgRecordingAdapter;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.topic.TopicDetailsActivity;
 import com.YiDian.RainBow.user.PersonHomeActivity;
@@ -1275,40 +1276,10 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                 long time = parse.getTime();
 
-                //获取当前时间
-                long l = System.currentTimeMillis();
-                //获取发布过的时长
-                long difference = l - time;
+                String newChatTime = StringUtil.getNewChatTime(time);
+                holder.tvTime.setText(newChatTime);
 
-                //时长小于12小时 展示时间
-                if (difference > 1800000) {
-                    String newChatTime = StringUtil.getNewChatTime(time);
-                    holder.tvTime.setText(newChatTime);
-                }
-                if (difference > 1200000 && difference < 1800000) {
-                    holder.tvTime.setText("半小时前发布");
-                }
-                if (difference > 600000 && difference < 1200000) {
-                    holder.tvTime.setText("20分钟前发布");
-                }
-                if (difference > 300000 && difference < 600000) {
-                    holder.tvTime.setText("10分钟前发布");
-                }
-                if (difference > 240000 && difference < 300000) {
-                    holder.tvTime.setText("5分钟前发布");
-                }
-                if (difference > 180000 && difference < 240000) {
-                    holder.tvTime.setText("4分钟前发布");
-                }
-                if (difference > 120000 && difference < 180000) {
-                    holder.tvTime.setText("3分钟前发布");
-                }
-                if (difference > 60000 && difference < 120000) {
-                    holder.tvTime.setText("2分钟前发布");
-                }
-                if (difference < 60000) {
-                    holder.tvTime.setText("1分钟前发布");
-                }
+
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -1666,44 +1637,9 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                 long time = parse.getTime();
 
-                //获取当前时间
-                long l = System.currentTimeMillis();
-                //获取发布过的时长
-                long difference = l - time;
+                String newChatTime = StringUtil.getNewChatTime(time);
+                holder.tvTime.setText(newChatTime);
 
-                //时长大于12小时 显示日期
-                if (difference > 43200000) {
-                    holder.tvTime.setText(createTime);
-                }
-                //时长小于12小时 展示时间
-                if (difference > 1800000 && difference < 43200000) {
-                    String[] s = createTime.split(" ");
-                    holder.tvTime.setText(s[1]);
-                }
-                if (difference > 1200000 && difference < 1800000) {
-                    holder.tvTime.setText("半小时前发布");
-                }
-                if (difference > 600000 && difference < 1200000) {
-                    holder.tvTime.setText("20分钟前发布");
-                }
-                if (difference > 300000 && difference < 600000) {
-                    holder.tvTime.setText("10分钟前发布");
-                }
-                if (difference > 240000 && difference < 300000) {
-                    holder.tvTime.setText("5分钟前发布");
-                }
-                if (difference > 180000 && difference < 240000) {
-                    holder.tvTime.setText("4分钟前发布");
-                }
-                if (difference > 120000 && difference < 180000) {
-                    holder.tvTime.setText("3分钟前发布");
-                }
-                if (difference > 60000 && difference < 120000) {
-                    holder.tvTime.setText("2分钟前发布");
-                }
-                if (difference < 60000) {
-                    holder.tvTime.setText("1分钟前发布");
-                }
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -2061,44 +1997,10 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                 long time = parse.getTime();
 
-                //获取当前时间
-                long l = System.currentTimeMillis();
-                //获取发布过的时长
-                long difference = l - time;
 
-                //时长大于12小时 显示日期
-                if (difference > 43200000) {
-                    holder.tvTime.setText(createTime);
-                }
-                //时长小于12小时 展示时间
-                if (difference > 1800000 && difference < 43200000) {
-                    String[] s = createTime.split(" ");
-                    holder.tvTime.setText(s[1]);
-                }
-                if (difference > 1200000 && difference < 1800000) {
-                    holder.tvTime.setText("半小时前发布");
-                }
-                if (difference > 600000 && difference < 1200000) {
-                    holder.tvTime.setText("20分钟前发布");
-                }
-                if (difference > 300000 && difference < 600000) {
-                    holder.tvTime.setText("10分钟前发布");
-                }
-                if (difference > 240000 && difference < 300000) {
-                    holder.tvTime.setText("5分钟前发布");
-                }
-                if (difference > 180000 && difference < 240000) {
-                    holder.tvTime.setText("4分钟前发布");
-                }
-                if (difference > 120000 && difference < 180000) {
-                    holder.tvTime.setText("3分钟前发布");
-                }
-                if (difference > 60000 && difference < 120000) {
-                    holder.tvTime.setText("2分钟前发布");
-                }
-                if (difference < 60000) {
-                    holder.tvTime.setText("1分钟前发布");
-                }
+                String newChatTime = StringUtil.getNewChatTime(time);
+                holder.tvTime.setText(newChatTime);
+
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -2456,44 +2358,10 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                 long time = parse.getTime();
 
-                //获取当前时间
-                long l = System.currentTimeMillis();
-                //获取发布过的时长
-                long difference = l - time;
 
-                //时长大于12小时 显示日期
-                if (difference > 43200000) {
-                    holder.tvTime.setText(createTime);
-                }
-                //时长小于12小时 展示时间
-                if (difference > 1800000 && difference < 43200000) {
-                    String[] s = createTime.split(" ");
-                    holder.tvTime.setText(s[1]);
-                }
-                if (difference > 1200000 && difference < 1800000) {
-                    holder.tvTime.setText("半小时前发布");
-                }
-                if (difference > 600000 && difference < 1200000) {
-                    holder.tvTime.setText("20分钟前发布");
-                }
-                if (difference > 300000 && difference < 600000) {
-                    holder.tvTime.setText("10分钟前发布");
-                }
-                if (difference > 240000 && difference < 300000) {
-                    holder.tvTime.setText("5分钟前发布");
-                }
-                if (difference > 180000 && difference < 240000) {
-                    holder.tvTime.setText("4分钟前发布");
-                }
-                if (difference > 120000 && difference < 180000) {
-                    holder.tvTime.setText("3分钟前发布");
-                }
-                if (difference > 60000 && difference < 120000) {
-                    holder.tvTime.setText("2分钟前发布");
-                }
-                if (difference < 60000) {
-                    holder.tvTime.setText("1分钟前发布");
-                }
+                String newChatTime = StringUtil.getNewChatTime(time);
+                holder.tvTime.setText(newChatTime);
+
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -2850,45 +2718,8 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 Date parse = sdf.parse(createTime);
 
                 long time = parse.getTime();
-
-                //获取当前时间
-                long l = System.currentTimeMillis();
-                //获取发布过的时长
-                long difference = l - time;
-
-                //时长大于12小时 显示日期
-                if (difference > 43200000) {
-                    holder.tvTime.setText(createTime);
-                }
-                //时长小于12小时 展示时间
-                if (difference > 1800000 && difference < 43200000) {
-                    String[] s = createTime.split(" ");
-                    holder.tvTime.setText(s[1]);
-                }
-                if (difference > 1200000 && difference < 1800000) {
-                    holder.tvTime.setText("半小时前发布");
-                }
-                if (difference > 600000 && difference < 1200000) {
-                    holder.tvTime.setText("20分钟前发布");
-                }
-                if (difference > 300000 && difference < 600000) {
-                    holder.tvTime.setText("10分钟前发布");
-                }
-                if (difference > 240000 && difference < 300000) {
-                    holder.tvTime.setText("5分钟前发布");
-                }
-                if (difference > 180000 && difference < 240000) {
-                    holder.tvTime.setText("4分钟前发布");
-                }
-                if (difference > 120000 && difference < 180000) {
-                    holder.tvTime.setText("3分钟前发布");
-                }
-                if (difference > 60000 && difference < 120000) {
-                    holder.tvTime.setText("2分钟前发布");
-                }
-                if (difference < 60000) {
-                    holder.tvTime.setText("1分钟前发布");
-                }
+                String newChatTime = StringUtil.getNewChatTime(time);
+                holder.tvTime.setText(newChatTime);
             } catch (ParseException e) {
                 e.printStackTrace();
             }

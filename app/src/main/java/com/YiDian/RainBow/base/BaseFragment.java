@@ -33,9 +33,12 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
     //加载的试图
     private View mContentView;
     //三个核心变量
-    private boolean isUserHint;//用户是否可见
-    private boolean isViewInit;//view视图是否加载过
-    private boolean isDataLoad;//耗时操作是否加载过
+    //用户是否可见
+    private boolean isUserHint;
+    //view视图是否加载过
+    private boolean isViewInit;
+    //耗时操作是否加载过
+    private boolean isDataLoad;
 
     @Nullable
     @Override

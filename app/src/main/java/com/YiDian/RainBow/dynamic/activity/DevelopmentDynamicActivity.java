@@ -582,6 +582,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                 if(etContent.getText().toString().length()>0 || select.size()>0 || select1.size()>0){
                     CustomDialogMsg.Builder builder = new CustomDialogMsg.Builder(this);
                     builder.setPositiveButton("保存", new DialogInterface.OnClickListener() {
+                        @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                             // TODO: 2020/11/21 0021 获取内容 判断发布类型  1纯文本 2纯图片 3纯视频  21文本加图片 31文本加视频
@@ -630,8 +631,8 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
 
                                                         String s = list.toString().substring(1, list.toString().length() - 1);
 
-
-                                                        doOkHttpCaogao(userid, content, s, longitude, latitude, whocansee, 21, 0, district);
+                                                        String s1 = s.replaceAll(" ", "");
+                                                        doOkHttpCaogao(userid, content, s1, longitude, latitude, whocansee, 21, 0, district);
                                                     }
                                                     break;
                                                 default:
@@ -661,9 +662,9 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
 
                                                         String s = list.toString().substring(1, list.toString().length() - 1);
 
-
+                                                        String s1 = s.replaceAll(" ", "");
                                                         //调用发布动态接口
-                                                        doOkHttpCaogao(userid, content, s, longitude, latitude, whocansee, 31, 0, district);
+                                                        doOkHttpCaogao(userid, content, s1, longitude, latitude, whocansee, 31, 0, district);
                                                     }
                                                     break;
                                                 default:
@@ -694,9 +695,11 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                                         Log.d("xxx",list.size()+"======"+list.toString());
 
                                                         String s = list.toString().substring(1, list.toString().length() - 1);
+                                                        String s1 = s.replaceAll(" ", "");
+
 
                                                         //调用发布动态接口
-                                                        doOkHttpCaogao(userid, "", s, longitude, latitude, whocansee, 2, 0, district);
+                                                        doOkHttpCaogao(userid, "", s1, longitude, latitude, whocansee, 2, 0, district);
                                                     }
                                                     break;
                                                 default:
@@ -726,9 +729,10 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
 
                                                         String s = list.toString().substring(1, list.toString().length() - 1);
 
+                                                        String s1 = s.replaceAll(" ", "");
 
                                                         //调用发布动态接口
-                                                        doOkHttpCaogao(userid, "", s, longitude, latitude, whocansee, 3, 0, district);
+                                                        doOkHttpCaogao(userid, "", s1, longitude, latitude, whocansee, 3, 0, district);
                                                     }
                                                     break;
                                                 default:
@@ -767,8 +771,9 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                                         Log.d("xxx",list.size()+"======"+list.toString());
 
                                                         String s = list.toString().substring(1, list.toString().length() - 1);
+                                                        String s1 = s.replaceAll(" ", "");
 
-                                                        doOkHttpCaogao(userid, content, s, null, null, whocansee, 21, 0, "");
+                                                        doOkHttpCaogao(userid, content, s1, null, null, whocansee, 21, 0, "");
                                                     }
                                                     break;
                                                 default:
@@ -796,9 +801,10 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                                         Log.d("xxx",list.size()+"======"+list.toString());
 
                                                         String s = list.toString().substring(1, list.toString().length() - 1);
+                                                        String s1 = s.replaceAll(" ", "");
 
                                                         //调用发布动态接口
-                                                        doOkHttpCaogao(userid, content, s, null, null, whocansee, 31, 0, "");
+                                                        doOkHttpCaogao(userid, content, s1, null, null, whocansee, 31, 0, "");
                                                     }
                                                     break;
                                                 default:
@@ -819,6 +825,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                         getUpimg(url,select.size()-1,handler);
                                     }
                                     handler = new Handler() {
+                                        @SuppressLint("HandlerLeak")
                                         @Override
                                         public void handleMessage(Message msg) {
                                             super.handleMessage(msg);
@@ -831,8 +838,8 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
 
                                                         String s = list.toString().substring(1, list.toString().length() - 1);
 
-
-                                                        doOkHttpCaogao(userid, "", s, null, null, whocansee, 2, 0, "");
+                                                        String s1 = s.replaceAll(" ", "");
+                                                        doOkHttpCaogao(userid, "", s1, null, null, whocansee, 2, 0, "");
                                                     }
                                                     break;
                                                 default:
@@ -860,9 +867,10 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                                         Log.d("xxx",list.size()+"纯视频发布草稿======"+list.toString());
 
                                                         String s = list.toString().substring(1, list.toString().length() - 1);
+                                                        String s1 = s.replaceAll(" ", "");
 
                                                         //调用发布动态接口
-                                                        doOkHttpCaogao(userid, "", s, null, null, whocansee, 3, 0, "");
+                                                        doOkHttpCaogao(userid, "", s1, null, null, whocansee, 3, 0, "");
                                                     }
                                                     break;
                                                 default:
@@ -938,8 +946,9 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
 
                                             String s = list.toString().substring(1, list.toString().length() - 1);
 
+                                            String s1 = s.replaceAll(" ", "");
 
-                                            doOkHttp(userid, content, s, longitude, latitude, whocansee, 21, 1, district);
+                                            doOkHttp(userid, content, s1, longitude, latitude, whocansee, 21, 1, district);
                                         }
                                         break;
                                     default:
@@ -968,9 +977,10 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                             Log.d("xxx",list.size()+"文本加视频发布======"+list.toString());
 
                                             String s = list.toString().substring(1, list.toString().length() - 1);
+                                            String s1 = s.replaceAll(" ", "");
 
                                             //调用发布动态接口
-                                            doOkHttp(userid, content, s, longitude, latitude, whocansee, 31, 1, district);
+                                            doOkHttp(userid, content, s1, longitude, latitude, whocansee, 31, 1, district);
                                         }
                                         break;
                                     default:
@@ -1000,9 +1010,10 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                             Log.d("xxx",list.size()+"======"+list.toString());
 
                                             String s = list.toString().substring(1, list.toString().length() - 1);
+                                            String s1 = s.replaceAll(" ", "");
 
                                             //调用发布动态接口
-                                            doOkHttp(userid, "", s, longitude, latitude, whocansee, 2, 1, district);
+                                            doOkHttp(userid, "", s1, longitude, latitude, whocansee, 2, 1, district);
                                         }
                                         break;
                                     default:
@@ -1030,9 +1041,10 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                             Log.d("xxx",list.size()+"纯视频发布======"+list.toString());
 
                                             String s = list.toString().substring(1, list.toString().length() - 1);
+                                            String s1 = s.replaceAll(" ", "");
 
                                             //调用发布动态接口
-                                            doOkHttp(userid, "", s, longitude, latitude, whocansee, 3, 1, district);
+                                            doOkHttp(userid, "", s1, longitude, latitude, whocansee, 3, 1, district);
                                         }
                                         break;
                                     default:
@@ -1069,8 +1081,9 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                             Log.d("xxx",list.size()+"======"+list.toString());
 
                                             String s = list.toString().substring(1, list.toString().length() - 1);
+                                            String s1 = s.replaceAll(" ", "");
 
-                                            doOkHttp(userid, content, s, null, null, whocansee, 21, 1, "");
+                                            doOkHttp(userid, content, s1, null, null, whocansee, 21, 1, "");
                                         }
                                         break;
                                     default:
@@ -1098,8 +1111,9 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                             Log.d("xxx",list.size()+"======"+list.toString());
 
                                             String s = list.toString().substring(1, list.toString().length() - 1);
+                                            String s1 = s.replaceAll(" ", "");
 
-                                            doOkHttp(userid, content, s, null, null, whocansee, 31, 1, "");
+                                            doOkHttp(userid, content, s1, null, null, whocansee, 31, 1, "");
 
                                         }
 
@@ -1135,8 +1149,9 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                             Log.d("xxx","走到这里了");
 
                                             String s = list.toString().substring(1, list.toString().length() - 1);
+                                            String s1 = s.replaceAll(" ", "");
 
-                                            doOkHttp(userid, "", s, null, null, whocansee, 2, 1, "");
+                                            doOkHttp(userid, "", s1, null, null, whocansee, 2, 1, "");
                                         }
                                         break;
                                     default:
@@ -1163,9 +1178,10 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                                             Log.d("xxx",list.size()+"======"+list.toString());
 
                                             String s = list.toString().substring(1, list.toString().length() - 1);
+                                            String s1 = s.replaceAll(" ", "");
 
                                             //调用发布动态接口
-                                            doOkHttp(userid, "", s, null, null, whocansee, 3, 1, "");
+                                            doOkHttp(userid, "", s1, null, null, whocansee, 3, 1, "");
                                         }
                                         break;
                                     default:
@@ -1257,6 +1273,8 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                     tvRelease.setBackground(DevelopmentDynamicActivity.this.getDrawable(R.drawable.nine_radious_gray));
                     tvRelease.setClickable(false);
                 }
+                break;
+            default:
                 break;
         }
     }

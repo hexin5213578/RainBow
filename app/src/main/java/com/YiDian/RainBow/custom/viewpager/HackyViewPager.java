@@ -7,6 +7,9 @@ import android.view.MotionEvent;
 
 import androidx.viewpager.widget.ViewPager;
 
+/**
+ * @author hmy
+ */
 public class HackyViewPager extends ViewPager {
     private static final String TAG = "HackyViewPager";
 

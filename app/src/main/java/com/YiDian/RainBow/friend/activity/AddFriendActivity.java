@@ -19,7 +19,6 @@ import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.zbar.CaptureActivity;
 import com.YiDian.RainBow.friend.adapter.RecommendAdapter;
-import com.YiDian.RainBow.friend.adapter.RecommendGroupAdapter;
 import com.YiDian.RainBow.friend.adapter.RecommendUserAdapter;
 import com.YiDian.RainBow.friend.bean.RecommendGroupBean;
 import com.YiDian.RainBow.friend.bean.RecommendUserBean;

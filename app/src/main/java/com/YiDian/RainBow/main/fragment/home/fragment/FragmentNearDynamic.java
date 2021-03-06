@@ -1,5 +1,8 @@
 package com.YiDian.RainBow.main.fragment.home.fragment;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -8,6 +11,8 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
@@ -20,12 +25,10 @@ import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
 import com.YiDian.RainBow.main.fragment.home.bean.NewDynamicBean;
 import com.YiDian.RainBow.utils.KeyBoardUtils;
 import com.YiDian.RainBow.utils.NetUtils;
-import com.YiDian.RainBow.utils.SPUtil;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.google.gson.Gson;
 import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.container.AliHeader;
 import com.liaoinstan.springview.widget.SpringView;
@@ -36,7 +39,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,11 +52,10 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter.TAG;
 
+/**
+ * @author Administrator hmy
+ */
 public class FragmentNearDynamic extends BaseFragment implements AMapLocationListener {
-    //声明mlocationClient对象
-    AMapLocationClient mlocationClient;
-    //声明mLocationOption对象
-    AMapLocationClientOption mLocationOption = null;
     @BindView(R.id.no_data)
     RelativeLayout noData;
     @BindView(R.id.bt_reload)
@@ -65,6 +66,14 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
     RecyclerView rcNewDynamic;
     @BindView(R.id.sv)
     SpringView sv;
+    //声明mlocationClient对象
+    AMapLocationClient mlocationClient;
+    //声明mLocationOption对象
+    AMapLocationClientOption mLocationOption = null;
+    @BindView(R.id.bt_open)
+    Button btOpen;
+    @BindView(R.id.rl_no_location)
+    RelativeLayout rlNoLocation;
     private double latitude;
     private double longitude;
     private int userid;
@@ -92,8 +101,10 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
 
     @Override
     protected void getData() {
-        //开启定位
-        doLocation();
+        //请求定位权限
+        Request();
+
+
         userid = Integer.valueOf(Common.getUserId());
 
         //腾讯AppId(替换你自己App Id)、上下文
@@ -136,6 +147,12 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
                         sv.onFinishFreshAndLoad();
                     }
                 }, 1000);
+            }
+        });
+        btOpen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Request();
             }
         });
 
@@ -209,6 +226,7 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
                             alllist.addAll(list);
                             sv.setVisibility(View.VISIBLE);
                             noData.setVisibility(View.GONE);
+                            rlNoLocation.setVisibility(View.GONE);
 
                             sv.setHeader(new AliHeader(getContext()));
 
@@ -247,6 +265,39 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
                 });
     }
 
+    /**
+     * 安卓10.0定位权限
+     */
+    public void Request() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            int request = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
+            //缺少权限，进行权限申请
+            if (request != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
+                return;//
+            } else {
+                doLocation();
+            }
+        } else {
+
+        }
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getGetLocation1(String str){
+        if (str.equals("获取位置权限成功")){
+            sv.setVisibility(View.VISIBLE);
+            rlNoLocation.setVisibility(View.GONE);
+            doLocation();
+        }
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getGetLocation2(String str){
+        if (str.equals("获取位置权限失败")){
+            sv.setVisibility(View.GONE);
+            rlNoLocation.setVisibility(View.VISIBLE);
+        }
+    }
     public void doLocation() {
         mlocationClient = new AMapLocationClient(getContext());
         //初始化定位参数
@@ -280,7 +331,8 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
                 aMapLocation.getAccuracy();//获取精度信息
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Date date = new Date(aMapLocation.getTime());
-                df.format(date);//定位时间
+                //定位时间
+                df.format(date);
                 //获取数据
                 getDynamic(page, size);
             } else {
@@ -314,6 +366,9 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
         GSYVideoManager.onResume();
         //关闭输入框
         KeyBoardUtils.closeKeyboard(getActivity());
+
+        doLocation();
+
         Log.d("xxx", "onResume");
     }
 

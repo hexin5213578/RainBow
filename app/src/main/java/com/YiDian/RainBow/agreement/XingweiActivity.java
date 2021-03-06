@@ -18,7 +18,10 @@ import com.leaf.library.StatusBarUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-//用户行为规范
+/**
+ * 用户行为规范
+ * @author Administrator
+ */
 public class XingweiActivity extends BaseAvtivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;

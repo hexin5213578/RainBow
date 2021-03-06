@@ -80,6 +80,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+/**
+ * 完善信息页
+ * @author hmy
+ */
 public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickListener {
     @BindView(R.id.tv_jump_main)
     TextView tvJumpMain;
@@ -138,7 +142,19 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
 
         userid = Integer.valueOf(Common.getUserId());
 
+        if (headimg!=null){
+            //先加载头像
+            Glide.with(CompleteMsgActivity.this).load(headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+        }else {
+            Glide.with(CompleteMsgActivity.this).load(Common.getHeadImg()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+        }
 
+        if (name!=null){
+            etName.setText(name);
+        }else{
+            etName.setText(Common.getUserName());
+            name = Common.getUserName();
+        }
 
         userInfo = new UserInfo() {
             @Override
@@ -253,19 +269,7 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
                     Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
 
-        if (headimg!=null){
-            //先加载头像
-            Glide.with(CompleteMsgActivity.this).load(headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
-        }else {
-            Glide.with(CompleteMsgActivity.this).load(Common.getHeadImg()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
 
-        }
-        if (name!=null){
-            etName.setText(name);
-        }else{
-            etName.setText(Common.getUserName());
-            name = Common.getUserName();
-        }
 
 
         String role = Common.getRole();
@@ -524,8 +528,8 @@ public class CompleteMsgActivity extends BaseAvtivity implements View.OnClickLis
                                 }
                             });
                 }
-
-
+                break;
+            default:
 
                 break;
         }

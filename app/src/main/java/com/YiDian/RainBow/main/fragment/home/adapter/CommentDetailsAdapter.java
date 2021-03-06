@@ -23,6 +23,7 @@ import com.YiDian.RainBow.main.fragment.home.bean.CommentBean;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.user.PersonHomeActivity;
 import com.YiDian.RainBow.utils.NetUtils;
+import com.YiDian.RainBow.utils.StringUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
@@ -101,44 +102,10 @@ public class CommentDetailsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
                 long time = parse.getTime();
 
-                //获取当前时间
-                long l = System.currentTimeMillis();
-                //获取发布过的时长
-                long difference = l - time;
 
-                //时长大于12小时 显示日期
-                if (difference > 43200000) {
-                    ((CommentDetailsAdapter.ViewHolder) holder).tvTime.setText(createTime);
-                }
-                //时长小于12小时 展示时间
-                if (difference > 1800000 && difference < 43200000) {
-                    String[] s = createTime.split(" ");
-                    ((CommentDetailsAdapter.ViewHolder) holder).tvTime.setText(s[1]);
-                }
-                if (difference > 1200000 && difference < 1800000) {
-                    ((CommentDetailsAdapter.ViewHolder) holder).tvTime.setText("半小时前发布");
-                }
-                if (difference > 600000 && difference < 1200000) {
-                    ((CommentDetailsAdapter.ViewHolder) holder).tvTime.setText("20分钟前发布");
-                }
-                if (difference > 300000 && difference < 600000) {
-                    ((CommentDetailsAdapter.ViewHolder) holder).tvTime.setText("10分钟前发布");
-                }
-                if (difference > 240000 && difference < 300000) {
-                    ((CommentDetailsAdapter.ViewHolder) holder).tvTime.setText("5分钟前发布");
-                }
-                if (difference > 180000 && difference < 240000) {
-                    ((CommentDetailsAdapter.ViewHolder) holder).tvTime.setText("4分钟前发布");
-                }
-                if (difference > 120000 && difference < 180000) {
-                    ((CommentDetailsAdapter.ViewHolder) holder).tvTime.setText("3分钟前发布");
-                }
-                if (difference > 60000 && difference < 120000) {
-                    ((CommentDetailsAdapter.ViewHolder) holder).tvTime.setText("2分钟前发布");
-                }
-                if (difference < 60000) {
-                    ((CommentDetailsAdapter.ViewHolder) holder).tvTime.setText("1分钟前发布");
-                }
+                String newChatTime = StringUtil.getNewChatTime(time);
+                ((CommentDetailsAdapter.ViewHolder)holder).tvTime.setText(newChatTime);
+
             } catch (ParseException e) {
                 e.printStackTrace();
             }

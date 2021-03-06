@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -21,8 +22,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
-import com.YiDian.RainBow.base.BaseFragment;
-import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.main.fragment.find.adapter.NearPersonAdapter;
@@ -61,6 +60,10 @@ public class FragmentNear extends Fragment implements AMapLocationListener {
     SpringView sv;
     @BindView(R.id.rl_nodata)
     RelativeLayout rlNodata;
+    @BindView(R.id.bt_open)
+    Button btOpen;
+    @BindView(R.id.rl_no_location)
+    RelativeLayout rlNoLocation;
     private int userid;
     //声明mlocationClient对象
     AMapLocationClient mlocationClient;
@@ -93,6 +96,7 @@ public class FragmentNear extends Fragment implements AMapLocationListener {
         return mContentView;
     }
 
+
     public View createView(LayoutInflater inflater, ViewGroup container) {
         View view = null;
         if (getResId() != 0) {
@@ -102,10 +106,11 @@ public class FragmentNear extends Fragment implements AMapLocationListener {
         }
         return view;
     }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.i("baseF","onViewCreated");
+        Log.i("baseF", "onViewCreated");
 
         if (!isViewInit) {
             getid(mContentView);
@@ -113,6 +118,7 @@ public class FragmentNear extends Fragment implements AMapLocationListener {
         isViewInit = true;
         loadData();
     }
+
     protected void getid(View view) {
 
     }
@@ -125,42 +131,48 @@ public class FragmentNear extends Fragment implements AMapLocationListener {
         userid = Integer.valueOf(Common.getUserId());
         alllist = new ArrayList<>();
 
-        dialog1 = new CustomDialog(getContext(),"正在获取位置信息...");
-        dialog2 = new CustomDialog(getContext(),"正在加载...");
+        dialog1 = new CustomDialog(getContext(), "正在获取位置信息...");
+        dialog2 = new CustomDialog(getContext(), "正在加载...");
 
         //进入定位 定位成功获取第一次数据
-        doLocation();
+        Request();
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {
                 int page = 1;
                 alllist.clear();
-                getNearPerson(page,size);
+                getNearPerson(page, size);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
 
                         sv.onFinishFreshAndLoad();
                     }
-                },1000);
+                }, 1000);
             }
 
             @Override
             public void onLoadmore() {
                 page++;
-                getNearPerson(page,size);
+                getNearPerson(page, size);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
 
                         sv.onFinishFreshAndLoad();
                     }
-                },1000);
+                }, 1000);
             }
         });
 
-
+        btOpen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Request();
+            }
+        });
     }
+
     //这个方法优先级很高
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {//用户可见就为true 不可见就是false
@@ -177,9 +189,20 @@ public class FragmentNear extends Fragment implements AMapLocationListener {
         }
     }
     @Override
+    public void onResume() {
+        super.onResume();
+
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+    }
+    @Override
     public void onDestroy() {
         super.onDestroy();
-            bind.unbind();
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
+        bind.unbind();
     }
 
     public void doLocation() {
@@ -222,27 +245,15 @@ public class FragmentNear extends Fragment implements AMapLocationListener {
                 alllist.clear();
                 dialog1.dismiss();
                 page = 1;
-                getNearPerson(page,size);
-            } else {
-                dialog1.dismiss();
-                Toast.makeText(getContext(), "获取位置信息失败", Toast.LENGTH_SHORT).show();
-
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (aMapLocation.getErrorCode()==12){
-                            Request();
-                        }
-                    }
-                },1000);
-
+                getNearPerson(page, size);
+            }
                 //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
                 Log.e("AmapError", "location Error, ErrCode:"
                         + aMapLocation.getErrorCode() + ", errInfo:"
                         + aMapLocation.getErrorInfo());
             }
-        }
     }
+
     //安卓10.0定位权限
     public void Request() {
         if (Build.VERSION.SDK_INT >= 23) {
@@ -252,32 +263,33 @@ public class FragmentNear extends Fragment implements AMapLocationListener {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
                 return;//
             } else {
-
+                doLocation();
             }
         } else {
 
         }
     }
-    //参数 requestCode是我们在申请权限的时候使用的唯一的申请码
-    //String[] permission则是权限列表，一般用不到
-    //int[] grantResults 是用户的操作响应，包含这权限是够请求成功
-    //由于在权限申请的时候，我们就申请了一个权限，所以此处的数组的长度都是1
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 100) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-            } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                Toast.makeText(getContext(), "权限申请失败，用户拒绝权限", Toast.LENGTH_SHORT).show();
-            }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getGetLocation1(String str){
+        if (str.equals("获取位置权限成功")){
+            sv.setVisibility(View.VISIBLE);
+            rlNoLocation.setVisibility(View.GONE);
+            doLocation();
         }
     }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getGetLocation2(String str){
+        if (str.equals("获取位置权限失败")){
+            sv.setVisibility(View.GONE);
+            rlNoLocation.setVisibility(View.VISIBLE);
+        }
+    }
+
     //获取数据
-    public void getNearPerson(int page,int size){
+    public void getNearPerson(int page, int size) {
         dialog2.show();
         NetUtils.getInstance().getApis()
-                .doGetNearPerson(userid,longitude,latitude,page,size)
+                .doGetNearPerson(userid, longitude, latitude, page, size)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<NearPersonBean>() {
@@ -291,7 +303,7 @@ public class FragmentNear extends Fragment implements AMapLocationListener {
                         dialog2.dismiss();
 
                         List<NearPersonBean.ObjectBean.ListBean> list = nearPersonBean.getObject().getList();
-                        if(list.size()>0 && list!=null){
+                        if (list.size() > 0 && list != null) {
 
                             sv.setVisibility(View.VISIBLE);
                             rlNodata.setVisibility(View.GONE);
@@ -303,15 +315,15 @@ public class FragmentNear extends Fragment implements AMapLocationListener {
                             rcNearPerson.setLayoutManager(linearLayoutManager);
                             NearPersonAdapter nearPersonAdapter = new NearPersonAdapter(getContext(), alllist);
                             rcNearPerson.setAdapter(nearPersonAdapter);
-                        }else{
-                            if(alllist.size()>0 && alllist!=null){
+                        } else {
+                            if (alllist.size() > 0 && alllist != null) {
                                 Toast.makeText(getContext(), "没有更多内容了", Toast.LENGTH_SHORT).show();
-                            }else{
+                            } else {
                                 sv.setVisibility(View.GONE);
                                 rlNodata.setVisibility(View.VISIBLE);
                             }
                         }
-                        if (list.size()>8){
+                        if (list.size() > 8) {
                             sv.setFooter(new AliFooter(getContext()));
                         }
                     }

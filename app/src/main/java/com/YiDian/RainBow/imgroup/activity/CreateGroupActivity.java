@@ -1,8 +1,7 @@
-package com.YiDian.RainBow.imgroup;
+package com.YiDian.RainBow.imgroup.activity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
 import android.os.Environment;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -32,7 +31,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.CreateGroupCallback;
 import io.reactivex.Observer;
@@ -40,6 +38,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+/**
+ * @author hmy
+ */
 public class CreateGroupActivity extends BaseAvtivity implements View.OnClickListener {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -104,7 +105,8 @@ public class CreateGroupActivity extends BaseAvtivity implements View.OnClickLis
                 break;
             case R.id.rl_creat:
                 String groupname = etName.getText().toString();
-                Bitmap bitmap= BitmapFactory.decodeResource(getResources(),R.mipmap.headimg3,null);//将资源文件转化为bitmap
+                //将资源文件转化为bitmap
+                Bitmap bitmap= BitmapFactory.decodeResource(getResources(),R.mipmap.headimg3,null);
 
                 File file = getFile(bitmap);
                 //同步创建极光群聊
@@ -114,7 +116,7 @@ public class CreateGroupActivity extends BaseAvtivity implements View.OnClickLis
                         if (i==0){
                             Log.d(TAG, "群组创建成功"+"群聊id为"+l);
                             NetUtils.getInstance().getApis()
-                                    .doCreatGroup(userid,groupname)
+                                    .doCreatGroup(l,userid,groupname)
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(new Observer<InsertRealBean>() {
@@ -150,9 +152,16 @@ public class CreateGroupActivity extends BaseAvtivity implements View.OnClickLis
                     }
                 });
                 break;
+            default:
+                break;
         }
     }
-    //在这里抽取了一个方法   可以封装到自己的工具类中...
+
+    /**
+     *
+     * @param bitmap
+     * @return 在这里抽取了一个方法   可以封装到自己的工具类中...
+     */
     public File getFile(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);

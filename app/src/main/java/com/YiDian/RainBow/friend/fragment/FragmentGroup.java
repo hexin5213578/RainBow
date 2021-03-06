@@ -12,13 +12,10 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
-import com.YiDian.RainBow.friend.adapter.RecommendGroupAdapter;
+import com.YiDian.RainBow.imgroup.adapter.RecommendGroupAdapter;
 import com.YiDian.RainBow.friend.bean.InitGroupBean;
-import com.YiDian.RainBow.friend.bean.RecommendGroupBean;
 import com.YiDian.RainBow.imgroup.adapter.GroupMyCreateAdapter;
 import com.YiDian.RainBow.imgroup.adapter.GroupMyJoinAdapter;
-import com.YiDian.RainBow.imgroup.bean.MyCreateGroupMsgBean;
-import com.YiDian.RainBow.imgroup.bean.MyJoinGroupMsgBean;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.liaoinstan.springview.container.AliHeader;
 import com.liaoinstan.springview.widget.SpringView;
@@ -143,8 +140,10 @@ public class FragmentGroup extends BaseFragment {
                         List<InitGroupBean.ObjectBean.GroupChuangJianBean> list1 = initGroupBean.getObject().getGroupChuangJian();
                         List<InitGroupBean.ObjectBean.GroupTuiJianBean> list2 = initGroupBean.getObject().getGroupTuiJian();
                         List<InitGroupBean.ObjectBean.GroupJiaRuBean> list3 = initGroupBean.getObject().getGroupJiaRu();
-                        if(list1.size()>0||list2.size()>0||list3.size()>0){
+                        if(list1.size()>0 || list2.size()>0 || list3.size()>0){
                             rlNodata.setVisibility(View.GONE);
+                            sv.setVisibility(View.VISIBLE);
+
                             //显示缺省页
                             if (list1 != null && list1.size() > 0 ) {
                                 rl1.setVisibility(View.VISIBLE);
@@ -162,7 +161,7 @@ public class FragmentGroup extends BaseFragment {
                                 rl1.setVisibility(View.GONE);
                                 rcMycreate.setVisibility(View.GONE);
                             }
-                            //我加入的
+                            //我加入的群组
                             if (list3.size() > 0 && list3 != null) {
                                 rl2.setVisibility(View.VISIBLE);
                                 rcMyjoin.setVisibility(View.VISIBLE);
@@ -180,7 +179,7 @@ public class FragmentGroup extends BaseFragment {
                                 rl2.setVisibility(View.GONE);
                                 rcMyjoin.setVisibility(View.GONE);
                             }
-                            //推荐
+                            //推荐群组
                             if (list2 != null && list2.size() > 0) {
                                 //创建布局管理器
                                 rl3.setVisibility(View.VISIBLE);
@@ -198,6 +197,7 @@ public class FragmentGroup extends BaseFragment {
                         }else{
                             //显示缺省页
                             rlNodata.setVisibility(View.VISIBLE);
+                            sv.setVisibility(View.GONE);
                         }
 
 

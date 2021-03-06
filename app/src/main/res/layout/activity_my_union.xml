@@ -70,6 +70,7 @@
                     android:id="@+id/iv_img"
                     android:layout_marginTop="@dimen/dp_9"
                     roundiv:radius="@dimen/dp_5"
+                    android:scaleType="centerCrop"
                     android:layout_below="@id/rl_top"
                     android:layout_centerHorizontal="true"
                     android:src="@mipmap/headimg"

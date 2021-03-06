@@ -20,6 +20,9 @@ import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * @author hmy
+ */
 public class SimplePlayerActivity extends BaseAvtivity {
     @BindView(R.id.viewPlayer)
     StandardGSYVideoPlayer viewPlayer;
@@ -92,8 +95,9 @@ public class SimplePlayerActivity extends BaseAvtivity {
     protected void onDestroy() {
         super.onDestroy();
         GSYVideoManager.releaseAllVideos();
-        if (orientationUtils != null)
+        if (orientationUtils != null) {
             orientationUtils.releaseListener();
+        }
     }
 
     @Override
