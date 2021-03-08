@@ -20,6 +20,7 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.setup.bean.InsertRealBean;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.leaf.library.StatusBarUtil;
@@ -54,6 +55,8 @@ public class CreateGroupActivity extends BaseAvtivity implements View.OnClickLis
     TextView tvCreat;
     private int userid;
     String TAG = "xxx";
+    private CustomDialog dialog;
+
     @Override
     protected int getResId() {
         return R.layout.activity_creategroup;
@@ -63,6 +66,7 @@ public class CreateGroupActivity extends BaseAvtivity implements View.OnClickLis
     protected void getData() {
         StatusBarUtil.setGradientColor(CreateGroupActivity.this, toolbar);
         StatusBarUtil.setDarkMode(CreateGroupActivity.this);
+        dialog = new CustomDialog(this, "正在创建...");
 
         userid = Integer.valueOf(Common.getUserId());
 
@@ -104,6 +108,9 @@ public class CreateGroupActivity extends BaseAvtivity implements View.OnClickLis
                 finish();
                 break;
             case R.id.rl_creat:
+
+                dialog.show();
+                
                 String groupname = etName.getText().toString();
                 //将资源文件转化为bitmap
                 Bitmap bitmap= BitmapFactory.decodeResource(getResources(),R.mipmap.headimg3,null);
@@ -127,6 +134,7 @@ public class CreateGroupActivity extends BaseAvtivity implements View.OnClickLis
 
                                         @Override
                                         public void onNext(InsertRealBean insertRealBean) {
+                                            dialog.dismiss();
                                             String msg = insertRealBean.getMsg();
                                             if (msg.equals("昵称重复")){
                                                 Toast.makeText(CreateGroupActivity.this, "昵称重复了 换一个试试吧", Toast.LENGTH_SHORT).show();
@@ -137,7 +145,8 @@ public class CreateGroupActivity extends BaseAvtivity implements View.OnClickLis
                                         }
                                         @Override
                                         public void onError(Throwable e) {
-
+                                            dialog.dismiss();
+                                            Toast.makeText(CreateGroupActivity.this, "群组创建失败", Toast.LENGTH_SHORT).show();
                                         }
 
                                         @Override

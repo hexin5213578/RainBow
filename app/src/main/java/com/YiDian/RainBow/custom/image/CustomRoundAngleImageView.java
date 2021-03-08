@@ -1,5 +1,6 @@
 package com.YiDian.RainBow.custom.image;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 
 import com.YiDian.RainBow.R;
 
+@SuppressLint("AppCompatCustomView")
 public class CustomRoundAngleImageView extends ImageView {
     float width, height;
     private int defaultRadius = 0;

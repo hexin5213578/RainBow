@@ -20,10 +20,12 @@ import com.YiDian.RainBow.topic.adapter.TopicAdapter;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.leaf.library.StatusBarUtil;
 import com.liaoinstan.springview.container.AliFooter;
+import com.liaoinstan.springview.container.AliHeader;
 import com.liaoinstan.springview.widget.SpringView;
 import com.tencent.tauth.Tencent;
 
 import java.util.ArrayList;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
 import butterknife.BindView;
@@ -54,7 +56,7 @@ public class TopicDetailsActivity extends BaseAvtivity implements View.OnClickLi
 
     private Tencent mTencent;
     int page = 1;
-    int size = 5;
+    int size = 10;
     private int userid;
 
     @Override
@@ -67,8 +69,6 @@ public class TopicDetailsActivity extends BaseAvtivity implements View.OnClickLi
         ivBack.setOnClickListener(this);
         StatusBarUtil.setTransparentForWindow(TopicDetailsActivity.this);
         StatusBarUtil.setDarkMode(TopicDetailsActivity.this);
-        ivBack.setOnClickListener(this);
-
 
         //2标记传入话题名  1标记传入id
         Intent intent =
@@ -85,7 +85,6 @@ public class TopicDetailsActivity extends BaseAvtivity implements View.OnClickLi
             Log.d("xxx", "传过来的话题名为" + name);
             tvTopic.setText(name);
             refresh(name, page);
-            sv.setFooter(new AliFooter(this));
             sv.setListener(new SpringView.OnFreshListener() {
                 @Override
                 public void onRefresh() {
@@ -127,10 +126,12 @@ public class TopicDetailsActivity extends BaseAvtivity implements View.OnClickLi
                     @Override
                     public void onNext(TopicBean topicBean) {
                         List<TopicBean.ObjectBean.ListBean> list = topicBean.getObject().getList();
+                        tvLlcount.setText("参与数：" + topicBean.getObject().getList().get(0).getTopics().get(0).getTopicNum());
+                        sv.setHeader(new AliHeader(TopicDetailsActivity.this));
+
                         if (list != null && list.size() > 0) {
                             Log.d(TAG, "onNext: 拿到数据");
-                            //
-                            tvLlcount.setText("参与数：" + topicBean.getObject().getList().get(0).getTopics().get(0).getTopicNum());
+
                             LinearLayoutManager layoutManager =
                                     new LinearLayoutManager(TopicDetailsActivity.this, RecyclerView.VERTICAL, false);
                             alllist.addAll(list);
@@ -138,6 +139,9 @@ public class TopicDetailsActivity extends BaseAvtivity implements View.OnClickLi
                             TopicAdapter adapter = new TopicAdapter(TopicDetailsActivity.this, alllist, mTencent);
                             rcList.setLayoutManager(layoutManager);
                             rcList.setAdapter(adapter);
+                        }
+                        if (list.size()>9){
+                            sv.setFooter(new AliFooter(TopicDetailsActivity.this));
                         }
                     }
 

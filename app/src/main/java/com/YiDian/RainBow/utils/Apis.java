@@ -9,6 +9,7 @@ import com.YiDian.RainBow.friend.bean.MyFansBean;
 import com.YiDian.RainBow.friend.bean.MyfollowBean;
 import com.YiDian.RainBow.friend.bean.RecommendGroupBean;
 import com.YiDian.RainBow.friend.bean.RecommendUserBean;
+import com.YiDian.RainBow.imgroup.bean.GroupMsgBean;
 import com.YiDian.RainBow.imgroup.bean.MyCreateGroupMsgBean;
 import com.YiDian.RainBow.imgroup.bean.MyJoinGroupMsgBean;
 import com.YiDian.RainBow.main.bean.NoticeCountBean;
@@ -458,4 +459,9 @@ public interface Apis {
     //问题反馈
     @POST("feedback/insert")
     Observable<ChackBuildLovesBean> doInsertFeedBack(@Query("info")String info);
+
+    //查询群信息
+    @GET("groupInfo/selectAllGroup")
+    Observable<GroupMsgBean> doGetGroupMsg(@Query("id") int groupid,@Query("userId")int userid);
+
 }

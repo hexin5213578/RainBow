@@ -211,4 +211,6 @@ dependencies {
 
     //fst导入卡片
     implementation 'com.github.fashare2015:StackLayout:1.0.0'
+
+    implementation 'com.makeramen:roundedimageview:2.2.1'
 }
