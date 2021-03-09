@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
@@ -17,10 +18,14 @@ import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.image.CustomRoundAngleImageView;
+import com.YiDian.RainBow.imgroup.adapter.GroupMemberAdapter;
+import com.YiDian.RainBow.imgroup.bean.GroupMemberBean;
 import com.YiDian.RainBow.imgroup.bean.GroupMsgBean;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.bumptech.glide.Glide;
 import com.leaf.library.StatusBarUtil;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -87,6 +92,8 @@ public class LordMsgActivity extends BaseAvtivity implements View.OnClickListene
 
         int userId = Integer.parseInt(Common.getUserId());
 
+
+
         Intent intent = getIntent();
         int groupid = intent.getIntExtra("groupid", 0);
         Log.d("xxx", "群ID为" + groupid);
@@ -105,13 +112,58 @@ public class LordMsgActivity extends BaseAvtivity implements View.OnClickListene
 
         //获取群信息
         getGroupMsg(groupid, userId);
+        //获取群成员列表
+        getGroupMember(groupid,1,25);
     }
 
     @Override
     protected BasePresenter initPresenter() {
         return null;
     }
+    public void getGroupMember(int groupid,int page,int size){
+        NetUtils.getInstance().getApis()
+                .doGetGroupMember(groupid,page,size)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GroupMemberBean>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
 
+                    }
+
+                    @Override
+                    public void onNext(@NonNull GroupMemberBean groupMemberBean) {
+                        if (groupMemberBean.getType().equals("OK")){
+                            List<GroupMemberBean.ObjectBean.ListBean> list = groupMemberBean.getObject().getList();
+                            if (list!=null && list.size()>0){
+
+                                GridLayoutManager gridLayoutManager = new GridLayoutManager(LordMsgActivity.this, 7);
+                                rcMember.setLayoutManager(gridLayoutManager);
+
+                                GroupMemberAdapter groupMemberAdapter = new GroupMemberAdapter(LordMsgActivity.this);
+                                //设置数据源
+                                groupMemberAdapter.setData(list);
+
+                                rcMember.setAdapter(groupMemberAdapter);
+                                //创建适配器
+                            }
+                            if (list.size()>21){
+                                rlSeemore.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
     public void getGroupMsg(int groupid, int userid) {
         NetUtils.getInstance().getApis()
                 .doGetGroupMsg(groupid, userid)
