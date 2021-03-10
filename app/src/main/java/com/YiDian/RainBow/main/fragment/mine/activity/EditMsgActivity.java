@@ -484,6 +484,8 @@ public class EditMsgActivity extends BaseAvtivity implements View.OnClickListene
             case R.id.rl_ganqingstate:
                 showChangeSingle();
                 break;
+            default:
+                break;
         }
     }
 

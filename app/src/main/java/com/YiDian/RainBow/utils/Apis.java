@@ -9,6 +9,7 @@ import com.YiDian.RainBow.friend.bean.MyFansBean;
 import com.YiDian.RainBow.friend.bean.MyfollowBean;
 import com.YiDian.RainBow.friend.bean.RecommendGroupBean;
 import com.YiDian.RainBow.friend.bean.RecommendUserBean;
+import com.YiDian.RainBow.imgroup.bean.ChangeGroupHeadBean;
 import com.YiDian.RainBow.imgroup.bean.GroupMemberBean;
 import com.YiDian.RainBow.imgroup.bean.GroupMsgBean;
 import com.YiDian.RainBow.imgroup.bean.MyCreateGroupMsgBean;
@@ -468,4 +469,8 @@ public interface Apis {
     //查询群成员
     @GET("group/selectGroupById")
     Observable<GroupMemberBean> doGetGroupMember(@Query("groupId")int grpupid,@Query("page")int page,@Query("pageSize")int size);
+
+    //修改群头像
+    @POST("groupInfo/updateGroupInfo")
+    Observable<ChangeGroupHeadBean> doChangeGroupHeadImg(@Query("id")int groupid,@Query("groupImg")String url);
 }

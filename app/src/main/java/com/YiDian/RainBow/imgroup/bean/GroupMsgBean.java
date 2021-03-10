@@ -2,10 +2,11 @@ package com.YiDian.RainBow.imgroup.bean;
 
 public class GroupMsgBean {
 
+
     /**
      * msg : 查询成功
      * type : OK
-     * object : {"id":333338,"groupName":"民居骨头明年","groupInfo":"还没有简介，快来设置吧","groupNotice":"是大V","groupImg":"http://img.rianbow.cn/202102061133559362200.png","holderId":1030,"baseMap":"http://img.rianbow.cn/2021020611340446072.jpg","addType":0,"isTop":0,"createTime":"2021-03-01 14:53:15","userNum":29,"groupId":333338,"userId":1030,"groupType":1,"nickName":null,"headImg":null}
+     * object : {"id":333338,"jgGroupId":47346902,"groupName":"47346902","groupInfo":"还没有简介，快来设置吧","groupNotice":"是大V","groupImg":"http://img.rianbow.cn/202102061133559362200.png","holderId":1030,"baseMap":"http://img.rianbow.cn/202103091354152978436.jpg","addType":0,"isTop":0,"createTime":"2021-03-01 14:53:15","userNum":29,"groupId":333338,"userId":1030,"groupType":1,"nickName":null,"headImg":null}
      */
 
     private String msg;
@@ -39,12 +40,13 @@ public class GroupMsgBean {
     public static class ObjectBean {
         /**
          * id : 333338
-         * groupName : 民居骨头明年
+         * jgGroupId : 47346902
+         * groupName : 47346902
          * groupInfo : 还没有简介，快来设置吧
          * groupNotice : 是大V
          * groupImg : http://img.rianbow.cn/202102061133559362200.png
          * holderId : 1030
-         * baseMap : http://img.rianbow.cn/2021020611340446072.jpg
+         * baseMap : http://img.rianbow.cn/202103091354152978436.jpg
          * addType : 0
          * isTop : 0
          * createTime : 2021-03-01 14:53:15
@@ -57,6 +59,7 @@ public class GroupMsgBean {
          */
 
         private int id;
+        private int jgGroupId;
         private String groupName;
         private String groupInfo;
         private String groupNotice;
@@ -79,6 +82,14 @@ public class GroupMsgBean {
 
         public void setId(int id) {
             this.id = id;
+        }
+
+        public int getJgGroupId() {
+            return jgGroupId;
+        }
+
+        public void setJgGroupId(int jgGroupId) {
+            this.jgGroupId = jgGroupId;
         }
 
         public String getGroupName() {

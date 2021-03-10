@@ -412,11 +412,15 @@
             android:name=".imgroup.activity.MemberMsgActivity"
             android:screenOrientation="portrait" />
 
+        <!-- 群组管理 -->
+        <activity
+            android:name=".imgroup.activity.GroupManagerActivity"
+            android:screenOrientation="portrait" />
+
         <!-- 查询用户详情 -->
         <activity
             android:name=".friend.activity.MoreUserActivity"
             android:screenOrientation="portrait" />
-
 
 
         <!-- 系统通知 -->

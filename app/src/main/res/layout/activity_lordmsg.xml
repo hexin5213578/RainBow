@@ -165,7 +165,6 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:text="群聊名称"
-                        android:id="@+id/tv_name"
                         android:textColor="@color/color_333333"
                         android:textSize="@dimen/sp_15"
                         android:layout_centerVertical="true"
@@ -175,6 +174,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:text="偏爱"
+                        android:id="@+id/tv_name"
                         android:layout_centerVertical="true"
                         android:textSize="@dimen/sp_12"
                         android:layout_toLeftOf="@id/iv1"

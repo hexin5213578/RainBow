@@ -34,6 +34,9 @@ import java.io.InputStream;
 import butterknife.BindView;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.CreateGroupCallback;
+import cn.jpush.im.android.api.callback.GetGroupInfoCallback;
+import cn.jpush.im.android.api.model.GroupInfo;
+import cn.jpush.im.api.BasicCallback;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -113,11 +116,11 @@ public class CreateGroupActivity extends BaseAvtivity implements View.OnClickLis
                 
                 String groupname = etName.getText().toString();
                 //将资源文件转化为bitmap
-                Bitmap bitmap= BitmapFactory.decodeResource(getResources(),R.mipmap.headimg3,null);
+                Bitmap bitmap= BitmapFactory.decodeResource(getResources(),R.mipmap.moren_qunzu_headimg,null);
 
                 File file = getFile(bitmap);
                 //同步创建极光群聊
-                JMessageClient.createPublicGroup(groupname, "还没有简介，快来设置吧", file, "jpg", new CreateGroupCallback() {
+                JMessageClient.createPublicGroup(groupname, "还没有简介，快来设置吧", file, "png", new CreateGroupCallback() {
                     @Override
                     public void gotResult(int i, String s, long l) {
                         if (i==0){
@@ -138,6 +141,12 @@ public class CreateGroupActivity extends BaseAvtivity implements View.OnClickLis
                                             String msg = insertRealBean.getMsg();
                                             if (msg.equals("昵称重复")){
                                                 Toast.makeText(CreateGroupActivity.this, "昵称重复了 换一个试试吧", Toast.LENGTH_SHORT).show();
+                                                JMessageClient.adminDissolveGroup(l, new BasicCallback() {
+                                                    @Override
+                                                    public void gotResult(int i, String s) {
+                                                        Log.d("xxx","群组解散成功");
+                                                    }
+                                                });
                                             }else{
                                                 Toast.makeText(CreateGroupActivity.this, "创建群组成功", Toast.LENGTH_SHORT).show();
                                                 finish();

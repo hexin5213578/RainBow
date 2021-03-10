@@ -21,6 +21,7 @@ import com.YiDian.RainBow.custom.image.CustomRoundAngleImageView;
 import com.YiDian.RainBow.imgroup.adapter.GroupMemberAdapter;
 import com.YiDian.RainBow.imgroup.bean.GroupMemberBean;
 import com.YiDian.RainBow.imgroup.bean.GroupMsgBean;
+import com.YiDian.RainBow.imgroup.bean.SaveIdAndHeadImgBean;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.bumptech.glide.Glide;
 import com.leaf.library.StatusBarUtil;
@@ -77,6 +78,10 @@ public class LordMsgActivity extends BaseAvtivity implements View.OnClickListene
     TextView tvJianjie;
     @BindView(R.id.tv_gonggao)
     TextView tvGonggao;
+    private Intent intent;
+    private int groupid;
+    private String groupImg;
+    private int jgGroupId;
 
     @Override
     protected int getResId() {
@@ -93,9 +98,8 @@ public class LordMsgActivity extends BaseAvtivity implements View.OnClickListene
         int userId = Integer.parseInt(Common.getUserId());
 
 
-
         Intent intent = getIntent();
-        int groupid = intent.getIntExtra("groupid", 0);
+        groupid = intent.getIntExtra("groupid", 0);
         Log.d("xxx", "群ID为" + groupid);
 
         llBack.setOnClickListener(this);
@@ -120,6 +124,7 @@ public class LordMsgActivity extends BaseAvtivity implements View.OnClickListene
     protected BasePresenter initPresenter() {
         return null;
     }
+    //获取群成员
     public void getGroupMember(int groupid,int page,int size){
         NetUtils.getInstance().getApis()
                 .doGetGroupMember(groupid,page,size)
@@ -164,6 +169,7 @@ public class LordMsgActivity extends BaseAvtivity implements View.OnClickListene
                     }
                 });
     }
+    //获取群信息
     public void getGroupMsg(int groupid, int userid) {
         NetUtils.getInstance().getApis()
                 .doGetGroupMsg(groupid, userid)
@@ -179,8 +185,11 @@ public class LordMsgActivity extends BaseAvtivity implements View.OnClickListene
                     public void onNext(@NonNull GroupMsgBean groupMsgBean) {
                         if (groupMsgBean.getType().equals("OK")) {
                             GroupMsgBean.ObjectBean object = groupMsgBean.getObject();
+
+                            groupImg = object.getGroupImg();
+                            jgGroupId = object.getJgGroupId();
                             //设置头像
-                            Glide.with(LordMsgActivity.this).load(object.getGroupImg()).into(ivImg);
+                            Glide.with(LordMsgActivity.this).load(groupImg).into(ivImg);
                             //设置背景
                             Glide.with(LordMsgActivity.this).load(object.getBaseMap()).into(ivBg);
                             //群ID
@@ -242,7 +251,13 @@ public class LordMsgActivity extends BaseAvtivity implements View.OnClickListene
                 break;
             //管理群聊
             case R.id.rl_qunzu_manager:
-
+                intent = new Intent(LordMsgActivity.this,GroupManagerActivity.class);
+                SaveIdAndHeadImgBean saveIdAndHeadImgBean = new SaveIdAndHeadImgBean();
+                saveIdAndHeadImgBean.setId(groupid);
+                saveIdAndHeadImgBean.setHeadimg(groupImg);
+                saveIdAndHeadImgBean.setJgId(jgGroupId);
+                intent.putExtra("msg",saveIdAndHeadImgBean);
+                startActivity(intent);
                 break;
             //清空聊天记录
             case R.id.rl_clean:
