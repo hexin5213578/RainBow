@@ -58,10 +58,6 @@ import butterknife.ButterKnife;
 public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedChangeListener {
     @BindView(R.id.rbMatch)
     RadioButton rbMatch;
-    @BindView(R.id.rbMeet)
-    RadioButton rbMeet;
-    @BindView(R.id.rbNear)
-    RadioButton rbNear;
     @BindView(R.id.rgTab)
     RadioGroup rgTab;
     @BindView(R.id.iv_filter)
@@ -79,8 +75,8 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
      * 创建Fragment实例
      */
     private Fragmentmatch fragmentmatch;
-    private Fragmentmeet fragmentmeet;
-    private FragmentNear fragmentNear;
+    /*private Fragmentmeet fragmentmeet;
+    private FragmentNear fragmentNear;*/
     private PopupWindow mPopupWindow;
     private List<Fragment> list;
 
@@ -88,7 +84,6 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
     protected void getid(View view) {
 
     }
-
     @Override
     protected int getResId() {
         return R.layout.home_fragment_find;
@@ -109,17 +104,15 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
         list = new ArrayList<>();
 
         rbs[0] = rbMatch;
-        rbs[1] = rbMeet;
-        rbs[2] = rbNear;
         rgTab.setOnCheckedChangeListener(this);
         //创建fragment实例
         fragmentmatch = new Fragmentmatch();
-        fragmentmeet = new Fragmentmeet();
-        fragmentNear = new FragmentNear();
+       /* fragmentmeet = new Fragmentmeet();
+        fragmentNear = new FragmentNear();*/
 
         list.add(fragmentmatch);
-        list.add(fragmentmeet);
-        list.add(fragmentNear);
+       /* list.add(fragmentmeet);
+        list.add(fragmentNear);*/
 
 
         MyAdapter myAdapter = new MyAdapter(getChildFragmentManager());
@@ -162,45 +155,9 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
             //设置切换页面及选中字体大小
             case R.id.rbMatch:
                 vp.setCurrentItem(0);
-                //ivFilter.setVisibility(View.VISIBLE);
 
                 rbMatch.setTextSize(18);
                 rbMatch.setTextAppearance(R.style.txt_bold);
-
-                rbMeet.setTextSize(16);
-                rbMeet.setTextAppearance(R.style.txt_nomal);
-
-                rbNear.setTextSize(16);
-                rbNear.setTextAppearance(R.style.txt_nomal);
-
-                break;
-            case R.id.rbMeet:
-                vp.setCurrentItem(1);
-
-
-              //  ivFilter.setVisibility(View.GONE);
-
-                rbMeet.setTextSize(18);
-                rbMeet.setTextAppearance(R.style.txt_bold);
-
-                rbMatch.setTextSize(16);
-                rbMatch.setTextAppearance(R.style.txt_nomal);
-                rbNear.setTextSize(16);
-                rbNear.setTextAppearance(R.style.txt_nomal);
-                break;
-            case R.id.rbNear:
-                vp.setCurrentItem(2);
-                //附近关闭筛选按钮
-               // ivFilter.setVisibility(View.GONE);
-
-                rbNear.setTextSize(18);
-                rbNear.setTextAppearance(R.style.txt_bold);
-
-                rbMatch.setTextSize(16);
-                rbMatch.setTextAppearance(R.style.txt_nomal);
-
-                rbMeet.setTextSize(16);
-                rbMeet.setTextAppearance(R.style.txt_nomal);
                 break;
             default:
                 break;

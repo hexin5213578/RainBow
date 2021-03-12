@@ -159,6 +159,7 @@ dependencies {
     implementation project(':image_select')
     implementation project(':mediapicker')
     implementation project(':videoprocessor')
+    implementation project(':soulplanet')
 
 
     // 引入身份证plugin与识别能力集合包。

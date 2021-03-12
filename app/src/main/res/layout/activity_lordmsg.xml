@@ -261,7 +261,11 @@
                         android:id="@+id/tv_jianjie"
                         android:layout_centerVertical="true"
                         android:textSize="@dimen/sp_12"
+                        android:text="asdasdfgsadadasdasdgsdfgs"
                         android:layout_toLeftOf="@id/iv3"
+                        android:maxLines="1"
+                        android:maxEms="15"
+                        android:ellipsize="end"
                         android:layout_marginRight="@dimen/dp_14"
                         android:textColor="@color/color_666666"
                         android:layout_height="wrap_content">

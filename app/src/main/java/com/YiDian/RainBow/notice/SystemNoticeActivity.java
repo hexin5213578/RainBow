@@ -104,6 +104,7 @@ public class SystemNoticeActivity extends BaseAvtivity {
             public void onClick(View v) {
                 CustomDialogCleanNotice.Builder builder = new CustomDialogCleanNotice.Builder(SystemNoticeActivity.this);
                 builder.setMessage("确定清空所有系统通知嘛?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
                     public void onClick(DialogInterface dialog, int which) {
 
                             NetUtils.getInstance().getApis()
@@ -138,6 +139,7 @@ public class SystemNoticeActivity extends BaseAvtivity {
                 });
                 builder.setNegativeButton("取消",
                         new android.content.DialogInterface.OnClickListener() {
+                            @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }

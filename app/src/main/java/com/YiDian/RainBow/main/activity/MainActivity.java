@@ -40,6 +40,8 @@ import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.custom.zbar.CaptureActivity;
 import com.YiDian.RainBow.dynamic.bean.SaveMsgSuccessBean;
+import com.YiDian.RainBow.imgroup.activity.LordMsgActivity;
+import com.YiDian.RainBow.imgroup.bean.GroupMsgBean;
 import com.YiDian.RainBow.main.fragment.FragmentFind;
 import com.YiDian.RainBow.main.fragment.FragmentHome;
 import com.YiDian.RainBow.main.fragment.FragmentMine;
@@ -108,6 +110,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     private FragmentMine fragmentmine;
     private List<Fragment> list;
     private int userid;
+    private Intent intent;
 
     @Override
     protected int getResId() {
@@ -480,7 +483,49 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
                     intent.putExtra("msg", saveIntentMsgBean);
                     startActivity(intent);
                 }else{
-                    Toast.makeText(this, "请扫描用户的二维码", Toast.LENGTH_SHORT).show();
+                    String substring = result.substring(8);
+                    Log.d("xxx","扫描到的群id为"+substring);
+
+                    NetUtils.getInstance()
+                            .getApis().doGetGroupMsg(Integer.parseInt(substring),userid)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Observer<GroupMsgBean>() {
+                                @Override
+                                public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+
+                                }
+
+                                @Override
+                                public void onNext(@io.reactivex.annotations.NonNull GroupMsgBean groupMsgBean) {
+                                    GroupMsgBean.ObjectBean object = groupMsgBean.getObject();
+                                    if (object.getGroupType()==1){
+                                        //我是群主 跳转到群主查看群信息页
+                                        intent = new Intent(MainActivity.this, LordMsgActivity.class);
+                                        intent.putExtra("groupid",object.getGroupId());
+                                        startActivity(intent);
+                                        
+                                    }else if (object.getGroupType()==2){
+                                        // TODO: 2021/3/12  我是群成员  跳转到成员查看信息页
+                                        
+                                        
+                                    }else{
+                                        // TODO: 2021/3/12  未加入该群 跳转到未加入查看群信息页
+
+                                    }
+                                }
+
+                                @Override
+                                public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+
+                                }
+                            });
+
                 }
             }
         }

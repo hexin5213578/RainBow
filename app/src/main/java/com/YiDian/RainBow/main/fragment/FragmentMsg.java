@@ -137,7 +137,8 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
         //申请开启麦克风权限
         if (Build.VERSION.SDK_INT >= 23) {
             int request = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO);
-            if (request != PackageManager.PERMISSION_GRANTED)//缺少权限，进行权限申请
+            //缺少权限，进行权限申请
+            if (request != PackageManager.PERMISSION_GRANTED)
             {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, 100);
                 return;//
@@ -168,12 +169,22 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
                 int menuPosition = menuBridge.getPosition(); // 菜单在RecyclerView的Item中的Position。
                 // TODO: 2021/1/8 `0008  调用删除单个回话并清空聊天记录
                 Conversation conversation = conversationList.get(adapterPosition);
-                String targetId = conversation.getTargetId();
+                if (conversation.getType().name().equals("group")){
 
-                //删除单个聊天对象
-                JMessageClient.deleteSingleConversation(targetId,Common.get_JG());
-                conversationList.remove(adapterPosition);
+                    boolean b = JMessageClient.deleteGroupConversation(Long.parseLong(conversation.getTargetId()));
+                    if (b){
+                        Log.d("xxx","删除成功");
+                    }else{
+                        Log.d("xxx","删除失败");
+                    }
 
+                }else{
+                    String targetId = conversation.getTargetId();
+
+                    //删除单个聊天对象
+                    JMessageClient.deleteSingleConversation(targetId,Common.get_JG());
+                    conversationList.remove(adapterPosition);
+                }
                 getImList();
             }
         });
@@ -215,9 +226,8 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
         }
 
     }
-
-    TimerTask timerTask = new TimerTask() {//实例TimerTask,在run函数中向hangdler发送消息
-
+    //实例TimerTask,在run函数中向hangdler发送消息
+    TimerTask timerTask = new TimerTask() {
         @Override
         public void run() {
             Message message = new Message();

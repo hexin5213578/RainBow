@@ -2,18 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_8867E7"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0_1"
-        android:background="@drawable/gradient_color"
+        android:background="@color/color_8867E7"
         />
     <RelativeLayout
         android:layout_below="@id/toolbar"
         android:id="@+id/rl1"
         android:layout_width="match_parent"
-        android:background="@drawable/background_gradient_noradius"
         android:layout_height="@dimen/dp_53">
         <RadioGroup
             android:id="@+id/rgTab"
@@ -27,25 +27,10 @@
                 android:layout_marginLeft="@dimen/dp_15"
                 android:layout_gravity="center"
                 android:text="匹配" />
-            <RadioButton
-                android:id="@+id/rbMeet"
-                android:layout_marginLeft="@dimen/dp_25"
-                style="@style/FindTab"
-                android:background="@null"
-                android:layout_gravity="center"
-                android:text="遇见" />
-            <RadioButton
-                android:id="@+id/rbNear"
-                android:layout_marginLeft="@dimen/dp_25"
-                style="@style/FindTab"
-                android:background="@null"
-                android:layout_gravity="center"
-                android:text="附近" />
         </RadioGroup>
         <RelativeLayout
             android:layout_width="@dimen/dp_50"
             android:id="@+id/iv_filter"
-            android:visibility="gone"
             android:layout_alignParentRight="true"
             android:layout_height="match_parent">
             <ImageView

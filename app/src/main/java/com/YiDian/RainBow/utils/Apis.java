@@ -11,6 +11,7 @@ import com.YiDian.RainBow.friend.bean.RecommendGroupBean;
 import com.YiDian.RainBow.friend.bean.RecommendUserBean;
 import com.YiDian.RainBow.imgroup.bean.ChangeGroupHeadBean;
 import com.YiDian.RainBow.imgroup.bean.GroupMemberBean;
+import com.YiDian.RainBow.imgroup.bean.GroupMemberTwoBean;
 import com.YiDian.RainBow.imgroup.bean.GroupMsgBean;
 import com.YiDian.RainBow.imgroup.bean.MyCreateGroupMsgBean;
 import com.YiDian.RainBow.imgroup.bean.MyJoinGroupMsgBean;
@@ -470,7 +471,31 @@ public interface Apis {
     @GET("group/selectGroupById")
     Observable<GroupMemberBean> doGetGroupMember(@Query("groupId")int grpupid,@Query("page")int page,@Query("pageSize")int size);
 
+    //查询群成员不带分页
+    @GET("group/selectGroupByIdTwo")
+    Observable<GroupMemberTwoBean> doGetGroupMembertwo(@Query("groupId")int grpupid);
+
     //修改群头像
     @POST("groupInfo/updateGroupInfo")
     Observable<ChangeGroupHeadBean> doChangeGroupHeadImg(@Query("id")int groupid,@Query("groupImg")String url);
+
+    //修改群背景
+    @POST("groupInfo/updateGroupInfo")
+    Observable<ChangeGroupHeadBean> doChangeGroupBackImg(@Query("id")int groupid,@Query("baseMap")String url);
+
+    //修改群昵称
+    @POST("groupInfo/updateGroupInfo")
+    Observable<ChangeGroupHeadBean> doChangeGroupName(@Query("id")int groupid,@Query("groupName")String name);
+
+    //修改群简介
+    @POST("groupInfo/updateGroupInfo")
+    Observable<ChangeGroupHeadBean> doChangeGroupJJ(@Query("id")int groupid,@Query("groupInfo")String info);
+
+    //踢出群聊
+    @POST("group/delGroup")
+    Observable<ChangeGroupHeadBean> doDeleteMember(@Query("groupId")int groupid,@Query("userId")int userid);
+
+    //解散群
+    @POST("groupInfo/delGroupInfo")
+    Observable<ChangeGroupHeadBean> doDeleteGroup(@Query("id")int groupid);
 }

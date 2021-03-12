@@ -318,13 +318,24 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         Intent intent = getIntent();
         id = intent.getStringExtra("userid");
 
-        Log.d("xxx", "传入聊天页的id为" + id);
+        //判断ID长度 为六位时为单聊
+        if (id.length()==6){
+            Log.d("xxx", "传入聊天页聊天的id为" + id);
 
-        //通过传过来的id对应对话的对象
-        conversation = JMessageClient.getSingleConversation(id);
+            //通过传过来的id对应对话的对象
+            conversation = JMessageClient.getSingleConversation(id);
 
-        //设置聊天对应用户的用户名
-        tvName.setText(conversation.getTitle());
+            //设置聊天对应用户的用户名
+            tvName.setText(conversation.getTitle());
+        }else if(id.length()==8){
+            Log.d("xxx", "传入聊天页群组的id为" + id);
+
+            conversation = JMessageClient.getGroupConversation(Long.parseLong(id));
+
+            //设置聊天对应用户的群名
+            tvName.setText(conversation.getTitle());
+        }
+
 
         //获取当前登录的用户名 设置状态栏提示
         userName = Common.getUserName();
@@ -430,95 +441,125 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         List<Message> messagesFromNewest = conversation.getMessagesFromNewest(page, size);
 
         Log.d("xxx", "获取到了" + messagesFromNewest.size() + "条");
-        if (messagesFromNewest.size() > 0 && messagesFromNewest != null) {
-
+        if (conversation.getType().name().equals("group")){
             rlMsgUser.setVisibility(View.GONE);
             sv.setVisibility(View.VISIBLE);
-            this.page += 50;
-            this.size += 50;
+            if (messagesFromNewest.size() > 0 && messagesFromNewest != null) {
+                this.page += 50;
+                this.size += 50;
 
-            sv.setHeader(new AliFooter(this));
+                sv.setHeader(new AliFooter(this));
 
-            allList.addAll(messagesFromNewest);
+                allList.addAll(messagesFromNewest);
 
-            Log.d("xxx", "聊天记录长度为" + allList.size() + "");
-            Log.d("xxx", "聊天记录第一条为" + messagesFromNewest.get(0).toJson());
+                Log.d("xxx", "聊天记录长度为" + allList.size() + "");
+                Log.d("xxx", "聊天记录第一条为" + messagesFromNewest.get(0).toJson());
 
-            linearLayoutManager = new LinearLayoutManager(FriendImActivity.this, RecyclerView.VERTICAL, true);
-            rcImlist.setLayoutManager(linearLayoutManager);
-            linearLayoutManager.setStackFromEnd(true);
-            linearLayoutManager.scrollToPositionWithOffset(0, 0);
+                linearLayoutManager = new LinearLayoutManager(FriendImActivity.this, RecyclerView.VERTICAL, true);
+                rcImlist.setLayoutManager(linearLayoutManager);
+                linearLayoutManager.setStackFromEnd(true);
+                linearLayoutManager.scrollToPositionWithOffset(0, 0);
 
-            imAdapter = new FriendImAdapter(FriendImActivity.this);
+                imAdapter = new FriendImAdapter(FriendImActivity.this);
 
-            imAdapter.setData(allList);
-            //设置对方头像
-            File avatarFile = conversation.getAvatarFile();
-            imAdapter.setHeadimg(avatarFile);
+                imAdapter.setData(allList);
+                //设置对方头像
+                File avatarFile = conversation.getAvatarFile();
+                imAdapter.setHeadimg(avatarFile);
 
-            rcImlist.setAdapter(imAdapter);
-        } else {
-            if (allList.size() > 0) {
-                Toast.makeText(this, "没有更多记录了", Toast.LENGTH_SHORT).show();
+                rcImlist.setAdapter(imAdapter);
+            }
+        }else{
+            if (messagesFromNewest.size() > 0 && messagesFromNewest != null) {
+
+                rlMsgUser.setVisibility(View.GONE);
+                sv.setVisibility(View.VISIBLE);
+                this.page += 50;
+                this.size += 50;
+
+                sv.setHeader(new AliFooter(this));
+
+                allList.addAll(messagesFromNewest);
+
+                Log.d("xxx", "聊天记录长度为" + allList.size() + "");
+                Log.d("xxx", "聊天记录第一条为" + messagesFromNewest.get(0).toJson());
+
+                linearLayoutManager = new LinearLayoutManager(FriendImActivity.this, RecyclerView.VERTICAL, true);
+                rcImlist.setLayoutManager(linearLayoutManager);
+                linearLayoutManager.setStackFromEnd(true);
+                linearLayoutManager.scrollToPositionWithOffset(0, 0);
+
+                imAdapter = new FriendImAdapter(FriendImActivity.this);
+
+                imAdapter.setData(allList);
+                //设置对方头像
+                File avatarFile = conversation.getAvatarFile();
+                imAdapter.setHeadimg(avatarFile);
+
+                rcImlist.setAdapter(imAdapter);
             } else {
-                sv.setVisibility(View.GONE);
-                rlMsgUser.setVisibility(View.VISIBLE);
+                if (allList.size() > 0) {
+                    Toast.makeText(this, "没有更多记录了", Toast.LENGTH_SHORT).show();
+                } else {
+                    sv.setVisibility(View.GONE);
+                    rlMsgUser.setVisibility(View.VISIBLE);
 
-                //获取传递过来的用户的基本信息
-                NetUtils.getInstance().getApis()
-                        .doGetUserMsgById(userid, Integer.parseInt(id))
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<UserMsgBean>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
+                    //获取传递过来的用户的基本信息
+                    NetUtils.getInstance().getApis()
+                            .doGetUserMsgById(userid, Integer.parseInt(id))
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Observer<UserMsgBean>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
 
-                            }
+                                }
 
-                            @Override
-                            public void onNext(UserMsgBean userMsgBean) {
-                                UserMsgBean.ObjectBean bean = userMsgBean.getObject();
-                                UserMsgBean.ObjectBean.UserInfoBean userInfo = bean.getUserInfo();
-                                if (userMsgBean.getMsg().equals("查询成功")) {
-                                    tvUsername.setText(userInfo.getNickName());
-                                    //加载头像
-                                    Glide.with(FriendImActivity.this).load(userInfo.getHeadImg()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
-                                    //设置角色
-                                    //判断性别是否保密
-                                    String userRole = userInfo.getUserRole();
-                                    if (userRole != null) {
-                                        if (userRole.equals("保密")) {
-                                            tvRole.setVisibility(View.GONE);
+                                @Override
+                                public void onNext(UserMsgBean userMsgBean) {
+                                    UserMsgBean.ObjectBean bean = userMsgBean.getObject();
+                                    UserMsgBean.ObjectBean.UserInfoBean userInfo = bean.getUserInfo();
+                                    if (userMsgBean.getMsg().equals("查询成功")) {
+                                        tvUsername.setText(userInfo.getNickName());
+                                        //加载头像
+                                        Glide.with(FriendImActivity.this).load(userInfo.getHeadImg()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
+                                        //设置角色
+                                        //判断性别是否保密
+                                        String userRole = userInfo.getUserRole();
+                                        if (userRole != null) {
+                                            if (userRole.equals("保密")) {
+                                                tvRole.setVisibility(View.GONE);
+                                            } else {
+                                                tvRole.setText(userInfo.getUserRole());
+                                            }
                                         } else {
-                                            tvRole.setText(userInfo.getUserRole());
+                                            tvRole.setVisibility(View.GONE);
                                         }
-                                    } else {
-                                        tvRole.setVisibility(View.GONE);
-                                    }
-                                    String explains = userInfo.getExplains();
-                                    if (explains!=null){
-                                        if (explains.equals("")){
-                                            tvQianming.setText("还没有设置签名哦");
+                                        String explains = userInfo.getExplains();
+                                        if (explains!=null){
+                                            if (explains.equals("")){
+                                                tvQianming.setText("还没有设置签名哦");
+                                            }else{
+                                                tvQianming.setText("个性签名:"+explains);
+                                            }
                                         }else{
-                                            tvQianming.setText("个性签名:"+explains);
+                                            tvQianming.setText("还没有设置签名哦");
                                         }
-                                    }else{
-                                        tvQianming.setText("还没有设置签名哦");
                                     }
                                 }
-                            }
 
-                            @Override
-                            public void onError(Throwable e) {
+                                @Override
+                                public void onError(Throwable e) {
 
-                            }
+                                }
 
-                            @Override
-                            public void onComplete() {
+                                @Override
+                                public void onComplete() {
 
-                            }
-                        });
+                                }
+                            });
 
+                }
             }
         }
     }

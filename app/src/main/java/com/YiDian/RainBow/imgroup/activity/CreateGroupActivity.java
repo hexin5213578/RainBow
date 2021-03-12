@@ -43,6 +43,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 /**
+ * 创建群组
  * @author hmy
  */
 public class CreateGroupActivity extends BaseAvtivity implements View.OnClickListener {

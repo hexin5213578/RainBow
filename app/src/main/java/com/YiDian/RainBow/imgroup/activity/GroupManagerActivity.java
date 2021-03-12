@@ -18,6 +18,7 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.imgroup.bean.ChangeGroupHeadBean;
 import com.YiDian.RainBow.imgroup.bean.SaveIdAndHeadImgBean;
 import com.YiDian.RainBow.login.bean.ComPleteMsgBean;
@@ -80,6 +81,7 @@ public class GroupManagerActivity extends BaseAvtivity implements View.OnClickLi
     private String headimg;
     private int id;
     private int jgId;
+    private CustomDialog customDialog;
 
     @Override
     protected int getResId() {
@@ -93,6 +95,7 @@ public class GroupManagerActivity extends BaseAvtivity implements View.OnClickLi
         //获取七牛云token
         token = Common.getToken();
 
+        customDialog = new CustomDialog(GroupManagerActivity.this, "正在更换头像...");
         /* 获取需要管理的群ID */
         Intent intent = getIntent();
 
@@ -111,8 +114,6 @@ public class GroupManagerActivity extends BaseAvtivity implements View.OnClickLi
         rlChangeHeadimg.setOnClickListener(this);
         rlShenhelist.setOnClickListener(this);
         rlUserlist.setOnClickListener(this);
-
-
     }
 
     @Override
@@ -143,11 +144,16 @@ public class GroupManagerActivity extends BaseAvtivity implements View.OnClickLi
                             .startForResult(100);
                 }
                 break;
+                //审核列表
             case R.id.rl_shenhelist:
-
+                
                 break;
+                //成员管理
             case R.id.rl_userlist:
-
+                Intent intent = new Intent(GroupManagerActivity.this,MemberManageActivity.class);
+                intent.putExtra("id",id);
+                intent.putExtra("jgid",jgId);
+                startActivity(intent);
                 break;
             default:
                 break;
@@ -161,8 +167,7 @@ public class GroupManagerActivity extends BaseAvtivity implements View.OnClickLi
                 //图片单选和多选数据都是以ArrayList的字符串数组返回的。
                 List<String> paths = PictureSelector.obtainPathResult(data);
                 path = paths.get(0);
-                Glide.with(GroupManagerActivity.this).load(path).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
-
+                customDialog.show();
                 //上传至七牛云
                 // 图片上传到七牛 重用 uploadManager。一般地，只需要创建一个 uploadManager 对象
                 uploadManager = new UploadManager();
@@ -195,6 +200,7 @@ public class GroupManagerActivity extends BaseAvtivity implements View.OnClickLi
                                         JMessageClient.getGroupInfo(jgId, new GetGroupInfoCallback() {
                                             @Override
                                             public void gotResult(int i, String s, GroupInfo groupInfo) {
+                                                Log.d("xxx","请求码为"+i+"原因为"+s);
                                                 if (i==0){
                                                     //获取成功群组信息
                                                     groupInfo.updateAvatar(file, "jpg", new BasicCallback() {
@@ -215,14 +221,17 @@ public class GroupManagerActivity extends BaseAvtivity implements View.OnClickLi
 
                                                                             @Override
                                                                             public void onNext(@NonNull ChangeGroupHeadBean changeGroupHeadBean) {
+                                                                                customDialog.dismiss();
                                                                                 if (changeGroupHeadBean.getMsg().equals("修改成功")){
                                                                                     Toast.makeText(GroupManagerActivity.this, "头像修改成功", Toast.LENGTH_SHORT).show();
+                                                                                    Glide.with(GroupManagerActivity.this).load(path).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
                                                                                 }
                                                                             }
 
                                                                             @Override
                                                                             public void onError(@NonNull Throwable e) {
-
+                                                                                customDialog.dismiss();
+                                                                                Toast.makeText(GroupManagerActivity.this, "头像修改失败", Toast.LENGTH_SHORT).show();
                                                                             }
 
                                                                             @Override

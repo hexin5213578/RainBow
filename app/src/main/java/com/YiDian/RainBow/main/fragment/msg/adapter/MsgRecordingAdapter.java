@@ -27,8 +27,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.GetGroupInfoCallback;
 import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.model.Conversation;
+import cn.jpush.im.android.api.model.GroupInfo;
 import cn.jpush.im.android.api.model.UserInfo;
 
 public class MsgRecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -36,6 +38,8 @@ public class MsgRecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private final Context context;
     private List<Conversation> list;
     private Conversation conversation;
+    private String targetId;
+    private File avatarFile;
 
 
     public MsgRecordingAdapter(Context context) {
@@ -58,55 +62,92 @@ public class MsgRecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         conversation = list.get(position);
+        //判断聊天对象是否为群组
+        if (conversation.getType().name().equals("group")){
+            targetId = conversation.getTargetId();
 
-        String targetId = conversation.getTargetId();
-        JMessageClient.getUserInfo(targetId, "87ce5706efafab51ddd2be08", new GetUserInfoCallback() {
-            @Override
-            public void gotResult(int i, String s, UserInfo userInfo) {
-                if (i == 0) {
-                    File avatarFile = userInfo.getAvatarFile();
+            JMessageClient.getGroupInfo(Long.parseLong(targetId), new GetGroupInfoCallback() {
+                @Override
+                public void gotResult(int i, String s, GroupInfo groupInfo) {
+                    if (i==0){
+                        avatarFile = groupInfo.getAvatarFile();
 
-                    Log.d("xxx", "获取用户信息成功,用户头像为" + avatarFile);
-                    // TODO: 2021/1/14 0014 头像为空加载默认
-                    if (avatarFile == null) {
-                        Glide.with(context).load(R.mipmap.headimg3).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder) holder).ivHeadimg);
-                    } else {
                         Glide.with(context).load(avatarFile).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder) holder).ivHeadimg);
                     }
                 }
-            }
-        });
-        //跳转到用户信息页
-        ((ViewHolder) holder).ivHeadimg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                conversation = list.get(position);
+            });
+            //跳转到群信息页
+            ((ViewHolder) holder).ivHeadimg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // TODO: 2021/3/12 先判断加入还是创建 再跳转至详细信息页
 
-                Intent intent = new Intent(context, PersonHomeActivity.class);
-                SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
-                saveIntentMsgBean.setId(Integer.parseInt(conversation.getTargetId()));
-                //2标记传入姓名  1标记传入id
-                saveIntentMsgBean.setFlag(1);
-                intent.putExtra("msg", saveIntentMsgBean);
-                context.startActivity(intent);
-            }
-        });
-        ((ViewHolder)holder).rlItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: 2021/1/8 0008  跳转至聊天详情页
+                }
+            });
+            ((ViewHolder)holder).rlItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // TODO: 2021/1/8 0008  跳转至聊天详情页
+                    Conversation conversation = list.get(position);
 
-                Conversation conversation = list.get(position);
+                    //进入会话
+                    JMessageClient.enterGroupConversation(Long.parseLong(conversation.getTargetId()));
+                    //发送到聊天详情页
+                    Intent intent = new Intent(context, FriendImActivity.class);
+                    intent.putExtra("userid",conversation.getTargetId());
+                    context.startActivity(intent);
+                }
+            });
+        }else{
+            targetId = conversation.getTargetId();
+            JMessageClient.getUserInfo(targetId, "87ce5706efafab51ddd2be08", new GetUserInfoCallback() {
+                @Override
+                public void gotResult(int i, String s, UserInfo userInfo) {
+                    if (i == 0) {
+                         avatarFile = userInfo.getAvatarFile();
 
-                //进入会话
-                JMessageClient.enterSingleConversation(conversation.getTargetId());
+                        Log.d("xxx", "获取用户信息成功,用户头像为" + avatarFile);
+                        // TODO: 2021/1/14 0014 头像为空加载默认
+                        if (avatarFile == null) {
+                            Glide.with(context).load(R.mipmap.headimg3).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder) holder).ivHeadimg);
+                        } else {
+                            Glide.with(context).load(avatarFile).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(((ViewHolder) holder).ivHeadimg);
+                        }
+                    }
+                }
+            });
+            //跳转到用户信息页
+            ((ViewHolder) holder).ivHeadimg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    conversation = list.get(position);
 
-                //发送到聊天详情页
-                Intent intent = new Intent(context, FriendImActivity.class);
-                intent.putExtra("userid",conversation.getTargetId());
-                context.startActivity(intent);
-            }
-        });
+                    Intent intent = new Intent(context, PersonHomeActivity.class);
+                    SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
+                    saveIntentMsgBean.setId(Integer.parseInt(conversation.getTargetId()));
+                    //2标记传入姓名  1标记传入id
+                    saveIntentMsgBean.setFlag(1);
+                    intent.putExtra("msg", saveIntentMsgBean);
+                    context.startActivity(intent);
+                }
+            });
+            ((ViewHolder)holder).rlItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // TODO: 2021/1/8 0008  跳转至聊天详情页
+
+                    Conversation conversation = list.get(position);
+
+                    //进入会话
+                    JMessageClient.enterSingleConversation(conversation.getTargetId());
+                    //发送到聊天详情页
+                    Intent intent = new Intent(context, FriendImActivity.class);
+                    intent.putExtra("userid",conversation.getTargetId());
+                    context.startActivity(intent);
+                }
+            });
+        }
+
         ((ViewHolder) holder).tvUsername.setText(conversation.getTitle());
         if (conversation.getLatestType().name().equals("voice")) {
             ((ViewHolder) holder).tvLastMsg.setText("[语音消息]");

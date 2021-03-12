@@ -6,6 +6,15 @@ public class SaveIdAndHeadImgBean implements Serializable {
     private int id;
     private String headimg;
     private int jgId;
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public int getJgId() {
         return jgId;

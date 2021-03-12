@@ -1,3 +1,4 @@
+include ':soulplanet'
 include ':ocr_ui'
 include ':videoprocessor'
 include ':mediapicker'

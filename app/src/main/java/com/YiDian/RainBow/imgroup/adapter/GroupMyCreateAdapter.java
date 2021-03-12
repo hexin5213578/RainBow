@@ -16,6 +16,7 @@ import com.YiDian.RainBow.friend.bean.InitGroupBean;
 import com.YiDian.RainBow.imgroup.activity.LordMsgActivity;
 import com.YiDian.RainBow.imgroup.bean.MyCreateGroupMsgBean;
 import com.YiDian.RainBow.imgroup.bean.MyJoinGroupMsgBean;
+import com.YiDian.RainBow.main.fragment.msg.activity.FriendImActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
@@ -24,6 +25,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.jpush.im.android.api.model.Conversation;
 
 public class GroupMyCreateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -81,7 +83,13 @@ public class GroupMyCreateAdapter extends RecyclerView.Adapter<RecyclerView.View
             @Override
             public void onClick(View v) {
                 //跳转到群聊页
+                //创建群聊会话，如果本地已存在对应会话对象，则不会重新创建
+                Conversation.createGroupConversation(list.get(position).getJgGroupId());
 
+                //跳转至聊天页
+                Intent intent = new Intent(context, FriendImActivity.class);
+                intent.putExtra("userid",String.valueOf(list.get(position).getJgGroupId()));
+                context.startActivity(intent);
             }
         });
     }

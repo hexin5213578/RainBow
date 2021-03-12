@@ -417,11 +417,30 @@
             android:name=".imgroup.activity.GroupManagerActivity"
             android:screenOrientation="portrait" />
 
+        <!-- 群组成员管理 -->
+        <activity
+            android:name=".imgroup.activity.MemberManageActivity"
+            android:screenOrientation="portrait" />
+
+        <!-- 群组审核管理列表 -->
+        <activity
+            android:name=".imgroup.activity.ReviewListActivity"
+            android:screenOrientation="portrait" />
+
+        <!-- 群组二维码 -->
+        <activity
+            android:name=".main.fragment.mine.activity.GroupQrCodeActivity"
+            android:screenOrientation="portrait" />
+
+        <!-- 群成员详情 -->
+        <activity
+            android:name=".imgroup.activity.GroupMemberDetailsActivity"
+            android:screenOrientation="portrait" />
+
         <!-- 查询用户详情 -->
         <activity
             android:name=".friend.activity.MoreUserActivity"
             android:screenOrientation="portrait" />
-
 
         <!-- 系统通知 -->
         <activity
