@@ -99,7 +99,7 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
     protected void getData() {
         //设置状态栏颜色与字体颜色
         StatusBarUtil.setGradientColor(getActivity(), toolbar);
-        StatusBarUtil.setDarkMode(getActivity());
+        StatusBarUtil.setLightMode(getActivity());
 
         list = new ArrayList<>();
 
@@ -263,8 +263,8 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
                 dismiss();
             }
         });
-
-        mPopupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));    //要为popWindow设置一个背景才有效
+        //要为popWindow设置一个背景才有效
+        mPopupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));
         //popwindow设置属性
         mPopupWindow.setAnimationStyle(R.style.popwindow_anim_style);
         mPopupWindow.setContentView(view);

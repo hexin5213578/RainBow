@@ -90,14 +90,17 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
     private boolean firstInit = false;
     private List<Conversation> conversationList;
 
+    @Override
     protected void getid(View view) {
 
     }
 
+    @Override
     protected int getResId() {
         return R.layout.home_fragment_msg;
     }
 
+    @Override
     protected BasePresenter initPresenter() {
         return null;
     }
@@ -115,6 +118,7 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
         }
 
     };
+    @Override
     protected void getData() {
         //设置状态栏颜色与字体颜色
         StatusBarUtil.setGradientColor(getActivity(), toolbar);

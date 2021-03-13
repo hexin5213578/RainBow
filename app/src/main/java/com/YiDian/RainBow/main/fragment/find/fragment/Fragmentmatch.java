@@ -1,5 +1,6 @@
 package com.YiDian.RainBow.main.fragment.find.fragment;
 
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -10,13 +11,25 @@ import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.main.fragment.find.adapter.TestAdapter;
+import com.YiDian.RainBow.main.fragment.find.bean.FindUserMsgBean;
 import com.YiDian.RainBow.main.fragment.find.bean.SaveFilterBean;
+import com.YiDian.RainBow.topic.SaveIntentMsgBean;
+import com.YiDian.RainBow.user.PersonHomeActivity;
+import com.YiDian.RainBow.user.bean.UserMsgBean;
+import com.YiDian.RainBow.utils.NetUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.List;
+
 import butterknife.BindView;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import me.haowen.soulplanet.view.SoulPlanetsView;
 
 //匹配界面
@@ -26,6 +39,7 @@ public class Fragmentmatch extends BaseFragment {
     SoulPlanetsView soulPlanetView;
     private CustomDialog dialog1;
     private int userid;
+    private List<FindUserMsgBean.ObjectBean> list;
 
     @Override
     protected void getid(View view) {
@@ -48,16 +62,59 @@ public class Fragmentmatch extends BaseFragment {
         dialog1 = new CustomDialog(getContext(), "正在加载...");
         userid = Integer.valueOf(Common.getUserId());
 
-        TestAdapter testAdapter = new TestAdapter();
-        soulPlanetView.setAdapter(testAdapter);
+        getUserMsg();
 
         //条目点击
         soulPlanetView.setOnTagClickListener(new SoulPlanetsView.OnTagClickListener() {
             @Override
             public void onItemClick(ViewGroup parent, View view, int position) {
-                Toast.makeText(getContext(), String.valueOf(position), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getContext(), PersonHomeActivity.class);
+                SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
+                saveIntentMsgBean.setId(list.get(position).getId());
+                //2标记传入姓名  1标记传入id
+                saveIntentMsgBean.setFlag(1);
+                intent.putExtra("msg", saveIntentMsgBean);
+                startActivity(intent);
             }
         });
+    }
+
+    /**
+     * 获取数据
+     * @param
+     */
+    public void getUserMsg(){
+        dialog1.show();
+        NetUtils.getInstance()
+                .getApis().doGetUserMsg(userid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<FindUserMsgBean>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(@NonNull FindUserMsgBean findUserMsgBean) {
+                        dialog1.dismiss();
+                        list = findUserMsgBean.getObject();
+
+                        TestAdapter testAdapter = new TestAdapter(list);
+
+                        soulPlanetView.setAdapter(testAdapter);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

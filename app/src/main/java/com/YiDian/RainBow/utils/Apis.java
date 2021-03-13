@@ -18,6 +18,7 @@ import com.YiDian.RainBow.imgroup.bean.MyJoinGroupMsgBean;
 import com.YiDian.RainBow.main.bean.NoticeCountBean;
 import com.YiDian.RainBow.main.fragment.find.bean.AllLikeBean;
 import com.YiDian.RainBow.main.fragment.find.bean.AllUserInfoBean;
+import com.YiDian.RainBow.main.fragment.find.bean.FindUserMsgBean;
 import com.YiDian.RainBow.main.fragment.find.bean.LikeUserBean;
 import com.YiDian.RainBow.main.fragment.find.bean.NearPersonBean;
 import com.YiDian.RainBow.main.fragment.find.bean.UserMySeeBean;
@@ -498,4 +499,9 @@ public interface Apis {
     //解散群
     @POST("groupInfo/delGroupInfo")
     Observable<ChangeGroupHeadBean> doDeleteGroup(@Query("id")int groupid);
+
+    //发现大球用户
+    @GET("user/selectAllUser")
+    Observable<FindUserMsgBean> doGetUserMsg(@Query("userId")int userid);
+
 }
