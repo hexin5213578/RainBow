@@ -384,7 +384,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                         dialog.dismiss();
                         List<NewDynamicBean.ObjectBean.ListBean> list = newDynamicBean.getObject().getList();
 
-                        if (list.size() > 0 && list != null) {
+                        if (list != null &&  list.size() > 0 ) {
                             //RelativeLayout rlNodata;
                             rlNodata.setVisibility(View.GONE);
                             //RecyclerView  rcDynamic

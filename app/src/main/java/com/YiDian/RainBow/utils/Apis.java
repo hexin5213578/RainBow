@@ -15,6 +15,7 @@ import com.YiDian.RainBow.imgroup.bean.GroupMemberTwoBean;
 import com.YiDian.RainBow.imgroup.bean.GroupMsgBean;
 import com.YiDian.RainBow.imgroup.bean.MyCreateGroupMsgBean;
 import com.YiDian.RainBow.imgroup.bean.MyJoinGroupMsgBean;
+import com.YiDian.RainBow.imgroup.bean.ShenHeListBean;
 import com.YiDian.RainBow.main.bean.NoticeCountBean;
 import com.YiDian.RainBow.main.fragment.find.bean.AllLikeBean;
 import com.YiDian.RainBow.main.fragment.find.bean.AllUserInfoBean;
@@ -500,8 +501,23 @@ public interface Apis {
     @POST("groupInfo/delGroupInfo")
     Observable<ChangeGroupHeadBean> doDeleteGroup(@Query("id")int groupid);
 
+    //申请加入群
+    @POST("group/insert")
+    Observable<ChangeGroupHeadBean> doInserGroup(@Query("groupId")int groupid,@Query("userId")int userid);
+
+    //审核列表
+    @GET("message/selectGroupType")
+    Observable<ShenHeListBean> doGetReviewList(@Query("msgUserId")int userid,@Query("page")int page,@Query("pageSize")int size);
+
+    //同意入群
+
+
     //发现大球用户
     @GET("user/selectAllUser")
     Observable<FindUserMsgBean> doGetUserMsg(@Query("userId")int userid);
+
+    //发现大球用户筛选
+    @GET("user/selectAllUser")
+    Observable<FindUserMsgBean> doGetFilterUserMsg(@Query("userId")int userid,@Query("userRole")String role);
 
 }

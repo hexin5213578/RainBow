@@ -43,6 +43,7 @@ import com.YiDian.RainBow.main.fragment.find.bean.SaveFilterBean;
 import com.YiDian.RainBow.main.fragment.find.fragment.FragmentNear;
 import com.YiDian.RainBow.main.fragment.find.fragment.Fragmentmatch;
 import com.YiDian.RainBow.main.fragment.find.fragment.Fragmentmeet;
+import com.YiDian.RainBow.utils.SPUtil;
 import com.leaf.library.StatusBarUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -60,8 +61,8 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
     RadioButton rbMatch;
     @BindView(R.id.rgTab)
     RadioGroup rgTab;
-    @BindView(R.id.iv_filter)
-    RelativeLayout ivFilter;
+    @BindView(R.id.iv_fileter)
+    LinearLayout ivFilter;
     @BindView(R.id.vp)
     ViewPager vp;
     @BindView(R.id.toolbar)
@@ -180,14 +181,28 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
         RadioButton rb3 = view.findViewById(R.id.rb3);
         RadioButton rb4 = view.findViewById(R.id.rb4);
 
-        RadioButton rb_issingle = view.findViewById(R.id.rb_issingle);
-        RadioButton rb_isNosingle = view.findViewById(R.id.rb_isNosingle);
-
-        DoubleSlideSeekBar seekBar_age = view.findViewById(R.id.seekbar_age);
-        SeekBar seekBar_distance = view.findViewById(R.id.seekbar_distance);
-        TextView tv_age = view.findViewById(R.id.tv_age);
-        TextView tv_distance = view.findViewById(R.id.tv_distance);
-
+        String role = SPUtil.getInstance().getData(getContext(), SPUtil.FILE_NAME, SPUtil.SELECTROLE);
+        if (role!=null){
+            switch (role){
+                case "T":
+                    rb1.setChecked(true);
+                    break;
+                case "P":
+                    rb2.setChecked(true);
+                    break;
+                case "H":
+                    rb3.setChecked(true);
+                    break;
+                case "BI":
+                    rb4.setChecked(true);
+                    break;
+                case "全部":
+                    rb5.setChecked(true);
+                    break;
+                default:
+                    break;
+            }
+        }
         Button bt_confirm = view.findViewById(R.id.bt_confirm);
         //隐藏弹出框单击事件
         ivCancle.setOnClickListener(new View.OnClickListener() {
@@ -197,37 +212,9 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
             }
         });
 
-        //设置距离筛选
-        seekBar_distance.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                tv_distance.setText(progress+1+"km");
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-        //年龄筛选
-        seekBar_age.setOnRangeListener(new DoubleSlideSeekBar.onRangeListener() {
-            @Override
-            public void onRange(float low, float big) {
-                //设置年龄区间
-                tv_age.setText(Integer.valueOf((int) low)+"-"+Integer.valueOf((int) big));
-            }
-        });
-
         bt_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String age = tv_age.getText().toString();
-                int progress = seekBar_distance.getProgress();
                 if (rb1.isChecked()) {
                     Person = rb1.getText().toString();
                 }
@@ -244,19 +231,10 @@ public class FragmentFind extends BaseFragment implements RadioGroup.OnCheckedCh
                     Person = rb5.getText().toString();
                 }
 
-
-                if (rb_issingle.isChecked()) {
-                    IsSingle = rb_issingle.getText().toString();
-                }
-                if (rb_isNosingle.isChecked()) {
-                    IsSingle = rb_isNosingle.getText().toString();
-                }
-
                 SaveFilterBean saveFilterBean = new SaveFilterBean();
                 saveFilterBean.setRole(Person);
-                saveFilterBean.setAge(age);
-                saveFilterBean.setDistance(progress+1);
-                saveFilterBean.setIsSingle(IsSingle);
+
+                SPUtil.getInstance().saveData(getContext(),SPUtil.FILE_NAME,SPUtil.SELECTROLE,Person);
 
                 EventBus.getDefault().post(saveFilterBean);
                 //关闭弹出框

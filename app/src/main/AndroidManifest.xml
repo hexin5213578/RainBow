@@ -437,6 +437,11 @@
             android:name=".imgroup.activity.GroupMemberDetailsActivity"
             android:screenOrientation="portrait" />
 
+        <!-- 未加入查看群信息 -->
+        <activity
+            android:name=".imgroup.activity.NoJoinGroupActivity"
+            android:screenOrientation="portrait" />
+
         <!-- 查询用户详情 -->
         <activity
             android:name=".friend.activity.MoreUserActivity"

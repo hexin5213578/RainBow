@@ -1,5 +1,6 @@
 package com.YiDian.RainBow.friend.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -16,11 +17,17 @@ import androidx.viewpager.widget.ViewPager;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
+import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.custom.customDialog.CustomDialogCleanNotice;
+import com.YiDian.RainBow.dynamic.activity.DevelopmentDynamicActivity;
 import com.YiDian.RainBow.friend.fragment.FragmentFollow;
 import com.YiDian.RainBow.friend.fragment.FragmentFans;
 import com.YiDian.RainBow.friend.fragment.FragmentFriend;
 import com.YiDian.RainBow.friend.fragment.FragmentGroup;
 import com.YiDian.RainBow.imgroup.activity.CreateGroupActivity;
+import com.YiDian.RainBow.setup.activity.RealnameActivity;
+import com.YiDian.RainBow.setup.bean.GetRealDataBean;
+import com.YiDian.RainBow.utils.NetUtils;
 import com.leaf.library.StatusBarUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -29,6 +36,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 //我的好友页
 public class FriendsActivity extends BaseAvtivity implements RadioGroup.OnCheckedChangeListener, View.OnClickListener {
@@ -67,6 +78,8 @@ public class FriendsActivity extends BaseAvtivity implements RadioGroup.OnChecke
     private FragmentGroup fragmentGroup;
     private FragmentFollow fragmentAtt;
     private Intent intent;
+    private int userid;
+    private boolean isClick = false;
 
     @Override
     protected int getResId() {
@@ -80,10 +93,13 @@ public class FriendsActivity extends BaseAvtivity implements RadioGroup.OnChecke
         //创建集合存入fragment
         list = new ArrayList<>();
 
+        userid = Integer.valueOf(Common.getUserId());
+
         Intent intent = getIntent();
         int flag = intent.getIntExtra("flag", 0);
 
-
+        //获取实名认证信息
+        getRealStatus();
 
         llBack.setOnClickListener(this);
         llAddfriend.setOnClickListener(this);
@@ -176,7 +192,48 @@ public class FriendsActivity extends BaseAvtivity implements RadioGroup.OnChecke
             }
         });
     }
+    //获取实名认证状态
+    public void getRealStatus(){
+        NetUtils.getInstance().getApis()
+                .doGetRealMsg(userid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GetRealDataBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
+                    }
+
+                    @Override
+                    public void onNext(GetRealDataBean getRealDataBean) {
+                        String msg = getRealDataBean.getMsg();
+                        if (msg.equals("您还没有提交实名信息")) {
+                            isClick = false;
+                        } else {
+                            int auditStatus = getRealDataBean.getObject().getAuditStatus();
+                            if (auditStatus == 2) {
+                                isClick = false;
+                            }
+                            if (auditStatus == 1) {
+                                isClick = true;
+                            }
+                            if (auditStatus==0){
+                                isClick = false;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
     @Override
     protected BasePresenter initPresenter() {
         return null;
@@ -198,8 +255,27 @@ public class FriendsActivity extends BaseAvtivity implements RadioGroup.OnChecke
                 break;
             case R.id.ll_addgroup:
                 //跳转至创建群聊页
-                intent = new Intent(FriendsActivity.this, CreateGroupActivity.class);
-                startActivity(intent);
+                if (isClick){
+                    //跳转到发布动态页
+                    intent = new Intent(FriendsActivity.this, CreateGroupActivity.class);
+                    startActivity(intent);
+                }else{
+                    CustomDialogCleanNotice.Builder builder = new CustomDialogCleanNotice.Builder(FriendsActivity.this);
+                    builder.setMessage("您还没有提交实名认证信息").setPositiveButton("去设置", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            startActivity(new Intent(FriendsActivity.this, RealnameActivity.class));
+                        }
+                    });
+                    builder.setNegativeButton("取消",
+                            new android.content.DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    builder.create().show();
+                }
                 break;
         }
     }

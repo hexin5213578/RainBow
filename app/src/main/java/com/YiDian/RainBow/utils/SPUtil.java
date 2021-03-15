@@ -58,6 +58,7 @@ public class SPUtil {
     public static final String ROLE = "role";
     public static final String ISSINGLE = "isingle";
     public static final String AGE = "age";
+    public static final String SELECTROLE = "selectrole";
 
 
     public static final String SENG_COUNT = "send";

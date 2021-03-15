@@ -1,6 +1,7 @@
 package com.YiDian.RainBow.imgroup.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -12,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.friend.bean.InitGroupBean;
+import com.YiDian.RainBow.imgroup.activity.LordMsgActivity;
+import com.YiDian.RainBow.imgroup.activity.MemberMsgActivity;
 import com.YiDian.RainBow.imgroup.bean.MyCreateGroupMsgBean;
 import com.YiDian.RainBow.imgroup.bean.MyJoinGroupMsgBean;
 import com.bumptech.glide.Glide;
@@ -61,6 +64,19 @@ public class GroupMyJoinAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
         ((ViewHolder)holder).tvNum.setText(listbean.getUserNum()+"");
 
+        ((ViewHolder)holder).ivHeadimg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //跳转到不可管理群组主页
+                //当前用户为群成员
+                Intent intent = new Intent(context, MemberMsgActivity.class);
+
+                intent.putExtra("groupid",list.get(position).getGroupId());
+
+                context.startActivity(intent);
+            }
+        });
 
         ((ViewHolder)holder).rlItem.setOnClickListener(new View.OnClickListener() {
             @Override

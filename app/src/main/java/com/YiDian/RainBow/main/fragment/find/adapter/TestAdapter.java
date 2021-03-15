@@ -47,16 +47,22 @@ public class TestAdapter extends PlanetAdapter {
         String str = "";
         Log.d("xxx","当前角色为"+bean.getUserRole());
         if (bean.getUserRole().equals("T")) {
+
+
             str = "T";
             starColor = PlanetView.COLOR_T;
         } else if (bean.getUserRole().equals("P")) {
+
+
             str = "P";
             starColor = PlanetView.COLOR_P;
         } else if (bean.getUserRole().equals("H")) {
+
+
             str = "H";
             starColor = PlanetView.COLOR_H;
         } else if (bean.getUserRole().equals("BI")) {
-            hasShadow = true;
+           // hasShadow = true;
             str = "BI";
             starColor = PlanetView.COLOR_BI;
         } else {

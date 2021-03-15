@@ -132,12 +132,14 @@ public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedCh
                 }else{
                     builder = new CustomDialogCleanNotice.Builder(getContext());
                     builder.setMessage("您还没有提交实名认证信息").setPositiveButton("去设置", new DialogInterface.OnClickListener() {
+                        @Override
                         public void onClick(DialogInterface dialog, int which) {
                             startActivity(new Intent(getContext(), RealnameActivity.class));
                         }
                     });
                     builder.setNegativeButton("取消",
                             new android.content.DialogInterface.OnClickListener() {
+                                @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
                                 }

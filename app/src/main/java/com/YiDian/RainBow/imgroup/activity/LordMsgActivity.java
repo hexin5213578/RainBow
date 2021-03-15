@@ -379,6 +379,7 @@ public class LordMsgActivity extends BaseAvtivity implements View.OnClickListene
                 builder.setMessage("确定要清空聊天记录嘛?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
                         boolean b = JMessageClient.deleteGroupConversation(groupid);
                         if (b){
                             Toast.makeText(LordMsgActivity.this, "聊天记录删除成功", Toast.LENGTH_SHORT).show();

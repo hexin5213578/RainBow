@@ -9,7 +9,7 @@
         android:layout_height="wrap_content">
         <TextView
             android:layout_width="wrap_content"
-            android:text="用户筛选"
+            android:text="筛选"
             android:textSize="@dimen/sp_18"
             android:id="@+id/tv1"
             android:textStyle="bold"
@@ -18,22 +18,11 @@
             android:layout_marginTop="@dimen/dp_15"
             android:layout_height="wrap_content">
         </TextView>
-        <TextView
-            android:layout_width="wrap_content"
-            android:text="角色"
-            android:layout_below="@id/tv1"
-            android:layout_marginTop="@dimen/dp_24"
-            android:layout_marginLeft="@dimen/dp_15"
-            android:id="@+id/tv2"
-            android:textSize="@dimen/sp_15"
-            android:textColor="@color/color_333333"
-            android:layout_height="wrap_content">
-        </TextView>
         <RadioGroup
             android:layout_width="match_parent"
             android:orientation="horizontal"
-            android:layout_below="@id/tv2"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_below="@id/tv1"
+            android:layout_marginTop="@dimen/dp_25"
             android:layout_marginLeft="@dimen/dp_28"
             android:id="@+id/rg"
             android:layout_marginRight="@dimen/dp_28"
@@ -94,150 +83,13 @@
                 android:layout_height="@dimen/dp_19"
                 android:text="BI" />
         </RadioGroup>
-        <TextView
-            android:layout_width="wrap_content"
-            android:text="是否单身"
-            android:layout_below="@id/rg"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_15"
-            android:id="@+id/tv3"
-            android:textSize="@dimen/sp_15"
-            android:textColor="@color/color_333333"
-            android:layout_height="wrap_content">
-        </TextView>
-        <RadioGroup
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_below="@id/tv3"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_28"
-            android:id="@+id/rg_isdanshen"
-            android:layout_marginRight="@dimen/dp_28"
-            android:layout_height="wrap_content">
-            <RadioButton
-                android:layout_width="@dimen/dp_50"
-                android:textColor="@drawable/selector_xingbie_text_color"
-                android:layout_height="@dimen/dp_19"
-                android:text="是"
-                android:checked="true"
-                android:background="@drawable/radio_bg"
-                android:id="@+id/rb_issingle"
-                android:gravity="center"
-                android:button="@null" />
-            <RadioButton
-                android:layout_width="@dimen/dp_50"
-                android:textColor="@drawable/selector_xingbie_text_color"
-                android:layout_height="@dimen/dp_19"
-                android:text="否"
-                android:layout_marginLeft="@dimen/dp_12"
-                android:background="@drawable/radio_bg"
-                android:id="@+id/rb_isNosingle"
-                android:gravity="center"
-                android:button="@null" />
-        </RadioGroup>
-        <TextView
-            android:layout_width="wrap_content"
-            android:text="年龄"
-            android:layout_below="@id/rg_isdanshen"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_15"
-            android:id="@+id/tv4"
-            android:textSize="@dimen/sp_15"
-            android:textColor="@color/color_333333"
-            android:layout_height="wrap_content">
-        </TextView>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_below="@id/tv4"
-            android:id="@+id/ll_age"
-            android:layout_marginLeft="@dimen/dp_28"
-            android:layout_marginRight="@dimen/dp_28"
-            android:orientation="horizontal"
-            android:layout_height="wrap_content">
-            <com.YiDian.RainBow.custom.seekbar.DoubleSlideSeekBar
-                android:layout_width="@dimen/dp_215"
-                android:layout_weight="1"
-                app:lineHeight="@dimen/dp_5"
-                app:inColor="#8667E7"
-                android:layout_below="@id/tv4"
-                app:outColor="@color/e6e6e6"
-                android:id="@+id/seekbar_age"
-                app:imageLow="@mipmap/seekbar_thume"
-                app:imageBig="@mipmap/seekbar_thume"
-                app:imagewidth="@dimen/dp_24"
-                app:imageheight="@dimen/dp_24"
-                app:smallValue="18"
-                app:bigValue="60"
-                android:layout_height="@dimen/dp_30">
-            </com.YiDian.RainBow.custom.seekbar.DoubleSlideSeekBar>
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:text="18-60"
-                android:layout_gravity="center"
-                android:background="@drawable/tenradious_ff_bg"
-                android:gravity="center"
-                android:textSize="@dimen/sp_12"
-                android:id="@+id/tv_age"
-                android:textColor="@color/color_666666"
-                android:layout_marginLeft="@dimen/dp_28"
-                android:layout_height="@dimen/dp_19">
-            </TextView>
-        </LinearLayout>
-        <TextView
-            android:layout_width="wrap_content"
-            android:text="位置"
-            android:layout_below="@id/ll_age"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_15"
-            android:id="@+id/tv5"
-            android:textSize="@dimen/sp_15"
-            android:textColor="@color/color_333333"
-            android:layout_height="wrap_content">
-        </TextView>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_below="@id/tv5"
-            android:id="@+id/ll_distance"
-            android:layout_marginLeft="@dimen/dp_24"
-            android:layout_marginRight="@dimen/dp_28"
-            android:orientation="horizontal"
-            android:layout_height="wrap_content">
-            <SeekBar
-                android:progress="49"
-                android:max="49"
-                android:layout_weight="1"
-                android:layout_below="@id/tv1"
-                android:thumb="@mipmap/seekbar_thume"
-                android:maxHeight="@dimen/dp_5"
-                android:id="@+id/seekbar_distance"
-                android:layout_marginTop="@dimen/dp_10"
-                android:minHeight="@dimen/dp_5"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:progressDrawable="@drawable/progress_bar_bg"
-                android:layout_width="@dimen/dp_215"
-                android:layout_height="@dimen/dp_25">
-            </SeekBar>
-            <TextView
-                android:layout_width="0dp"
-                android:text="50km"
-                android:layout_weight="1"
-                android:id="@+id/tv_distance"
-                android:layout_gravity="center"
-                android:background="@drawable/tenradious_ff_bg"
-                android:gravity="center"
-                android:textSize="@dimen/sp_12"
-                android:textColor="@color/color_666666"
-                android:layout_marginLeft="@dimen/dp_25"
-                android:layout_height="@dimen/dp_19">
-            </TextView>
-        </LinearLayout>
+
         <Button
             android:layout_width="@dimen/dp_180"
-            android:layout_below="@id/ll_distance"
-            android:layout_marginTop="@dimen/dp_35"
+            android:layout_marginTop="@dimen/dp_25"
             android:layout_centerHorizontal="true"
             android:text="确认"
+            android:layout_below="@id/rg"
             android:background="@drawable/background_gradient"
             android:textSize="@dimen/sp_15"
             android:textColor="@color/white"

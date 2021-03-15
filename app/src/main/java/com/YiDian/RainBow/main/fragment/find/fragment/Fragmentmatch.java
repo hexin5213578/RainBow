@@ -119,7 +119,42 @@ public class Fragmentmatch extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getMsg(SaveFilterBean saveFilterBean) {
+        String role = saveFilterBean.getRole();
+        if (role.equals("全部")){
 
+            getUserMsg();
+
+        }else{
+            NetUtils.getInstance().getApis()
+                    .doGetFilterUserMsg(userid,role)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<FindUserMsgBean>() {
+                        @Override
+                        public void onSubscribe(@NonNull Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(@NonNull FindUserMsgBean findUserMsgBean) {
+                            list = findUserMsgBean.getObject();
+
+                            TestAdapter testAdapter = new TestAdapter(list);
+
+                            soulPlanetView.setAdapter(testAdapter);
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+        }
     }
 
     @Override

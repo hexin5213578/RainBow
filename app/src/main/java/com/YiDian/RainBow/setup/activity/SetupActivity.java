@@ -214,6 +214,7 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
                 // TODO: 2021/1/6 0006 退出登录
                 CustomDialogCleanNotice.Builder builder = new CustomDialogCleanNotice.Builder(SetupActivity.this);
                 builder.setMessage("确定退出登录吗?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
                     public void onClick(DialogInterface dialog, int which) {
                         SPUtil.unReg(SetupActivity.this, SPUtil.FILE_NAME);
                         JMessageClient.logout();
@@ -224,11 +225,15 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
                 });
                 builder.setNegativeButton("取消",
                         new android.content.DialogInterface.OnClickListener() {
+                            @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
                         });
                 builder.create().show();
+                break;
+            default:
+
                 break;
         }
     }

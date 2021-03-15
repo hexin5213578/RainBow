@@ -16,6 +16,7 @@ import com.YiDian.RainBow.imgroup.adapter.RecommendGroupAdapter;
 import com.YiDian.RainBow.friend.bean.InitGroupBean;
 import com.YiDian.RainBow.imgroup.adapter.GroupMyCreateAdapter;
 import com.YiDian.RainBow.imgroup.adapter.GroupMyJoinAdapter;
+import com.YiDian.RainBow.setup.bean.GetRealDataBean;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.liaoinstan.springview.container.AliHeader;
 import com.liaoinstan.springview.widget.SpringView;
@@ -80,6 +81,7 @@ public class FragmentGroup extends BaseFragment {
         //首次进入获取数据
         getGroup();
 
+
         sv.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {
@@ -100,7 +102,6 @@ public class FragmentGroup extends BaseFragment {
             }
         });
     }
-
 
     @Override
     public void onResume() {

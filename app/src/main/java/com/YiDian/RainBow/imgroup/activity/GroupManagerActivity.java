@@ -82,6 +82,7 @@ public class GroupManagerActivity extends BaseAvtivity implements View.OnClickLi
     private int id;
     private int jgId;
     private CustomDialog customDialog;
+    private Intent intent;
 
     @Override
     protected int getResId() {
@@ -146,11 +147,14 @@ public class GroupManagerActivity extends BaseAvtivity implements View.OnClickLi
                 break;
                 //审核列表
             case R.id.rl_shenhelist:
-                
+                intent = new Intent(GroupManagerActivity.this,ReviewListActivity.class);
+                intent.putExtra("id",id);
+                intent.putExtra("jgid",jgId);
+                startActivity(intent);
                 break;
                 //成员管理
             case R.id.rl_userlist:
-                Intent intent = new Intent(GroupManagerActivity.this,MemberManageActivity.class);
+                intent = new Intent(GroupManagerActivity.this,MemberManageActivity.class);
                 intent.putExtra("id",id);
                 intent.putExtra("jgid",jgId);
                 startActivity(intent);

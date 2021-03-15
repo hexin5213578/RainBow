@@ -1,6 +1,7 @@
 package com.YiDian.RainBow.imgroup.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -14,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.friend.bean.InitGroupBean;
 import com.YiDian.RainBow.friend.bean.RecommendGroupBean;
+import com.YiDian.RainBow.imgroup.activity.MemberMsgActivity;
+import com.YiDian.RainBow.imgroup.activity.NoJoinGroupActivity;
 import com.YiDian.RainBow.imgroup.adapter.GroupMyCreateAdapter;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
@@ -65,8 +68,21 @@ public class RecommendGroupAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             @Override
             public void onClick(View v) {
                 // TODO: 2021/1/14 0014 跳转到群聊页
-
-
+                //跳转到加入群组页
+                //当前用户并非群成员
+                Intent intent = new Intent(context, NoJoinGroupActivity.class);
+                intent.putExtra("groupid",list.get(position).getId());
+                context.startActivity(intent);
+            }
+        });
+        ((ViewHolder)holder).ivHeadimg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //跳转到加入群组页
+                //当前用户并非群成员
+                Intent intent = new Intent(context, NoJoinGroupActivity.class);
+                intent.putExtra("groupid",list.get(position).getId());
+                context.startActivity(intent);
             }
         });
     }
