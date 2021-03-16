@@ -270,7 +270,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         select = new ArrayList<>();
         select1 = new ArrayList<>();
 
-        dialog = new CustomDialog(this, "正在加载");
+        dialog = new CustomDialog(this, "正在加载...");
         Request();
 
         mediaPlayer1 = new MediaPlayer();
@@ -319,7 +319,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         id = intent.getStringExtra("userid");
 
         //判断ID长度 为六位时为单聊
-        if (id.length()==6){
+        if (id.length()==6 || id.length()==4){
             Log.d("xxx", "传入聊天页聊天的id为" + id);
 
             //通过传过来的id对应对话的对象
@@ -354,8 +354,6 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-
-
                         sv.onFinishFreshAndLoad();
                     }
                 }, 1000);
@@ -439,6 +437,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
     public void getListFromIm(int page, int size) {
         List<Message> messagesFromNewest = conversation.getMessagesFromNewest(page, size);
+
 
         Log.d("xxx", "获取到了" + messagesFromNewest.size() + "条");
         if (conversation.getType().name().equals("group")){

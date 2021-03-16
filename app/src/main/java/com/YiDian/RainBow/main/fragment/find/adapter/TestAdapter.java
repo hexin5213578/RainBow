@@ -37,15 +37,12 @@ public class TestAdapter extends PlanetAdapter {
 
 
         bean = list.get(position);
-        Log.d("xxx","当前下标为"+position);
         planetView.setSign(bean.getNickName());
-        Log.d("xxx","当前昵称为"+bean.getNickName());
 
         int starColor = 0;
         boolean hasShadow = false;
 
         String str = "";
-        Log.d("xxx","当前角色为"+bean.getUserRole());
         if (bean.getUserRole().equals("T")) {
 
 

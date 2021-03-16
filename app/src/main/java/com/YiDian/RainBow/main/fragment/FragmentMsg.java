@@ -45,6 +45,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -175,6 +176,8 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
                 Conversation conversation = conversationList.get(adapterPosition);
                 if (conversation.getType().name().equals("group")){
 
+                    conversation.resetUnreadCount();
+
                     boolean b = JMessageClient.deleteGroupConversation(Long.parseLong(conversation.getTargetId()));
                     if (b){
                         Log.d("xxx","删除成功");
@@ -210,23 +213,35 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
     public void getImList() {
         //聊天记录
         conversationList = JMessageClient.getConversationList();
+
+        List<Conversation> newconverList = new ArrayList<>();
+
         if (conversationList !=null && conversationList.size() > 0) {
             rlNodata.setVisibility(View.GONE);
             sv.setVisibility(View.VISIBLE);
-            Log.d("xxx", conversationList.size() + "");
 
-            //创建recycleView管理器
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+            for (int i =0;i<conversationList.size();i++){
+                String name = conversationList.get(i).getType().name();
+                if (name.equals("single")){
+                    newconverList.add(conversationList.get(i));
+                }
+            }
+            if (newconverList!=null && newconverList.size()>0){
+                Log.d("xxx", newconverList.size() + "");
 
-            rcMsgRecording.setLayoutManager(linearLayoutManager);
-            //创建适配器
-            msgRecordingAdapter = new MsgRecordingAdapter(getContext());
-            msgRecordingAdapter.setData(conversationList);
-            //设置适配器
-            rcMsgRecording.setAdapter(msgRecordingAdapter);
-        }else{
-            rlNodata.setVisibility(View.VISIBLE);
-            sv.setVisibility(View.GONE);
+                //创建recycleView管理器
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+
+                rcMsgRecording.setLayoutManager(linearLayoutManager);
+                //创建适配器
+                msgRecordingAdapter = new MsgRecordingAdapter(getContext());
+                msgRecordingAdapter.setData(newconverList);
+                //设置适配器
+                rcMsgRecording.setAdapter(msgRecordingAdapter);
+            }else{
+                rlNodata.setVisibility(View.VISIBLE);
+                sv.setVisibility(View.GONE);
+            }
         }
 
     }
