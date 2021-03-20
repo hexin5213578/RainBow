@@ -1,24 +1,20 @@
 package com.YiDian.RainBow.main.activity;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -26,8 +22,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -37,9 +32,7 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
-import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.custom.zbar.CaptureActivity;
-import com.YiDian.RainBow.dynamic.bean.SaveMsgSuccessBean;
 import com.YiDian.RainBow.imgroup.activity.LordMsgActivity;
 import com.YiDian.RainBow.imgroup.bean.GroupMsgBean;
 import com.YiDian.RainBow.main.fragment.FragmentFind;
@@ -52,27 +45,21 @@ import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.user.PersonHomeActivity;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.YiDian.RainBow.utils.SPUtil;
+import com.leaf.library.StatusBarUtil;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
-import cn.jpush.im.android.api.JMessageClient;
-import cn.jpush.im.android.api.model.UserInfo;
-import cn.jpush.im.api.BasicCallback;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -80,6 +67,7 @@ import io.reactivex.schedulers.Schedulers;
 
 /**
  * 主页
+ *
  * @author hmy
  */
 public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedChangeListener {
@@ -132,15 +120,12 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void getData() {
+        StatusBarUtil.setDarkMode(MainActivity.this);
 
         userid = Integer.parseInt(Common.getUserId());
 
         //设置别名
         setAlias();
-
-
-
-
 
         boolean ignoringBatteryOptimizations = isIgnoringBatteryOptimizations(MainActivity.this);
         //判断是否存在于白名单
@@ -215,7 +200,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
                     public void onNext(GiftBean giftBean) {
                         if (giftBean.getMsg().equals("查询成功")) {
                             List<GiftBean.ObjectBean> list = giftBean.getObject();
-                            if (list!=null  && list.size() > 0) {
+                            if (list != null && list.size() > 0) {
                                 GiftBean.ObjectBean bean = giftBean.getObject().get(0);
                                 SPUtil.getInstance().saveData(MainActivity.this, SPUtil.FILE_NAME, SPUtil.SENG_COUNT, String.valueOf(bean.getAllNums()));
                             } else {
@@ -248,7 +233,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
                     public void onNext(GiftBean giftBean) {
                         if (giftBean.getMsg().equals("查询成功")) {
                             List<GiftBean.ObjectBean> list = giftBean.getObject();
-                            if (list!=null  && list.size() > 0) {
+                            if (list != null && list.size() > 0) {
                                 GiftBean.ObjectBean bean = giftBean.getObject().get(0);
                                 SPUtil.getInstance().saveData(MainActivity.this, SPUtil.FILE_NAME, SPUtil.RECIVE_COUNT, String.valueOf(bean.getAllNums()));
                             } else {
@@ -271,6 +256,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
 
     /**
      * 判断是否存在白名单
+     *
      * @param context
      * @return
      */
@@ -319,6 +305,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
             }
         });
     }
+
     //参数 requestCode是我们在申请权限的时候使用的唯一的申请码
     //String[] permission则是权限列表，一般用不到
     //int[] grantResults 是用户的操作响应，包含这权限是够请求成功
@@ -337,6 +324,7 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
             }
         }
     }
+
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {
@@ -368,6 +356,13 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
             vp.setCurrentItem(1);
             rbFind.setChecked(true);
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 
 
@@ -482,12 +477,12 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
                     saveIntentMsgBean.setFlag(1);
                     intent.putExtra("msg", saveIntentMsgBean);
                     startActivity(intent);
-                }else{
+                } else {
                     String substring = result.substring(8);
-                    Log.d("xxx","扫描到的群id为"+substring);
+                    Log.d("xxx", "扫描到的群id为" + substring);
 
                     NetUtils.getInstance()
-                            .getApis().doGetGroupMsg(Integer.parseInt(substring),userid)
+                            .getApis().doGetGroupMsg(Integer.parseInt(substring), userid)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Observer<GroupMsgBean>() {
@@ -499,17 +494,17 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
                                 @Override
                                 public void onNext(@io.reactivex.annotations.NonNull GroupMsgBean groupMsgBean) {
                                     GroupMsgBean.ObjectBean object = groupMsgBean.getObject();
-                                    if (object.getGroupType()==1){
+                                    if (object.getGroupType() == 1) {
                                         //我是群主 跳转到群主查看群信息页
                                         intent = new Intent(MainActivity.this, LordMsgActivity.class);
-                                        intent.putExtra("groupid",object.getGroupId());
+                                        intent.putExtra("groupid", object.getGroupId());
                                         startActivity(intent);
-                                        
-                                    }else if (object.getGroupType()==2){
+
+                                    } else if (object.getGroupType() == 2) {
                                         // TODO: 2021/3/12  我是群成员  跳转到成员查看信息页
-                                        
-                                        
-                                    }else{
+
+
+                                    } else {
                                         // TODO: 2021/3/12  未加入该群 跳转到未加入查看群信息页
 
                                     }

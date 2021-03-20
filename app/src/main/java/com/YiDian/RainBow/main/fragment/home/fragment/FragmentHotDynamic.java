@@ -205,7 +205,9 @@ public class FragmentHotDynamic extends BaseFragment {
                                 List<NewDynamicBean.ObjectBean.ListBean> list = object.getList();
                                 if (list.size() > 0 && list != null) {
 
-
+                                    if (list.size() > 5) {
+                                        sv.setFooter(new AliFooter(getContext()));
+                                    }
                                     alllist.addAll(list);
                                     sv.setVisibility(View.VISIBLE);
                                     noData.setVisibility(View.GONE);
@@ -230,9 +232,7 @@ public class FragmentHotDynamic extends BaseFragment {
                                         noData.setVisibility(View.VISIBLE);
                                     }
                                 }
-                                if (list.size() > 5) {
-                                    sv.setFooter(new AliFooter(getContext()));
-                                }
+
 
                             }
 

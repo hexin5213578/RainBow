@@ -21,6 +21,7 @@ import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.friend.DividerItemDecoration;
 import com.YiDian.RainBow.custom.friend.LetterView;
+import com.YiDian.RainBow.custom.loading.CustomDialog;
 import com.YiDian.RainBow.custom.progress.Loading_view;
 import com.YiDian.RainBow.friend.adapter.ContactAdapter;
 import com.YiDian.RainBow.friend.bean.FriendBean;
@@ -64,6 +65,7 @@ public class FragmentFriend extends Fragment {
     private boolean isDataLoad;//耗时操作是否加载过
     private Unbinder bind;
     private Loading_view loading_view;
+    private CustomDialog customDialog;
 
     protected void getid(View view) {
 
@@ -78,7 +80,7 @@ public class FragmentFriend extends Fragment {
         if (mContentView == null) {
             mContentView = createView(inflater, container);
         }
-
+        customDialog = new CustomDialog(getContext(), "正在获取好友列表...");
         bind = ButterKnife.bind(this, mContentView);
 
         return mContentView;
@@ -138,22 +140,9 @@ public class FragmentFriend extends Fragment {
             }
         });
     }
-    // 展示loading圈
-    public void showDialog() {
-        if(loading_view==null){
-            loading_view = new Loading_view(getContext(), R.style.CustomDialog);
-        }
-        loading_view.show();
-    }
-    //  隐藏loading圈
-    public void hideDialog() {
-        if (loading_view != null && loading_view.isShowing()) {
-            loading_view.dismiss();
-        }
-    }
     //查找我的好友
     public void getMyFriend() {
-        showDialog();
+        customDialog.show();
         NetUtils.getInstance().getApis()
                 .doGetMyFriend(userid)
                 .subscribeOn(Schedulers.io())
@@ -166,9 +155,7 @@ public class FragmentFriend extends Fragment {
 
                     @Override
                     public void onNext(FriendBean friendBean) {
-
-                        hideDialog();
-
+                        customDialog.dismiss();
                         List<FriendBean.ObjectBean> list =
                                 friendBean.getObject();
                         if (list.size() > 0 && list != null) {
@@ -193,7 +180,8 @@ public class FragmentFriend extends Fragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        hideDialog();
+                        customDialog.dismiss();
+
                         Toast.makeText(getContext(), "请求失败", Toast.LENGTH_SHORT).show();
                     }
                     @Override

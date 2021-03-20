@@ -183,6 +183,8 @@ public class FriendsActivity extends BaseAvtivity implements RadioGroup.OnChecke
                     case 3:
                         rbatt.setChecked(true);
                         break;
+                    default:
+                        break;
                 }
             }
 
@@ -276,6 +278,8 @@ public class FriendsActivity extends BaseAvtivity implements RadioGroup.OnChecke
                             });
                     builder.create().show();
                 }
+                break;
+            default:
                 break;
         }
     }

@@ -158,8 +158,11 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         listBean = list.get(position);
 
+
+
         if (holder instanceof ViewHolderText) {
             viewHolder = (ViewHolderText) holder;
+            listBean = list.get(position);
 
             setData(viewHolder, position);
             //获取文本内容
@@ -171,8 +174,53 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             } else {
                 viewHolder.tvDynamicText.setText(contentInfo);
             }
+            List<NewDynamicBean.ObjectBean.ListBean.TopicsBean> topics = listBean.getTopics();
+
+            if (topics!=null &&topics.size()>0){
+                viewHolder.tvTopic.setText("#"+topics.get(0).getTopicTitle()+"");
+            }else{
+                viewHolder.llHuati.setVisibility(View.GONE);
+            }
+
+            //获取发布时位置距离当前的距离
+            String distance = listBean.getDistance();
+            if (distance != null) {
+                viewHolder.tvDistance.setVisibility(View.VISIBLE);
+
+                double a = Double.valueOf(distance);
+                long round = Math.round(a);
+                if (round < 1000) {
+                    viewHolder.tvDistance.setText(round + "m");
+                } else {
+                    viewHolder.tvDistance.setText(round / 1000 + "km");
+                }
+
+            } else {
+                if (topics!=null &&topics.size()>0){
+                    viewHolder.tvDistance.setVisibility(View.GONE);
+                }else{
+                    viewHolder.tvDistance.setVisibility(View.INVISIBLE);
+                }
+            }
+
+
+            viewHolder.llHuati.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(context, TopicDetailsActivity.class);
+                    SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
+                    saveIntentMsgBean.setMsg(topics.get(0).getTopicTitle());
+                    //2标记传入话题名  1标记传入id
+                    saveIntentMsgBean.setFlag(2);
+                    intent.putExtra("msg", saveIntentMsgBean);
+                    context.startActivity(intent);
+                }
+            });
+
         } else if (holder instanceof ViewHolderImg) {
             viewHolderImg = (ViewHolderImg) holder;
+            listBean = list.get(position);
 
             setData1(viewHolderImg, position);
 
@@ -185,6 +233,49 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 imglist.add(split[i].trim() + "?imageView2/0/format/jpg/w/400");
             }
 
+            List<NewDynamicBean.ObjectBean.ListBean.TopicsBean> topics = listBean.getTopics();
+
+            if (topics!=null &&topics.size()>0){
+                viewHolderImg.tvTopic.setText("#"+topics.get(0).getTopicTitle()+"");
+            }else{
+                viewHolderImg.llHuati.setVisibility(View.GONE);
+            }
+
+            //获取发布时位置距离当前的距离
+            String distance = listBean.getDistance();
+            if (distance != null) {
+                viewHolderImg.tvDistance.setVisibility(View.VISIBLE);
+
+                double a = Double.valueOf(distance);
+                long round = Math.round(a);
+                if (round < 1000) {
+                    viewHolder.tvDistance.setText(round + "m");
+                } else {
+                    viewHolder.tvDistance.setText(round / 1000 + "km");
+                }
+
+            } else {
+                if (topics!=null &&topics.size()>0){
+                    viewHolderImg.tvDistance.setVisibility(View.GONE);
+                }else{
+                    viewHolderImg.tvDistance.setVisibility(View.INVISIBLE);
+                }
+            }
+
+
+            viewHolderImg.llHuati.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(context, TopicDetailsActivity.class);
+                    SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
+                    saveIntentMsgBean.setMsg(topics.get(0).getTopicTitle());
+                    //2标记传入话题名  1标记传入id
+                    saveIntentMsgBean.setFlag(2);
+                    intent.putExtra("msg", saveIntentMsgBean);
+                    context.startActivity(intent);
+                }
+            });
             viewHolderImg.layout.setIsShowAll(false); //当传入的图片数超过9张时，是否全部显示
             viewHolderImg.layout.setSpacing(5); //动态设置图片之间的间隔
             viewHolderImg.layout.setAnimation(null);
@@ -192,12 +283,55 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             viewHolderImg.layout.setUrlList(imglist); //最后再设置图片url
         } else if ((holder instanceof ViewHolderTextandimg)) {
             viewHolderTextandimg = (ViewHolderTextandimg) holder;
+            listBean = list.get(position);
 
             setData2(viewHolderTextandimg, position);
 
             //获取文本内容
             String contentInfo = listBean.getContentInfo();
 
+            List<NewDynamicBean.ObjectBean.ListBean.TopicsBean> topics = listBean.getTopics();
+
+            if (topics!=null &&topics.size()>0){
+                viewHolderTextandimg.tvTopic.setText("#"+topics.get(0).getTopicTitle()+"");
+            }else{
+                viewHolderTextandimg.llHuati.setVisibility(View.GONE);
+            }
+
+            //获取发布时位置距离当前的距离
+            String distance = listBean.getDistance();
+            if (distance != null) {
+                viewHolderTextandimg.tvDistance.setVisibility(View.VISIBLE);
+
+                double a = Double.valueOf(distance);
+                long round = Math.round(a);
+                if (round < 1000) {
+                    viewHolderTextandimg.tvDistance.setText(round + "m");
+                } else {
+                    viewHolderTextandimg.tvDistance.setText(round / 1000 + "km");
+                }
+
+            } else {
+                if (topics!=null &&topics.size()>0){
+                    viewHolderTextandimg.tvDistance.setVisibility(View.GONE);
+                }else{
+                    viewHolderTextandimg.tvDistance.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            viewHolderTextandimg.llHuati.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(context, TopicDetailsActivity.class);
+                    SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
+                    saveIntentMsgBean.setMsg(topics.get(0).getTopicTitle());
+                    //2标记传入话题名  1标记传入id
+                    saveIntentMsgBean.setFlag(2);
+                    intent.putExtra("msg", saveIntentMsgBean);
+                    context.startActivity(intent);
+                }
+            });
             //设置@ ## 颜色及点击
             if (!contentInfo.equals("") && contentInfo.contains("@") || contentInfo.contains("#")) {
                 getWeiBoContent(context, contentInfo, viewHolderTextandimg.tvDynamicText);
@@ -219,7 +353,51 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         } else if (holder instanceof ViewHolderVideo) {
             viewHolderVideo = (ViewHolderVideo) holder;
             setData3(viewHolderVideo, position);
+            listBean = list.get(position);
 
+            List<NewDynamicBean.ObjectBean.ListBean.TopicsBean> topics = listBean.getTopics();
+
+            if (topics!=null &&topics.size()>0){
+                viewHolderVideo.tvTopic.setText("#"+topics.get(0).getTopicTitle()+"");
+            }else{
+                viewHolderVideo.llHuati.setVisibility(View.GONE);
+            }
+
+            //获取发布时位置距离当前的距离
+            String distance = listBean.getDistance();
+            if (distance != null) {
+                viewHolderVideo.tvDistance.setVisibility(View.VISIBLE);
+
+                double a = Double.valueOf(distance);
+                long round = Math.round(a);
+                if (round < 1000) {
+                    viewHolderVideo.tvDistance.setText(round + "m");
+                } else {
+                    viewHolderVideo.tvDistance.setText(round / 1000 + "km");
+                }
+
+            } else {
+                if (topics!=null &&topics.size()>0){
+                    viewHolderVideo.tvDistance.setVisibility(View.GONE);
+                }else{
+                    viewHolderVideo.tvDistance.setVisibility(View.INVISIBLE);
+                }
+            }
+
+
+            viewHolderVideo.llHuati.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(context, TopicDetailsActivity.class);
+                    SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
+                    saveIntentMsgBean.setMsg(topics.get(0).getTopicTitle());
+                    //2标记传入话题名  1标记传入id
+                    saveIntentMsgBean.setFlag(2);
+                    intent.putExtra("msg", saveIntentMsgBean);
+                    context.startActivity(intent);
+                }
+            });
             //设置播放视频
             String contentImg = list.get(position).getContentImg();
 
@@ -244,8 +422,37 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             viewHolderVideo.videoPlayer.setIsTouchWiget(false);
         } else if (holder instanceof ViewHolderVideoAndText) {
             viewHolderVideoAndText = (ViewHolderVideoAndText) holder;
+            listBean = list.get(position);
 
             setData4(viewHolderVideoAndText,position);
+
+            List<NewDynamicBean.ObjectBean.ListBean.TopicsBean> topics = listBean.getTopics();
+
+            if (topics!=null &&topics.size()>0){
+                viewHolderVideoAndText.tvTopic.setText("#"+topics.get(0).getTopicTitle()+"");
+            }else{
+                viewHolderVideoAndText.llHuati.setVisibility(View.GONE);
+            }
+            //获取发布时位置距离当前的距离
+            String distance = listBean.getDistance();
+            if (distance != null) {
+                viewHolderVideoAndText.tvDistance.setVisibility(View.VISIBLE);
+
+                double a = Double.valueOf(distance);
+                long round = Math.round(a);
+                if (round < 1000) {
+                    viewHolderVideoAndText.tvDistance.setText(round + "m");
+                } else {
+                    viewHolderVideoAndText.tvDistance.setText(round / 1000 + "km");
+                }
+
+            } else {
+                if (topics!=null &&topics.size()>0){
+                    viewHolderVideoAndText.tvDistance.setVisibility(View.GONE);
+                }else{
+                    viewHolderVideoAndText.tvDistance.setVisibility(View.INVISIBLE);
+                }
+            }
 
             //设置文本
             //获取文本内容
@@ -1149,6 +1356,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 if (listBean.isIsAttention()) {
                     CustomDialogCancleFollow.Builder builder = new CustomDialogCancleFollow.Builder(context);
                     builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
                         public void onClick(DialogInterface dialog, int which) {
                             //开始执行设置不可点击 防止多次点击发生冲突
                             Log.d(TAG, "onClick: "+userid+"-----------取消-------------"+listBean.getUserId());
@@ -1169,10 +1377,11 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                             holder.tvGuanzhu.setEnabled(true);
                                             if (followBean.getMsg().equals("取消关注成功")) {
 
-                                                EventBus.getDefault().post("刷新界面");
-                                                listBean.setIsAttention(false);
+                                                holder.tvGuanzhu.setTextColor(context.getResources().getColor(R.color.color_3C025A));
+                                                holder.tvGuanzhu.setBackground(context.getResources().getDrawable(R.drawable.newdynamic_weiguanzhu));
+                                                holder.tvGuanzhu.setText("关注");
 
-                                                // TODO: 2020/12/15 0015 发送通知
+                                                listBean.setIsAttention(false);
 
                                                 dialog.dismiss();
 
@@ -1194,6 +1403,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     });
                     builder.setNegativeButton("取消",
                             new DialogInterface.OnClickListener() {
+                                @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
                                 }
@@ -1220,7 +1430,9 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                     holder.tvGuanzhu.setEnabled(true);
                                     if (followBean.getMsg().equals("关注成功")) {
 
-                                        EventBus.getDefault().post("刷新界面");
+                                        holder.tvGuanzhu.setBackground(context.getResources().getDrawable(R.drawable.newdynamic_yiguanzhu));
+                                        holder.tvGuanzhu.setText("已关注");
+                                        holder.tvGuanzhu.setTextColor(context.getResources().getColor(R.color.color_999999));
 
                                         listBean.setIsAttention(true);
 
@@ -1250,22 +1462,6 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
         });
 
-        //获取发布时位置距离当前的距离
-        String distance = listBean.getDistance();
-        if (distance != null) {
-            holder.tvDistance.setVisibility(View.VISIBLE);
-
-            double a = Double.valueOf(distance);
-            long round = Math.round(a);
-            if (round < 1000) {
-                holder.tvDistance.setText(round + "m");
-            } else {
-                holder.tvDistance.setText(round / 1000 + "km");
-            }
-
-        } else {
-            holder.tvDistance.setVisibility(View.GONE);
-        }
 
         //获取发布时间
         String createTime = listBean.getCreateTime();
@@ -1511,6 +1707,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 if (listBean.isIsAttention()) {
                     CustomDialogCancleFollow.Builder builder = new CustomDialogCancleFollow.Builder(context);
                     builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
                         public void onClick(DialogInterface dialog, int which) {
                             //开始执行设置不可点击 防止多次点击发生冲突
                             holder.tvGuanzhu.setEnabled(false);
@@ -1530,7 +1727,9 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                             holder.tvGuanzhu.setEnabled(true);
                                             if (followBean.getMsg().equals("取消关注成功")) {
 
-                                                EventBus.getDefault().post("刷新界面");
+                                                holder.tvGuanzhu.setTextColor(context.getResources().getColor(R.color.color_3C025A));
+                                                holder.tvGuanzhu.setBackground(context.getResources().getDrawable(R.drawable.newdynamic_weiguanzhu));
+                                                holder.tvGuanzhu.setText("关注");
                                                 listBean.setIsAttention(false);
 
                                                 // TODO: 2020/12/15 0015 发送通知
@@ -1555,6 +1754,7 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     });
                     builder.setNegativeButton("取消",
                             new DialogInterface.OnClickListener() {
+                                @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
                                 }
@@ -1581,7 +1781,9 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                     holder.tvGuanzhu.setEnabled(true);
                                     if (followBean.getMsg().equals("关注成功")) {
 
-                                        EventBus.getDefault().post("刷新界面");
+                                        holder.tvGuanzhu.setBackground(context.getResources().getDrawable(R.drawable.newdynamic_yiguanzhu));
+                                        holder.tvGuanzhu.setText("已关注");
+                                        holder.tvGuanzhu.setTextColor(context.getResources().getColor(R.color.color_999999));
 
                                         listBean.setIsAttention(true);
 
@@ -1611,22 +1813,6 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
         });
 
-        //获取发布时位置距离当前的距离
-        String distance = listBean.getDistance();
-        if (distance != null) {
-            holder.tvDistance.setVisibility(View.VISIBLE);
-
-            double a = Double.valueOf(distance);
-            long round = Math.round(a);
-            if (round < 1000) {
-                holder.tvDistance.setText(round + "m");
-            } else {
-                holder.tvDistance.setText(round / 1000 + "km");
-            }
-
-        } else {
-            holder.tvDistance.setVisibility(View.GONE);
-        }
 
         //获取发布时间
         String createTime = listBean.getCreateTime();
@@ -1890,7 +2076,9 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                             holder.tvGuanzhu.setEnabled(true);
                                             if (followBean.getMsg().equals("取消关注成功")) {
 
-                                                EventBus.getDefault().post("刷新界面");
+                                                holder.tvGuanzhu.setTextColor(context.getResources().getColor(R.color.color_3C025A));
+                                                holder.tvGuanzhu.setBackground(context.getResources().getDrawable(R.drawable.newdynamic_weiguanzhu));
+                                                holder.tvGuanzhu.setText("关注");
                                                 listBean.setIsAttention(false);
 
                                                 // TODO: 2020/12/15 0015 发送通知
@@ -1941,7 +2129,9 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                     holder.tvGuanzhu.setEnabled(true);
                                     if (followBean.getMsg().equals("关注成功")) {
 
-                                        EventBus.getDefault().post("刷新界面");
+                                        holder.tvGuanzhu.setBackground(context.getResources().getDrawable(R.drawable.newdynamic_yiguanzhu));
+                                        holder.tvGuanzhu.setText("已关注");
+                                        holder.tvGuanzhu.setTextColor(context.getResources().getColor(R.color.color_999999));
 
                                         listBean.setIsAttention(true);
 
@@ -1970,23 +2160,6 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 showSelect();
             }
         });
-
-        //获取发布时位置距离当前的距离
-        String distance = listBean.getDistance();
-        if (distance != null) {
-            holder.tvDistance.setVisibility(View.VISIBLE);
-
-            double a = Double.valueOf(distance);
-            long round = Math.round(a);
-            if (round < 1000) {
-                holder.tvDistance.setText(round + "m");
-            } else {
-                holder.tvDistance.setText(round / 1000 + "km");
-            }
-
-        } else {
-            holder.tvDistance.setVisibility(View.GONE);
-        }
 
         //获取发布时间
         String createTime = listBean.getCreateTime();
@@ -2251,7 +2424,9 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                             holder.tvGuanzhu.setEnabled(true);
                                             if (followBean.getMsg().equals("取消关注成功")) {
 
-                                                EventBus.getDefault().post("刷新界面");
+                                                holder.tvGuanzhu.setTextColor(context.getResources().getColor(R.color.color_3C025A));
+                                                holder.tvGuanzhu.setBackground(context.getResources().getDrawable(R.drawable.newdynamic_weiguanzhu));
+                                                holder.tvGuanzhu.setText("关注");
                                                 listBean.setIsAttention(false);
 
                                                 // TODO: 2020/12/15 0015 发送通知
@@ -2302,7 +2477,9 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                     holder.tvGuanzhu.setEnabled(true);
                                     if (followBean.getMsg().equals("关注成功")) {
 
-                                        EventBus.getDefault().post("刷新界面");
+                                        holder.tvGuanzhu.setBackground(context.getResources().getDrawable(R.drawable.newdynamic_yiguanzhu));
+                                        holder.tvGuanzhu.setText("已关注");
+                                        holder.tvGuanzhu.setTextColor(context.getResources().getColor(R.color.color_999999));
 
                                         listBean.setIsAttention(true);
 
@@ -2331,23 +2508,6 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 showSelect();
             }
         });
-
-        //获取发布时位置距离当前的距离
-        String distance = listBean.getDistance();
-        if (distance != null) {
-            holder.tvDistance.setVisibility(View.VISIBLE);
-
-            double a = Double.valueOf(distance);
-            long round = Math.round(a);
-            if (round < 1000) {
-                holder.tvDistance.setText(round + "m");
-            } else {
-                holder.tvDistance.setText(round / 1000 + "km");
-            }
-
-        } else {
-            holder.tvDistance.setVisibility(View.GONE);
-        }
 
         //获取发布时间
         String createTime = listBean.getCreateTime();
@@ -2612,7 +2772,9 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                             holder.tvGuanzhu.setEnabled(true);
                                             if (followBean.getMsg().equals("取消关注成功")) {
 
-                                                EventBus.getDefault().post("刷新界面");
+                                                holder.tvGuanzhu.setTextColor(context.getResources().getColor(R.color.color_3C025A));
+                                                holder.tvGuanzhu.setBackground(context.getResources().getDrawable(R.drawable.newdynamic_weiguanzhu));
+                                                holder.tvGuanzhu.setText("关注");
                                                 listBean.setIsAttention(false);
 
                                                 // TODO: 2020/12/15 0015 发送通知
@@ -2663,7 +2825,9 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                     holder.tvGuanzhu.setEnabled(true);
                                     if (followBean.getMsg().equals("关注成功")) {
 
-                                        EventBus.getDefault().post("刷新界面");
+                                        holder.tvGuanzhu.setBackground(context.getResources().getDrawable(R.drawable.newdynamic_yiguanzhu));
+                                        holder.tvGuanzhu.setText("已关注");
+                                        holder.tvGuanzhu.setTextColor(context.getResources().getColor(R.color.color_999999));
 
                                         listBean.setIsAttention(true);
 
@@ -2692,23 +2856,6 @@ public class NewDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 showSelect();
             }
         });
-
-        //获取发布时位置距离当前的距离
-        String distance = listBean.getDistance();
-        if (distance != null) {
-            holder.tvDistance.setVisibility(View.VISIBLE);
-
-            double a = Double.valueOf(distance);
-            long round = Math.round(a);
-            if (round < 1000) {
-                holder.tvDistance.setText(round + "m");
-            } else {
-                holder.tvDistance.setText(round / 1000 + "km");
-            }
-
-        } else {
-            holder.tvDistance.setVisibility(View.GONE);
-        }
 
         //获取发布时间
         String createTime = listBean.getCreateTime();

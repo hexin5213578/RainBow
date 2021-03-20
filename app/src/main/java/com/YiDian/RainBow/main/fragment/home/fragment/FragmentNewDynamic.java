@@ -311,39 +311,12 @@ public class FragmentNewDynamic extends BaseFragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        GSYVideoManager.releaseAllVideos();
-        if (EventBus.getDefault().isRegistered(this)) {
-
-            EventBus.getDefault().unregister(this);
-        }
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         GSYVideoManager.onResume();
         //关闭输入框
         KeyBoardUtils.closeKeyboard(getActivity());
         Log.d("xxx", "onResume");
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
-    }
-
-    //获取传过来的信息 刷新界面
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getStr(String str) {
-        if (str.equals("刷新界面")) {
-            flag = 1;
-            getNew(1, count);
-        }
     }
 
     @Override

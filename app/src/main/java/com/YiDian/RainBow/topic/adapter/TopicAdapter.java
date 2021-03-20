@@ -142,6 +142,8 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicDynamicViewHolder> {
 
         listBean = list.get(position);
 
+
+        viewHolder.llHuati.setVisibility(View.GONE);
         //跳转到动态详情页
         holder.rlItem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -372,7 +374,9 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicDynamicViewHolder> {
                                             holder.tvGuanzhu.setEnabled(true);
                                             if (followBean.getMsg().equals("取消关注成功")) {
 
-                                                EventBus.getDefault().post("刷新界面");
+                                                holder.tvGuanzhu.setTextColor(context.getResources().getColor(R.color.color_3C025A));
+                                                holder.tvGuanzhu.setBackground(context.getResources().getDrawable(R.drawable.newdynamic_weiguanzhu));
+                                                holder.tvGuanzhu.setText("关注");
                                                 listBean.setIsAttention(false);
 
                                                 // TODO: 2020/12/15 0015 发送通知
@@ -423,7 +427,9 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicDynamicViewHolder> {
                                     holder.tvGuanzhu.setEnabled(true);
                                     if (followBean.getMsg().equals("关注成功")) {
 
-                                        EventBus.getDefault().post("刷新界面");
+                                        holder.tvGuanzhu.setBackground(context.getResources().getDrawable(R.drawable.newdynamic_yiguanzhu));
+                                        holder.tvGuanzhu.setText("已关注");
+                                        holder.tvGuanzhu.setTextColor(context.getResources().getColor(R.color.color_999999));
 
                                         listBean.setIsAttention(true);
 
@@ -472,55 +478,22 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicDynamicViewHolder> {
 
         //获取发布时间
         String createTime = listBean.getCreateTime();
-        if(createTime!=null){
+        if (createTime != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-dd HH:mm:ss", Locale.SIMPLIFIED_CHINESE);
             try {
                 Date parse = sdf.parse(createTime);
 
                 long time = parse.getTime();
 
-                //获取当前时间
-                long l = System.currentTimeMillis();
-                //获取发布过的时长
-                long difference = l - time;
 
-                //时长大于12小时 显示日期
-                if (difference > 43200000) {
-                    holder.tvTime.setText(createTime);
-                }
-                //时长小于12小时 展示时间
-                if (difference > 1800000 && difference < 43200000) {
-                    String[] s = createTime.split(" ");
-                    holder.tvTime.setText(s[1]);
-                }
-                if (difference > 1200000 && difference < 1800000) {
-                    holder.tvTime.setText("半小时前发布");
-                }
-                if (difference > 600000 && difference < 1200000) {
-                    holder.tvTime.setText("20分钟前发布");
-                }
-                if (difference > 300000 && difference < 600000) {
-                    holder.tvTime.setText("10分钟前发布");
-                }
-                if (difference > 240000 && difference < 300000) {
-                    holder.tvTime.setText("5分钟前发布");
-                }
-                if (difference > 180000 && difference < 240000) {
-                    holder.tvTime.setText("4分钟前发布");
-                }
-                if (difference > 120000 && difference < 180000) {
-                    holder.tvTime.setText("3分钟前发布");
-                }
-                if (difference > 60000 && difference < 120000) {
-                    holder.tvTime.setText("2分钟前发布");
-                }
-                if (difference < 60000) {
-                    holder.tvTime.setText("1分钟前发布");
-                }
+                String newChatTime = StringUtil.getNewChatTime(time);
+                holder.tvTime.setText(newChatTime);
+
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
+
         int imgType = list.get(position).getImgType();
         //纯文本
         if (imgType == 1) {

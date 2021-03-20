@@ -48,7 +48,7 @@ public class ViewHolderVideoAndText extends RecyclerView.ViewHolder {
     @BindView(R.id.video_player)
     SampleCoverVideo videoPlayer;
     @BindView(R.id.ll_huati)
-    LinearLayout llHuati;
+    RelativeLayout llHuati;
     @BindView(R.id.iv_dianzan)
     ImageView ivDianzan;
     @BindView(R.id.tv_dianzan_count)
@@ -71,6 +71,8 @@ public class ViewHolderVideoAndText extends RecyclerView.ViewHolder {
     TextView tvDistance;
     @BindView(R.id.rl_item)
     RelativeLayout rlItem;
+    @BindView(R.id.tv_topic)
+    TextView tvTopic;
     public static ViewHolderVideoAndText createViewHolder(Context context,
                                                           ViewGroup parent, int layoutId) {
         View itemView = LayoutInflater.from(context).inflate(layoutId, parent,

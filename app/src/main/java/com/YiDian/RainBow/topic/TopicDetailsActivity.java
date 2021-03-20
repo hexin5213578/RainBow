@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -88,10 +89,8 @@ public class TopicDetailsActivity extends BaseAvtivity implements View.OnClickLi
             sv.setListener(new SpringView.OnFreshListener() {
                 @Override
                 public void onRefresh() {
-                    alllist.clear();
-                    refresh(name, 1);
-                }
 
+                }
                 @Override
                 public void onLoadmore() {
 
@@ -126,11 +125,11 @@ public class TopicDetailsActivity extends BaseAvtivity implements View.OnClickLi
                     @Override
                     public void onNext(TopicBean topicBean) {
                         List<TopicBean.ObjectBean.ListBean> list = topicBean.getObject().getList();
-                        tvLlcount.setText("参与数：" + topicBean.getObject().getList().get(0).getTopics().get(0).getTopicNum());
-                        sv.setHeader(new AliHeader(TopicDetailsActivity.this));
 
                         if (list != null && list.size() > 0) {
                             Log.d(TAG, "onNext: 拿到数据");
+
+                            tvLlcount.setText("参与数：" + topicBean.getObject().getList().get(0).getTopics().get(0).getTopicNum());
 
                             LinearLayoutManager layoutManager =
                                     new LinearLayoutManager(TopicDetailsActivity.this, RecyclerView.VERTICAL, false);
@@ -139,6 +138,8 @@ public class TopicDetailsActivity extends BaseAvtivity implements View.OnClickLi
                             TopicAdapter adapter = new TopicAdapter(TopicDetailsActivity.this, alllist, mTencent);
                             rcList.setLayoutManager(layoutManager);
                             rcList.setAdapter(adapter);
+                        }else{
+                            Toast.makeText(TopicDetailsActivity.this, "没有更多数据了", Toast.LENGTH_SHORT).show();
                         }
                         if (list.size()>9){
                             sv.setFooter(new AliFooter(TopicDetailsActivity.this));

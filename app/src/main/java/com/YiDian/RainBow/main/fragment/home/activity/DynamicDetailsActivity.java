@@ -361,6 +361,7 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                 if (bean.isIsAttention()) {
                     CustomDialogCancleFollow.Builder builder = new CustomDialogCancleFollow.Builder(DynamicDetailsActivity.this);
                     builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
                         public void onClick(DialogInterface dialog, int which) {
                             //开始执行设置不可点击 防止多次点击发生冲突
                             tvGuanzhu.setEnabled(false);
@@ -383,7 +384,9 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                                             if (followBean.getMsg().equals("取消关注成功")) {
 
                                                 //重新获取数据
-                                                getDetails();
+                                                tvGuanzhu.setBackground(DynamicDetailsActivity.this.getResources().getDrawable(R.drawable.newdynamic_weiguanzhu));
+                                                tvGuanzhu.setText("关注");
+                                                tvGuanzhu.setTextColor(Color.BLACK);
                                                 bean.setIsAttention(false);
                                                 // TODO: 2020/12/15 0015 发送通知
                                             }
@@ -404,6 +407,7 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                     });
                     builder.setNegativeButton("取消",
                             new android.content.DialogInterface.OnClickListener() {
+                                @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
                                 }
@@ -412,7 +416,6 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                 } else {
                     //开始执行设置不可点击 防止多次点击发生冲突
                     tvGuanzhu.setEnabled(false);
-
                     //关注
                     NetUtils.getInstance().getApis()
                             .doFollow(userId, userInfoId)
@@ -424,6 +427,7 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
 
                                 }
 
+                                @SuppressLint("ResourceAsColor")
                                 @Override
                                 public void onNext(FollowBean followBean) {
                                     //处理结束后恢复点击
@@ -431,12 +435,11 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                                     if (followBean.getMsg().equals("关注成功")) {
 
                                         //重新获取数据
-                                        getDetails();
+                                        tvGuanzhu.setBackground(DynamicDetailsActivity.this.getResources().getDrawable(R.drawable.newdynamic_yiguanzhu));
+                                        tvGuanzhu.setText("已关注");
+                                        tvGuanzhu.setTextColor(R.color.color_999999);
 
                                         bean.setIsAttention(true);
-                                        // TODO: 2020/12/15 0015 推送通知
-
-
                                     }
                                 }
 
@@ -565,7 +568,6 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                                 @Override
                                 public void onNext(CollectDynamicBean collectDynamicBean) {
 
-                                    Toast.makeText(DynamicDetailsActivity.this, "取消收藏成功", Toast.LENGTH_SHORT).show();
                                     //执行完毕可点击
                                     ivCollection.setEnabled(true);
 
@@ -599,7 +601,6 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
 
                                 @Override
                                 public void onNext(CollectDynamicBean collectDynamicBean) {
-                                    Toast.makeText(DynamicDetailsActivity.this, "收藏成功", Toast.LENGTH_SHORT).show();
                                     //执行完毕可点击
                                     ivCollection.setEnabled(true);
 
@@ -890,49 +891,21 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                         } else {
                             tvDistance.setVisibility(View.GONE);
                         }
+
+
                         //获取发布时间
                         String createTime = bean.getCreateTime();
-                        if(createTime!=null){
+                        if (createTime != null) {
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-dd HH:mm:ss", Locale.SIMPLIFIED_CHINESE);
                             try {
                                 Date parse = sdf.parse(createTime);
 
                                 long time = parse.getTime();
 
-                                //获取当前时间
-                                long l = System.currentTimeMillis();
-                                //获取发布过的时长
-                                long difference = l - time;
 
-                                //时长小于12小时 展示时间
-                                if (difference > 1800000 ) {
-                                    String newChatTime = StringUtil.getNewChatTime(time);
-                                    tvTime.setText(newChatTime);
-                                }
-                                if (difference > 1200000 && difference < 1800000) {
-                                    tvTime.setText("半小时前发布");
-                                }
-                                if (difference > 600000 && difference < 1200000) {
-                                    tvTime.setText("20分钟前发布");
-                                }
-                                if (difference > 300000 && difference < 600000) {
-                                    tvTime.setText("10分钟前发布");
-                                }
-                                if (difference > 240000 && difference < 300000) {
-                                    tvTime.setText("5分钟前发布");
-                                }
-                                if (difference > 180000 && difference < 240000) {
-                                    tvTime.setText("4分钟前发布");
-                                }
-                                if (difference > 120000 && difference < 180000) {
-                                    tvTime.setText("3分钟前发布");
-                                }
-                                if (difference > 60000 && difference < 120000) {
-                                    tvTime.setText("2分钟前发布");
-                                }
-                                if (difference < 60000) {
-                                    tvTime.setText("1分钟前发布");
-                                }
+                                String newChatTime = StringUtil.getNewChatTime(time);
+                                tvTime.setText(newChatTime);
+
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
@@ -1581,8 +1554,9 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
         while (true) {
             localCanvas.drawBitmap(bitmap, new Rect(0, 0, i, j), new Rect(0, 0,80
                     , 80), null);
-            if (paramBoolean)
+            if (paramBoolean) {
                 bitmap.recycle();
+            }
             ByteArrayOutputStream localByteArrayOutputStream = new ByteArrayOutputStream();
             localBitmap.compress(Bitmap.CompressFormat.JPEG, 100,
                     localByteArrayOutputStream);

@@ -396,6 +396,12 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
                             UserDetailsDynamicAdapter userDetailsDynamicAdapter = new UserDetailsDynamicAdapter(PersonHomeActivity.this, allList, mTencent);
                             rcDynamic.setAdapter(userDetailsDynamicAdapter);
+
+
+                            if (list.size() > 4) {
+                                //设置底部
+                                sv.setFooter(new AliFooter(PersonHomeActivity.this));
+                            }
                         } else {
                             if (allList.size() > 0) {
                                 Toast.makeText(PersonHomeActivity.this, "没有更多内容了", Toast.LENGTH_SHORT).show();
@@ -404,10 +410,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                                 rcDynamic.setVisibility(View.GONE);
                             }
                         }
-                        if (list.size() > 4) {
-                            //设置底部
-                            sv.setFooter(new AliFooter(PersonHomeActivity.this));
-                        }
+
                     }
 
                     @Override
@@ -521,9 +524,10 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             String headImg = userInfo.getHeadImg();//头像
 
                             String explains = userInfo.getExplains();
-                            if (explains == null) {
-                                String gxQianMing = "";//个性签名
-                                tvGxqianming.setText(gxQianMing);
+
+
+                            if (explains==null || explains.equals("")  ) {
+                                tvGxqianming.setText("还没有设置签名哦");
                             } else {
                                 String gxQianMing = "个性签名：" + explains;//个性签名
                                 tvGxqianming.setText(gxQianMing);
@@ -622,8 +626,8 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             String headImg = userInfo.getHeadImg();//头像
 
                             String explains = userInfo.getExplains();
-                            if (explains.equals("null")) {
-                                tvGxqianming.setText("");
+                            if (explains.equals("") || explains==null) {
+                                tvGxqianming.setText("还没有设置签名哦");
                             } else {
                                 String gxQianMing = "个性签名：" + explains;//个性签名
                                 tvGxqianming.setText(gxQianMing);
@@ -652,9 +656,9 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
 
                             Glide.with(PersonHomeActivity.this).load(headImg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivUserimg);
-                            if (backImg == null)
+                            if (backImg == null) {
                                 IvBeijing.setBackgroundColor(PersonHomeActivity.this.getResources().getColor(R.color.color_8867E7));
-                            else {
+                            } else {
                                 Glide.with(PersonHomeActivity.this).load(backImg).into(IvBeijing);
                             }
 
@@ -749,6 +753,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                     //取消关注
                     CustomDialogCancleFollow.Builder builder = new CustomDialogCancleFollow.Builder(PersonHomeActivity.this);
                     builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
                         public void onClick(DialogInterface dialog, int which) {
                             //开始执行设置不可点击 防止多次点击发生冲突
                             btGuanzhu.setEnabled(false);
@@ -788,6 +793,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                     });
                     builder.setNegativeButton("取消",
                             new DialogInterface.OnClickListener() {
+                                @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
                                 }
@@ -829,6 +835,8 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                                 }
                             });
                 }
+                break;
+            default:
                 break;
         }
     }

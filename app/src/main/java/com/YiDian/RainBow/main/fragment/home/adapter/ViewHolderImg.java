@@ -47,7 +47,7 @@ public class ViewHolderImg extends RecyclerView.ViewHolder {
     @BindView(R.id.rc_image)
     NineGridTestLayout layout;
     @BindView(R.id.ll_huati)
-    LinearLayout llHuati;
+    RelativeLayout llHuati;
     @BindView(R.id.iv_dianzan)
     ImageView ivDianzan;
     @BindView(R.id.tv_dianzan_count)
@@ -70,6 +70,8 @@ public class ViewHolderImg extends RecyclerView.ViewHolder {
     TextView tvDistance;
     @BindView(R.id.rl_item)
     RelativeLayout rlItem;
+    @BindView(R.id.tv_topic)
+    TextView tvTopic;
     public static ViewHolderImg createViewHolder(Context context,
                                                  ViewGroup parent, int layoutId) {
         View itemView = LayoutInflater.from(context).inflate(layoutId, parent,

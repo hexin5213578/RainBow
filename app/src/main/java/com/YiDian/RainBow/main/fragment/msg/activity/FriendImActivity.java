@@ -439,7 +439,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         List<Message> messagesFromNewest = conversation.getMessagesFromNewest(page, size);
 
 
-        Log.d("xxx", "获取到了" + messagesFromNewest.size() + "条");
+
         if (conversation.getType().name().equals("group")){
             rlMsgUser.setVisibility(View.GONE);
             sv.setVisibility(View.VISIBLE);
@@ -469,8 +469,8 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 rcImlist.setAdapter(imAdapter);
             }
         }else{
-            if (messagesFromNewest.size() > 0 && messagesFromNewest != null) {
-
+            if (messagesFromNewest != null &&  messagesFromNewest.size() > 0 ) {
+                Log.d("xxx", "获取到了" + messagesFromNewest.size() + "条");
                 rlMsgUser.setVisibility(View.GONE);
                 sv.setVisibility(View.VISIBLE);
                 this.page += 50;

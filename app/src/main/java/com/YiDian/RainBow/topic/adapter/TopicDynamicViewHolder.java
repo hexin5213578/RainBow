@@ -45,7 +45,7 @@ public class TopicDynamicViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.tv_dynamic_text)
     TextView tvDynamicText;
     @BindView(R.id.ll_huati)
-    LinearLayout llHuati;
+    RelativeLayout llHuati;
     @BindView(R.id.iv_dianzan)
     ImageView ivDianzan;
     @BindView(R.id.tv_dianzan_count)

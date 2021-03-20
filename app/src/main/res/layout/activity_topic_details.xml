@@ -84,7 +84,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/tv_topic"
                             android:layout_marginTop="@dimen/dp_2"
-                            android:text="浏览量：2345"
+                            android:text="参与数：0"
                             android:textColor="@color/white"
                             android:textSize="@dimen/sp_12"
                             android:layout_alignParentBottom="true"
@@ -96,17 +96,12 @@
 
                 </RelativeLayout>
                 <androidx.recyclerview.widget.RecyclerView
-
                     android:id="@+id/rc_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
                 </androidx.recyclerview.widget.RecyclerView>
 
             </LinearLayout>
-
-
         </androidx.core.widget.NestedScrollView>
     </com.liaoinstan.springview.widget.SpringView>
-
-
 </RelativeLayout>
