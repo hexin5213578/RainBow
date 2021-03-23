@@ -1107,8 +1107,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
             @Override
             public void onPageSelected(int position) {
                 arr[0].notifyDataSetChanged();
-                arr[1].notifyDataSetChanged();
-                arr[2].notifyDataSetChanged();
+
 
                 // 取消圆点选中
                 lldot.getChildAt(curIndex)

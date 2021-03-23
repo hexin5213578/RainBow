@@ -1,9 +1,6 @@
 package com.YiDian.RainBow.main.fragment;
 
 import android.Manifest;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -16,11 +13,11 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
+
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.BaseFragment;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
-import com.YiDian.RainBow.custom.zbar.CaptureActivity;
 import com.YiDian.RainBow.friend.activity.FriendsActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.CollectActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.EditMsgActivity;
@@ -33,9 +30,10 @@ import com.YiDian.RainBow.main.fragment.mine.activity.MyQrCodeActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.MydraftActivity;
 import com.YiDian.RainBow.main.fragment.mine.activity.ReleaseDynamicsActivity;
 import com.YiDian.RainBow.main.fragment.mine.bean.LoginUserInfoBean;
+import com.YiDian.RainBow.setup.activity.BlackListActivity;
+import com.YiDian.RainBow.setup.activity.RealnameActivity;
 import com.YiDian.RainBow.setup.activity.SetupActivity;
 import com.YiDian.RainBow.utils.NetUtils;
-import com.YiDian.RainBow.utils.SPUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
@@ -45,7 +43,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -61,20 +58,10 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
     Toolbar toolbar;
     @BindView(R.id.iv_QrCode)
     ImageView ivQrCode;
-    @BindView(R.id.ll_my_money)
-    LinearLayout llMyMoney;
-    @BindView(R.id.ll_certification)
-    LinearLayout llCertification;
     @BindView(R.id.iv_headimg)
     ImageView ivHeadimg;
     @BindView(R.id.tv_username)
     TextView tvUsername;
-    @BindView(R.id.tv_age)
-    TextView tvAge;
-    @BindView(R.id.tv_userId)
-    TextView tvUserId;
-    @BindView(R.id.tv_copy)
-    TextView tvCopy;
     @BindView(R.id.tv_fangke_count)
     TextView tvCountFangke;
     @BindView(R.id.ll_fangke)
@@ -95,8 +82,6 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
     TextView tvCountQunzu;
     @BindView(R.id.ll_qunzu)
     LinearLayout llQunzu;
-    @BindView(R.id.tv_signature)
-    TextView tvSignature;
     @BindView(R.id.ll_dongtai)
     LinearLayout llDongtai;
     @BindView(R.id.ll_caogaoxiang)
@@ -109,20 +94,25 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
     LinearLayout llJinbi;
     @BindView(R.id.ll_liwu)
     LinearLayout llLiwu;
-    @BindView(R.id.ll_saoyisao)
-    LinearLayout llSaoyisao;
     @BindView(R.id.ll_shezhi)
     LinearLayout llShezhi;
     int space = 9;
-    @BindView(R.id.tv_mygold)
-    TextView tvMygold;
+    @BindView(R.id.ll_readdetails)
+    LinearLayout llReaddetails;
+    @BindView(R.id.ll_goldblance)
+    LinearLayout llGoldblance;
+    @BindView(R.id.ll_shiming)
+    LinearLayout llShiming;
+    @BindView(R.id.ll_chongzhi)
+    LinearLayout llChongzhi;
+    @BindView(R.id.ll_blacklist)
+    LinearLayout llBlacklist;
+    @BindView(R.id.ll_renzheng)
+    LinearLayout llRenzheng;
     private Intent intent;
     private int userid;
     private String headimg;
     private String username;
-    private String qm;
-    private String birthday;
-    private String userrole;
 
     @Override
     protected void getid(View view) {
@@ -145,11 +135,15 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
         //设置状态栏颜色与字体颜色
         StatusBarUtil.setDarkMode(getActivity());
 
-        llMyMoney.setOnClickListener(this);
+
+        llReaddetails.setOnClickListener(this);
+        llBlacklist.setOnClickListener(this);
+        llGoldblance.setOnClickListener(this);
+        llChongzhi.setOnClickListener(this);
+        llShiming.setOnClickListener(this);
+        llRenzheng.setOnClickListener(this);
         ivQrCode.setOnClickListener(this);
-        llCertification.setOnClickListener(this);
         llFangke.setOnClickListener(this);
-        tvCopy.setOnClickListener(this);
         llHaoyou.setOnClickListener(this);
         llFensi.setOnClickListener(this);
         llGuanzhu.setOnClickListener(this);
@@ -160,7 +154,6 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
         llYaoqing.setOnClickListener(this);
         llJinbi.setOnClickListener(this);
         llLiwu.setOnClickListener(this);
-        llSaoyisao.setOnClickListener(this);
         llShezhi.setOnClickListener(this);
         ivHeadimg.setOnClickListener(this);
         tvUsername.setOnClickListener(this);
@@ -181,70 +174,23 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
     }
 
 
-    public void getMyInfo(){
+    public void getMyInfo() {
         Log.d("xxx", "getMyInfo: 执行刷新数据");
         username = Common.getUserName();
-        qm = Common.getQM();
-        birthday = Common.getBirthday();
-        userrole = Common.getRole();
         headimg = Common.getHeadImg();
 
         tvUsername.setText(username);
-        // TODO: 2020/11/26 0026 获取当前用户个人信息展示
-        if (birthday !=null && !birthday.equals("")){
-            Date d=new Date();
-            try{
-                d= new SimpleDateFormat("yyyy-MM-dd").parse(birthday);
-
-                int age = getAgeByBirthday(d);
-
-                //刷新缓存内年龄
-                SPUtil.getInstance().saveData(getContext(),SPUtil.FILE_NAME,SPUtil.AGE, String.valueOf(age));
-
-                if (userrole !=null && !userrole.equals("") ){
-                    if (age>0){
-                        tvAge.setText(userrole+" "+age);
-                    }else{
-                        tvAge.setText(userrole+" "+0);
-                    }
-                }else{
-                    if (age>0){
-                        tvAge.setText(" "+age);
-                    }else{
-                        tvAge.setText(" "+0);
-                    }
-                }
-            }
-            catch(Exception e){
-
-            }
-        }else{
-            if (userrole !=null && !userrole.equals("") ){
-                tvAge.setText(userrole);
-                tvAge.setVisibility(View.VISIBLE);
-            }else{
-                tvAge.setVisibility(View.GONE);
-            }
-        }
-
-        if (qm!=null && !qm.equals("")){
-            tvSignature.setText(qm);
-        }else{
-            tvSignature.setText("还没有设置签名哦~");
-        }
 
         //加载圆角图
-        if (headimg!=null && !headimg.equals("")){
+        if (headimg != null && !headimg.equals("")) {
             Glide.with(this).load(headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
-        }else{
+        } else {
             Glide.with(this).load(R.mipmap.headimg3).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
         }
-
-        //ID赋值
-        tvUserId.setText(userid+"");
     }
+
     //获取我的信息
-    public void getUserInfo(){
+    public void getUserInfo() {
         NetUtils.getInstance()
                 .getApis().doGetUserInfo(userid)
                 .subscribeOn(Schedulers.io())
@@ -260,20 +206,17 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
                         LoginUserInfoBean.ObjectBean bean = loginUserInfoBean.getObject();
 
                         //数量赋值
-                        tvCountHaoyou.setText(bean.getCountFriendNum()+"");
-                        tvCountFensi.setText(bean.getCountFansNum()+"");
-                        tvCountGuanzhu.setText(bean.getCountFollowNum()+"");
-                        tvCountQunzu.setText(bean.getCountGroupNum()+"");
+                        tvCountHaoyou.setText(bean.getCountFriendNum() + "");
+                        tvCountFensi.setText(bean.getCountFansNum() + "");
+                        tvCountGuanzhu.setText(bean.getCountFollowNum() + "");
+                        tvCountQunzu.setText(bean.getCountGroupNum() + "");
 
-                        if (bean.getCountVisitorNum()!=null){
+                        if (bean.getCountVisitorNum() != null) {
                             //访客
-                            tvCountFangke.setText(bean.getCountVisitorNum()+"");
-                        }else{
+                            tvCountFangke.setText(bean.getCountVisitorNum() + "");
+                        } else {
                             tvCountFangke.setText("0");
                         }
-
-                        //设置我的金币剩余数
-                        tvMygold.setText(bean.getCountGoldNum()+"");
                     }
 
                     @Override
@@ -291,7 +234,7 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        if (!EventBus.getDefault().isRegistered(this)){
+        if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
     }
@@ -299,7 +242,7 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (EventBus.getDefault().isRegistered(this)){
+        if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
     }
@@ -307,50 +250,54 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser){
+        if (isVisibleToUser) {
             getUserInfo();
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getString(String str){
-        if (str.equals("重新获取我的基本信息")){
+    public void getString(String str) {
+        if (str.equals("重新获取我的基本信息")) {
             userid = Integer.valueOf(Common.getUserId());
 
             getMyInfo();
             getUserInfo();
         }
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             //我的金币
-            case R.id.ll_my_money:
+            case R.id.ll_goldblance:
                 //跳转到金币充值功能
-                 intent = new Intent(getContext(), GoldBalance.class);
+                intent = new Intent(getContext(), GoldBalance.class);
                 startActivity(intent);
                 break;
             //特权认证
-            case R.id.ll_certification:
-
+            case R.id.ll_readdetails:
+            case R.id.ll_renzheng:
+                Toast.makeText(getContext(), "特权认证功能暂未开放", Toast.LENGTH_SHORT).show();
+                break;
+            //去充值
+            case R.id.ll_chongzhi:
+                Toast.makeText(getContext(), "充值功能暂未开放", Toast.LENGTH_SHORT).show();
+                break;
+            //实名认证
+            case R.id.ll_shiming:
+                intent = new Intent(getContext(), RealnameActivity.class);
+                startActivity(intent);
+                break;
+            //查看黑名单
+            case R.id.ll_blacklist:
+                intent = new Intent(getContext(), BlackListActivity.class);
+                startActivity(intent);
                 break;
             //我的二维码
             case R.id.iv_QrCode:
                 //跳转到我的二维码
                 intent = new Intent(getContext(), MyQrCodeActivity.class);
                 startActivity(intent);
-                break;
-            //复制我的ID
-            case R.id.tv_copy:
-                //获取id
-                String id = tvUserId.getText().toString();
-                //获取剪贴板管理器：
-                ClipboardManager cm = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                // 创建普通字符型ClipData
-                ClipData mClipData = ClipData.newPlainText("Label", id);
-                // 将ClipData内容放到系统剪贴板里。
-                cm.setPrimaryClip(mClipData);
-                Toast.makeText(getContext(), "已复制到剪切板", Toast.LENGTH_SHORT).show();
                 break;
             //查看访客详情
             case R.id.ll_fangke:
@@ -360,30 +307,30 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
             //好友
             case R.id.ll_haoyou:
                 intent = new Intent(getContext(), FriendsActivity.class);
-                intent.putExtra("flag",1);
+                intent.putExtra("flag", 1);
                 startActivity(intent);
                 break;
             //粉丝
             case R.id.ll_fensi:
                 intent = new Intent(getContext(), FriendsActivity.class);
-                intent.putExtra("flag",2);
+                intent.putExtra("flag", 2);
                 startActivity(intent);
                 break;
             //关注
             case R.id.ll_guanzhu:
                 intent = new Intent(getContext(), FriendsActivity.class);
-                intent.putExtra("flag",4);
+                intent.putExtra("flag", 4);
                 startActivity(intent);
                 break;
             //群组
             case R.id.ll_qunzu:
                 intent = new Intent(getContext(), FriendsActivity.class);
-                intent.putExtra("flag",3);
+                intent.putExtra("flag", 3);
                 startActivity(intent);
                 break;
             //发布的动态
             case R.id.ll_dongtai:
-                intent  = new Intent(getContext(), ReleaseDynamicsActivity.class);
+                intent = new Intent(getContext(), ReleaseDynamicsActivity.class);
                 startActivity(intent);
                 break;
             //草稿箱
@@ -412,12 +359,6 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
                 intent = new Intent(getContext(), MyGiftActivity.class);
                 startActivity(intent);
                 break;
-            //扫一扫
-            case R.id.ll_saoyisao:
-                //扫描二维码
-                intent = new Intent(getContext(), CaptureActivity.class);
-                startActivityForResult(intent, 100);
-                break;
             //设置
             case R.id.ll_shezhi:
                 startActivity(new Intent(getContext(), SetupActivity.class));
@@ -426,6 +367,8 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
             case R.id.iv_headimg:
             case R.id.tv_username:
                 startActivity(new Intent(getContext(), EditMsgActivity.class));
+                break;
+            default:
                 break;
         }
     }

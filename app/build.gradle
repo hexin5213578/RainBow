@@ -27,8 +27,8 @@ android {
         applicationId "com.YiDian.RainBow"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 2
-        versionName "1.1"
+        versionCode 3
+        versionName "1.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）

@@ -1200,10 +1200,9 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
         lldot.getChildAt(0).findViewById(R.id.v_dot)
                 .setBackgroundResource(R.drawable.dot_selected);
         vp.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
             public void onPageSelected(int position) {
                 arr[0].notifyDataSetChanged();
-                arr[1].notifyDataSetChanged();
-                arr[2].notifyDataSetChanged();
 
                 // 取消圆点选中
                 lldot.getChildAt(curIndex)
@@ -1216,9 +1215,11 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                 curIndex = position;
             }
 
+            @Override
             public void onPageScrolled(int arg0, float arg1, int arg2) {
             }
 
+            @Override
             public void onPageScrollStateChanged(int arg0) {
             }
         });

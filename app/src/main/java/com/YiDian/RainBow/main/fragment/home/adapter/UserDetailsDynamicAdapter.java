@@ -190,11 +190,11 @@ public class UserDetailsDynamicAdapter extends RecyclerView.Adapter<RecyclerView
             List<NewDynamicBean.ObjectBean.ListBean.TopicsBean> topics = listBean.getTopics();
 
             if (topics!=null &&topics.size()>0){
-                viewHolder.tvTopic.setText("#"+topics.get(0).getTopicTitle()+"");
+                viewHolderImg.tvTopic.setText("#"+topics.get(0).getTopicTitle()+"");
             }else{
-                viewHolder.llHuati.setVisibility(View.GONE);
+                viewHolderImg.llHuati.setVisibility(View.GONE);
             }
-            viewHolder.llHuati.setOnClickListener(new View.OnClickListener() {
+            viewHolderImg.llHuati.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
@@ -231,12 +231,12 @@ public class UserDetailsDynamicAdapter extends RecyclerView.Adapter<RecyclerView
             List<NewDynamicBean.ObjectBean.ListBean.TopicsBean> topics = listBean.getTopics();
 
             if (topics!=null &&topics.size()>0){
-                viewHolder.tvTopic.setText("#"+topics.get(0).getTopicTitle()+"");
+                viewHolderTextandimg.tvTopic.setText("#"+topics.get(0).getTopicTitle()+"");
             }else{
-                viewHolder.llHuati.setVisibility(View.GONE);
+                viewHolderTextandimg.llHuati.setVisibility(View.GONE);
             }
 
-            viewHolder.llHuati.setOnClickListener(new View.OnClickListener() {
+            viewHolderTextandimg.llHuati.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
@@ -280,11 +280,11 @@ public class UserDetailsDynamicAdapter extends RecyclerView.Adapter<RecyclerView
             List<NewDynamicBean.ObjectBean.ListBean.TopicsBean> topics = listBean.getTopics();
 
             if (topics!=null &&topics.size()>0){
-                viewHolder.tvTopic.setText("#"+topics.get(0).getTopicTitle()+"");
+                viewHolderVideo.tvTopic.setText("#"+topics.get(0).getTopicTitle()+"");
             }else{
-                viewHolder.llHuati.setVisibility(View.GONE);
+                viewHolderVideo.llHuati.setVisibility(View.GONE);
             }
-            viewHolder.llHuati.setOnClickListener(new View.OnClickListener() {
+            viewHolderVideo.llHuati.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
@@ -328,11 +328,11 @@ public class UserDetailsDynamicAdapter extends RecyclerView.Adapter<RecyclerView
             List<NewDynamicBean.ObjectBean.ListBean.TopicsBean> topics = listBean.getTopics();
 
             if (topics!=null &&topics.size()>0){
-                viewHolder.tvTopic.setText("#"+topics.get(0).getTopicTitle()+"");
+                viewHolderVideoAndText.tvTopic.setText("#"+topics.get(0).getTopicTitle()+"");
             }else{
-                viewHolder.llHuati.setVisibility(View.GONE);
+                viewHolderVideoAndText.llHuati.setVisibility(View.GONE);
             }
-            viewHolder.llHuati.setOnClickListener(new View.OnClickListener() {
+            viewHolderVideoAndText.llHuati.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 

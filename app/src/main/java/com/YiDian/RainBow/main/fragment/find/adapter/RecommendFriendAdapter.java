@@ -47,7 +47,6 @@ public class RecommendFriendAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         bean = list.get(position);
 
-
         switch (position%4){
             case 0:
                 ((ViewHolder)holder).rlItem.setBackground(context.getDrawable(R.drawable.recommend1));

@@ -50,7 +50,8 @@ public class Fragmentmatch extends BaseFragment {
     private CustomDialog dialog1;
     private int userid;
     private List<FindUserMsgBean.ObjectBean> list;
-    Handler handler = new Handler() {//实例化一个Handler，并复写handlerMessage方法
+    //实例化一个Handler，并复写handlerMessage方法
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {//这句就不做说明了，都能看懂

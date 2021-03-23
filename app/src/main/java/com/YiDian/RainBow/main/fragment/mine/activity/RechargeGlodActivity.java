@@ -296,7 +296,6 @@ public class RechargeGlodActivity extends BaseAvtivity implements View.OnClickLi
 
                 rb1.setChecked(true);
 
-
                 break;
             case R.id.l2:
 
@@ -351,6 +350,8 @@ public class RechargeGlodActivity extends BaseAvtivity implements View.OnClickLi
 
                 Toast.makeText(this, "" + payway + "    " + money, Toast.LENGTH_SHORT).show();
 
+                break;
+            default:
                 break;
         }
     }
