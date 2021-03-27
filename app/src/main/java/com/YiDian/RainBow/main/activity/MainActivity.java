@@ -34,6 +34,8 @@ import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.zbar.CaptureActivity;
 import com.YiDian.RainBow.imgroup.activity.LordMsgActivity;
+import com.YiDian.RainBow.imgroup.activity.MemberMsgActivity;
+import com.YiDian.RainBow.imgroup.activity.NoJoinGroupActivity;
 import com.YiDian.RainBow.imgroup.bean.GroupMsgBean;
 import com.YiDian.RainBow.main.fragment.FragmentFind;
 import com.YiDian.RainBow.main.fragment.FragmentHome;
@@ -502,11 +504,15 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
 
                                     } else if (object.getGroupType() == 2) {
                                         // TODO: 2021/3/12  我是群成员  跳转到成员查看信息页
-
+                                        intent = new Intent(MainActivity.this, MemberMsgActivity.class);
+                                        intent.putExtra("groupid", object.getGroupId());
+                                        startActivity(intent);
 
                                     } else {
                                         // TODO: 2021/3/12  未加入该群 跳转到未加入查看群信息页
-
+                                        intent = new Intent(MainActivity.this, NoJoinGroupActivity.class);
+                                        intent.putExtra("groupid", object.getGroupId());
+                                        startActivity(intent);
                                     }
                                 }
 

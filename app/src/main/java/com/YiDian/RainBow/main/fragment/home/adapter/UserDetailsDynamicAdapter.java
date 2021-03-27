@@ -1055,6 +1055,8 @@ public class UserDetailsDynamicAdapter extends RecyclerView.Adapter<RecyclerView
             holder.isattaction.setImageResource(R.mipmap.bojin);
         } else if (attestation == 5) {
             holder.isattaction.setImageResource(R.mipmap.zuanshi);
+        }else{
+            holder.isattaction.setImageResource(R.mipmap.guanfang);
         }
 
 
@@ -1397,6 +1399,8 @@ public class UserDetailsDynamicAdapter extends RecyclerView.Adapter<RecyclerView
             holder.isattaction.setImageResource(R.mipmap.bojin);
         } else if (attestation == 5) {
             holder.isattaction.setImageResource(R.mipmap.zuanshi);
+        }else{
+            holder.isattaction.setImageResource(R.mipmap.guanfang);
         }
 
 
@@ -1736,6 +1740,8 @@ public class UserDetailsDynamicAdapter extends RecyclerView.Adapter<RecyclerView
             holder.isattaction.setImageResource(R.mipmap.bojin);
         } else if (attestation == 5) {
             holder.isattaction.setImageResource(R.mipmap.zuanshi);
+        }else{
+            holder.isattaction.setImageResource(R.mipmap.guanfang);
         }
 
 
@@ -2079,8 +2085,9 @@ public class UserDetailsDynamicAdapter extends RecyclerView.Adapter<RecyclerView
             holder.isattaction.setImageResource(R.mipmap.bojin);
         } else if (attestation == 5) {
             holder.isattaction.setImageResource(R.mipmap.zuanshi);
+        }else{
+            holder.isattaction.setImageResource(R.mipmap.guanfang);
         }
-
 
         //判断性别是否保密
         String userRole = userInfo.getUserRole();
@@ -2419,6 +2426,8 @@ public class UserDetailsDynamicAdapter extends RecyclerView.Adapter<RecyclerView
             holder.isattaction.setImageResource(R.mipmap.bojin);
         } else if (attestation == 5) {
             holder.isattaction.setImageResource(R.mipmap.zuanshi);
+        }else{
+            holder.isattaction.setImageResource(R.mipmap.guanfang);
         }
 
 

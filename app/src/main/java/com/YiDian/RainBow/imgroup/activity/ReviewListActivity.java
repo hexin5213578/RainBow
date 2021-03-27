@@ -25,6 +25,10 @@ import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.container.AliHeader;
 import com.liaoinstan.springview.widget.SpringView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -122,7 +126,7 @@ public class ReviewListActivity extends BaseAvtivity {
 
     public void getList(int page, int size) {
         dialog.show();
-        NetUtils.getInstance().getApis().doGetReviewList(userid, page, size)
+        NetUtils.getInstance().getApis().doGetReviewList(userid, id,page, size)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ShenHeListBean>() {
@@ -148,7 +152,7 @@ public class ReviewListActivity extends BaseAvtivity {
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ReviewListActivity.this, RecyclerView.VERTICAL, false);
                             rcList.setLayoutManager(linearLayoutManager);
 
-                            ReviewListAdapter reviewListAdapter = new ReviewListAdapter(ReviewListActivity.this, list,jgid);
+                            ReviewListAdapter reviewListAdapter = new ReviewListAdapter(ReviewListActivity.this, list,jgid,id);
                             rcList.setAdapter(reviewListAdapter);
 
                         }else{
@@ -178,6 +182,27 @@ public class ReviewListActivity extends BaseAvtivity {
     @Override
     protected BasePresenter initPresenter() {
         return null;
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getStr(String str){
+        if (str.equals("刷新审核列表")){
+            getList(1,size);
+        }
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
     }
 
     @Override

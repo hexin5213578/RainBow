@@ -49,7 +49,7 @@ public class CollectViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.tv_dynamic_text)
     TextView tvDynamicText;
     @BindView(R.id.ll_huati)
-    LinearLayout llHuati;
+    RelativeLayout llHuati;
     @BindView(R.id.iv_dianzan)
     ImageView ivDianzan;
     @BindView(R.id.tv_dianzan_count)
@@ -78,7 +78,8 @@ public class CollectViewHolder extends RecyclerView.ViewHolder {
     @Nullable
     @BindView(R.id.video_player)
     SampleCoverVideo videoPlayer;
-
+    @BindView(R.id.tv_topic)
+    TextView tvTopic;
     public static CollectViewHolder createViewHolder(Context context,
                                                      ViewGroup parent, int layoutId) {
         View itemView = LayoutInflater.from(context).inflate(layoutId, parent,

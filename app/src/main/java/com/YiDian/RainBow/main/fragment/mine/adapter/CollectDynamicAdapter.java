@@ -392,6 +392,14 @@ public class CollectDynamicAdapter extends RecyclerView.Adapter<CollectViewHolde
             }
         });
 
+        List<NewDynamicBean.ObjectBean.ListBean.TopicsBean> topics = listBean.getTopics();
+
+        if (topics!=null &&topics.size()>0){
+            holder.tvTopic.setText("#"+topics.get(0).getTopicTitle()+"");
+        }else{
+            holder.llHuati.setVisibility(View.GONE);
+        }
+
         //获取发布时位置距离当前的距离
         String distance = listBean.getDistance();
         if (distance != null) {
@@ -406,7 +414,12 @@ public class CollectDynamicAdapter extends RecyclerView.Adapter<CollectViewHolde
             }
 
         } else {
-            holder.tvDistance.setVisibility(View.GONE);
+            if (topics!=null &&topics.size()>0){
+                holder.tvDistance.setVisibility(View.GONE);
+            }else{
+                holder.tvDistance.setVisibility(View.INVISIBLE);
+            }
+
         }
 
         //获取发布时间

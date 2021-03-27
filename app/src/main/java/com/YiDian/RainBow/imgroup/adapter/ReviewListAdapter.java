@@ -16,31 +16,44 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.custom.image.CustomRoundAngleImageView;
+import com.YiDian.RainBow.imgroup.bean.AgreeAddGroupMemberBean;
 import com.YiDian.RainBow.imgroup.bean.ShenHeListBean;
 import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.user.PersonHomeActivity;
+import com.YiDian.RainBow.utils.NetUtils;
 import com.bumptech.glide.Glide;
 
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetUserInfoListCallback;
 import cn.jpush.im.android.api.event.GroupApprovalEvent;
+import cn.jpush.im.android.api.event.GroupApprovalRefuseEvent;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class ReviewListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final Context context;
     private final List<ShenHeListBean.ObjectBean.ListBean> list;
+    private int id;
     private int jgid;
     private ShenHeListBean.ObjectBean.ListBean listBean;
 
 
-    public ReviewListAdapter(Context context, List<ShenHeListBean.ObjectBean.ListBean> list, int jgid) {
+    public ReviewListAdapter(Context context, List<ShenHeListBean.ObjectBean.ListBean> list, int id, int jgid) {
 
         this.context = context;
         this.list = list;
+        this.id = id;
         this.jgid = jgid;
     }
 
@@ -56,6 +69,8 @@ public class ReviewListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         listBean = list.get(position);
 
+
+        List<String> userList = new ArrayList<>();
         Glide.with(context).load(listBean.getHeadImg()).into(((ViewHolder) holder).ivHeadimg);
         ((ViewHolder) holder).tvName.setText(listBean.getNickName() + "");
 
@@ -89,21 +104,45 @@ public class ReviewListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 @Override
                 public void onClick(View v) {
                     listBean =list.get(position);
+                    userList.add(String.valueOf(listBean.getUserMsgId()));
 
-                    //入群审批
-                    GroupApprovalEvent groupApprovalEvent = new GroupApprovalEvent();
-
-                    groupApprovalEvent.acceptGroupApproval(String.valueOf(listBean.getUserMsgId()), "", new BasicCallback() {
+                    JMessageClient.addGroupMembers(jgid, userList, new BasicCallback() {
                         @Override
-                        public void gotResult(int responseCode, String responseMessage) {
-                            if (0 == responseCode) {
-                                Toast.makeText(context, "添加成功", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Log.i("xxx", "acceptApplyJoinGroup failed,"+ " code = " + responseCode + ";msg = " + responseMessage);
-                                Toast.makeText(context, "添加失败", Toast.LENGTH_SHORT).show();
+                        public void gotResult(int i, String s) {
+                            if (i==0){
+                                Log.d("xxx","添加进群组成功");
+                                NetUtils.getInstance()
+                                        .getApis()
+                                        .doInsertGroupUser(id,listBean.getUserMsgId(),8)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new Observer<AgreeAddGroupMemberBean>() {
+                                            @Override
+                                            public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+
+                                            }
+
+                                            @Override
+                                            public void onNext(@io.reactivex.annotations.NonNull AgreeAddGroupMemberBean agreeAddGroupMemberBean) {
+                                                EventBus.getDefault().post("刷新审核列表");
+
+                                            }
+
+                                            @Override
+                                            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+
+                                            }
+
+                                            @Override
+                                            public void onComplete() {
+
+                                            }
+                                        });
+
+
                             }
                         }
-                    }); //入群审批同意
+                    });
                 }
             });
             ((ViewHolder)holder).rlItem.setOnClickListener(new View.OnClickListener() {

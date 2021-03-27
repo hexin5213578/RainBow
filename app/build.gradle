@@ -81,6 +81,9 @@ dependencies {
     implementation files('libs/zxing.jar')
     implementation files('libs/pinyin4j-2.5.0.jar')
 
+
+
+
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     testImplementation 'junit:junit:4.12'
@@ -105,10 +108,13 @@ dependencies {
     //implementation 'com.github.wildma:PictureSelector:2.1.0'
     implementation 'cjt.library.wheel:camera:1.1.9'
 
+    //svga动画播放
+    compile 'com.github.yyued:SVGAPlayer-Android:2.1.8'
+
     //eventBus依赖
     implementation 'org.greenrobot:eventbus:3.0.0'
-    //butterknife依赖
 
+    //butterknife依赖
     implementation 'com.jakewharton:butterknife:10.2.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
 

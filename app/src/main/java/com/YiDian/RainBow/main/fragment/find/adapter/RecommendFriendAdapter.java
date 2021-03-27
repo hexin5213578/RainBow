@@ -81,6 +81,14 @@ public class RecommendFriendAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 context.startActivity(intent);
             }
         });
+
+        //关注点击
+        ((ViewHolder)holder).tvGuanzhu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     @Override

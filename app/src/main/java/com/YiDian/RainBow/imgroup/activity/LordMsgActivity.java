@@ -409,6 +409,9 @@ public class LordMsgActivity extends BaseAvtivity implements View.OnClickListene
                             public void gotResult(int i, String s) {
                                 Log.d("xxx","错误码为"+i+",原因为"+s);
                                 if (i==0){
+
+                                    dialog.dismiss();
+
                                     //极光解散成功 在解散本地服务器上的群
                                     NetUtils.getInstance().getApis()
                                             .doDeleteGroup(groupid)
@@ -423,7 +426,6 @@ public class LordMsgActivity extends BaseAvtivity implements View.OnClickListene
                                                 @Override
                                                 public void onNext(@NonNull ChangeGroupHeadBean changeGroupHeadBean) {
                                                     if (changeGroupHeadBean.getMsg().equals("删除成功")){
-                                                        dialog.dismiss();
                                                         finish();
                                                     }
                                                 }

@@ -135,7 +135,6 @@ public class CreateGroupActivity extends BaseAvtivity implements View.OnClickLis
                                         public void onSubscribe(Disposable d) {
 
                                         }
-
                                         @Override
                                         public void onNext(InsertRealBean insertRealBean) {
                                             dialog.dismiss();
@@ -149,14 +148,12 @@ public class CreateGroupActivity extends BaseAvtivity implements View.OnClickLis
                                                     }
                                                 });
                                             }else{
-                                                Toast.makeText(CreateGroupActivity.this, "创建群组成功", Toast.LENGTH_SHORT).show();
                                                 finish();
                                             }
                                         }
                                         @Override
                                         public void onError(Throwable e) {
                                             dialog.dismiss();
-                                            Toast.makeText(CreateGroupActivity.this, "群组创建失败", Toast.LENGTH_SHORT).show();
                                         }
 
                                         @Override

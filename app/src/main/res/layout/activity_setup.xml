@@ -118,8 +118,6 @@
             android:layout_below="@id/rl_shiming"
             android:layout_height="@dimen/dp_1">
         </View>
-
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:id="@+id/rl_hei"

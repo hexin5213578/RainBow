@@ -8,6 +8,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,10 +28,7 @@ import com.YiDian.RainBow.base.BaseAvtivity;
 import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.customDialog.CustomDialogCleanNotice;
-import com.YiDian.RainBow.feedback.activity.FeedBackActivity;
 import com.YiDian.RainBow.login.activity.LoginActivity;
-import com.YiDian.RainBow.notice.ClickNoticeActivity;
-import com.YiDian.RainBow.notice.bean.CleanNoticeBean;
 import com.YiDian.RainBow.setup.bean.GetRealDataBean;
 import com.YiDian.RainBow.utils.DataCleanManager;
 import com.YiDian.RainBow.utils.NetUtils;
@@ -38,11 +36,13 @@ import com.YiDian.RainBow.utils.SPUtil;
 import com.leaf.library.StatusBarUtil;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import cn.jpush.im.android.api.JMessageClient;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+
 //设置页
 public class SetupActivity extends BaseAvtivity implements View.OnClickListener {
     @BindView(R.id.toolbar)
@@ -74,6 +74,7 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
     private PopupWindow mPopupWindow;
     private Intent intent;
     private int userid;
+    private PopupWindow popupWindow1;
 
     @Override
     protected int getResId() {
@@ -82,7 +83,7 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
 
     @Override
     protected void getData() {
-        StatusBarUtil.setGradientColor(this,toolbar);
+        StatusBarUtil.setGradientColor(this, toolbar);
         StatusBarUtil.setDarkMode(this);
         //绑定单击事件
         ivBack.setOnClickListener(this);
@@ -94,6 +95,7 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
         rlClean.setOnClickListener(this);
         rlUpdate.setOnClickListener(this);
         rlLoginout.setOnClickListener(this);
+
 
         userid = Integer.valueOf(Common.getUserId());
         //获取当前应用版本号
@@ -119,8 +121,9 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
         //获取实名认证状态
         getRealStatus();
     }
+
     //获取实名认证状态
-    public void getRealStatus(){
+    public void getRealStatus() {
         NetUtils.getInstance().getApis()
                 .doGetRealMsg(userid)
                 .subscribeOn(Schedulers.io())
@@ -143,11 +146,9 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
                             }
                             if (auditStatus == 1) {
                                 tvIsRealname.setText("已认证");
-
                             }
-                            if (auditStatus==0){
+                            if (auditStatus == 0) {
                                 tvIsRealname.setText("认证失败");
-
                             }
                         }
                     }
@@ -163,6 +164,7 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
                     }
                 });
     }
+
     @Override
     protected BasePresenter initPresenter() {
         return null;
@@ -170,46 +172,40 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.iv_back:
                 finish();
                 break;
-                //账户安全
+            //账户安全
             case R.id.rl_safe:
-                intent = new Intent(SetupActivity.this,AccountSafeActivity.class);
+                intent = new Intent(SetupActivity.this, AccountSafeActivity.class);
                 startActivity(intent);
                 break;
-                //实名认证
+            //实名认证
             case R.id.rl_shiming:
                 intent = new Intent(SetupActivity.this, RealnameActivity.class);
                 startActivity(intent);
                 break;
-                //黑名单
+            //黑名单
             case R.id.rl_hei:
-                intent = new Intent(SetupActivity.this,BlackListActivity.class);
+                intent = new Intent(SetupActivity.this, BlackListActivity.class);
                 startActivity(intent);
                 break;
-                //反馈
-//            case R.id.rl_fankui:
-//                //跳转到意见反馈页
-//                intent = new Intent(SetupActivity.this, FeedBackActivity.class);
-//                startActivity(intent);
-//                break;
-                //关于我们
+            //关于我们
             case R.id.rl_guanyu:
-                intent = new Intent(SetupActivity.this,AboutUsActivity.class);
+                intent = new Intent(SetupActivity.this, AboutUsActivity.class);
                 startActivity(intent);
                 break;
-                //清除缓存
+            //清除缓存
             case R.id.rl_clean:
                 //展示清除缓存的弹出框
                 showCleanManager();
                 break;
-                //版本更新
+            //版本更新
             case R.id.rl_update:
 
                 break;
-                //登出
+            //登出
             case R.id.rl_loginout:
                 // TODO: 2021/1/6 0006 退出登录
                 CustomDialogCleanNotice.Builder builder = new CustomDialogCleanNotice.Builder(SetupActivity.this);
@@ -224,7 +220,7 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
                     }
                 });
                 builder.setNegativeButton("取消",
-                        new android.content.DialogInterface.OnClickListener() {
+                        new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
@@ -330,5 +326,12 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
         if (mPopupWindow != null && mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }

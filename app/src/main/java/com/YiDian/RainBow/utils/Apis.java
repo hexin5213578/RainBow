@@ -9,6 +9,7 @@ import com.YiDian.RainBow.friend.bean.MyFansBean;
 import com.YiDian.RainBow.friend.bean.MyfollowBean;
 import com.YiDian.RainBow.friend.bean.RecommendGroupBean;
 import com.YiDian.RainBow.friend.bean.RecommendUserBean;
+import com.YiDian.RainBow.imgroup.bean.AgreeAddGroupMemberBean;
 import com.YiDian.RainBow.imgroup.bean.ChangeGroupHeadBean;
 import com.YiDian.RainBow.imgroup.bean.GroupMemberBean;
 import com.YiDian.RainBow.imgroup.bean.GroupMemberTwoBean;
@@ -507,10 +508,11 @@ public interface Apis {
 
     //审核列表
     @GET("message/selectGroupType")
-    Observable<ShenHeListBean> doGetReviewList(@Query("msgUserId")int userid,@Query("page")int page,@Query("pageSize")int size);
+    Observable<ShenHeListBean> doGetReviewList(@Query("msgUserId")int userid,@Query("groupId")int groupid,@Query("page")int page,@Query("pageSize")int size);
 
     //同意入群
-
+    @POST("group/updateMessage")
+    Observable<AgreeAddGroupMemberBean> doInsertGroupUser(@Query("groupId")int groupid,@Query("userId")int userid,@Query("msgType")int msgtype);
 
     //发现大球用户
     @GET("user/selectAllUser")

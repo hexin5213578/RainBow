@@ -161,6 +161,27 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             } else {
                 myDynamicViewHolderText.tvDynamicText.setText(contentInfo);
             }
+            List<NewDynamicBean.ObjectBean.ListBean.TopicsBean> topics = listBean.getTopics();
+
+            if (topics!=null &&topics.size()>0){
+                myDynamicViewHolderText.tvTopic.setText("#"+topics.get(0).getTopicTitle()+"");
+            }else{
+                myDynamicViewHolderText.llHuati.setVisibility(View.GONE);
+            }
+            myDynamicViewHolderText.llHuati.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(context, TopicDetailsActivity.class);
+                    SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
+                    saveIntentMsgBean.setMsg(topics.get(0).getTopicTitle());
+                    //2标记传入话题名  1标记传入id
+                    saveIntentMsgBean.setFlag(2);
+                    intent.putExtra("msg", saveIntentMsgBean);
+                    context.startActivity(intent);
+                }
+            });
+
         } else if (holder instanceof MyDynamicViewHolderImg) {
             myDynamicViewHolderImg = (MyDynamicViewHolderImg) holder;
 
@@ -180,6 +201,28 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             myDynamicViewHolderImg.layout.setAnimation(null);
             myDynamicViewHolderImg.layout.setBackground(null);
             myDynamicViewHolderImg.layout.setUrlList(imglist); //最后再设置图片url
+
+            List<NewDynamicBean.ObjectBean.ListBean.TopicsBean> topics = listBean.getTopics();
+
+            if (topics!=null &&topics.size()>0){
+                myDynamicViewHolderImg.tvTopic.setText("#"+topics.get(0).getTopicTitle()+"");
+            }else{
+                myDynamicViewHolderImg.llHuati.setVisibility(View.GONE);
+            }
+            myDynamicViewHolderImg.llHuati.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(context, TopicDetailsActivity.class);
+                    SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
+                    saveIntentMsgBean.setMsg(topics.get(0).getTopicTitle());
+                    //2标记传入话题名  1标记传入id
+                    saveIntentMsgBean.setFlag(2);
+                    intent.putExtra("msg", saveIntentMsgBean);
+                    context.startActivity(intent);
+                }
+            });
+
         } else if (holder instanceof MyDynamicViewHolderTextAndImg) {
             myDynamicViewHolderTextAndImg = (MyDynamicViewHolderTextAndImg) holder;
             setDate3(myDynamicViewHolderTextAndImg, position);
@@ -193,6 +236,29 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             } else {
                 myDynamicViewHolderTextAndImg.tvDynamicText.setText(contentInfo);
             }
+
+            List<NewDynamicBean.ObjectBean.ListBean.TopicsBean> topics = listBean.getTopics();
+
+            if (topics!=null &&topics.size()>0){
+                myDynamicViewHolderTextAndImg.tvTopic.setText("#"+topics.get(0).getTopicTitle()+"");
+            }else{
+                myDynamicViewHolderTextAndImg.llHuati.setVisibility(View.GONE);
+            }
+            myDynamicViewHolderTextAndImg.llHuati.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(context, TopicDetailsActivity.class);
+                    SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
+                    saveIntentMsgBean.setMsg(topics.get(0).getTopicTitle());
+                    //2标记传入话题名  1标记传入id
+                    saveIntentMsgBean.setFlag(2);
+                    intent.putExtra("msg", saveIntentMsgBean);
+                    context.startActivity(intent);
+                }
+            });
+
+
             //设置图片
             String contentImg = list.get(position).getContentImg();
             String[] split = contentImg.split(",");
@@ -209,6 +275,29 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         } else if (holder instanceof MyDynamicViewHolderVideo) {
             myDynamicViewHolderVideo = (MyDynamicViewHolderVideo) holder;
             setDate4(myDynamicViewHolderVideo, position);
+
+
+            List<NewDynamicBean.ObjectBean.ListBean.TopicsBean> topics = listBean.getTopics();
+
+            if (topics!=null &&topics.size()>0){
+                myDynamicViewHolderVideo.tvTopic.setText("#"+topics.get(0).getTopicTitle()+"");
+            }else{
+                myDynamicViewHolderVideo.llHuati.setVisibility(View.GONE);
+            }
+            myDynamicViewHolderVideo.llHuati.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(context, TopicDetailsActivity.class);
+                    SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
+                    saveIntentMsgBean.setMsg(topics.get(0).getTopicTitle());
+                    //2标记传入话题名  1标记传入id
+                    saveIntentMsgBean.setFlag(2);
+                    intent.putExtra("msg", saveIntentMsgBean);
+                    context.startActivity(intent);
+                }
+            });
+
 
             //设置播放视频
             String contentImg = list.get(position).getContentImg();
@@ -246,6 +335,28 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             } else {
                 myDynamicViewHolderVideoAndText.tvDynamicText.setText(contentInfo);
             }
+
+            List<NewDynamicBean.ObjectBean.ListBean.TopicsBean> topics = listBean.getTopics();
+
+            if (topics!=null &&topics.size()>0){
+                myDynamicViewHolderVideoAndText.tvTopic.setText("#"+topics.get(0).getTopicTitle()+"");
+            }else{
+                myDynamicViewHolderVideoAndText.llHuati.setVisibility(View.GONE);
+            }
+            myDynamicViewHolderVideoAndText.llHuati.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(context, TopicDetailsActivity.class);
+                    SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
+                    saveIntentMsgBean.setMsg(topics.get(0).getTopicTitle());
+                    //2标记传入话题名  1标记传入id
+                    saveIntentMsgBean.setFlag(2);
+                    intent.putExtra("msg", saveIntentMsgBean);
+                    context.startActivity(intent);
+                }
+            });
+
 
             //设置播放视频
             String contentImg = list.get(position).getContentImg();
@@ -968,6 +1079,8 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             holder.isattaction.setImageResource(R.mipmap.bojin);
         } else if (attestation == 5) {
             holder.isattaction.setImageResource(R.mipmap.zuanshi);
+        }else{
+            holder.isattaction.setImageResource(R.mipmap.guanfang);
         }
 
 
@@ -1251,6 +1364,8 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             holder.isattaction.setImageResource(R.mipmap.bojin);
         } else if (attestation == 5) {
             holder.isattaction.setImageResource(R.mipmap.zuanshi);
+        }else{
+            holder.isattaction.setImageResource(R.mipmap.guanfang);
         }
 
 
@@ -1535,6 +1650,8 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             holder.isattaction.setImageResource(R.mipmap.bojin);
         } else if (attestation == 5) {
             holder.isattaction.setImageResource(R.mipmap.zuanshi);
+        }else{
+            holder.isattaction.setImageResource(R.mipmap.guanfang);
         }
 
 
@@ -1820,6 +1937,8 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             holder.isattaction.setImageResource(R.mipmap.bojin);
         } else if (attestation == 5) {
             holder.isattaction.setImageResource(R.mipmap.zuanshi);
+        }else{
+            holder.isattaction.setImageResource(R.mipmap.guanfang);
         }
 
 
@@ -2105,6 +2224,8 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             holder.isattaction.setImageResource(R.mipmap.bojin);
         } else if (attestation == 5) {
             holder.isattaction.setImageResource(R.mipmap.zuanshi);
+        }else{
+            holder.isattaction.setImageResource(R.mipmap.guanfang);
         }
 
 

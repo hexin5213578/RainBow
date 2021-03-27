@@ -83,31 +83,7 @@ public class CollectActivity extends BaseAvtivity {
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
-      /*  Gson gson = new Gson();
-        List<NewDynamicBean.ObjectBean.ListBean> SpList = new ArrayList<>();
 
-        for (int i = 1; i < 10; i++) {
-            String json = SPUtil.getInstance().getData(CollectActivity.this, SPUtil.JSON_COLLECT, "json" + i);
-            NewDynamicBean.ObjectBean.ListBean listBean = gson.fromJson(json, NewDynamicBean.ObjectBean.ListBean.class);
-            if(listBean!=null){
-                SpList.add(listBean);
-            }
-        }
-
-        if(f.exists()){
-            if(SpList.size()>0 && SpList!=null){
-                sv.setVisibility(View.VISIBLE);
-                rlNodata.setVisibility(View.GONE);
-
-                sv.setHeader(new AliHeader(CollectActivity.this));
-                //创建最新动态适配器
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(CollectActivity.this, RecyclerView.VERTICAL, false);
-                rcMydraftDevelopment.setLayoutManager(linearLayoutManager);
-
-                CollectDynamicAdapter myDynamicAdapter = new CollectDynamicAdapter(CollectActivity.this, SpList, mTencent);
-                rcMydraftDevelopment.setAdapter(myDynamicAdapter);
-            }
-        }*/
         getDynamic(page,size);
 
         allList = new ArrayList<>();

@@ -109,6 +109,8 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
     LinearLayout llBlacklist;
     @BindView(R.id.ll_renzheng)
     LinearLayout llRenzheng;
+    @BindView(R.id.tv_id)
+    TextView tvId;
     private Intent intent;
     private int userid;
     private String headimg;
@@ -180,7 +182,7 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
         headimg = Common.getHeadImg();
 
         tvUsername.setText(username);
-
+        tvId.setText("ID:"+userid);
         //加载圆角图
         if (headimg != null && !headimg.equals("")) {
             Glide.with(this).load(headimg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivHeadimg);
@@ -213,7 +215,11 @@ public class FragmentMine extends BaseFragment implements View.OnClickListener {
 
                         if (bean.getCountVisitorNum() != null) {
                             //访客
-                            tvCountFangke.setText(bean.getCountVisitorNum() + "");
+                            if (bean.getCountVisitorNum() > 10000) {
+                                tvCountFangke.setText(bean.getCountVisitorNum() / 10000 + "w");
+                            } else {
+                                tvCountFangke.setText(bean.getCountVisitorNum() + "");
+                            }
                         } else {
                             tvCountFangke.setText("0");
                         }

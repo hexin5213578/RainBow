@@ -503,6 +503,8 @@ public class MyDraftsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holder.ivIsatt.setImageResource(R.mipmap.bojin);
         } else if (attestation == 5) {
             holder.ivIsatt.setImageResource(R.mipmap.zuanshi);
+        }else{
+            holder.ivIsatt.setImageResource(R.mipmap.guanfang);
         }
 
         //判断性别是否保密
@@ -568,8 +570,9 @@ public class MyDraftsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holder.ivIsatt.setImageResource(R.mipmap.bojin);
         } else if (attestation == 5) {
             holder.ivIsatt.setImageResource(R.mipmap.zuanshi);
+        }else{
+            holder.ivIsatt.setImageResource(R.mipmap.guanfang);
         }
-
         //判断性别是否保密
         String userRole = userInfo.getUserRole();
         if (userRole != null) {
@@ -633,6 +636,8 @@ public class MyDraftsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holder.ivIsatt.setImageResource(R.mipmap.bojin);
         } else if (attestation == 5) {
             holder.ivIsatt.setImageResource(R.mipmap.zuanshi);
+        }else{
+            holder.ivIsatt.setImageResource(R.mipmap.guanfang);
         }
 
         //判断性别是否保密
@@ -698,8 +703,9 @@ public class MyDraftsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holder.ivIsatt.setImageResource(R.mipmap.bojin);
         } else if (attestation == 5) {
             holder.ivIsatt.setImageResource(R.mipmap.zuanshi);
+        }else{
+            holder.ivIsatt.setImageResource(R.mipmap.guanfang);
         }
-
         //判断性别是否保密
         String userRole = userInfo.getUserRole();
         if (userRole != null) {
@@ -764,6 +770,8 @@ public class MyDraftsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holder.ivIsatt.setImageResource(R.mipmap.bojin);
         } else if (attestation == 5) {
             holder.ivIsatt.setImageResource(R.mipmap.zuanshi);
+        }else{
+            holder.ivIsatt.setImageResource(R.mipmap.guanfang);
         }
 
         //判断性别是否保密

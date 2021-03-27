@@ -94,12 +94,12 @@
         android:id="@+id/rc_image"
         android:layout_height="wrap_content">
     </com.YiDian.RainBow.custom.image.NineGridTestLayout>
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/ll_huati"
-        android:layout_width="@dimen/dp_100"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_19"
-        android:layout_below="@id/rc_image"
-        android:gravity="center"
+
+        android:layout_below="@id/tv_dynamic_text"
         android:paddingLeft="@dimen/dp_2"
         android:paddingRight="@dimen/dp_2"
         android:layout_marginLeft="@dimen/dp_15"
@@ -109,101 +109,114 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="#交友聊天"
+            android:text="#拉拉"
+            android:maxEms="4"
+            android:id="@+id/tv_topic"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_6"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textColor="#21B6FD"
             android:textSize="@dimen/sp_12"></TextView>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_marginRight="@dimen/dp_6"
+            android:layout_toRightOf="@id/tv_topic"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_centerVertical="true"
             android:text="HOT!"
             android:textColor="#3C025A"
             android:textSize="@dimen/sp_12"
             android:textStyle="italic"></TextView>
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_below="@id/rc_image"
-        android:layout_toRightOf="@id/ll_huati"
-        android:layout_marginLeft="@dimen/dp_41"
-        android:layout_marginTop="@dimen/dp_13"
-        android:layout_marginRight="@dimen/dp_15"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/dp_30"
+        android:layout_below="@id/tv_dynamic_text"
+        android:layout_marginLeft="@dimen/dp_150"
+        android:layout_marginRight="@dimen/dp_15"
+        android:id="@+id/ll"
+        android:layout_marginTop="@dimen/dp_8"
+        android:orientation="horizontal">
+
         <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_below="@id/tv_dynamic_text"
             android:id="@+id/rl_dianzan"
-            android:layout_height="@dimen/dp_17">
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tv_dynamic_text"
+            android:layout_weight="1">
+
             <ImageView
-                android:layout_width="@dimen/dp_16"
-                android:src="@mipmap/weidianzan"
                 android:id="@+id/iv_dianzan"
-                android:layout_height="@dimen/dp_17">
-            </ImageView>
+                android:layout_centerVertical="true"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_17"
+                android:src="@mipmap/weidianzan"></ImageView>
+
             <TextView
-                android:layout_toRightOf="@id/iv_dianzan"
-                android:layout_width="wrap_content"
-                android:text="30"
-                android:layout_marginLeft="@dimen/dp_6"
-                android:textSize="@dimen/sp_9"
-                android:layout_alignParentBottom="true"
                 android:id="@+id/tv_dianzan_count"
-                android:layout_height="wrap_content">
-            </TextView>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_6"
+                android:layout_toRightOf="@id/iv_dianzan"
+                android:text="30"
+                android:textSize="@dimen/sp_9"></TextView>
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_below="@id/tv_dynamic_text"
             android:id="@+id/rl_pinglun"
-            android:layout_marginLeft="@dimen/dp_20"
-            android:layout_height="@dimen/dp_17">
-            <ImageView
-                android:layout_width="@dimen/dp_16"
-                android:src="@mipmap/pinglun"
-                android:id="@+id/iv_pinglun"
-                android:layout_height="@dimen/dp_17">
-            </ImageView>
-            <TextView
-                android:layout_width="wrap_content"
-                android:text="30"
-                android:textSize="@dimen/sp_9"
-                android:id="@+id/tv_pinglun_count"
-                android:layout_alignParentBottom="true"
-                android:layout_toRightOf="@id/iv_pinglun"
-                android:layout_marginLeft="@dimen/dp_6"
-                android:layout_height="wrap_content">
-            </TextView>
-        </RelativeLayout>
-        <RelativeLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
             android:layout_below="@id/tv_dynamic_text"
-            android:id="@+id/rl_zhuanfa"
             android:layout_marginLeft="@dimen/dp_20"
-            android:layout_height="@dimen/dp_17">
+            android:layout_weight="1">
+
             <ImageView
+                android:id="@+id/iv_pinglun"
                 android:layout_width="@dimen/dp_16"
-                android:src="@mipmap/zhuanfa"
-                android:id="@+id/iv_zhuanfa"
-                android:layout_height="@dimen/dp_17">
-            </ImageView>
+                android:layout_height="@dimen/dp_17"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/pinglun"></ImageView>
+
             <TextView
-                android:layout_width="match_parent"
-                android:text="转发"
-                android:id="@+id/zhuangfa"
-                android:textSize="@dimen/sp_9"
-                android:layout_alignParentBottom="true"
-                android:layout_toRightOf="@id/iv_zhuanfa"
+                android:id="@+id/tv_pinglun_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dp_6"
-                android:layout_height="wrap_content">
-            </TextView>
+                android:layout_toRightOf="@id/iv_pinglun"
+                android:text="30"
+                android:textSize="@dimen/sp_9"></TextView>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_zhuanfa"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tv_dynamic_text"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/iv_zhuanfa"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_17"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/zhuanfa"></ImageView>
+
+            <TextView
+                android:id="@+id/zhuangfa"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_6"
+                android:layout_toRightOf="@id/iv_zhuanfa"
+                android:text="转发"
+                android:textSize="@dimen/sp_9"></TextView>
         </RelativeLayout>
     </LinearLayout>
     <TextView

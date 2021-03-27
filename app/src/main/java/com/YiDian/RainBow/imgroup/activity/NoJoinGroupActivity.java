@@ -29,6 +29,7 @@ import com.YiDian.RainBow.utils.NetUtils;
 import com.bumptech.glide.Glide;
 import com.leaf.library.StatusBarUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -108,14 +109,15 @@ public class NoJoinGroupActivity extends BaseAvtivity implements View.OnClickLis
         //获取群信息
         getGroupMsg(groupid, userId);
         //获取群成员列表
-        getGroupMember(groupid,1,25);
+        getGroupMember(groupid, 1, 25);
 
 
     }
+
     //获取群成员
-    public void getGroupMember(int groupid,int page,int size){
+    public void getGroupMember(int groupid, int page, int size) {
         NetUtils.getInstance().getApis()
-                .doGetGroupMember(groupid,page,size)
+                .doGetGroupMember(groupid, page, size)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GroupMemberBean>() {
@@ -126,7 +128,7 @@ public class NoJoinGroupActivity extends BaseAvtivity implements View.OnClickLis
 
                     @Override
                     public void onNext(@NonNull GroupMemberBean groupMemberBean) {
-                        if (groupMemberBean.getType().equals("OK")){
+                        if (groupMemberBean.getType().equals("OK")) {
                             List<GroupMemberBean.ObjectBean.ListBean> list = groupMemberBean.getObject().getList();
 
                             //加载群主头像姓名
@@ -134,7 +136,7 @@ public class NoJoinGroupActivity extends BaseAvtivity implements View.OnClickLis
                             tvLordname.setText(listBean.getNickName());
                             Glide.with(NoJoinGroupActivity.this).load(listBean.getHeadImg()).into(ivLordimg);
 
-                            if (list!=null && list.size()>0){
+                            if (list != null && list.size() > 0) {
 
                                 GridLayoutManager gridLayoutManager = new GridLayoutManager(NoJoinGroupActivity.this, 7);
                                 rcMember.setLayoutManager(gridLayoutManager);
@@ -146,7 +148,7 @@ public class NoJoinGroupActivity extends BaseAvtivity implements View.OnClickLis
                                 rcMember.setAdapter(groupMemberAdapter);
                                 //创建适配器
                             }
-                            if (list.size()>21){
+                            if (list.size() > 21) {
                                 rlSeemore.setVisibility(View.VISIBLE);
                             }
                         }
@@ -163,6 +165,7 @@ public class NoJoinGroupActivity extends BaseAvtivity implements View.OnClickLis
                     }
                 });
     }
+
     //获取群信息
     public void getGroupMsg(int groupid, int userid) {
         NetUtils.getInstance().getApis()
@@ -188,15 +191,15 @@ public class NoJoinGroupActivity extends BaseAvtivity implements View.OnClickLis
                             //设置背景
                             Glide.with(NoJoinGroupActivity.this).load(object.getBaseMap()).into(ivBg);
                             //群ID
-                            tvGroupId.setText("ID:"+object.getId() + "");
+                            tvGroupId.setText("ID:" + object.getId() + "");
                             //群人数
                             tvGroupPeopleCount.setText(object.getUserNum() + "");
                             //设置群名
-                            tvGroupName.setText(groupName+"");
+                            tvGroupName.setText(groupName + "");
 
                             //设置简介
 
-                            if (object.getGroupInfo().equals("还没有简介，快来设置吧")){
+                            if (object.getGroupInfo().equals("还没有简介，快来设置吧")) {
                                 tvJianjie.setText("群主还没有设置简介");
                             }
 
@@ -204,12 +207,12 @@ public class NoJoinGroupActivity extends BaseAvtivity implements View.OnClickLis
                             JMessageClient.getGroupInfo(jgGroupId, new GetGroupInfoCallback() {
                                 @Override
                                 public void gotResult(int i, String s, GroupInfo groupInfo) {
-                                    if (i==0){
+                                    if (i == 0) {
                                         groupInfo.updateDescription(object.getGroupInfo(), new BasicCallback() {
                                             @Override
                                             public void gotResult(int i, String s) {
-                                                if (i==0){
-                                                    Log.d("xxx","极光描述修改成功");
+                                                if (i == 0) {
+                                                    Log.d("xxx", "极光描述修改成功");
                                                 }
                                             }
                                         });
@@ -230,6 +233,7 @@ public class NoJoinGroupActivity extends BaseAvtivity implements View.OnClickLis
                     }
                 });
     }
+
     @Override
     protected BasePresenter initPresenter() {
         return null;
@@ -237,32 +241,33 @@ public class NoJoinGroupActivity extends BaseAvtivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.ll_back:
                 finish();
                 break;
-                //查看更多群成员
+            //查看更多群成员
             case R.id.rl_seemore:
-                intent = new Intent(NoJoinGroupActivity.this,GroupMemberDetailsActivity.class);
-                intent.putExtra("groupid",groupid);
+                intent = new Intent(NoJoinGroupActivity.this, GroupMemberDetailsActivity.class);
+                intent.putExtra("groupid", groupid);
                 startActivity(intent);
                 break;
-                //申请加入
+            //申请加入
             case R.id.bt_join:
-               CustomDialogCleanNotice.Builder builder = new CustomDialogCleanNotice.Builder(NoJoinGroupActivity.this);
+                CustomDialogCleanNotice.Builder builder = new CustomDialogCleanNotice.Builder(NoJoinGroupActivity.this);
                 builder.setMessage("确定要申请加入该群组嘛?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                         //先申请极光加入群组
-
+                        //先申请极光加入群组
                         //申请入群
                         JMessageClient.applyJoinGroup(jgGroupId, "", new BasicCallback() {
                             @Override
                             public void gotResult(int responseCode, String responseMessage) {
                                 if (responseCode == 0) {
+                                    Log.d("xxx", "极光申请发起成功");
+
                                     //极光申请发出 发出本地审核
                                     NetUtils.getInstance().getApis()
-                                            .doInserGroup(groupid,userId)
+                                            .doInserGroup(groupid, userId)
                                             .subscribeOn(Schedulers.io())
                                             .observeOn(AndroidSchedulers.mainThread())
                                             .subscribe(new Observer<ChangeGroupHeadBean>() {
@@ -274,7 +279,7 @@ public class NoJoinGroupActivity extends BaseAvtivity implements View.OnClickLis
                                                 @Override
                                                 public void onNext(@NonNull ChangeGroupHeadBean changeGroupHeadBean) {
                                                     dialog.dismiss();
-                                                    if (changeGroupHeadBean.getType().equals("OK")){
+                                                    if (changeGroupHeadBean.getType().equals("OK")) {
                                                         Toast.makeText(NoJoinGroupActivity.this, "审请已发起", Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
@@ -289,12 +294,10 @@ public class NoJoinGroupActivity extends BaseAvtivity implements View.OnClickLis
 
                                                 }
                                             });
-                                }
-                                else if(responseCode==856003){
+                                } else if (responseCode == 856003) {
                                     dialog.dismiss();
-                                    Toast.makeText(NoJoinGroupActivity.this, "请勿重复发起申请", Toast.LENGTH_SHORT).show();
-                                }
-                                else {
+                                    Toast.makeText(NoJoinGroupActivity.this, "申请已发起", Toast.LENGTH_SHORT).show();
+                                } else {
                                     Log.d("xxx", "apply failed. code :" + responseCode + " msg : " + responseMessage);
                                     Toast.makeText(NoJoinGroupActivity.this, "申请失败", Toast.LENGTH_SHORT).show();
                                 }

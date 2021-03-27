@@ -846,6 +846,8 @@ public class DynamicDetailsActivity extends BaseAvtivity implements View.OnClick
                             isattaction.setImageResource(R.mipmap.bojin);
                         }else if (attestation==5){
                             isattaction.setImageResource(R.mipmap.zuanshi);
+                        }else{
+                            isattaction.setImageResource(R.mipmap.guanfang);
                         }
 
                         //判断是否点赞

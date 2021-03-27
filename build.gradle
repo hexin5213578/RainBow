@@ -6,9 +6,9 @@ buildscript {
         google()
         maven {url 'https://developer.huawei.com/repo/'}
         maven { url 'https://jitpack.io' }
-        maven {
+       /* maven {
             url 'https://maven.google.com/'
-        }
+        }*/
         jcenter();
 
     }
@@ -28,9 +28,9 @@ allprojects {
         google()
         maven {url 'https://developer.huawei.com/repo/'}
         maven { url 'https://jitpack.io' }
-        maven {
+        /*maven {
             url 'https://maven.google.com/'
-        }
+        }*/
         maven { url "https://dl.bintray.com/albertlii/android-maven/" }
         maven {
             url 'https://dl.bintray.com/cjt/maven'
