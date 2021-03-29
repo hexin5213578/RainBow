@@ -8,7 +8,14 @@ android {
         preDexLibraries true
         javaMaxHeapSize "6g"
     }
-
+    /*splits {
+        abi {
+            enable true
+            reset()
+            include 'x86', 'arm64-v8a', 'armeabi-v7a', 'x86_64'
+            universalApk true
+        }
+    }*/
     signingConfigs {
         release {
             storeFile file("rainbow.jks")
@@ -80,9 +87,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: '*.jar')
     implementation files('libs/zxing.jar')
     implementation files('libs/pinyin4j-2.5.0.jar')
-
-
-
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'

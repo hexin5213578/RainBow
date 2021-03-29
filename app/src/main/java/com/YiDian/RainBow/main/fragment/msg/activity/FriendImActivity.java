@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
@@ -17,6 +18,7 @@ import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -83,10 +85,16 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -437,8 +445,6 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
     public void getListFromIm(int page, int size) {
         List<Message> messagesFromNewest = conversation.getMessagesFromNewest(page, size);
-
-
 
         if (conversation.getType().name().equals("group")){
             rlMsgUser.setVisibility(View.GONE);
@@ -1042,6 +1048,25 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
                                             }
                                         });
+                                        //送出成功 发送图片
+                                        String giftImg = giftbean.getGiftImg();
+
+                                        Thread thread = new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    Bitmap bitmap = returnBitMap(giftImg);
+                                                    String imageName = System.currentTimeMillis()+".png";
+                                                    File file = saveFile(bitmap, imageName);
+
+                                                    SendImgMessage(FriendImActivity.this,file);
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        });
+                                        thread.start();
+
                                     }
                                     if (insertRealBean.getMsg().equals("余额不足")) {
                                         // TODO: 2021/1/24 0024 接入充值功能提示去充值
@@ -1092,7 +1117,59 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         });
         show(view);
     }
+    public final static Bitmap returnBitMap(String url) {
+        URL myFileUrl = null;
+        Bitmap bitmap = null;
+        try {
+            myFileUrl = new URL(url);
+            HttpURLConnection conn;
+            conn = (HttpURLConnection) myFileUrl.openConnection();
+            conn.setDoInput(true);
+            int length = conn.getContentLength();
+            conn.connect();
+            InputStream is = conn.getInputStream();
+            BufferedInputStream bis = new BufferedInputStream(is, length);
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize =2;    // 设置缩放比例
+            Rect rect = new Rect(0, 0,0,0);
+            bitmap = BitmapFactory.decodeStream(bis,rect,options);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
 
+    /**
+     * 将Bitmap转换成文件
+     * 保存文件
+     * @param bm
+     * @param fileName
+     * @throws IOException
+     */
+    public static File saveFile(Bitmap bm, String fileName) throws IOException {
+        String path = getSDPath() +"/wuliu/";
+        File dirFile = new File(path);
+        if(!dirFile.exists()){
+            dirFile.mkdir();
+        }
+        File myCaptureFile = new File(path + fileName);
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(myCaptureFile));
+        bm.compress(Bitmap.CompressFormat.JPEG, 80, bos);
+        bos.flush();
+        bos.close();
+        return myCaptureFile;
+    }
+    //获取sd卡路径
+    public static String getSDPath(){
+        File sdDir = null;
+        boolean sdCardExist = Environment.getExternalStorageState()
+                .equals(Environment.MEDIA_MOUNTED);//判断sd卡是否存在
+        if(sdCardExist)
+        {
+            sdDir = Environment.getExternalStorageDirectory();//获取跟目录
+        }
+        return sdDir.toString();
+    }
     /**
      * 设置圆点
      */
