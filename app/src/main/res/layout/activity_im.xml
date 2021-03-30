@@ -224,8 +224,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_below="@id/rl1"
-            android:visibility="gone"
             android:id="@+id/rl_menu"
+            android:visibility="gone"
             android:layout_height="@dimen/dp_60">
             <View
                 android:layout_width="match_parent"
@@ -256,6 +256,16 @@
                 android:layout_toRightOf="@id/iv_xiangce"
                 android:layout_centerVertical="true"
                 android:id="@+id/iv_liwu"
+                android:layout_marginLeft="@dimen/dp_33"
+                android:layout_height="@dimen/dp_27">
+            </ImageView>
+            <ImageView
+                android:layout_width="@dimen/dp_31"
+                android:src="@mipmap/dingwei"
+                android:layout_toRightOf="@id/iv_liwu"
+                android:layout_centerVertical="true"
+                android:id="@+id/iv_location"
+                android:scaleType="centerCrop"
                 android:layout_marginLeft="@dimen/dp_33"
                 android:layout_height="@dimen/dp_27">
             </ImageView>

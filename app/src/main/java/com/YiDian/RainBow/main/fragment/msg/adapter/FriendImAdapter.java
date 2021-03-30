@@ -7,9 +7,12 @@ import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.view.ViewTreeObserver;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,10 +23,18 @@ import com.YiDian.RainBow.main.fragment.activity.SimplePlayerActivity;
 import com.YiDian.RainBow.main.fragment.home.activity.NewDynamicImage;
 import com.YiDian.RainBow.main.fragment.msg.activity.ReportActivity;
 import com.YiDian.RainBow.main.fragment.msg.bean.ImImageBean;
+import com.YiDian.RainBow.main.fragment.msg.bean.ImLocationBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.ImMsgBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.ImVideoBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.ImVocieBean;
 import com.YiDian.RainBow.utils.StringUtil;
+import com.amap.api.maps.AMap;
+import com.amap.api.maps.CameraUpdateFactory;
+import com.amap.api.maps.MapView;
+import com.amap.api.maps.model.CameraPosition;
+import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.MarkerOptions;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
@@ -41,6 +52,8 @@ import java.util.List;
 import butterknife.BindView;
 import cn.jpush.im.android.api.model.Message;
 
+import static com.amap.api.maps.AMapOptions.LOGO_POSITION_BOTTOM_LEFT;
+
 
 public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
 
@@ -48,6 +61,7 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
 
     private List<Message> list;
     private Context context;
+    private Bundle saveInstace;
     private File file;
     private String newChatTime;
     private Message message;
@@ -60,9 +74,10 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
     public static final String TAG = "IMAdapter";
     private Intent intent1;
 
-    public FriendImAdapter(Context context) {
+    public FriendImAdapter(Context context, Bundle saveInstace) {
 
         this.context = context;
+        this.saveInstace = saveInstace;
     }
 
     public void setData(List<Message> messages) {
@@ -118,6 +133,12 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
             viewHolder = ImViewHolder.createViewHolder(context, parent, R.layout.item_im_right_video);
             return viewHolder;
         }
+        if (viewType == 8) {
+            //发出位置信息
+            viewHolder = ImViewHolder.createViewHolder(context, parent, R.layout.item_im_right_location);
+            return viewHolder;
+        }
+
         return null;
     }
 
@@ -203,14 +224,16 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                         });
                     }
                 });
-            } else if (message.getContentType().name().equals("text")) {
+            }
+            else if (message.getContentType().name().equals("text")) {
                 message = list.get(position);
                 ImMsgBean imMsgBean = gson.fromJson(message.toJson(), ImMsgBean.class);
 
                 //获取文本内容
                 holder.tvMsg.setText(imMsgBean.getContent().getText());
 
-            } else if (message.getContentType().name().equals("image")) {
+            }
+            else if (message.getContentType().name().equals("image")) {
                 message = list.get(position);
                 ImImageBean imImageBean = gson.fromJson(message.toJson(), ImImageBean.class);
 
@@ -247,7 +270,8 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
 
                     }
                 });
-            } else if (message.getContentType().name().equals("video")) {
+            }
+            else if (message.getContentType().name().equals("video")) {
                 message = list.get(position);
                 ImVideoBean imVideoBean = gson.fromJson(message.toJson(), ImVideoBean.class);
 
@@ -295,6 +319,37 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                     }
                 });
             }
+            else if(message.getContentType().name().equals("location")){
+                message = list.get(position);
+
+                ImLocationBean imLocationBean = gson.fromJson(message.toJson(), ImLocationBean.class);
+
+                holder.tvAddress.setText(imLocationBean.getContent().getLabel()+"");
+                double latitude = imLocationBean.getContent().getLatitude();
+                double longitude = imLocationBean.getContent().getLongitude();
+
+
+                holder.mapView.onCreate(saveInstace);
+                AMap aMap = holder.mapView.getMap();
+                // 显示实时交通状况
+                aMap.setTrafficEnabled(true);
+                //地图模式可选类型：MAP_TYPE_NORMAL,MAP_TYPE_SATELLITE,MAP_TYPE_NIGHT
+                // 卫星地图模式
+                aMap.setMapType(AMap.MAP_TYPE_NORMAL);
+                aMap.getUiSettings().setZoomControlsEnabled(false);
+                aMap.getUiSettings().setAllGesturesEnabled(false);
+
+                LatLng latLng = new LatLng(latitude,longitude);
+                final Marker marker = aMap.addMarker(new MarkerOptions().position(latLng));
+
+                aMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(new LatLng(latitude,longitude), 14, 0, 0)));
+                holder.rlLocation.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //跳转到查看位置页
+                    }
+                });
+            }
         } else {
             if (message.getContentType().name().equals("voice")) {
                 message = list.get(position);
@@ -308,7 +363,7 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                     public boolean onLongClick(View v) {
 
                         intent1 = new Intent(context, ReportActivity.class);
-                        intent1.putExtra("id",imVocieBean.getFrom_id());
+                        intent1.putExtra("id", imVocieBean.getFrom_id());
                         context.startActivity(intent1);
                         return false;
                     }
@@ -359,7 +414,7 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                     @Override
                     public boolean onLongClick(View v) {
                         intent1 = new Intent(context, ReportActivity.class);
-                        intent1.putExtra("id",imMsgBean.getFrom_id());
+                        intent1.putExtra("id", imMsgBean.getFrom_id());
                         context.startActivity(intent1);
                         return false;
                     }
@@ -386,7 +441,7 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                     @Override
                     public boolean onLongClick(View v) {
                         intent1 = new Intent(context, ReportActivity.class);
-                        intent1.putExtra("id",imImageBean.getFrom_id());
+                        intent1.putExtra("id", imImageBean.getFrom_id());
                         context.startActivity(intent1);
                         return false;
                     }
@@ -461,7 +516,7 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                     @Override
                     public boolean onLongClick(View v) {
                         intent1 = new Intent(context, ReportActivity.class);
-                        intent1.putExtra("id",imVideoBean.getFrom_id());
+                        intent1.putExtra("id", imVideoBean.getFrom_id());
                         context.startActivity(intent1);
                         return false;
                     }
@@ -496,6 +551,8 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                 return 2;
             } else if (message.getContentType().name().equals("video")) {
                 return 3;
+            } else if ((message.getContentType().name().equals("location"))) {
+                return 9;
             }
         } else {
             if (message.getContentType().name().equals("voice")) {
@@ -506,6 +563,8 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                 return 6;
             } else if (message.getContentType().name().equals("video")) {
                 return 7;
+            } else if (message.getContentType().name().equals("location")) {
+                return 8;
             }
         }
         return 8;

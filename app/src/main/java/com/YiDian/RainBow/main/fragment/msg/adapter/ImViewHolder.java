@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.custom.videoplayer.SampleCoverVideo;
 import com.YiDian.RainBow.custom.videoplayer.SampleCoverVideoNoOpen;
+import com.amap.api.maps.MapView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,6 +51,16 @@ public class ImViewHolder extends RecyclerView.ViewHolder {
     @Nullable
     @BindView(R.id.video_player)
     SampleCoverVideoNoOpen videoPlayer;
+    @Nullable
+    @BindView(R.id.tv_address)
+    TextView tvAddress;
+    @Nullable
+    @BindView(R.id.mapView)
+    MapView mapView;
+    @Nullable
+    @BindView(R.id.rl_location)
+    RelativeLayout rlLocation;
+
     public static ImViewHolder createViewHolder(Context context,
                                               ViewGroup parent, int layoutId) {
         View itemView = LayoutInflater.from(context).inflate(layoutId, parent,

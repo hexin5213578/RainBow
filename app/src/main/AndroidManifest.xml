@@ -483,6 +483,12 @@
             android:name=".main.fragment.msg.activity.JCameraViewActivity"
             android:screenOrientation="portrait" />
 
+        <!-- 发送位置 -->
+        <activity
+            android:name=".map.MapActivity"
+            android:screenOrientation="portrait" />
+
+
         <!-- 实名认证 -->
         <activity
             android:name=".setup.activity.RealnameActivity"

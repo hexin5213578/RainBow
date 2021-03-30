@@ -1,9 +1,6 @@
 package com.YiDian.RainBow.main.fragment.msg.activity;
 
 import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -20,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -32,7 +30,6 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -60,16 +57,20 @@ import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.audiorecord.AudioRecorderButton;
 import com.YiDian.RainBow.custom.loading.CustomDialog;
+import com.YiDian.RainBow.custom.svag.SvgaUtils;
 import com.YiDian.RainBow.main.fragment.msg.adapter.FriendImAdapter;
 import com.YiDian.RainBow.main.fragment.msg.adapter.GridViewAdapter;
 import com.YiDian.RainBow.main.fragment.msg.adapter.ViewPagerAdapter;
 import com.YiDian.RainBow.main.fragment.msg.bean.GiftMsgBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.GlodNumBean;
+import com.YiDian.RainBow.map.MapActivity;
+import com.YiDian.RainBow.map.bean.SaveNearMessageBean;
 import com.YiDian.RainBow.setup.bean.InsertRealBean;
 import com.YiDian.RainBow.user.bean.UserMsgBean;
 import com.YiDian.RainBow.utils.BitmapUtil;
 import com.YiDian.RainBow.utils.KeyBoardUtils;
 import com.YiDian.RainBow.utils.NetUtils;
+import com.amap.api.services.core.LatLonPoint;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
@@ -79,6 +80,7 @@ import com.dmcbig.mediapicker.entity.Media;
 import com.leaf.library.StatusBarUtil;
 import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.widget.SpringView;
+import com.opensource.svgaplayer.SVGAImageView;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -191,6 +193,8 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     RelativeLayout rlBottom;
     @BindView(R.id.tv_qianming)
     TextView tvQianming;
+    @BindView(R.id.iv_location)
+    ImageView ivLocation;
     private String userName;
     private ArrayList<Media> select;
     private ArrayList<Media> select1;
@@ -220,10 +224,18 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     private TextView tv_balance;
     private Animation anim;
     private CustomDialog dialog;
-
+    private Bundle saveInstade;
     @Override
     protected int getResId() {
         return R.layout.activity_im;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
+
+        this.saveInstade = savedInstanceState;
+
     }
 
     /**
@@ -273,6 +285,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         ivPaizhao.setOnClickListener(this);
         ivXiangce.setOnClickListener(this);
         ivLiwu.setOnClickListener(this);
+        ivLocation.setOnClickListener(this);
         etContent.setOnClickListener(this);
 
         select = new ArrayList<>();
@@ -327,7 +340,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         id = intent.getStringExtra("userid");
 
         //判断ID长度 为六位时为单聊
-        if (id.length()==6 || id.length()==4){
+        if (id.length() == 6 || id.length() == 4) {
             Log.d("xxx", "传入聊天页聊天的id为" + id);
 
             //通过传过来的id对应对话的对象
@@ -335,7 +348,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
             //设置聊天对应用户的用户名
             tvName.setText(conversation.getTitle());
-        }else if(id.length()==8){
+        } else if (id.length() == 8) {
             Log.d("xxx", "传入聊天页群组的id为" + id);
 
             conversation = JMessageClient.getGroupConversation(Long.parseLong(id));
@@ -349,7 +362,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         userName = Common.getUserName();
         userid = Integer.valueOf(Common.getUserId());
 
-        imAdapter = new FriendImAdapter(FriendImActivity.this);
+        imAdapter = new FriendImAdapter(FriendImActivity.this,saveInstade);
         //先获取聊天记录  获取为空展示聊天对方用户信息
         getListFromIm(page, size);
 
@@ -405,6 +418,25 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
     }
 
+    /**
+     *
+     * @param saveNearMessageBean
+     * 获取需要发送的定位信息
+     *
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getLocationMsg(SaveNearMessageBean saveNearMessageBean){
+        String address = saveNearMessageBean.getAddress();
+        String shengfen = saveNearMessageBean.getShengfen();
+        String shiqu = saveNearMessageBean.getShiqu();
+        String xian = saveNearMessageBean.getXian();
+        LatLonPoint locataion = saveNearMessageBean.getLocataion();
+        double latitude = locataion.getLatitude();
+        double longitude = locataion.getLongitude();
+
+        sendLocation(latitude,longitude,3,shengfen+shiqu+xian+address);
+
+    }
     @Override
     public void onResume() {
         super.onResume();
@@ -446,7 +478,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     public void getListFromIm(int page, int size) {
         List<Message> messagesFromNewest = conversation.getMessagesFromNewest(page, size);
 
-        if (conversation.getType().name().equals("group")){
+        if (conversation.getType().name().equals("group")) {
             rlMsgUser.setVisibility(View.GONE);
             sv.setVisibility(View.VISIBLE);
             if (messagesFromNewest.size() > 0 && messagesFromNewest != null) {
@@ -465,7 +497,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 linearLayoutManager.setStackFromEnd(true);
                 linearLayoutManager.scrollToPositionWithOffset(0, 0);
 
-                imAdapter = new FriendImAdapter(FriendImActivity.this);
+                imAdapter = new FriendImAdapter(FriendImActivity.this,saveInstade);
 
                 imAdapter.setData(allList);
                 //设置对方头像
@@ -474,8 +506,8 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
                 rcImlist.setAdapter(imAdapter);
             }
-        }else{
-            if (messagesFromNewest != null &&  messagesFromNewest.size() > 0 ) {
+        } else {
+            if (messagesFromNewest != null && messagesFromNewest.size() > 0) {
                 Log.d("xxx", "获取到了" + messagesFromNewest.size() + "条");
                 rlMsgUser.setVisibility(View.GONE);
                 sv.setVisibility(View.VISIBLE);
@@ -494,7 +526,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 linearLayoutManager.setStackFromEnd(true);
                 linearLayoutManager.scrollToPositionWithOffset(0, 0);
 
-                imAdapter = new FriendImAdapter(FriendImActivity.this);
+                imAdapter = new FriendImAdapter(FriendImActivity.this,saveInstade);
 
                 imAdapter.setData(allList);
                 //设置对方头像
@@ -541,13 +573,13 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                                             tvRole.setVisibility(View.GONE);
                                         }
                                         String explains = userInfo.getExplains();
-                                        if (explains!=null){
-                                            if (explains.equals("")){
+                                        if (explains != null) {
+                                            if (explains.equals("")) {
                                                 tvQianming.setText("还没有设置签名哦");
-                                            }else{
-                                                tvQianming.setText("个性签名:"+explains);
+                                            } else {
+                                                tvQianming.setText("个性签名:" + explains);
                                             }
-                                        }else{
+                                        } else {
                                             tvQianming.setText("还没有设置签名哦");
                                         }
                                     }
@@ -608,6 +640,42 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         JMessageClient.sendMessage(message, options);
     }
 
+    /**
+     *
+     * @param lat 维度
+     * @param lng 经度
+     * @param scale 地图缩放比例
+     * @param address 详细地址
+     */
+    public void sendLocation(double lat,double lng,int scale,String address) {
+        Message message = JMessageClient.createSingleLocationMessage(id, Common.get_JG(), lat,lng,scale,address);
+
+        message.setOnSendCompleteCallback(new BasicCallback() {
+            @Override
+            public void gotResult(int i, String s) {
+                Log.i("TAG", "register：code：" + i + "  msg：" + s);
+                if (i == 0) {
+                    Log.d("xxx", "位置发送成功");
+
+                    allList.clear();
+                    page = 0;
+                    size = 50;
+                    getListFromIm(page, size);
+                } else {
+                    Log.d("xxx", "位置发送失败");
+                }
+            }
+        });
+
+        MessageSendingOptions options = new MessageSendingOptions();
+
+        options.setNotificationTitle(userName);
+        options.setNotificationText("[位置信息]");
+        options.setCustomNotificationEnabled(true);
+        options.setRetainOffline(true);
+        options.setShowNotification(true);
+        JMessageClient.sendMessage(message, options);
+    }
     /**
      * @param context
      * @param RecoderFile
@@ -810,12 +878,19 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 // TODO: 2021/1/13 0013 展示选择礼物框
                 getGiftMsg();
                 break;
+            //发送位置
+            case R.id.iv_location:
+                intent = new Intent(FriendImActivity.this, MapActivity.class);
+                startActivity(intent);
+                break;
             case R.id.iv_keyborad:
                 rlSendmsg.setVisibility(View.VISIBLE);
                 rlSendyuyin.setVisibility(View.GONE);
                 break;
             case R.id.et_content:
                 rlMenu.setVisibility(View.GONE);
+                break;
+            default:
                 break;
         }
     }
@@ -924,7 +999,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         lldot = view.findViewById(R.id.ll_dot);
         LinearLayout llrecharge = view.findViewById(R.id.ll_recharge);
         RelativeLayout ll_close = view.findViewById(R.id.ll_close);
-        ImageView iv_anim = view.findViewById(R.id.iv_anim);
+        SVGAImageView svagimg = view.findViewById(R.id.svgaImage);
         tv_balance = view.findViewById(R.id.tv_balance);
         RelativeLayout rl_send = view.findViewById(R.id.rl_send);
 
@@ -1004,50 +1079,56 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                                         getGlodNum();
 
                                         //展示动画
-                                        iv_anim.setVisibility(View.VISIBLE);
-                                        Glide.with(FriendImActivity.this).load(giftbean.getGiftImg()).into(iv_anim);
+                                        final SvgaUtils svgaUtils = new SvgaUtils(FriendImActivity.this, svagimg);
+                                        svgaUtils.initAnimator();
 
+                                        switch (selectnum) {
+                                            case 0:
 
-                                        ObjectAnimator Animator1 = ObjectAnimator.ofFloat(iv_anim, "translationY", -700);
-                                        Animator1.setInterpolator(new LinearInterpolator());
-                                        Animator1.setDuration(1000);
+                                                break;
+                                            case 1:
 
-                                        ObjectAnimator Animator2 = ObjectAnimator.ofFloat(iv_anim, "rotation", 0.0F, 1080.0f);
-                                        Animator2.setInterpolator(new LinearInterpolator());
-                                        Animator2.setDuration(1500);
+                                                break;
+                                            case 2:
 
-                                        AnimatorSet set = new AnimatorSet();
-                                        set.play(Animator1).before(Animator2);
+                                                break;
+                                            case 3:
 
-                                        set.start();
-                                        set.addListener(new Animator.AnimatorListener() {
-                                            @Override
-                                            public void onAnimationStart(Animator animation) {
+                                                break;
+                                            case 4:
 
-                                            }
+                                                break;
+                                            case 5:
 
-                                            @Override
-                                            public void onAnimationEnd(Animator animation) {
-                                                animation.cancel();
+                                                break;
+                                            case 6:
+                                                svgaUtils.startAnimator("jiaonang");
+                                                break;
+                                            case 7:
 
-                                                iv_anim.setVisibility(View.GONE);
-                                                ObjectAnimator Animator = ObjectAnimator.ofFloat(iv_anim, "translationY", 700);
-                                                Animator.setInterpolator(new LinearInterpolator());
-                                                Animator.setDuration(200);
+                                                break;
+                                            case 8:
 
-                                                Animator.start();
-                                            }
+                                                break;
+                                            case 9:
 
-                                            @Override
-                                            public void onAnimationCancel(Animator animation) {
+                                                break;
+                                            case 10:
 
-                                            }
+                                                break;
+                                            case 11:
 
-                                            @Override
-                                            public void onAnimationRepeat(Animator animation) {
+                                                break;
+                                            case 12:
 
-                                            }
-                                        });
+                                                break;
+                                            case 13:
+
+                                                break;
+                                            default:
+
+                                                break;
+                                        }
                                         //送出成功 发送图片
                                         String giftImg = giftbean.getGiftImg();
 
@@ -1056,10 +1137,10 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                                             public void run() {
                                                 try {
                                                     Bitmap bitmap = returnBitMap(giftImg);
-                                                    String imageName = System.currentTimeMillis()+".png";
+                                                    String imageName = System.currentTimeMillis() + ".png";
                                                     File file = saveFile(bitmap, imageName);
 
-                                                    SendImgMessage(FriendImActivity.this,file);
+                                                    SendImgMessage(FriendImActivity.this, file);
                                                 } catch (IOException e) {
                                                     e.printStackTrace();
                                                 }
@@ -1117,6 +1198,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         });
         show(view);
     }
+
     public final static Bitmap returnBitMap(String url) {
         URL myFileUrl = null;
         Bitmap bitmap = null;
@@ -1130,9 +1212,9 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
             InputStream is = conn.getInputStream();
             BufferedInputStream bis = new BufferedInputStream(is, length);
             BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize =2;    // 设置缩放比例
-            Rect rect = new Rect(0, 0,0,0);
-            bitmap = BitmapFactory.decodeStream(bis,rect,options);
+            options.inSampleSize = 2;    // 设置缩放比例
+            Rect rect = new Rect(0, 0, 0, 0);
+            bitmap = BitmapFactory.decodeStream(bis, rect, options);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -1142,14 +1224,15 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     /**
      * 将Bitmap转换成文件
      * 保存文件
+     *
      * @param bm
      * @param fileName
      * @throws IOException
      */
     public static File saveFile(Bitmap bm, String fileName) throws IOException {
-        String path = getSDPath() +"/wuliu/";
+        String path = getSDPath() + "/wuliu/";
         File dirFile = new File(path);
-        if(!dirFile.exists()){
+        if (!dirFile.exists()) {
             dirFile.mkdir();
         }
         File myCaptureFile = new File(path + fileName);
@@ -1159,17 +1242,18 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         bos.close();
         return myCaptureFile;
     }
+
     //获取sd卡路径
-    public static String getSDPath(){
+    public static String getSDPath() {
         File sdDir = null;
         boolean sdCardExist = Environment.getExternalStorageState()
                 .equals(Environment.MEDIA_MOUNTED);//判断sd卡是否存在
-        if(sdCardExist)
-        {
+        if (sdCardExist) {
             sdDir = Environment.getExternalStorageDirectory();//获取跟目录
         }
         return sdDir.toString();
     }
+
     /**
      * 设置圆点
      */

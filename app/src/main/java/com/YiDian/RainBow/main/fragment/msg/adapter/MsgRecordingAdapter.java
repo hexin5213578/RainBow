@@ -162,6 +162,9 @@ public class MsgRecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         } else if (conversation.getLatestType().name().equals("video")) {
 
             ((ViewHolder) holder).tvLastMsg.setText("[视频消息]");
+        }else if (conversation.getLatestType().name().equals("location")){
+
+            ((ViewHolder) holder).tvLastMsg.setText("[位置消息]");
         }
 
         long lastMsgDate = conversation.getLastMsgDate();

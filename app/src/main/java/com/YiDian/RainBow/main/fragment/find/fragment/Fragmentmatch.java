@@ -95,13 +95,10 @@ public class Fragmentmatch extends BaseFragment {
         dialog1 = new CustomDialog(getContext(), "正在加载...");
         userid = Integer.valueOf(Common.getUserId());
 
-
-
         //获取球内用户
         getUserMsg();
         //获取推荐用户
         getRecommendFriend();
-
 
         //实例化一个定时器
         timer = new Timer();
@@ -121,7 +118,6 @@ public class Fragmentmatch extends BaseFragment {
             }
         });
     }
-
 
     /**
      *  获取推荐用户
