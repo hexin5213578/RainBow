@@ -176,6 +176,7 @@ public class MyFollowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     //将聊天对象的id作为参数传入
                     Intent intent = new Intent(context, FriendImActivity.class);
                     intent.putExtra("userid",userid);
+                    intent.putExtra("name",bean.getNickName());
                     context.startActivity(intent);
 
                 }else{

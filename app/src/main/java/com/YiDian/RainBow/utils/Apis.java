@@ -72,7 +72,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface Apis {
-    //最新动态
+    //最新动态  
     @GET("content/getContentByTime")
     Observable<NewDynamicBean> getNewDynamic(@Query("userId")int userid,@Query("page")int page,@Query("pageSize")int pagesize);
 

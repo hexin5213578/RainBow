@@ -215,6 +215,8 @@ public class MyFansAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     //将聊天对象的id作为参数传入
                     Intent intent = new Intent(context, FriendImActivity.class);
                     intent.putExtra("userid",fansId);
+                    intent.putExtra("name",bean.getNickName());
+
                     context.startActivity(intent);
                 }else{
                     Toast.makeText(context, "请互相关注后再发起聊天哦", Toast.LENGTH_SHORT).show();

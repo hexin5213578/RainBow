@@ -1,6 +1,8 @@
 package com.YiDian.RainBow.map;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,6 +13,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -69,15 +73,19 @@ public class MapActivity extends Activity implements View.OnClickListener, Locat
     private MapApapter mapApapter;
     private PoiItem poiItem;
     private SaveNearMessageBean saveNearMessageBean;
-    private SaveNearMessageBean saveNearMessageBean1;
-    private SaveNearMessageBean saveNearMessageBean2;
-    private boolean  isselect = false;
+
+    int selectPostion = 0;
+
+    private List<SaveNearMessageBean> locationMsglist;
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_map);
+        //获取定位权限
+        Request();
 
         StatusBarUtil.setTransparentForWindow(MapActivity.this);
         StatusBarUtil.setDarkMode(MapActivity.this);
@@ -108,10 +116,8 @@ public class MapActivity extends Activity implements View.OnClickListener, Locat
         // 设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
         aMap.setMyLocationEnabled(true);
 
-
         mapApapter = new MapApapter();
         mapApapter.setContext(MapActivity.this);
-
 
         tvBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,17 +126,13 @@ public class MapActivity extends Activity implements View.OnClickListener, Locat
             }
         });
 
-
         tvSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("xxx","当前选中下标为"+selectPostion);
+                EventBus.getDefault().post(locationMsglist.get(selectPostion));
                 //获取到选中的条目信息
                 finish();
-                if (isselect){
-                    EventBus.getDefault().post(saveNearMessageBean2);
-                }else{
-                    EventBus.getDefault().post(saveNearMessageBean);
-                }
             }
         });
         geocoderSearch = new GeocodeSearch(this);
@@ -149,15 +151,23 @@ public class MapActivity extends Activity implements View.OnClickListener, Locat
             }
         });
     }
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getGetItemMes(SaveNearMessageBean saveNearMessageBean){
-        isselect = true;
+    /**
+     * 安卓10.0定位权限
+     */
+    public void Request() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            int request = ContextCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION);
+            //缺少权限，进行权限申请
+            if (request != PackageManager.PERMISSION_GRANTED) {
 
-        saveNearMessageBean2 = new SaveNearMessageBean();
-        saveNearMessageBean2 = saveNearMessageBean;
+                ActivityCompat.requestPermissions(MapActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
+                return;//
+            } else {
+            }
+        } else {
 
+        }
     }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -166,22 +176,11 @@ public class MapActivity extends Activity implements View.OnClickListener, Locat
         if (null != mlocationClient) {
             mlocationClient.onDestroy();
         }
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
-        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getId(Integer id) {
-        finish();
     }
 
     @Override
@@ -293,7 +292,7 @@ public class MapActivity extends Activity implements View.OnClickListener, Locat
     public void onPoiSearched(PoiResult poiResult, int i) {
         ArrayList<PoiItem> pois = poiResult.getPois();
 
-        List<SaveNearMessageBean> LocationMsglist = new ArrayList<>();
+        locationMsglist = new ArrayList<>();
 
         poiItem = pois.get(0);
         saveNearMessageBean = new SaveNearMessageBean();
@@ -304,24 +303,24 @@ public class MapActivity extends Activity implements View.OnClickListener, Locat
         saveNearMessageBean.setXian(poiItem.getAdName());
         saveNearMessageBean.setAddress(poiItem.getSnippet());
         saveNearMessageBean.setLocataion(poiItem.getLatLonPoint());
-        LocationMsglist.add(saveNearMessageBean);
+        locationMsglist.add(saveNearMessageBean);
 
         for (int j=1; j<=pois.size()-1;j++){
             poiItem = pois.get(j);
 
-            saveNearMessageBean1 = new SaveNearMessageBean();
-            saveNearMessageBean1.setIsselect(false);
-            saveNearMessageBean1.setTitle(poiItem.getTitle());
-            saveNearMessageBean1.setShengfen(poiItem.getProvinceName());
-            saveNearMessageBean1.setShiqu(poiItem.getCityName());
-            saveNearMessageBean1.setXian(poiItem.getAdName());
-            saveNearMessageBean1.setAddress(poiItem.getSnippet());
-            saveNearMessageBean1.setLocataion(poiItem.getLatLonPoint());
-            LocationMsglist.add(saveNearMessageBean1);
+            saveNearMessageBean = new SaveNearMessageBean();
+            saveNearMessageBean.setIsselect(false);
+            saveNearMessageBean.setTitle(poiItem.getTitle());
+            saveNearMessageBean.setShengfen(poiItem.getProvinceName());
+            saveNearMessageBean.setShiqu(poiItem.getCityName());
+            saveNearMessageBean.setXian(poiItem.getAdName());
+            saveNearMessageBean.setAddress(poiItem.getSnippet());
+            saveNearMessageBean.setLocataion(poiItem.getLatLonPoint());
+            locationMsglist.add(saveNearMessageBean);
         }
 
 
-        mapApapter.setData(LocationMsglist);
+        mapApapter.setData(locationMsglist);
 
         LinearLayoutManager manager = new LinearLayoutManager(MapActivity.this, RecyclerView.VERTICAL, false);
         rcNearplace.setLayoutManager(manager);
@@ -329,14 +328,15 @@ public class MapActivity extends Activity implements View.OnClickListener, Locat
         mapApapter.setOnItemListener(new MapApapter.OnItemListener() {
             @Override
             public void onClick(MapApapter.ViewHolder holder, int position) {
+                selectPostion = position;
                 mapApapter.setDefSelect(position);
-                if(LocationMsglist.get(position).isIsselect()) {
+                if(locationMsglist.get(position).isIsselect()) {
                     //选中状态点击之后改为未选中
-                    LocationMsglist.get(position).setIsselect(true);
+                    locationMsglist.get(position).setIsselect(true);
                     mapApapter.notifyDataSetChanged();
                 }else {
                     //未选中状态点击之后给为选中
-                    LocationMsglist.get(position).setIsselect(true);
+                    locationMsglist.get(position).setIsselect(true);
                     mapApapter.notifyDataSetChanged();
                 }
             }

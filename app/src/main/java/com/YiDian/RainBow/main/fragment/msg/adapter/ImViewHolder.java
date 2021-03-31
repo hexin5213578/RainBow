@@ -55,12 +55,11 @@ public class ImViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.tv_address)
     TextView tvAddress;
     @Nullable
-    @BindView(R.id.mapView)
-    MapView mapView;
-    @Nullable
     @BindView(R.id.rl_location)
     RelativeLayout rlLocation;
-
+    @Nullable
+    @BindView(R.id.tv_title)
+    TextView tvTitle;
     public static ImViewHolder createViewHolder(Context context,
                                               ViewGroup parent, int layoutId) {
         View itemView = LayoutInflater.from(context).inflate(layoutId, parent,

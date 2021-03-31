@@ -13,8 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.map.bean.SaveNearMessageBean;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.List;
 
 import butterknife.BindView;
@@ -75,16 +73,12 @@ public class MapApapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         }
 
-        ((ViewHolder) holder).tv.setText(saveNearMessageBean.getTitle());
-        ((ViewHolder) holder).tv1.setText(saveNearMessageBean.getShengfen() + saveNearMessageBean.getShiqu() + saveNearMessageBean.getXian() + saveNearMessageBean.getAddress());
+        ((ViewHolder)holder).tv.setText(saveNearMessageBean.getTitle());
+        ((ViewHolder)holder).tv1.setText(saveNearMessageBean.getShengfen() + saveNearMessageBean.getShiqu() + saveNearMessageBean.getXian() + saveNearMessageBean.getAddress());
 
-        ((ViewHolder) holder).ll.setOnClickListener(new View.OnClickListener() {
+        ((ViewHolder)holder).ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SaveNearMessageBean saveNearMessageBean = list.get(position);
-                EventBus.getDefault().post(saveNearMessageBean);
-
-
                 if (onItemListener != null) {
                     onItemListener.onClick(((ViewHolder)holder), position);
                 }

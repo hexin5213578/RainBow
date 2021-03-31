@@ -154,6 +154,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             //将聊天对象的id作为参数传入
                             Intent intent = new Intent(mContext, FriendImActivity.class);
                             intent.putExtra("userid",fansId);
+                            intent.putExtra("name",objectBean.getNickName());
                             mContext.startActivity(intent);
                         }
                     });

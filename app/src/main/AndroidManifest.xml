@@ -489,6 +489,11 @@
             android:screenOrientation="portrait" />
 
 
+        <!-- 位置详情 -->
+        <activity
+            android:name=".map.LocationMsgMapActivity"
+            android:screenOrientation="portrait" />
+
         <!-- 实名认证 -->
         <activity
             android:name=".setup.activity.RealnameActivity"

@@ -10,8 +10,6 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,10 +25,10 @@ import com.YiDian.RainBow.main.fragment.msg.bean.ImLocationBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.ImMsgBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.ImVideoBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.ImVocieBean;
+import com.YiDian.RainBow.map.LocationMsgMapActivity;
 import com.YiDian.RainBow.utils.StringUtil;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
-import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
@@ -52,8 +50,6 @@ import java.util.List;
 import butterknife.BindView;
 import cn.jpush.im.android.api.model.Message;
 
-import static com.amap.api.maps.AMapOptions.LOGO_POSITION_BOTTOM_LEFT;
-
 
 public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
 
@@ -61,7 +57,6 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
 
     private List<Message> list;
     private Context context;
-    private Bundle saveInstace;
     private File file;
     private String newChatTime;
     private Message message;
@@ -74,10 +69,9 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
     public static final String TAG = "IMAdapter";
     private Intent intent1;
 
-    public FriendImAdapter(Context context, Bundle saveInstace) {
+    public FriendImAdapter(Context context) {
 
         this.context = context;
-        this.saveInstace = saveInstace;
     }
 
     public void setData(List<Message> messages) {
@@ -136,6 +130,11 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
         if (viewType == 8) {
             //发出位置信息
             viewHolder = ImViewHolder.createViewHolder(context, parent, R.layout.item_im_right_location);
+            return viewHolder;
+        }
+        if (viewType==9){
+            //接收位置信息
+            viewHolder = ImViewHolder.createViewHolder(context,parent,R.layout.item_im_left_location);
             return viewHolder;
         }
 
@@ -319,34 +318,29 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                     }
                 });
             }
-            else if(message.getContentType().name().equals("location")){
+            else if (message.getContentType().name().equals("location")) {
                 message = list.get(position);
 
                 ImLocationBean imLocationBean = gson.fromJson(message.toJson(), ImLocationBean.class);
 
-                holder.tvAddress.setText(imLocationBean.getContent().getLabel()+"");
+                String label = imLocationBean.getContent().getLabel();
+                String[] split = label.split(",");
+
+                holder.tvTitle.setText(split[1]+"");
+                holder.tvAddress.setText(split[0] + "");
                 double latitude = imLocationBean.getContent().getLatitude();
                 double longitude = imLocationBean.getContent().getLongitude();
 
-
-                holder.mapView.onCreate(saveInstace);
-                AMap aMap = holder.mapView.getMap();
-                // 显示实时交通状况
-                aMap.setTrafficEnabled(true);
-                //地图模式可选类型：MAP_TYPE_NORMAL,MAP_TYPE_SATELLITE,MAP_TYPE_NIGHT
-                // 卫星地图模式
-                aMap.setMapType(AMap.MAP_TYPE_NORMAL);
-                aMap.getUiSettings().setZoomControlsEnabled(false);
-                aMap.getUiSettings().setAllGesturesEnabled(false);
-
-                LatLng latLng = new LatLng(latitude,longitude);
-                final Marker marker = aMap.addMarker(new MarkerOptions().position(latLng));
-
-                aMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(new LatLng(latitude,longitude), 14, 0, 0)));
                 holder.rlLocation.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         //跳转到查看位置页
+                        Intent intent = new Intent(context, LocationMsgMapActivity.class);
+                        intent.putExtra("address",label);
+                        intent.putExtra("lat",latitude);
+                        intent.putExtra("lon",longitude);
+
+                        context.startActivity(intent);
                     }
                 });
             }
@@ -403,7 +397,8 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                         });
                     }
                 });
-            } else if (message.getContentType().name().equals("text")) {
+            }
+            else if (message.getContentType().name().equals("text")) {
                 message = list.get(position);
                 ImMsgBean imMsgBean = gson.fromJson(message.toJson(), ImMsgBean.class);
 
@@ -419,7 +414,8 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                         return false;
                     }
                 });
-            } else if (message.getContentType().name().equals("image")) {
+            }
+            else if (message.getContentType().name().equals("image")) {
                 message = list.get(position);
                 ImImageBean imImageBean = gson.fromJson(message.toJson(), ImImageBean.class);
 
@@ -470,7 +466,8 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                     }
                 });
 
-            } else if (message.getContentType().name().equals("video")) {
+            }
+            else if (message.getContentType().name().equals("video")) {
                 message = list.get(position);
                 ImVideoBean imVideoBean = gson.fromJson(message.toJson(), ImVideoBean.class);
 
@@ -527,6 +524,32 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                     public void onClick(View v) {
                         intent = new Intent(context, SimplePlayerActivity.class);
                         intent.putExtra("url", imVideoBean.getContent().getThumb().getLocal_path());
+                    }
+                });
+            }
+            else if (message.getContentType().name().equals("location")){
+                message = list.get(position);
+
+                ImLocationBean imLocationBean = gson.fromJson(message.toJson(), ImLocationBean.class);
+
+                String label = imLocationBean.getContent().getLabel();
+                String[] split = label.split(",");
+
+                holder.tvTitle.setText(split[1]+"");
+                holder.tvAddress.setText(split[0] + "");
+                double latitude = imLocationBean.getContent().getLatitude();
+                double longitude = imLocationBean.getContent().getLongitude();
+
+                holder.rlLocation.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //跳转到查看位置页
+                        Intent intent = new Intent(context, LocationMsgMapActivity.class);
+                        intent.putExtra("address",label);
+                        intent.putExtra("lat",latitude);
+                        intent.putExtra("lon",longitude);
+
+                        context.startActivity(intent);
                     }
                 });
             }

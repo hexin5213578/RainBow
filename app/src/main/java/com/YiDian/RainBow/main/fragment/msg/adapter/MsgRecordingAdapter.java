@@ -94,7 +94,7 @@ public class MsgRecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     JMessageClient.enterGroupConversation(Long.parseLong(conversation.getTargetId()));
                     //发送到聊天详情页
                     Intent intent = new Intent(context, FriendImActivity.class);
-                    intent.putExtra("userid",conversation.getTargetId());
+                    intent.putExtra("userid",conversation.getTargetId()+"");
                     context.startActivity(intent);
                 }
             });
@@ -143,6 +143,8 @@ public class MsgRecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     //发送到聊天详情页
                     Intent intent = new Intent(context, FriendImActivity.class);
                     intent.putExtra("userid",conversation.getTargetId());
+                    intent.putExtra("name",conversation.getTitle()+"");
+
                     context.startActivity(intent);
                 }
             });

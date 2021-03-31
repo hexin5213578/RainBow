@@ -222,21 +222,13 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
     private int selectnum = -1;
     private TextView tv_balance;
-    private Animation anim;
     private CustomDialog dialog;
-    private Bundle saveInstade;
+
     @Override
     protected int getResId() {
         return R.layout.activity_im;
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-
-        this.saveInstade = savedInstanceState;
-
-    }
 
     /**
      * addLayoutListener方法如下
@@ -338,6 +330,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         //获取传递过来的用户信息
         Intent intent = getIntent();
         id = intent.getStringExtra("userid");
+        String name = intent.getStringExtra("name");
 
         //判断ID长度 为六位时为单聊
         if (id.length() == 6 || id.length() == 4) {
@@ -347,7 +340,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
             conversation = JMessageClient.getSingleConversation(id);
 
             //设置聊天对应用户的用户名
-            tvName.setText(conversation.getTitle());
+            tvName.setText(name);
         } else if (id.length() == 8) {
             Log.d("xxx", "传入聊天页群组的id为" + id);
 
@@ -362,7 +355,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         userName = Common.getUserName();
         userid = Integer.valueOf(Common.getUserId());
 
-        imAdapter = new FriendImAdapter(FriendImActivity.this,saveInstade);
+        imAdapter = new FriendImAdapter(FriendImActivity.this);
         //先获取聊天记录  获取为空展示聊天对方用户信息
         getListFromIm(page, size);
 
@@ -426,6 +419,9 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getLocationMsg(SaveNearMessageBean saveNearMessageBean){
+        Log.d("xxx","执行一次，发送给"+id);
+        Log.d("xxx","当前发送地址为"+saveNearMessageBean.getAddress());
+
         String address = saveNearMessageBean.getAddress();
         String shengfen = saveNearMessageBean.getShengfen();
         String shiqu = saveNearMessageBean.getShiqu();
@@ -434,8 +430,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         double latitude = locataion.getLatitude();
         double longitude = locataion.getLongitude();
 
-        sendLocation(latitude,longitude,3,shengfen+shiqu+xian+address);
-
+        sendLocation(id,latitude,longitude,3,shengfen+shiqu+xian+address+","+saveNearMessageBean.getTitle());
     }
     @Override
     public void onResume() {
@@ -444,7 +439,6 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
             EventBus.getDefault().register(this);
         }
         GSYVideoManager.onResume();
-
     }
 
     @Override
@@ -497,7 +491,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 linearLayoutManager.setStackFromEnd(true);
                 linearLayoutManager.scrollToPositionWithOffset(0, 0);
 
-                imAdapter = new FriendImAdapter(FriendImActivity.this,saveInstade);
+                imAdapter = new FriendImAdapter(FriendImActivity.this);
 
                 imAdapter.setData(allList);
                 //设置对方头像
@@ -526,7 +520,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 linearLayoutManager.setStackFromEnd(true);
                 linearLayoutManager.scrollToPositionWithOffset(0, 0);
 
-                imAdapter = new FriendImAdapter(FriendImActivity.this,saveInstade);
+                imAdapter = new FriendImAdapter(FriendImActivity.this);
 
                 imAdapter.setData(allList);
                 //设置对方头像
@@ -647,8 +641,8 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
      * @param scale 地图缩放比例
      * @param address 详细地址
      */
-    public void sendLocation(double lat,double lng,int scale,String address) {
-        Message message = JMessageClient.createSingleLocationMessage(id, Common.get_JG(), lat,lng,scale,address);
+    public void sendLocation(String senduserid,double lat,double lng,int scale,String address) {
+        Message message = JMessageClient.createSingleLocationMessage(senduserid, Common.get_JG(), lat,lng,scale,address);
 
         message.setOnSendCompleteCallback(new BasicCallback() {
             @Override
@@ -1081,52 +1075,61 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                                         //展示动画
                                         final SvgaUtils svgaUtils = new SvgaUtils(FriendImActivity.this, svagimg);
                                         svgaUtils.initAnimator();
-
                                         switch (selectnum) {
                                             case 0:
-
+                                                svgaUtils.startAnimator("guzhang");
                                                 break;
                                             case 1:
-
+                                                svgaUtils.startAnimator("liuliuliu");
                                                 break;
                                             case 2:
-
+                                                svgaUtils.startAnimator("aixin");
                                                 break;
                                             case 3:
+                                                svgaUtils.startAnimator("dangao");
 
                                                 break;
                                             case 4:
+                                                svgaUtils.startAnimator("pijiu");
 
                                                 break;
                                             case 5:
+                                                svgaUtils.startAnimator("jiayou");
 
                                                 break;
                                             case 6:
                                                 svgaUtils.startAnimator("jiaonang");
+
                                                 break;
                                             case 7:
+                                                svgaUtils.startAnimator("feiji");
 
                                                 break;
                                             case 8:
+                                                svgaUtils.startAnimator("jiangbei");
 
                                                 break;
                                             case 9:
+                                                svgaUtils.startAnimator("wen");
 
                                                 break;
                                             case 10:
+                                                svgaUtils.startAnimator("huojian");
 
                                                 break;
                                             case 11:
+                                                svgaUtils.startAnimator("paoche");
 
                                                 break;
                                             case 12:
+                                                svgaUtils.startAnimator("zhishengji");
 
                                                 break;
                                             case 13:
+                                                svgaUtils.startAnimator("motianlun");
 
                                                 break;
                                             default:
-
                                                 break;
                                         }
                                         //送出成功 发送图片
@@ -1141,6 +1144,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                                                     File file = saveFile(bitmap, imageName);
 
                                                     SendImgMessage(FriendImActivity.this, file);
+                                                    sendMessage(FriendImActivity.this,"送出了一个"+giftbean.getGiftName());
                                                 } catch (IOException e) {
                                                     e.printStackTrace();
                                                 }

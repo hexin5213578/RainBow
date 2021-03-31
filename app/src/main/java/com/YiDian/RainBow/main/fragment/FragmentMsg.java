@@ -242,6 +242,9 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
                 rlNodata.setVisibility(View.VISIBLE);
                 sv.setVisibility(View.GONE);
             }
+        }else{
+            rlNodata.setVisibility(View.VISIBLE);
+            sv.setVisibility(View.GONE);
         }
 
     }
