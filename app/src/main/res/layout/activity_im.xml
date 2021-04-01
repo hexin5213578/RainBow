@@ -225,7 +225,6 @@
             android:layout_width="match_parent"
             android:layout_below="@id/rl1"
             android:id="@+id/rl_menu"
-            android:visibility="gone"
             android:layout_height="@dimen/dp_60">
             <View
                 android:layout_width="match_parent"
@@ -265,6 +264,16 @@
                 android:layout_toRightOf="@id/iv_liwu"
                 android:layout_centerVertical="true"
                 android:id="@+id/iv_location"
+                android:scaleType="centerCrop"
+                android:layout_marginLeft="@dimen/dp_33"
+                android:layout_height="@dimen/dp_27">
+            </ImageView>
+            <ImageView
+                android:layout_width="@dimen/dp_33"
+                android:src="@mipmap/music"
+                android:layout_toRightOf="@id/iv_location"
+                android:layout_centerVertical="true"
+                android:id="@+id/iv_music"
                 android:scaleType="centerCrop"
                 android:layout_marginLeft="@dimen/dp_33"
                 android:layout_height="@dimen/dp_27">

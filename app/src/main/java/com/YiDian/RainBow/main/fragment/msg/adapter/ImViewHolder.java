@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.YiDian.RainBow.R;
+import com.YiDian.RainBow.custom.image.CustomRoundAngleImageView;
 import com.YiDian.RainBow.custom.videoplayer.SampleCoverVideo;
 import com.YiDian.RainBow.custom.videoplayer.SampleCoverVideoNoOpen;
 import com.amap.api.maps.MapView;
@@ -60,6 +61,27 @@ public class ImViewHolder extends RecyclerView.ViewHolder {
     @Nullable
     @BindView(R.id.tv_title)
     TextView tvTitle;
+    @Nullable
+    @BindView(R.id.iv_musicimg)
+    CustomRoundAngleImageView ivMusicimg;
+    @Nullable
+    @BindView(R.id.iv_isplay)
+    ImageView ivIsplay;
+    @Nullable
+    @BindView(R.id.rl_play)
+    RelativeLayout rlPlay;
+    @Nullable
+    @BindView(R.id.tv_musicname)
+    TextView tvMusicname;
+    @Nullable
+    @BindView(R.id.tv_author)
+    TextView tvAuthor;
+    @Nullable
+    @BindView(R.id.rl_music)
+    RelativeLayout rlMusic;
+    @Nullable
+    @BindView(R.id.rl_item)
+    RelativeLayout rlItem;
     public static ImViewHolder createViewHolder(Context context,
                                               ViewGroup parent, int layoutId) {
         View itemView = LayoutInflater.from(context).inflate(layoutId, parent,

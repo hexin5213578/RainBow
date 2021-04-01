@@ -488,10 +488,14 @@
             android:name=".map.MapActivity"
             android:screenOrientation="portrait" />
 
-
         <!-- 位置详情 -->
         <activity
             android:name=".map.LocationMsgMapActivity"
+            android:screenOrientation="portrait" />
+
+        <!-- 发送音乐 -->
+        <activity
+            android:name=".music.SendMusicActivity"
             android:screenOrientation="portrait" />
 
         <!-- 实名认证 -->

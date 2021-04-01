@@ -50,6 +50,8 @@ import com.YiDian.RainBow.main.fragment.mine.bean.UserInfoById;
 import com.YiDian.RainBow.main.fragment.msg.bean.GiftMsgBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.GlodNumBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.ReportActivityBean;
+import com.YiDian.RainBow.music.bean.GetMusicBean;
+import com.YiDian.RainBow.music.bean.MusicDetailsBean;
 import com.YiDian.RainBow.notice.bean.CleanNoticeBean;
 import com.YiDian.RainBow.notice.bean.ClickNoticeBean;
 import com.YiDian.RainBow.notice.bean.CommentNoticeBean;
@@ -70,6 +72,7 @@ import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 
 public interface Apis {
     //最新动态  
@@ -522,4 +525,11 @@ public interface Apis {
     @GET("user/selectAllUser")
     Observable<FindUserMsgBean> doGetFilterUserMsg(@Query("userId")int userid,@Query("userRole")String role);
 
+    //存入音乐
+    @GET("music/selectMusic")
+    Observable<GetMusicBean> doGetMusic(@Query("page")int page, @Query("pageSize")int size);
+
+    //查询音乐详情
+    @GET()
+    Observable<MusicDetailsBean> doGetMusicDetails(@Url String url,@Query("id")int id);
 }

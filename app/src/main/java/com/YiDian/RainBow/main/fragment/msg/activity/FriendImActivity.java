@@ -17,7 +17,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.PersistableBundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -29,7 +28,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -65,6 +63,8 @@ import com.YiDian.RainBow.main.fragment.msg.bean.GiftMsgBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.GlodNumBean;
 import com.YiDian.RainBow.map.MapActivity;
 import com.YiDian.RainBow.map.bean.SaveNearMessageBean;
+import com.YiDian.RainBow.music.SendMusicActivity;
+import com.YiDian.RainBow.music.bean.SaveSendMusicBean;
 import com.YiDian.RainBow.setup.bean.InsertRealBean;
 import com.YiDian.RainBow.user.bean.UserMsgBean;
 import com.YiDian.RainBow.utils.BitmapUtil;
@@ -103,6 +103,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.exceptions.JMFileSizeExceedException;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.options.MessageSendingOptions;
@@ -129,8 +130,6 @@ import io.reactivex.schedulers.Schedulers;
 //         \  \ `_.   \_ __\ /__ _/   .-` /  /
 //     =====`-.____`.___ \_____/___.-`___.-'=====
 //                       `=---='
-//
-//
 //     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
 //               佛祖保佑         永无BUG
@@ -195,6 +194,8 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     TextView tvQianming;
     @BindView(R.id.iv_location)
     ImageView ivLocation;
+    @BindView(R.id.iv_music)
+    ImageView ivMusic;
     private String userName;
     private ArrayList<Media> select;
     private ArrayList<Media> select1;
@@ -223,6 +224,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     private int selectnum = -1;
     private TextView tv_balance;
     private CustomDialog dialog;
+    private File file;
 
     @Override
     protected int getResId() {
@@ -278,6 +280,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         ivXiangce.setOnClickListener(this);
         ivLiwu.setOnClickListener(this);
         ivLocation.setOnClickListener(this);
+        ivMusic.setOnClickListener(this);
         etContent.setOnClickListener(this);
 
         select = new ArrayList<>();
@@ -412,15 +415,12 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     }
 
     /**
-     *
-     * @param saveNearMessageBean
-     * 获取需要发送的定位信息
-     *
+     * @param saveNearMessageBean 获取需要发送的定位信息
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getLocationMsg(SaveNearMessageBean saveNearMessageBean){
-        Log.d("xxx","执行一次，发送给"+id);
-        Log.d("xxx","当前发送地址为"+saveNearMessageBean.getAddress());
+    public void getLocationMsg(SaveNearMessageBean saveNearMessageBean) {
+        Log.d("xxx", "执行一次，发送给" + id);
+        Log.d("xxx", "当前发送地址为" + saveNearMessageBean.getAddress());
 
         String address = saveNearMessageBean.getAddress();
         String shengfen = saveNearMessageBean.getShengfen();
@@ -430,7 +430,35 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         double latitude = locataion.getLatitude();
         double longitude = locataion.getLongitude();
 
-        sendLocation(id,latitude,longitude,3,shengfen+shiqu+xian+address+","+saveNearMessageBean.getTitle());
+        sendLocation(id, latitude, longitude, 3, shengfen + shiqu + xian + address + "," + saveNearMessageBean.getTitle());
+    }
+
+    /**
+     * 获取需要发送的音乐信息
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getMusicMsg(SaveSendMusicBean bean) {
+        Log.d("xxx","需要发送的音乐传递到了聊天页");
+
+        String name = bean.getName();
+        String img = bean.getImg();
+        String author = bean.getAuthor();
+        String path = bean.getPath();
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Bitmap bitmap = returnBitMap(img);
+                    String imageName = System.currentTimeMillis() + ".png";
+                    file = saveFile(bitmap, imageName);
+                    sendMusic(id,file,name+"!!"+img+"!!"+author+"!!"+path);
+                } catch (IOException | JMFileSizeExceedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
     }
     @Override
     public void onResume() {
@@ -444,7 +472,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (!EventBus.getDefault().isRegistered(this)) {
+        if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
         //界面销毁 销毁播放音频
@@ -635,14 +663,13 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     }
 
     /**
-     *
-     * @param lat 维度
-     * @param lng 经度
-     * @param scale 地图缩放比例
+     * @param lat     维度
+     * @param lng     经度
+     * @param scale   地图缩放比例
      * @param address 详细地址
      */
-    public void sendLocation(String senduserid,double lat,double lng,int scale,String address) {
-        Message message = JMessageClient.createSingleLocationMessage(senduserid, Common.get_JG(), lat,lng,scale,address);
+    public void sendLocation(String senduserid, double lat, double lng, int scale, String address) {
+        Message message = JMessageClient.createSingleLocationMessage(senduserid, Common.get_JG(), lat, lng, scale, address);
 
         message.setOnSendCompleteCallback(new BasicCallback() {
             @Override
@@ -670,6 +697,44 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         options.setShowNotification(true);
         JMessageClient.sendMessage(message, options);
     }
+
+
+    /**
+     *
+     * @param senduserid
+     * @param file
+     * @param filename
+     */
+    public void sendMusic(String senduserid, File file,String filename) throws FileNotFoundException, JMFileSizeExceedException {
+        Message message = JMessageClient.createSingleFileMessage(senduserid, Common.get_JG(), file, filename);
+
+        message.setOnSendCompleteCallback(new BasicCallback() {
+            @Override
+            public void gotResult(int i, String s) {
+                Log.i("TAG", "register：code：" + i + "  msg：" + s);
+                if (i == 0) {
+                    Log.d("xxx", "音乐发送成功");
+
+                    allList.clear();
+                    page = 0;
+                    size = 50;
+                    getListFromIm(page, size);
+                } else {
+                    Log.d("xxx", "音乐发送失败");
+                }
+            }
+        });
+
+        MessageSendingOptions options = new MessageSendingOptions();
+
+        options.setNotificationTitle(userName);
+        options.setNotificationText("[文件信息]");
+        options.setCustomNotificationEnabled(true);
+        options.setRetainOffline(true);
+        options.setShowNotification(true);
+        JMessageClient.sendMessage(message, options);
+    }
+
     /**
      * @param context
      * @param RecoderFile
@@ -875,6 +940,10 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
             //发送位置
             case R.id.iv_location:
                 intent = new Intent(FriendImActivity.this, MapActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.iv_music:
+                intent = new Intent(FriendImActivity.this, SendMusicActivity.class);
                 startActivity(intent);
                 break;
             case R.id.iv_keyborad:
@@ -1144,7 +1213,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                                                     File file = saveFile(bitmap, imageName);
 
                                                     SendImgMessage(FriendImActivity.this, file);
-                                                    sendMessage(FriendImActivity.this,"送出了一个"+giftbean.getGiftName());
+                                                    sendMessage(FriendImActivity.this, "送出了一个" + giftbean.getGiftName());
                                                 } catch (IOException e) {
                                                     e.printStackTrace();
                                                 }

@@ -7,9 +7,11 @@ import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
-import android.os.Bundle;
+import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,22 +19,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.Common;
+import com.YiDian.RainBow.custom.image.CustomRoundAngleImageView;
 import com.YiDian.RainBow.main.fragment.activity.SimplePlayerActivity;
 import com.YiDian.RainBow.main.fragment.home.activity.NewDynamicImage;
 import com.YiDian.RainBow.main.fragment.msg.activity.ReportActivity;
 import com.YiDian.RainBow.main.fragment.msg.bean.ImImageBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.ImLocationBean;
+import com.YiDian.RainBow.main.fragment.msg.bean.ImMp3Bean;
 import com.YiDian.RainBow.main.fragment.msg.bean.ImMsgBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.ImVideoBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.ImVocieBean;
 import com.YiDian.RainBow.map.LocationMsgMapActivity;
 import com.YiDian.RainBow.utils.StringUtil;
-import com.amap.api.maps.AMap;
-import com.amap.api.maps.CameraUpdateFactory;
-import com.amap.api.maps.model.CameraPosition;
-import com.amap.api.maps.model.LatLng;
-import com.amap.api.maps.model.Marker;
-import com.amap.api.maps.model.MarkerOptions;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
@@ -132,9 +130,19 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
             viewHolder = ImViewHolder.createViewHolder(context, parent, R.layout.item_im_right_location);
             return viewHolder;
         }
-        if (viewType==9){
+        if (viewType == 9) {
             //接收位置信息
-            viewHolder = ImViewHolder.createViewHolder(context,parent,R.layout.item_im_left_location);
+            viewHolder = ImViewHolder.createViewHolder(context, parent, R.layout.item_im_left_location);
+            return viewHolder;
+        }
+        if (viewType == 10) {
+            //发出音乐
+            viewHolder = ImViewHolder.createViewHolder(context, parent, R.layout.item_im_right_music);
+            return viewHolder;
+        }
+        if (viewType == 11) {
+            //收到音乐
+            viewHolder = ImViewHolder.createViewHolder(context, parent, R.layout.item_im_left_music);
             return viewHolder;
         }
 
@@ -326,7 +334,7 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                 String label = imLocationBean.getContent().getLabel();
                 String[] split = label.split(",");
 
-                holder.tvTitle.setText(split[1]+"");
+                holder.tvTitle.setText(split[1] + "");
                 holder.tvAddress.setText(split[0] + "");
                 double latitude = imLocationBean.getContent().getLatitude();
                 double longitude = imLocationBean.getContent().getLongitude();
@@ -336,11 +344,38 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                     public void onClick(View v) {
                         //跳转到查看位置页
                         Intent intent = new Intent(context, LocationMsgMapActivity.class);
-                        intent.putExtra("address",label);
-                        intent.putExtra("lat",latitude);
-                        intent.putExtra("lon",longitude);
+                        intent.putExtra("address", label);
+                        intent.putExtra("lat", latitude);
+                        intent.putExtra("lon", longitude);
 
                         context.startActivity(intent);
+                    }
+                });
+            }
+            else if (message.getContentType().name().equals("file")){
+                message = list.get(position);
+
+                ImMp3Bean mp3Bean = gson.fromJson(message.toJson(), ImMp3Bean.class);
+
+                String fname = mp3Bean.getContent().getFname();
+                String[] split = fname.split("!!");
+                holder.tvMusicname.setText(split[0]);
+                holder.tvAuthor.setText(split[2]);
+                Glide.with(context).load(split[1]).into(holder.ivMusicimg);
+
+
+                holder.rlPlay.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                       /* Uri uri = Uri.parse(split[3]);
+
+                        MediaPlayer mediaPlayer = new MediaPlayer();
+                        try {
+                            mediaPlayer.setDataSource(context,uri);
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }*/
                     }
                 });
             }
@@ -527,7 +562,7 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                     }
                 });
             }
-            else if (message.getContentType().name().equals("location")){
+            else if (message.getContentType().name().equals("location")) {
                 message = list.get(position);
 
                 ImLocationBean imLocationBean = gson.fromJson(message.toJson(), ImLocationBean.class);
@@ -535,7 +570,7 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                 String label = imLocationBean.getContent().getLabel();
                 String[] split = label.split(",");
 
-                holder.tvTitle.setText(split[1]+"");
+                holder.tvTitle.setText(split[1] + "");
                 holder.tvAddress.setText(split[0] + "");
                 double latitude = imLocationBean.getContent().getLatitude();
                 double longitude = imLocationBean.getContent().getLongitude();
@@ -545,11 +580,37 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                     public void onClick(View v) {
                         //跳转到查看位置页
                         Intent intent = new Intent(context, LocationMsgMapActivity.class);
-                        intent.putExtra("address",label);
-                        intent.putExtra("lat",latitude);
-                        intent.putExtra("lon",longitude);
+                        intent.putExtra("address", label);
+                        intent.putExtra("lat", latitude);
+                        intent.putExtra("lon", longitude);
 
                         context.startActivity(intent);
+                    }
+                });
+            }
+            else if (message.getContentType().name().equals("file")){
+                message = list.get(position);
+
+                ImMp3Bean mp3Bean = gson.fromJson(message.toJson(), ImMp3Bean.class);
+
+                String fname = mp3Bean.getContent().getFname();
+                String[] split = fname.split("!!");
+                holder.tvMusicname.setText(split[0]);
+                holder.tvAuthor.setText(split[2]);
+                Glide.with(context).load(split[1]).into(holder.ivMusicimg);
+
+                holder.rlPlay.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                       /* Uri uri = Uri.parse(split[3]);
+
+                        MediaPlayer mediaPlayer = new MediaPlayer();
+                        try {
+                            mediaPlayer.setDataSource(context,uri);
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }*/
                     }
                 });
             }
@@ -576,6 +637,8 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                 return 3;
             } else if ((message.getContentType().name().equals("location"))) {
                 return 9;
+            } else if (message.getContentType().name().equals("file")) {
+                return 11;
             }
         } else {
             if (message.getContentType().name().equals("voice")) {
@@ -588,9 +651,11 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                 return 7;
             } else if (message.getContentType().name().equals("location")) {
                 return 8;
+            } else if (message.getContentType().name().equals("file")) {
+                return 10;
             }
         }
-        return 8;
+        return 12;
     }
 
     public static Bitmap getNetVideoBitmap(String videoUrl) {

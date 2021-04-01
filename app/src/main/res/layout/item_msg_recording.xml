@@ -30,7 +30,6 @@
         </TextView>
         <TextView
             android:layout_width="wrap_content"
-            android:text="创造机会的人是勇者"
             android:layout_below="@id/tv_username"
             android:id="@+id/tv_last_msg"
             android:textColor="#666666"

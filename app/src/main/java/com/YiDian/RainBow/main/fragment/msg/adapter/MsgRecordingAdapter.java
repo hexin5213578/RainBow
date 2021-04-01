@@ -167,6 +167,9 @@ public class MsgRecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }else if (conversation.getLatestType().name().equals("location")){
 
             ((ViewHolder) holder).tvLastMsg.setText("[位置消息]");
+        }else if (conversation.getLatestType().name().equals("file")){
+
+            ((ViewHolder) holder).tvLastMsg.setText("[文件消息]");
         }
 
         long lastMsgDate = conversation.getLastMsgDate();
@@ -180,6 +183,7 @@ public class MsgRecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         if (unReadMsgCnt == 0) {
             ((ViewHolder) holder).weiducount.setVisibility(View.GONE);
         } else {
+            ((ViewHolder) holder).weiducount.setVisibility(View.VISIBLE);
             ((ViewHolder) holder).weiducount.setText(unReadMsgCnt + "");
         }
 
