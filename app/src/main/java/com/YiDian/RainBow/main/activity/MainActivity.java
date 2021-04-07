@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -22,7 +23,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -47,6 +47,9 @@ import com.YiDian.RainBow.topic.SaveIntentMsgBean;
 import com.YiDian.RainBow.user.PersonHomeActivity;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.YiDian.RainBow.utils.SPUtil;
+import com.flyco.tablayout.CommonTabLayout;
+import com.flyco.tablayout.listener.CustomTabEntity;
+import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.leaf.library.StatusBarUtil;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 
@@ -62,6 +65,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.model.Conversation;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -72,24 +77,16 @@ import io.reactivex.schedulers.Schedulers;
  *
  * @author hmy
  */
-public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedChangeListener {
+public class MainActivity extends BaseAvtivity {
 
-    @BindView(R.id.rbHome)
-    RadioButton rbHome;
-    @BindView(R.id.rbFind)
-    RadioButton rbFind;
-    @BindView(R.id.rbMsg)
-    RadioButton rbMsg;
-    @BindView(R.id.rbMine)
-    RadioButton rbMine;
-    @BindView(R.id.rgMenu)
-    RadioGroup rgMenu;
-    RadioButton[] rbs = new RadioButton[4];
     @BindView(R.id.rl_main)
     RelativeLayout rlMain;
+    String TAG = "xxx";
+    @BindView(R.id.tl_commen)
+    CommonTabLayout tlCommen;
     @BindView(R.id.vp)
     ViewPager vp;
-    String TAG = "xxx";
+    RadioButton[] rbs = new RadioButton[4];
     /**
      * 创建Fragment实例
      */
@@ -98,9 +95,20 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
     private FragmentFind fragmentfind;
     private FragmentMsg fragmentMsg;
     private FragmentMine fragmentmine;
-    private List<Fragment> list;
     private int userid;
     private Intent intent;
+    int a = 0;
+    //tab选中图标集合
+    private ArrayList<Integer> selectedIconRes = new ArrayList<>();
+    //tab未选中图标集合
+    private ArrayList<Integer> unselectedIconRes = new ArrayList<>();
+    //tab标题集合
+    private ArrayList<String> titleRes = new ArrayList<>();
+    //fragment集合
+    private ArrayList<Fragment> fsRes = new ArrayList<>();
+    //CommonTabLayout 所需数据集合
+    private List<CustomTabEntity> data = new ArrayList<>();
+    private List<Fragment> list;
 
     @Override
     protected int getResId() {
@@ -143,48 +151,156 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
         } else {
             startService(intent);
         }
-        rbs[0] = rbHome;
-        //rbs[1] = rbIM;
-        rbs[1] = rbFind;
-        rbs[2] = rbMsg;
-        rbs[3] = rbMine;
 
-        for (RadioButton rb : rbs) {
-            //给每个RadioButton加入drawable限制边距控制显示大小
-            Drawable[] drawables = rb.getCompoundDrawables();
-            //获取drawables
-            Rect rt = new Rect(0, 0, 100, 70);
-            //定义一个Rect边界
-            drawables[1].setBounds(rt);
-
-            //添加限制给控件
-            rb.setCompoundDrawables(null, drawables[1], null, null);
-        }
-
-        list = new ArrayList<>();
-
-        rgMenu.setOnCheckedChangeListener(this);
         //创建fragment实例
         fragmentHome = new FragmentHome();
         //fragmentIM = new FragmentIM();
         fragmentfind = new FragmentFind();
         fragmentMsg = new FragmentMsg();
         fragmentmine = new FragmentMine();
-        /**
-         * 首次进入加载第一个界面
-         */
-        rbHome.setChecked(true);
+
+        //图片选中资源
+        selectedIconRes.add(R.drawable.homeselected);
+        selectedIconRes.add(R.drawable.orderselected);
+        selectedIconRes.add(R.drawable.msgselected);
+        selectedIconRes.add(R.drawable.meselected);
+
+        //图片未选中资源
+        unselectedIconRes.add(R.drawable.home);
+        unselectedIconRes.add(R.drawable.order);
+        unselectedIconRes.add(R.drawable.msg);
+        unselectedIconRes.add(R.drawable.me);
+
+        //标题资源
+        titleRes.add("动态");
+        titleRes.add("发现");
+        titleRes.add("消息");
+        titleRes.add("我的");
+
+        //fragment数据
+        fsRes.add(fragmentHome);
+        fsRes.add(fragmentfind);
+        fsRes.add(fragmentMsg);
+        fsRes.add(fragmentmine);
+
+        //设置数据
+        for (int i = 0; i < titleRes.size(); i++) {
+            final int index = i;
+            data.add(new CustomTabEntity() {
+                @Override
+                public String getTabTitle() {
+                    return titleRes.get(index);
+                }
+
+                @Override
+                public int getTabSelectedIcon() {
+                    return selectedIconRes.get(index);
+                }
+
+                @Override
+                public int getTabUnselectedIcon() {
+                    return unselectedIconRes.get(index);
+                }
+            });
+        }
+        //设置数据
+        tlCommen.setTabData((ArrayList<CustomTabEntity>) data);
+        vp.setAdapter(new MyPagerAdapter(getSupportFragmentManager(),fsRes));
+        initListener();
+
+        //设置默认第0个
         vp.setCurrentItem(0);
 
-        list.add(fragmentHome);
-        list.add(fragmentfind);
-        list.add(fragmentMsg);
-        list.add(fragmentmine);
-
-        MyAdapter myAdapter = new MyAdapter(getSupportFragmentManager());
-        vp.setAdapter(myAdapter);
+        //隐藏指定位置未读红点或消息
+        tlCommen.hideMsg(0);
+        tlCommen.hideMsg(1);
+        tlCommen.hideMsg(3);
 
         getCount();
+        //遍历当前未读消息
+        a = 0;
+        unReadMsg();
+    }
+
+    /**
+     * 获取未读消息
+     */
+    public void unReadMsg() {
+        List<Conversation> conversationList = JMessageClient.getConversationList();
+
+        for (int i =0;i<conversationList.size();i++){
+            int unReadMsgCnt = conversationList.get(i).getUnReadMsgCnt();
+
+            a+=unReadMsgCnt;
+
+        }
+        if (a==0){
+            //隐藏指定位置未读红点或消息
+            tlCommen.hideMsg(2);
+        }else{
+            tlCommen.showMsg(2, a);
+            tlCommen.setMsgMargin(2, -5, 5);
+        }
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getStr(String str){
+        if (str.equals("收到了信息")){
+            a = 0;
+            unReadMsg();
+        }
+    }
+    public void initListener() {
+        //TabLayout监听
+        tlCommen.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelect(int position) {
+                //显示相应的item界面
+                vp.setCurrentItem(position);
+            }
+
+            @Override
+            public void onTabReselect(int position) {
+
+            }
+        });
+        //ViewPager监听
+        vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                //设置相应选中图标和颜色
+                tlCommen.setCurrentTab(i);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
+    }
+
+    public class MyPagerAdapter extends FragmentPagerAdapter {
+
+        private ArrayList<Fragment> fs;
+
+        public MyPagerAdapter(FragmentManager fm, ArrayList<Fragment> fs) {
+            super(fm);
+            this.fs = fs;
+        }
+
+        @Override
+        public Fragment getItem(int i) {
+            return fs.get(i);
+        }
+
+        @Override
+        public int getCount() {
+            return fs.size();
+        }
     }
 
     public void getCount() {
@@ -327,36 +443,12 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
         }
     }
 
-    @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
-        switch (checkedId) {
-            case R.id.rbHome:
-                vp.setCurrentItem(0);
-                break;
-            /*case R.id.rbIM:
-                replace(fragmentIM);
-                break;*/
-            case R.id.rbFind:
-                vp.setCurrentItem(1);
-                break;
-            case R.id.rbMsg:
-                vp.setCurrentItem(2);
-                break;
-            case R.id.rbMine:
-                vp.setCurrentItem(3);
-                break;
-            default:
-                break;
-        }
-    }
-
-
     //跳转到匹配页
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getId(String str) {
         if (str.equals("跳转到匹配页")) {
-            vp.setCurrentItem(1);
-            rbFind.setChecked(true);
+            //设置默认第0个
+            vp.setCurrentItem(0);
         }
     }
 
@@ -367,24 +459,6 @@ public class MainActivity extends BaseAvtivity implements RadioGroup.OnCheckedCh
         ButterKnife.bind(this);
     }
 
-
-    public class MyAdapter extends FragmentPagerAdapter {
-        public MyAdapter(@NonNull FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public int getCount() {
-            return list.size();
-        }
-
-        @NonNull
-        @Override
-        public Fragment getItem(int position) {
-            return list.get(position);
-        }
-
-    }
 
     //定义一个变量，来标识是否退出
     private static int isExit = 0;

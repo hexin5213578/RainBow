@@ -99,7 +99,7 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_19"
 
-        android:layout_below="@id/tv_dynamic_text"
+        android:layout_below="@id/rc_image"
         android:paddingLeft="@dimen/dp_2"
         android:paddingRight="@dimen/dp_2"
         android:layout_marginLeft="@dimen/dp_15"
@@ -135,7 +135,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_30"
-        android:layout_below="@id/tv_dynamic_text"
+        android:layout_below="@id/rc_image"
         android:layout_marginLeft="@dimen/dp_150"
         android:layout_marginRight="@dimen/dp_15"
         android:id="@+id/ll"
@@ -146,7 +146,7 @@
             android:id="@+id/rl_dianzan"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_below="@id/tv_dynamic_text"
+            android:layout_below="@id/rc_image"
             android:layout_weight="1">
 
             <ImageView
@@ -171,7 +171,6 @@
             android:id="@+id/rl_pinglun"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_below="@id/tv_dynamic_text"
             android:layout_marginLeft="@dimen/dp_20"
             android:layout_weight="1">
 
@@ -197,7 +196,6 @@
             android:id="@+id/rl_zhuanfa"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_below="@id/tv_dynamic_text"
             android:layout_marginLeft="@dimen/dp_20"
             android:layout_weight="1">
 

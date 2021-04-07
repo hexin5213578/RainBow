@@ -72,6 +72,12 @@ public class FangkerecordActivity extends BaseAvtivity {
         userid = Integer.valueOf(Common.getUserId());
         allList = new ArrayList<>();
 
+        rcRecord.setItemAnimator(null);
+        rcRecord.setHasFixedSize(true);
+        rcRecord.setNestedScrollingEnabled(false);
+        rcRecord.setFocusableInTouchMode(false);
+        rcRecord.requestFocus();
+
         getMyFangke(page,size);
 
         ivBack.setOnClickListener(new View.OnClickListener() {

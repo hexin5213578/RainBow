@@ -1,7 +1,5 @@
 package com.YiDian.RainBow.map;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -9,10 +7,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,27 +23,22 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.amap.api.maps.AMap;
-import com.amap.api.maps.CameraUpdateFactory;
-import com.amap.api.maps.LocationSource;
-import com.amap.api.maps.MapView;
-import com.amap.api.maps.model.CameraPosition;
-import com.amap.api.maps.model.LatLng;
-import com.amap.api.maps.model.MyLocationStyle;
+import com.amap.api.maps2d.AMap;
+import com.amap.api.maps2d.CameraUpdateFactory;
+import com.amap.api.maps2d.LocationSource;
+import com.amap.api.maps2d.MapView;
+import com.amap.api.maps2d.model.CameraPosition;
+import com.amap.api.maps2d.model.LatLng;
+import com.amap.api.maps2d.model.MyLocationStyle;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
-import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
-import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.amap.api.services.geocoder.RegeocodeQuery;
-import com.amap.api.services.geocoder.RegeocodeResult;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.leaf.library.StatusBarUtil;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,23 +46,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MapActivity extends Activity implements View.OnClickListener, LocationSource, AMapLocationListener, GeocodeSearch.OnGeocodeSearchListener, PoiSearch.OnPoiSearchListener {
-
+public class MyMapActivity extends AppCompatActivity implements AMapLocationListener, PoiSearch.OnPoiSearchListener, LocationSource {
     AMap aMap;
-    OnLocationChangedListener mListener;
+    LocationSource.OnLocationChangedListener mListener;
     AMapLocationClient mlocationClient;
     AMapLocationClientOption mLocationOption;
     MyLocationStyle myLocationStyle;
-    @BindView(R.id.mapView)
-    MapView mapView;
-    @BindView(R.id.rc_nearplace)
-    RecyclerView rcNearplace;
-    @BindView(R.id.tv_back)
-    TextView tvBack;
-    @BindView(R.id.tv_send)
-    TextView tvSend;
     private GeocodeSearch geocoderSearch;
-    private String str = "";
     private MapApapter mapApapter;
     private PoiItem poiItem;
     private SaveNearMessageBean saveNearMessageBean;
@@ -77,20 +60,27 @@ public class MapActivity extends Activity implements View.OnClickListener, Locat
     int selectPostion = 0;
 
     private List<SaveNearMessageBean> locationMsglist;
+    private MapView mapView;
+    private RecyclerView rcNearplace;
+    private TextView tvBack;
+    private TextView tvSend;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_map);
+
+        mapView = findViewById(R.id.mapView);
+        rcNearplace = findViewById(R.id.rc_nearplace);
+        tvBack = findViewById(R.id.tv_back);
+        tvSend = findViewById(R.id.tv_send);
         //获取定位权限
         Request();
 
-        StatusBarUtil.setTransparentForWindow(MapActivity.this);
-        StatusBarUtil.setDarkMode(MapActivity.this);
+        StatusBarUtil.setTransparentForWindow(MyMapActivity.this);
+        StatusBarUtil.setDarkMode(MyMapActivity.this);
 
-        ButterKnife.bind(this);
 
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mapView.onCreate(savedInstanceState);
@@ -98,27 +88,16 @@ public class MapActivity extends Activity implements View.OnClickListener, Locat
         if (aMap == null) {
             aMap = mapView.getMap();
         }
+
         // 设置定位监听
         aMap.setLocationSource(this);
         // 设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位，默认是false
         aMap.setMyLocationEnabled(true);
         // 设置定位的类型为定位模式，有定位、跟随或地图根据面向方向旋转几种
-        aMap.setMyLocationType(AMap.LOCATION_TYPE_LOCATE);
 
-        //初始化定位蓝点样式类myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);//连续定位、且将视角移动到地图中心点，定位点依照设备方向旋转，并且会跟随设备移动。（1秒1次定位）如果不设置myLocationType，默认也会执行此种模式。
-        myLocationStyle = new MyLocationStyle();
-        //设置连续定位模式下的定位间隔，只在连续定位模式下生效，单次定位模式下不会生效。单位为毫秒。
-        myLocationStyle.interval(10000);
-
-        //设置定位蓝点的Style
-        aMap.setMyLocationStyle(myLocationStyle);
-        //aMap.getUiSettings().setMyLocationButtonEnabled(true);设置默认定位按钮是否显示，非必需设置。
-        // 设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
-        aMap.setMyLocationEnabled(true);
 
         mapApapter = new MapApapter();
-        mapApapter.setContext(MapActivity.this);
-
+        mapApapter.setContext(MyMapActivity.this);
         tvBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,7 +115,6 @@ public class MapActivity extends Activity implements View.OnClickListener, Locat
             }
         });
         geocoderSearch = new GeocodeSearch(this);
-        geocoderSearch.setOnGeocodeSearchListener(this);
         aMap.setOnMyLocationChangeListener(new AMap.OnMyLocationChangeListener() {
             @Override
             public void onMyLocationChange(Location location) {
@@ -156,13 +134,14 @@ public class MapActivity extends Activity implements View.OnClickListener, Locat
      */
     public void Request() {
         if (Build.VERSION.SDK_INT >= 23) {
-            int request = ContextCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION);
+            int request = ContextCompat.checkSelfPermission(MyMapActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION);
             //缺少权限，进行权限申请
             if (request != PackageManager.PERMISSION_GRANTED) {
 
-                ActivityCompat.requestPermissions(MapActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
+                ActivityCompat.requestPermissions(MyMapActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 100);
                 return;//
             } else {
+
             }
         } else {
 
@@ -189,53 +168,10 @@ public class MapActivity extends Activity implements View.OnClickListener, Locat
     }
 
     @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.back:
-                finish();
-                break;
-        }
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //在activity执行onSaveInstanceState时执行mMapView.onSaveInstanceState (outState)，保存地图当前的状态
         mapView.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void activate(OnLocationChangedListener listener) {
-        mListener = listener;
-        if (mlocationClient == null) {
-            //初始化定位
-            mlocationClient = new AMapLocationClient(this);
-            //初始化定位参数
-            mLocationOption = new AMapLocationClientOption();
-            //设置定位回调监听
-            mlocationClient.setLocationListener(this);
-            //设置为高精度定位模式
-            mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
-            //设置定位参数
-            mLocationOption.setInterval(50000);
-            mLocationOption.setOnceLocation(true);
-            mlocationClient.setLocationOption(mLocationOption);
-            // 此方法为每隔固定时间会发起一次定位请求，为了减少电量消耗或网络流量消耗，
-            // 注意设置合适的定位时间的间隔（最小间隔支持为2000ms），并且在合适时间调用stopLocation()方法来取消定位请求
-            // 在定位结束后，在合适的生命周期调用onDestroy()方法
-            // 在单次定位情况下，定位无论成功与否，都无需调用stopLocation()方法移除请求，定位sdk内部会移除
-            mlocationClient.startLocation();//启动定位
-        }
-    }
-
-    @Override
-    public void deactivate() {
-        mListener = null;
-        if (mlocationClient != null) {
-            mlocationClient.stopLocation();
-            mlocationClient.onDestroy();
-        }
-        mlocationClient = null;
     }
 
     @Override
@@ -269,22 +205,6 @@ public class MapActivity extends Activity implements View.OnClickListener, Locat
                 Log.e("AmapErr", errText);
             }
         }
-    }
-
-    //定位当前位置
-    @Override
-    public void onRegeocodeSearched(RegeocodeResult regeocodeResult, int i) {
-        RegeocodeAddress regeocodeAddress = regeocodeResult.getRegeocodeAddress();
-
-        String building = regeocodeAddress.getFormatAddress();
-        String substring = building.substring(9);
-        str = substring;
-
-    }
-
-    @Override
-    public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
-
     }
 
 
@@ -322,7 +242,7 @@ public class MapActivity extends Activity implements View.OnClickListener, Locat
 
         mapApapter.setData(locationMsglist);
 
-        LinearLayoutManager manager = new LinearLayoutManager(MapActivity.this, RecyclerView.VERTICAL, false);
+        LinearLayoutManager manager = new LinearLayoutManager(MyMapActivity.this, RecyclerView.VERTICAL, false);
         rcNearplace.setLayoutManager(manager);
         rcNearplace.setAdapter(mapApapter);
         mapApapter.setOnItemListener(new MapApapter.OnItemListener() {
@@ -344,8 +264,44 @@ public class MapActivity extends Activity implements View.OnClickListener, Locat
     }
 
     @Override
-    public void onPoiItemSearched(PoiItem poiItem, int i) {
+    public void onPoiItemSearched(com.amap.api.services.core.PoiItem poiItem, int i) {
 
     }
 
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
+    @Override
+    public void activate(OnLocationChangedListener onLocationChangedListener) {
+        mListener = onLocationChangedListener;
+        if (mlocationClient == null) {
+            //初始化定位
+            mlocationClient = new AMapLocationClient(this);
+            //初始化定位参数
+            mLocationOption = new AMapLocationClientOption();
+            //设置定位回调监听
+            mlocationClient.setLocationListener(this);
+            //设置为高精度定位模式
+            mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+            //设置定位参数
+            mlocationClient.setLocationOption(mLocationOption);
+            // 此方法为每隔固定时间会发起一次定位请求，为了减少电量消耗或网络流量消耗，
+            // 注意设置合适的定位时间的间隔（最小间隔支持为2000ms），并且在合适时间调用stopLocation()方法来取消定位请求
+            // 在定位结束后，在合适的生命周期调用onDestroy()方法
+            // 在单次定位情况下，定位无论成功与否，都无需调用stopLocation()方法移除请求，定位sdk内部会移除
+            mlocationClient.startLocation();//启动定位
+        }
+    }
+
+    @Override
+    public void deactivate() {
+        mListener = null;
+        if (mlocationClient != null) {
+            mlocationClient.stopLocation();
+            mlocationClient.onDestroy();
+        }
+        mlocationClient = null;
+    }
 }

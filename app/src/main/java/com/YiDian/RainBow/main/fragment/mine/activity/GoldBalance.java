@@ -42,7 +42,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-
+/**
+ * 金币余额
+ */
 public class GoldBalance extends BaseAvtivity implements View.OnClickListener {
 
     @BindView(R.id.tv_Recharge)
@@ -105,7 +107,11 @@ public class GoldBalance extends BaseAvtivity implements View.OnClickListener {
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
-
+        recyclerViewRecord.setItemAnimator(null);
+        recyclerViewRecord.setHasFixedSize(true);
+        recyclerViewRecord.setNestedScrollingEnabled(false);
+        recyclerViewRecord.setFocusableInTouchMode(false);
+        recyclerViewRecord.requestFocus();
         //Log.d(TAG, "getData: " + nowday);
         //进去先刷新数据
         refresh(page);
@@ -163,11 +169,11 @@ public class GoldBalance extends BaseAvtivity implements View.OnClickListener {
                         tvAbleuse.setText(goldUsable+"");
 
                         //总消费
-                        String totalconsume = consumeRecordBean.getObject().getSpendingGoldNum() + "";
+                        String totalconsume = consumeRecordBean.getObject().getSpendingGoldNum()+"";
                         //总收入
-                        String totalIncome = consumeRecordBean.getObject().getIncomeGoldNum() + "";
-                        tvConsumeIncome.setText("总消费：￥" + totalconsume);
-                        tvConsumeIncome2.setText("总收入：￥" + totalIncome);
+                        String totalIncome = consumeRecordBean.getObject().getIncomeGoldNum()+"";
+                        tvConsumeIncome.setText("总消费:￥"+totalconsume);
+                        tvConsumeIncome2.setText("总收入:￥"+totalIncome);
                         if (list!=null&&list.size()>0) {
                             sv.setVisibility(View.VISIBLE);
                             rlDefault.setVisibility(View.GONE);

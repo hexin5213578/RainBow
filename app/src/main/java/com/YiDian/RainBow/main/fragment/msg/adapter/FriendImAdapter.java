@@ -4,24 +4,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.base.Common;
-import com.YiDian.RainBow.custom.image.CustomRoundAngleImageView;
 import com.YiDian.RainBow.main.fragment.activity.SimplePlayerActivity;
 import com.YiDian.RainBow.main.fragment.home.activity.NewDynamicImage;
+import com.YiDian.RainBow.main.fragment.msg.activity.FriendImActivity;
 import com.YiDian.RainBow.main.fragment.msg.activity.ReportActivity;
 import com.YiDian.RainBow.main.fragment.msg.bean.ImImageBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.ImLocationBean;
@@ -29,7 +27,9 @@ import com.YiDian.RainBow.main.fragment.msg.bean.ImMp3Bean;
 import com.YiDian.RainBow.main.fragment.msg.bean.ImMsgBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.ImVideoBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.ImVocieBean;
-import com.YiDian.RainBow.map.LocationMsgMapActivity;
+import com.YiDian.RainBow.map.SendLocationActivity;
+import com.YiDian.RainBow.topic.SaveIntentMsgBean;
+import com.YiDian.RainBow.user.PersonHomeActivity;
 import com.YiDian.RainBow.utils.StringUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
@@ -45,16 +45,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
+import cn.jpush.im.android.api.callback.DownloadCompletionCallback;
+import cn.jpush.im.android.api.content.ImageContent;
+import cn.jpush.im.android.api.content.VideoContent;
 import cn.jpush.im.android.api.model.Message;
 
 
 public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
-
-
-
     private List<Message> list;
     private Context context;
+    private String contentId;
     private File file;
     private String newChatTime;
     private Message message;
@@ -67,9 +67,11 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
     public static final String TAG = "IMAdapter";
     private Intent intent1;
 
-    public FriendImAdapter(Context context) {
+
+    public FriendImAdapter(Context context, String id) {
 
         this.context = context;
+        this.contentId = id;
     }
 
     public void setData(List<Message> messages) {
@@ -181,8 +183,33 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
 
         if (message.getDirect().name().equals("receive")) {
             Glide.with(context).load(file).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(holder.ivHeadimg);
+
+            holder.ivHeadimg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, PersonHomeActivity.class);
+                    SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
+                    saveIntentMsgBean.setId(Integer.valueOf(contentId));
+                    //2标记传入姓名  1标记传入id
+                    saveIntentMsgBean.setFlag(1);
+                    intent.putExtra("msg", saveIntentMsgBean);
+                    context.startActivity(intent);
+                }
+            });
         } else {
             Glide.with(context).load(headImg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(holder.ivHeadimg);
+            holder.ivHeadimg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, PersonHomeActivity.class);
+                    SaveIntentMsgBean saveIntentMsgBean = new SaveIntentMsgBean();
+                    saveIntentMsgBean.setId(Integer.valueOf(Common.getUserId()));
+                    //2标记传入姓名  1标记传入id
+                    saveIntentMsgBean.setFlag(1);
+                    intent.putExtra("msg", saveIntentMsgBean);
+                    context.startActivity(intent);
+                }
+            });
         }
 
         gson = new Gson();
@@ -247,7 +274,11 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                 String local_path = imImageBean.getContent().getLocal_path();
                 String localThumbnailPath = imImageBean.getContent().getLocalThumbnailPath();
 
-                if (local_path != null) {
+
+                Glide.with(context).load(local_path).into(holder.ivImg);
+
+
+                /*if (local_path != null) {
                     if (local_path.contains(flag)) {
                         Glide.with(context).load(localThumbnailPath).into(holder.ivImg);
                     } else {
@@ -255,15 +286,17 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                     }
                 } else {
                     Glide.with(context).load(localThumbnailPath).into(holder.ivImg);
-                }
+                }*/
+
                 holder.ivImg.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         //先清空再添加
                         imgUrl.clear();
                         intent = new Intent(context, NewDynamicImage.class);
+                        imgUrl.add(local_path);
 
-                        if (local_path != null) {
+                        /*if (local_path != null) {
                             if (local_path.contains(flag)) {
                                 imgUrl.add(localThumbnailPath);
                             } else {
@@ -271,7 +304,7 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                             }
                         } else {
                             imgUrl.add(localThumbnailPath);
-                        }
+                        }*/
                         intent.putStringArrayListExtra("img", imgUrl);
                         context.startActivity(intent);
 
@@ -282,47 +315,26 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                 message = list.get(position);
                 ImVideoBean imVideoBean = gson.fromJson(message.toJson(), ImVideoBean.class);
 
-                String local_path = imVideoBean.getContent().getVideo().getLocal_path();
-
-                Bitmap netVideoBitmap = getNetVideoBitmap(local_path);
-                //设置封面
-                holder.videoPlayer.loadCoverImage(local_path, netVideoBitmap);
-                int duration = imVideoBean.getContent().getDuration();
-                if (duration < 10) {
-                    holder.videoPlayer.setDuration("00:0" + duration);
-                } else if (duration < 60) {
-                    holder.videoPlayer.setDuration("00:" + duration);
-                } else {
-                    int second = duration / 60;
-                    int minute = duration % 60;
-
-                    if (minute == 0) {
-                        holder.videoPlayer.setDuration(second + ":00");
-                    } else {
-                        holder.videoPlayer.setDuration(second + ":" + minute);
-                    }
-                }
-
-                holder.videoPlayer.setUpLazy(local_path, true, null, null, "");
-
-                //防止错位设置
-                holder.videoPlayer.setPlayTag(TAG);
-                holder.videoPlayer.setLockLand(true);
-                holder.videoPlayer.setPlayPosition(position);
-                //是否根据视频尺寸，自动选择竖屏全屏或者横屏全屏，这个标志为和 setLockLand 冲突，需要和 orientationUtils 使用
-                holder.videoPlayer.setAutoFullWithSize(false);
-                //音频焦点冲突时是否释放
-                holder.videoPlayer.setReleaseWhenLossAudio(false);
-                //全屏动画
-                holder.videoPlayer.setShowFullAnimation(true);
-                //小屏时不触摸滑动
-                holder.videoPlayer.setIsTouchWiget(false);
-
-                holder.videoPlayer.setOnClickListener(new View.OnClickListener() {
+                VideoContent videoContent = (VideoContent) message.getContent();
+                videoContent.downloadVideoFile(message, new DownloadCompletionCallback() {
                     @Override
-                    public void onClick(View v) {
-                        intent = new Intent(context, SimplePlayerActivity.class);
-                        intent.putExtra("url", imVideoBean.getContent().getThumb().getLocal_path());
+                    public void onComplete(int i, String s, File file) {
+                        //设置缩略图
+                        Bitmap netVideoBitmap = getNetVideoBitmap(file);
+                        Drawable drawable = new BitmapDrawable(netVideoBitmap);
+
+                        holder.videoView.setBackground(drawable);
+
+                        //跳转到大图播放
+                        holder.videoView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(context, SimplePlayerActivity.class);
+                                intent.putExtra("url", file.getAbsolutePath());
+                                context.startActivity(intent);
+                            }
+                        });
+
                     }
                 });
             }
@@ -343,7 +355,7 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                     @Override
                     public void onClick(View v) {
                         //跳转到查看位置页
-                        Intent intent = new Intent(context, LocationMsgMapActivity.class);
+                        Intent intent = new Intent(context, SendLocationActivity.class);
                         intent.putExtra("address", label);
                         intent.putExtra("lat", latitude);
                         intent.putExtra("lon", longitude);
@@ -454,10 +466,17 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                 message = list.get(position);
                 ImImageBean imImageBean = gson.fromJson(message.toJson(), ImImageBean.class);
 
-                String local_path = imImageBean.getContent().getLocal_path();
                 String localThumbnailPath = imImageBean.getContent().getLocalThumbnailPath();
 
-                if (local_path != null) {
+                ImageContent imageContent = (ImageContent) message.getContent();
+
+                imageContent.downloadThumbnailImage(message, new DownloadCompletionCallback() {
+                    @Override
+                    public void onComplete(int i, String s, File file) {
+                        Glide.with(context).load(file).into(holder.ivImg);
+                    }
+                });
+                /*if (local_path != null) {
                     if (local_path.contains(flag)) {
                         Glide.with(context).load(localThumbnailPath).into(holder.ivImg);
                     } else {
@@ -465,7 +484,7 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                     }
                 } else {
                     Glide.with(context).load(localThumbnailPath).into(holder.ivImg);
-                }
+                }*/
 
                 //图片的长按事件
                 holder.ivImg.setOnLongClickListener(new View.OnLongClickListener() {
@@ -486,7 +505,7 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                         imgUrl.clear();
                         intent = new Intent(context, NewDynamicImage.class);
 
-                        if (local_path != null) {
+                        /*if (local_path != null) {
                             if (local_path.contains(flag)) {
                                 imgUrl.add(localThumbnailPath);
                             } else {
@@ -494,7 +513,8 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                             }
                         } else {
                             imgUrl.add(localThumbnailPath);
-                        }
+                        }*/
+                        imgUrl.add(localThumbnailPath);
 
                         intent.putStringArrayListExtra("img", imgUrl);
                         context.startActivity(intent);
@@ -506,45 +526,31 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                 message = list.get(position);
                 ImVideoBean imVideoBean = gson.fromJson(message.toJson(), ImVideoBean.class);
 
-                String media_id = imVideoBean.getContent().getThumb().getLocal_path();
+                VideoContent videoContent = (VideoContent) message.getContent();
+                videoContent.downloadVideoFile(message, new DownloadCompletionCallback() {
+                    @Override
+                    public void onComplete(int i, String s, File file) {
+                        //设置缩略图
+                        Bitmap netVideoBitmap = getNetVideoBitmap(file);
+                        Drawable drawable = new BitmapDrawable(netVideoBitmap);
 
-                Bitmap netVideoBitmap = getNetVideoBitmap(media_id);
-                //设置封面
-                holder.videoPlayer.loadCoverImage(media_id, netVideoBitmap);
+                        holder.videoView.setBackground(drawable);
 
+                        //跳转到大图播放
+                        holder.videoView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(context, SimplePlayerActivity.class);
+                                intent.putExtra("url", file.getAbsolutePath());
+                                context.startActivity(intent);
+                            }
+                        });
 
-                int duration = imVideoBean.getContent().getDuration();
-                if (duration < 10) {
-                    holder.videoPlayer.setDuration("00:0" + duration);
-                } else if (duration < 60) {
-                    holder.videoPlayer.setDuration("00:" + duration);
-                } else {
-                    int second = duration / 60;
-                    int minute = duration % 60;
-
-                    if (minute == 0) {
-                        holder.videoPlayer.setDuration(second + ":00");
-                    } else {
-                        holder.videoPlayer.setDuration(second + ":" + minute);
                     }
-                }
-                holder.videoPlayer.setUpLazy(media_id, true, null, null, "");
-
-                //防止错位设置
-                holder.videoPlayer.setPlayTag(TAG);
-                holder.videoPlayer.setLockLand(true);
-                holder.videoPlayer.setPlayPosition(position);
-                //是否根据视频尺寸，自动选择竖屏全屏或者横屏全屏，这个标志为和 setLockLand 冲突，需要和 orientationUtils 使用
-                holder.videoPlayer.setAutoFullWithSize(false);
-                //音频焦点冲突时是否释放
-                holder.videoPlayer.setReleaseWhenLossAudio(false);
-                //全屏动画
-                holder.videoPlayer.setShowFullAnimation(true);
-                //小屏时不触摸滑动
-                holder.videoPlayer.setIsTouchWiget(false);
+                });
 
                 //视频的长按事件
-                holder.videoPlayer.setOnLongClickListener(new View.OnLongClickListener() {
+                holder.videoView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
                         intent1 = new Intent(context, ReportActivity.class);
@@ -554,13 +560,6 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                     }
                 });
 
-                holder.videoPlayer.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        intent = new Intent(context, SimplePlayerActivity.class);
-                        intent.putExtra("url", imVideoBean.getContent().getThumb().getLocal_path());
-                    }
-                });
             }
             else if (message.getContentType().name().equals("location")) {
                 message = list.get(position);
@@ -572,6 +571,7 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
 
                 holder.tvTitle.setText(split[1] + "");
                 holder.tvAddress.setText(split[0] + "");
+
                 double latitude = imLocationBean.getContent().getLatitude();
                 double longitude = imLocationBean.getContent().getLongitude();
 
@@ -579,7 +579,7 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
                     @Override
                     public void onClick(View v) {
                         //跳转到查看位置页
-                        Intent intent = new Intent(context, LocationMsgMapActivity.class);
+                        Intent intent = new Intent(context, SendLocationActivity.class);
                         intent.putExtra("address", label);
                         intent.putExtra("lat", latitude);
                         intent.putExtra("lon", longitude);
@@ -658,12 +658,12 @@ public class FriendImAdapter extends RecyclerView.Adapter<ImViewHolder> {
         return 12;
     }
 
-    public static Bitmap getNetVideoBitmap(String videoUrl) {
+    public static Bitmap getNetVideoBitmap(File videoUrl) {
         Bitmap bitmap = null;
 
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         try {
-            FileInputStream inputStream = new FileInputStream(new File(videoUrl).getAbsolutePath());
+            FileInputStream inputStream = new FileInputStream(videoUrl.getAbsolutePath());
             retriever.setDataSource(inputStream.getFD());
             //获得第一帧图片
             bitmap = retriever.getFrameAtTime();

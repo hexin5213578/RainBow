@@ -1,10 +1,8 @@
 package com.YiDian.RainBow.map;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.PersistableBundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,23 +12,22 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.YiDian.RainBow.R;
-import com.YiDian.RainBow.base.BaseAvtivity;
-import com.YiDian.RainBow.base.BasePresenter;
-import com.amap.api.maps.AMap;
-import com.amap.api.maps.AMapUtils;
-import com.amap.api.maps.CameraUpdateFactory;
-import com.amap.api.maps.MapView;
-import com.amap.api.maps.model.CameraPosition;
-import com.amap.api.maps.model.LatLng;
-import com.amap.api.maps.model.Marker;
-import com.amap.api.maps.model.MarkerOptions;
-import com.amap.api.maps.model.NaviPara;
+import com.amap.api.maps2d.AMap;
+import com.amap.api.maps2d.AMapException;
+import com.amap.api.maps2d.AMapUtils;
+import com.amap.api.maps2d.CameraUpdateFactory;
+import com.amap.api.maps2d.MapView;
+import com.amap.api.maps2d.model.CameraPosition;
+import com.amap.api.maps2d.model.LatLng;
+import com.amap.api.maps2d.model.Marker;
+import com.amap.api.maps2d.model.MarkerOptions;
+import com.amap.api.maps2d.model.NaviPara;
 import com.leaf.library.StatusBarUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class LocationMsgMapActivity extends AppCompatActivity {
+public class SendLocationActivity extends AppCompatActivity {
     @BindView(R.id.mapView)
     MapView mapView;
     @BindView(R.id.ll_back)
@@ -51,8 +48,8 @@ public class LocationMsgMapActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        StatusBarUtil.setTransparentForWindow(LocationMsgMapActivity.this);
-        StatusBarUtil.setDarkMode(LocationMsgMapActivity.this);
+        StatusBarUtil.setTransparentForWindow(SendLocationActivity.this);
+        StatusBarUtil.setDarkMode(SendLocationActivity.this);
 
         mapView.onCreate(savedInstanceState);
 
@@ -116,19 +113,18 @@ public class LocationMsgMapActivity extends AppCompatActivity {
 
                 // 调起高德地图导航
                 try {
-                    AMapUtils.openAMapNavi(naviPara, LocationMsgMapActivity.this);
-                } catch (com.amap.api.maps.AMapException e) {
-                    Toast.makeText(LocationMsgMapActivity.this, "检测到没有安装高德地图，即将跳转到下载页面", Toast.LENGTH_SHORT).show();
-
+                    AMapUtils.openAMapNavi(naviPara, SendLocationActivity.this);
+                } catch (AMapException e) {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             // 如果没安装会进入异常，调起下载页面
-                            AMapUtils.getLatestAMapApp(LocationMsgMapActivity.this);
+                            AMapUtils.getLatestAMapApp(SendLocationActivity.this);
                         }
                     },2000);
-
+                    e.printStackTrace();
                 }
+
             }
         });
     }

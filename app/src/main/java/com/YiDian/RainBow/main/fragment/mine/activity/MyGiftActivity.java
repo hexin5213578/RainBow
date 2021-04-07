@@ -65,6 +65,7 @@ public class MyGiftActivity extends BaseAvtivity implements RadioGroup.OnChecked
         //创建集合存入fragment
         list = new ArrayList<>();
 
+
         userid = Integer.parseInt(Common.getUserId());
 
         String sendcount = SPUtil.getInstance().getData(MyGiftActivity.this, SPUtil.FILE_NAME, SPUtil.SENG_COUNT);
@@ -83,7 +84,6 @@ public class MyGiftActivity extends BaseAvtivity implements RadioGroup.OnChecked
 
         rbs[0] = rbSend;
         rbs[1] = rbRevice;
-
 
         rgTab.setOnCheckedChangeListener(this);
 

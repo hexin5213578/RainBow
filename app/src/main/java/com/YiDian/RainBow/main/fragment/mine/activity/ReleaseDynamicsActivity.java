@@ -81,7 +81,11 @@ public class ReleaseDynamicsActivity extends BaseAvtivity {
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
-
+        rcMydraftDevelopment.setItemAnimator(null);
+        rcMydraftDevelopment.setHasFixedSize(true);
+        rcMydraftDevelopment.setNestedScrollingEnabled(false);
+        rcMydraftDevelopment.setFocusableInTouchMode(false);
+        rcMydraftDevelopment.requestFocus();
 
         dialog = new CustomDialog(this, "正在加载...");
 

@@ -484,13 +484,13 @@
             android:screenOrientation="portrait" />
 
         <!-- 发送位置 -->
-        <activity
-            android:name=".map.MapActivity"
-            android:screenOrientation="portrait" />
+        <activity android:name=".map.MyMapActivity"
+            android:screenOrientation="portrait">
+        </activity>
 
         <!-- 位置详情 -->
         <activity
-            android:name=".map.LocationMsgMapActivity"
+            android:name=".map.SendLocationActivity"
             android:screenOrientation="portrait" />
 
         <!-- 发送音乐 -->

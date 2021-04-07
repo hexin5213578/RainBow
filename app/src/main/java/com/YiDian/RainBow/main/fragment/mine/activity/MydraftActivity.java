@@ -84,7 +84,11 @@ public class MydraftActivity extends BaseAvtivity implements View.OnClickListene
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
-
+        rcMydraftDevelopment.setItemAnimator(null);
+        rcMydraftDevelopment.setHasFixedSize(true);
+        rcMydraftDevelopment.setNestedScrollingEnabled(false);
+        rcMydraftDevelopment.setFocusableInTouchMode(false);
+        rcMydraftDevelopment.requestFocus();
         for (int i = 1; i < 6; i++) {
             String json = SPUtil.getInstance().getData(MydraftActivity.this, SPUtil.JSOn_drafts, "json" + i);
             SelectAllDraftsBean.ObjectBean.ListBean listBean = gson.fromJson(json, SelectAllDraftsBean.ObjectBean.ListBean.class);

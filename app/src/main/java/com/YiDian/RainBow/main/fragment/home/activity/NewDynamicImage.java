@@ -77,23 +77,36 @@ public class NewDynamicImage extends FragmentActivity {
             for (int i =0;i<urls.size();i++){
                 url.add(urls.get(i).substring(0,urls.get(i).lastIndexOf("?")));
             }
-            vp.overlayStatusBar(false) // ImageViewer 是否会占据 StatusBar 的空间
-                    .imageData(url) // 图片数据
-                    .imageLoader(new PhotoLoader()) // 设置图片加载方式
-                    .playEnterAnim(true) // 是否开启进场动画，默认为true
-                    .playExitAnim(false) // 是否开启退场动画，默认为true
+            // ImageViewer 是否会占据 StatusBar 的空间
+            vp.overlayStatusBar(false)
+                    // 图片数据
+                    .imageData(url)
+                    // 设置图片加载方式
+                    .imageLoader(new PhotoLoader())
+                    // 是否开启进场动画，默认为true
+                    .playEnterAnim(true)
+                    // 是否开启退场动画，默认为true
+                    .playExitAnim(false)
                     .draggable(false)
-                    .showIndex(true) // 是否显示图片索引，默认为true
-                    .watch(index); // 开启浏览
+                    // 是否显示图片索引，默认为true
+                    .showIndex(true)
+                    // 开启浏览
+                    .watch(index);
         }else{
-            vp.overlayStatusBar(false) // ImageViewer 是否会占据 StatusBar 的空间
-                    .imageData(urls) // 图片数据
-                    .imageLoader(new PhotoLoader()) // 设置图片加载方式
-                    .playEnterAnim(true) // 是否开启进场动画，默认为true
-                    .playExitAnim(false) // 是否开启退场动画，默认为true
+            // ImageViewer 是否会占据 StatusBar 的空间
+            vp.overlayStatusBar(false)
+                    // 图片数据
+                    .imageData(urls)
+                    // 设置图片加载方式
+                    .imageLoader(new PhotoLoader())
+                    // 是否开启进场动画，默认为true
+                    .playEnterAnim(true)
+                    // 是否开启退场动画，默认为true
+                    .playExitAnim(false)
                     .draggable(false)
                     .showIndex(true)
-                    .watch(index); // 是否显示图片索引，默认为true
+                    // 是否显示图片索引，默认为true
+                    .watch(index);
         }
 
         vp.setOnItemClickListener(new OnItemClickListener() {
@@ -101,13 +114,6 @@ public class NewDynamicImage extends FragmentActivity {
             public boolean onItemClick(int position, ImageView imageView) {
                 finish();
 
-/*              Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                    }
-                }, 200);//2秒后执行Runnable中的run方法*/
                 return false;
             }
         });

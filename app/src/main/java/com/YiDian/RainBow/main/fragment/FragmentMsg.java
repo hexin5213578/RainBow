@@ -191,6 +191,8 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
                     //删除单个聊天对象
                     JMessageClient.deleteSingleConversation(targetId,Common.get_JG());
                     conversationList.remove(adapterPosition);
+
+                    EventBus.getDefault().post("收到了信息");
                 }
                 getImList();
             }

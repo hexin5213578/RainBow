@@ -158,22 +158,22 @@
             android:id="@+id/tv_consume_income"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="总消费：￥234"
+            android:text="总消费:￥234"
             android:textSize="@dimen/sp_12"
             android:layout_toRightOf="@+id/tv_time_period"
             android:layout_centerVertical="true"
             android:textColor="#999999"
-            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_12"
             />
         <TextView
             android:id="@+id/tv_consume_income2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="总充值：￥1234"
+            android:text="总充值:￥1234"
             android:textSize="@dimen/sp_12"
             android:layout_toRightOf="@+id/tv_consume_income"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_12"
             android:textColor="#999999"
             />
         <RelativeLayout
@@ -227,11 +227,11 @@
         android:layout_height="match_parent">
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
+            android:overScrollMode="never"
             android:layout_height="match_parent">
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_record"
                 android:layout_below="@+id/l1"
-                android:overScrollMode="never"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </androidx.recyclerview.widget.RecyclerView>

@@ -61,7 +61,7 @@ import com.YiDian.RainBow.main.fragment.msg.adapter.GridViewAdapter;
 import com.YiDian.RainBow.main.fragment.msg.adapter.ViewPagerAdapter;
 import com.YiDian.RainBow.main.fragment.msg.bean.GiftMsgBean;
 import com.YiDian.RainBow.main.fragment.msg.bean.GlodNumBean;
-import com.YiDian.RainBow.map.MapActivity;
+import com.YiDian.RainBow.map.MyMapActivity;
 import com.YiDian.RainBow.map.bean.SaveNearMessageBean;
 import com.YiDian.RainBow.music.SendMusicActivity;
 import com.YiDian.RainBow.music.bean.SaveSendMusicBean;
@@ -69,6 +69,7 @@ import com.YiDian.RainBow.setup.bean.InsertRealBean;
 import com.YiDian.RainBow.user.bean.UserMsgBean;
 import com.YiDian.RainBow.utils.BitmapUtil;
 import com.YiDian.RainBow.utils.KeyBoardUtils;
+import com.YiDian.RainBow.utils.MD5Utils;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.amap.api.services.core.LatLonPoint;
 import com.bumptech.glide.Glide;
@@ -81,11 +82,16 @@ import com.leaf.library.StatusBarUtil;
 import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.widget.SpringView;
 import com.opensource.svgaplayer.SVGAImageView;
+import com.qiniu.android.http.ResponseInfo;
+import com.qiniu.android.storage.UpCompletionHandler;
+import com.qiniu.android.storage.UploadManager;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -96,14 +102,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.IDN;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.exceptions.JMFileSizeExceedException;
+import cn.jpush.im.android.api.exceptions.JMessageException;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.options.MessageSendingOptions;
@@ -220,11 +230,15 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     private GridViewAdapter[] arr;
     /*当前显示的是第几页*/
     private int curIndex = 0;
-
+    private static final String serverPath = "http://img.rianbow.cn/";
     private int selectnum = -1;
     private TextView tv_balance;
     private CustomDialog dialog;
     private File file;
+    private CustomDialog customDialog;
+    private String token;
+    private UploadManager uploadManager;
+    private String img;
 
     @Override
     protected int getResId() {
@@ -287,6 +301,10 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         select1 = new ArrayList<>();
 
         dialog = new CustomDialog(this, "正在加载...");
+        customDialog = new CustomDialog(this, "正在发送...");
+
+        token = Common.getToken();
+
         Request();
 
         mediaPlayer1 = new MediaPlayer();
@@ -323,6 +341,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
 
                 Log.d("xxx", "拿到语音文件的长度为" + duration);
 
+                customDialog.show();
                 sendYuyinMessage(FriendImActivity.this, file, duration);
 
             }
@@ -358,7 +377,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         userName = Common.getUserName();
         userid = Integer.valueOf(Common.getUserId());
 
-        imAdapter = new FriendImAdapter(FriendImActivity.this);
+        imAdapter = new FriendImAdapter(FriendImActivity.this,id);
         //先获取聊天记录  获取为空展示聊天对方用户信息
         getListFromIm(page, size);
 
@@ -452,6 +471,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                     Bitmap bitmap = returnBitMap(img);
                     String imageName = System.currentTimeMillis() + ".png";
                     file = saveFile(bitmap, imageName);
+                    customDialog.show();
                     sendMusic(id,file,name+"!!"+img+"!!"+author+"!!"+path);
                 } catch (IOException | JMFileSizeExceedException e) {
                     e.printStackTrace();
@@ -519,7 +539,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 linearLayoutManager.setStackFromEnd(true);
                 linearLayoutManager.scrollToPositionWithOffset(0, 0);
 
-                imAdapter = new FriendImAdapter(FriendImActivity.this);
+                imAdapter = new FriendImAdapter(FriendImActivity.this,id);
 
                 imAdapter.setData(allList);
                 //设置对方头像
@@ -548,7 +568,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 linearLayoutManager.setStackFromEnd(true);
                 linearLayoutManager.scrollToPositionWithOffset(0, 0);
 
-                imAdapter = new FriendImAdapter(FriendImActivity.this);
+                imAdapter = new FriendImAdapter(FriendImActivity.this,id);
 
                 imAdapter.setData(allList);
                 //设置对方头像
@@ -677,7 +697,6 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 Log.i("TAG", "register：code：" + i + "  msg：" + s);
                 if (i == 0) {
                     Log.d("xxx", "位置发送成功");
-
                     allList.clear();
                     page = 0;
                     size = 50;
@@ -714,13 +733,14 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 Log.i("TAG", "register：code：" + i + "  msg：" + s);
                 if (i == 0) {
                     Log.d("xxx", "音乐发送成功");
-
+                    customDialog.show();
                     allList.clear();
                     page = 0;
                     size = 50;
                     getListFromIm(page, size);
                 } else {
                     Log.d("xxx", "音乐发送失败");
+                    customDialog.dismiss();
                 }
             }
         });
@@ -750,13 +770,14 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                     Log.i("TAG", "register：code：" + i + "  msg：" + s);
                     if (i == 0) {
                         Log.d("xxx", "语音发送成功");
-
+                        customDialog.dismiss();
                         allList.clear();
                         page = 0;
                         size = 50;
                         getListFromIm(page, size);
                     } else {
                         Log.d("xxx", "语音发送失败");
+                        customDialog.dismiss();
 
                     }
                 }
@@ -790,13 +811,14 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                     Log.i("TAG", "register：code：" + i + "  msg：" + s);
                     if (i == 0) {
                         Log.d("xxx", "图片发送成功");
-
+                        customDialog.dismiss();
                         allList.clear();
                         page = 0;
                         size = 50;
                         getListFromIm(page, size);
                     } else {
                         Log.d("xxx", "图片发送失败");
+                        customDialog.dismiss();
 
                     }
                 }
@@ -815,15 +837,16 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
     }
 
     /**
+     *
      * @param context
-     * @param VideoFile   视频文件
-     * @param thumbImage  视频缩略图
-     * @param thumbFormat 缩略图格式
-     * @param duration    时长
+     * @param VideoFile
+     * @param thumbImage
+     * @param thumbFormat
+     * @param duration
      */
     public void SendVideoMessage(Context context, File VideoFile, Bitmap thumbImage, String thumbFormat, int duration) {
         try {
-            Message message = JMessageClient.createSingleVideoMessage(id, Common.get_JG(), thumbImage, thumbFormat, VideoFile, "", duration);
+            Message message = JMessageClient.createSingleVideoMessage(id, Common.get_JG(), thumbImage, thumbFormat, VideoFile, "",duration);
 
             message.setOnSendCompleteCallback(new BasicCallback() {
                 @Override
@@ -831,14 +854,14 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                     Log.i("TAG", "register：code：" + i + "  msg：" + s);
                     if (i == 0) {
                         Log.d("xxx", "视频发送成功");
-
+                        customDialog.dismiss();
                         allList.clear();
                         page = 0;
                         size = 50;
                         getListFromIm(page, size);
                     } else {
                         Log.d("xxx", "视频发送失败");
-
+                        customDialog.dismiss();
                     }
                 }
             });
@@ -939,7 +962,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 break;
             //发送位置
             case R.id.iv_location:
-                intent = new Intent(FriendImActivity.this, MapActivity.class);
+                intent = new Intent(FriendImActivity.this, MyMapActivity.class);
                 startActivity(intent);
                 break;
             case R.id.iv_music:
@@ -1468,7 +1491,9 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                     MediaMetadataRetriever retriever = new MediaMetadataRetriever();
                     retriever.setDataSource(path);
                     String time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-                    Log.d("xxx", "视频时长为" + Integer.parseInt(time) / 1000);
+
+                    customDialog.show();
+
                     //发送一条视频文件
                     SendVideoMessage(FriendImActivity.this, file, netVideoBitmap, "mp4", Integer.parseInt(time) / 1000);
                 }
@@ -1478,6 +1503,7 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
                 if (data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT).size() > 0) {
                     select = data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT);
 
+                    customDialog.show();
                     if (select.size() > 1) {
                         for (int i = 0; i < select.size(); i++) {
                             //发送多张图片

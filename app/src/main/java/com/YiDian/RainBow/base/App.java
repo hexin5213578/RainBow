@@ -10,6 +10,7 @@ import android.text.TextUtils;
 
 import androidx.multidex.MultiDex;
 
+import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.utils.GlobalEventListener;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;

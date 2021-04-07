@@ -90,8 +90,11 @@ public class FragmentHotDynamic extends BaseFragment {
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
-        rcNewDynamic.setHasFixedSize(true);
         rcNewDynamic.setItemAnimator(null);
+        rcNewDynamic.setHasFixedSize(true);
+        rcNewDynamic.setNestedScrollingEnabled(false);
+        rcNewDynamic.setFocusableInTouchMode(false);
+        rcNewDynamic.requestFocus();
 
         //进入界面获取数据
         getDynamic(page,size);

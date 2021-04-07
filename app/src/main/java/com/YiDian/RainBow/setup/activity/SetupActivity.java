@@ -29,11 +29,15 @@ import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.customDialog.CustomDialogCleanNotice;
 import com.YiDian.RainBow.login.activity.LoginActivity;
+import com.YiDian.RainBow.main.fragment.msg.activity.FriendImActivity;
 import com.YiDian.RainBow.setup.bean.GetRealDataBean;
 import com.YiDian.RainBow.utils.DataCleanManager;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.YiDian.RainBow.utils.SPUtil;
+import com.YiDian.RainBow.utils.Utils;
 import com.leaf.library.StatusBarUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -71,10 +75,14 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
     RelativeLayout rlUpdate;
     @BindView(R.id.rl_loginout)
     RelativeLayout rlLoginout;
+    @BindView(R.id.rl_kefu)
+    RelativeLayout rlKefu;
+    @BindView(R.id.v7)
+    View v7;
     private PopupWindow mPopupWindow;
     private Intent intent;
     private int userid;
-    private PopupWindow popupWindow1;
+    private CustomDialogCleanNotice.Builder builder;
 
     @Override
     protected int getResId() {
@@ -95,9 +103,16 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
         rlClean.setOnClickListener(this);
         rlUpdate.setOnClickListener(this);
         rlLoginout.setOnClickListener(this);
+        rlKefu.setOnClickListener(this);
 
 
         userid = Integer.valueOf(Common.getUserId());
+        if (userid == 101324) {
+            rlKefu.setVisibility(View.GONE);
+            v7.setVisibility(View.GONE);
+        } else {
+            rlKefu.setVisibility(View.VISIBLE);
+        }
         //获取当前应用版本号
         String appVersionName = "";
         try {
@@ -201,6 +216,33 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
                 //展示清除缓存的弹出框
                 showCleanManager();
                 break;
+            case R.id.rl_kefu:
+                builder = new CustomDialogCleanNotice.Builder(SetupActivity.this);
+                builder.setMessage("确定要与客服发起聊天吗?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Utils.createConversation("101324");
+
+                        EventBus.getDefault().post("收到了消息");
+
+                        //将聊天对象的id作为参数传入
+                        Intent intent = new Intent(SetupActivity.this, FriendImActivity.class);
+                        intent.putExtra("userid", "101324");
+                        intent.putExtra("name", "彩虹小冰冰");
+
+                        startActivity(intent);
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("取消",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                builder.create().show();
+                break;
             //版本更新
             case R.id.rl_update:
 
@@ -208,7 +250,7 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
             //登出
             case R.id.rl_loginout:
                 // TODO: 2021/1/6 0006 退出登录
-                CustomDialogCleanNotice.Builder builder = new CustomDialogCleanNotice.Builder(SetupActivity.this);
+                builder = new CustomDialogCleanNotice.Builder(SetupActivity.this);
                 builder.setMessage("确定退出登录吗?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -233,6 +275,7 @@ public class SetupActivity extends BaseAvtivity implements View.OnClickListener 
                 break;
         }
     }
+
     // 弹出清除缓存
     public void showCleanManager() {
         //创建popwiondow弹出框

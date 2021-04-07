@@ -112,6 +112,7 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
     private MLCnIcrCapture.CallBack idCallback = new MLCnIcrCapture.CallBack() {
         @Override
         public void onSuccess(MLCnIcrCaptureResult idCardResult) {
+            Log.d("xxx","当前扫描的照片为"+idCardResult.sideType);
             // 识别成功处理。
             if (idCardResult.sideType == 1) {
                 ivZhengm.setVisibility(View.VISIBLE);
@@ -120,8 +121,7 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
                 ivZhengm.setImageBitmap(idCardResult.cardBitmap);
 
                 file1 = getFile(idCardResult.cardBitmap);
-
-
+                Log.d("xxx","身份证正面图片为"+file1.getAbsolutePath());
 
                 Username = idCardResult.name;
                 num = idCardResult.idNum;
@@ -160,8 +160,8 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
 
                 ivFanm.setImageBitmap(idCardResult.cardBitmap);
 
-                file2 = getFile(idCardResult.cardBitmap);
-
+                file2 = getFile1(idCardResult.cardBitmap);
+                Log.d("xxx","身份证反面图片为"+file2.getAbsolutePath());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
                 // 设置名字
                 String s = MD5Utils.string2Md5_16(file2.getAbsolutePath());
@@ -407,7 +407,7 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
 
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         File directory = cw.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-        File file = new File(directory+"/temp.jpg");
+        File file = new File(directory+"/zhengmian.jpg");
 
         if (file.exists()){
             file.delete();
@@ -428,7 +428,34 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
         }
         return file;
     }
+    //在这里抽取了一个方法   可以封装到自己的工具类中...
+    public File getFile1(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
 
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        File directory = cw.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+        File file = new File(directory+"/fanmian.jpg");
+
+        if (file.exists()){
+            file.delete();
+        }else{
+            try {
+                file.createNewFile();
+                FileOutputStream fos = new FileOutputStream(file);
+                InputStream is = new ByteArrayInputStream(baos.toByteArray());
+                int x = 0;
+                byte[] b = new byte[1024 * 100];
+                while ((x = is.read(b)) != -1) {
+                    fos.write(b, 0, x);
+                }
+                fos.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return file;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

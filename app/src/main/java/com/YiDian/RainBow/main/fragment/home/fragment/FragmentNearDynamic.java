@@ -116,8 +116,11 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
 
-        rcNewDynamic.setHasFixedSize(true);
         rcNewDynamic.setItemAnimator(null);
+        rcNewDynamic.setHasFixedSize(true);
+        rcNewDynamic.setNestedScrollingEnabled(false);
+        rcNewDynamic.setFocusableInTouchMode(false);
+        rcNewDynamic.requestFocus();
 
         alllist = new ArrayList<>();
         //下拉刷新下拉加载

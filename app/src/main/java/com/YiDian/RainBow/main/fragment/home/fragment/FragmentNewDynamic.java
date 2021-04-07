@@ -92,8 +92,11 @@ public class FragmentNewDynamic extends BaseFragment {
         alllist = new ArrayList<>();
         id = Integer.valueOf(Common.getUserId());
 
-        rcNewDynamic.setHasFixedSize(true);
         rcNewDynamic.setItemAnimator(null);
+        rcNewDynamic.setHasFixedSize(true);
+        rcNewDynamic.setNestedScrollingEnabled(false);
+        rcNewDynamic.setFocusableInTouchMode(false);
+        rcNewDynamic.requestFocus();
 
         //直接取消动画
         RecyclerView.ItemAnimator animator = rcNewDynamic.getItemAnimator();

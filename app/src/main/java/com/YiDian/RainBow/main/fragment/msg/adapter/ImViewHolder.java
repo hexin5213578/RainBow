@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,7 +19,6 @@ import com.YiDian.RainBow.R;
 import com.YiDian.RainBow.custom.image.CustomRoundAngleImageView;
 import com.YiDian.RainBow.custom.videoplayer.SampleCoverVideo;
 import com.YiDian.RainBow.custom.videoplayer.SampleCoverVideoNoOpen;
-import com.amap.api.maps.MapView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,8 +50,8 @@ public class ImViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.iv_img)
     ImageView ivImg;
     @Nullable
-    @BindView(R.id.video_player)
-    SampleCoverVideoNoOpen videoPlayer;
+    @BindView(R.id.videoView)
+    VideoView videoView;
     @Nullable
     @BindView(R.id.tv_address)
     TextView tvAddress;

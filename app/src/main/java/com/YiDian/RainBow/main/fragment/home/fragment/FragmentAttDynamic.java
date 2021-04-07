@@ -105,8 +105,11 @@ public class FragmentAttDynamic extends BaseFragment {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
 
-        rcNewDynamic.setHasFixedSize(true);
         rcNewDynamic.setItemAnimator(null);
+        rcNewDynamic.setHasFixedSize(true);
+        rcNewDynamic.setNestedScrollingEnabled(false);
+        rcNewDynamic.setFocusableInTouchMode(false);
+        rcNewDynamic.requestFocus();
 
         getAttUser();
 

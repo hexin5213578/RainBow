@@ -185,7 +185,11 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
-
+        rcDynamic.setItemAnimator(null);
+        rcDynamic.setHasFixedSize(true);
+        rcDynamic.setNestedScrollingEnabled(false);
+        rcDynamic.setFocusableInTouchMode(false);
+        rcDynamic.requestFocus();
 
         allList = new ArrayList<>();
         //设置背景透明

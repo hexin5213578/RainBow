@@ -87,16 +87,20 @@ dependencies {
     implementation fileTree(dir: 'libs', include: '*.jar')
     implementation files('libs/zxing.jar')
     implementation files('libs/pinyin4j-2.5.0.jar')
-
+    provided fileTree(dir:'libs',include:['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    implementation 'com.nineoldandroids:library:2.4.0'
+    implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.0.0@aar'
+
     // 引入multidex库
     implementation 'com.android.support:multidex:1.0.3'
     //3D地图so及jar
-    implementation 'com.amap.api:3dmap:latest.integration'
+    compile 'com.amap.api:map2d:latest.integration'
     //定位功能
     implementation 'com.amap.api:location:latest.integration'
     //搜索功能
@@ -210,7 +214,6 @@ dependencies {
     //极光推送
     implementation 'cn.jiguang.sdk:jpush:3.7.0'  // 此处以JPush 3.7.0 版本为例。
     implementation 'com.github.Jay-Goo:RangeSeekBar:v1.1.0'
-
 
     // 1 直接导入
     implementation 'com.qiniu:qiniu-android-sdk:8.0.+'

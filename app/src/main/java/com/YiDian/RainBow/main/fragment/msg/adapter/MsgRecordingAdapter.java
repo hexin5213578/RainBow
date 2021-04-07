@@ -21,6 +21,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
 import java.util.List;
 
@@ -144,6 +146,7 @@ public class MsgRecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     Intent intent = new Intent(context, FriendImActivity.class);
                     intent.putExtra("userid",conversation.getTargetId());
                     intent.putExtra("name",conversation.getTitle()+"");
+                    EventBus.getDefault().post("收到了信息");
 
                     context.startActivity(intent);
                 }

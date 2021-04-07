@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tl="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rl_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,42 +11,21 @@
         android:id="@+id/vp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/rgMenu">
+        android:layout_above="@id/tl_commen">
     </com.YiDian.RainBow.custom.viewpager.NoScrollViewPager>
 
-    <RadioGroup
-        android:id="@+id/rgMenu"
+    <com.flyco.tablayout.CommonTabLayout
+        android:id="@+id/tl_commen"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_55"
+        android:background="#ffffff"
         android:layout_alignParentBottom="true"
-        android:background="@color/white"
-        android:minHeight="@dimen/dp_50"
-        android:orientation="horizontal">
-
-        <RadioButton
-            android:id="@+id/rbHome"
-            style="@style/MainTab"
-            android:background="@null"
-            android:drawableTop="@drawable/selector_main_home"
-            android:text="首页" />
-        <RadioButton
-            android:id="@+id/rbFind"
-            style="@style/MainTab"
-            android:background="@null"
-            android:drawableTop="@drawable/selector_main_find"
-            android:text="发现" />
-        <RadioButton
-            android:id="@+id/rbMsg"
-            style="@style/MainTab"
-            android:background="@null"
-            android:drawableTop="@drawable/selector_main_msg"
-            android:text="消息" />
-        <RadioButton
-            android:id="@+id/rbMine"
-            style="@style/MainTab"
-            android:background="@null"
-            android:drawableTop="@drawable/selector_main_mine"
-            android:text="我的" />
-    </RadioGroup>
-
+        tl:tl_iconHeight="@dimen/dp_22"
+        tl:tl_iconWidth="@dimen/dp_29"
+        tl:tl_indicator_color="@color/black"
+        tl:tl_indicator_height="0dp"
+        tl:tl_textSelectColor="#8866E7"
+        tl:tl_textUnselectColor="#999999"
+        tl:tl_textsize="@dimen/sp_13"
+        />
 </RelativeLayout>

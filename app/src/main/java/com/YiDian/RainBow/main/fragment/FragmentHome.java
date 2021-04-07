@@ -99,7 +99,6 @@ public class FragmentHome extends BaseFragment implements RadioGroup.OnCheckedCh
     private int userid;
     private boolean isClick = false;
     private CustomDialogCleanNotice.Builder builder;
-    String animationFileName = "aixin";
     @Override
     protected void getid(View view) {
 

@@ -225,6 +225,7 @@
             android:layout_width="match_parent"
             android:layout_below="@id/rl1"
             android:id="@+id/rl_menu"
+            android:visibility="gone"
             android:layout_height="@dimen/dp_60">
             <View
                 android:layout_width="match_parent"

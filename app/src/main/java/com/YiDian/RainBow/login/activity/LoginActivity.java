@@ -129,6 +129,10 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener 
     private cn.jpush.im.android.api.model.UserInfo userInfo;
     private CustomDialog dialog;
     private Intent intent;
+    private String qQbirthday;
+    private String qQUserrole;
+    private String wcuserRole;
+    private String wcbirthday;
 
     @Override
     protected int getResId() {
@@ -316,7 +320,7 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener 
                                         @Override
                                         public void onNext(LoginBean loginBean) {
                                             LoginBean.ObjectBean object = loginBean.getObject();
-
+                                            dialog.dismiss();
                                             if (loginBean.getType().equals("OK")) {
                                                 String id = String.valueOf(object.getId());
                                                 //极光注册登录
@@ -400,14 +404,12 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener 
                                                                 finish();
                                                             }
                                                         }else{
-                                                            dialog.dismiss();
                                                             Toast.makeText(LoginActivity.this, "极光登录失败", Toast.LENGTH_SHORT).show();
                                                         }
                                                     }
                                                 });
                                             } else {
                                                 Toast.makeText(LoginActivity.this, "" + loginBean.getMsg(), Toast.LENGTH_SHORT).show();
-                                                dialog.dismiss();
                                             }
 
 
@@ -494,10 +496,16 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener 
                         }
                         @Override
                         public void onNext(LoginBean loginBean) {
+
+
                             if (loginBean.getType().equals("OK")) {
                                 LoginBean.ObjectBean object = loginBean.getObject();
+                                wcbirthday = object.getBirthday();
+                                wcuserRole = object.getUserRole();
                                 String id = String.valueOf(object.getId());
                                 String nickName = object.getNickName();
+                                SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.BIRTHDAY, wcbirthday);
+                                SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.ROLE, wcuserRole);
                                 SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_ID, id);
                                 //极光注册登录
                                 JMessageClient.register(id, id, new BasicCallback() {
@@ -744,6 +752,10 @@ public class LoginActivity extends BaseAvtivity implements View.OnClickListener 
                                         LoginBean.ObjectBean object = loginBean.getObject();
                                         String id = String.valueOf(object.getId());
                                         String nickName = object.getNickName();
+                                        qQbirthday = object.getBirthday();
+                                        qQUserrole = object.getUserRole();
+                                        SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.BIRTHDAY, qQbirthday);
+                                        SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.ROLE, qQUserrole);
                                         SPUtil.getInstance().saveData(LoginActivity.this, SPUtil.FILE_NAME, SPUtil.USER_ID, id);
                                         //极光注册登录
                                         JMessageClient.register(id, id, new BasicCallback() {

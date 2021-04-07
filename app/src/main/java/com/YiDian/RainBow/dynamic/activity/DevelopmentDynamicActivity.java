@@ -7,8 +7,10 @@ import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -50,6 +52,7 @@ import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.customDialog.CustomDialogMsg;
 import com.YiDian.RainBow.custom.loading.CustomDialog;
+import com.YiDian.RainBow.custom.videoplayer.SampleCoverVideo;
 import com.YiDian.RainBow.dynamic.adapter.DevelogmentImgAdapter;
 import com.YiDian.RainBow.dynamic.adapter.HotHuatiAdapter;
 import com.YiDian.RainBow.dynamic.bean.HotTopicBean;
@@ -87,6 +90,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -113,7 +117,6 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
     RelativeLayout rlContent;
     @BindView(R.id.rc_pro_img)
     RecyclerView rcProImg;
-
     @BindView(R.id.rl_selectedimg)
     RelativeLayout rlSelectedimg;
     @BindView(R.id.rc_hotHuati)
@@ -306,6 +309,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
 
 
 
+        //跳转到大图播放
         videoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -490,6 +494,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
         Log.d("xxx","到这里了");
         upimg_key_list = new ArrayList<String>();
         new Thread() {
+            @Override
             public void run() {
                 // 图片上传到七牛 重用 uploadManager。一般地，只需要创建一个 uploadManager 对象
                 uploadManager = new UploadManager();
@@ -534,6 +539,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
         Log.d("xxx","到这里了");
         upimg_key_list = new ArrayList<String>();
         new Thread() {
+            @Override
             public void run() {
                 // 图片上传到七牛 重用 uploadManager。一般地，只需要创建一个 uploadManager 对象
                 uploadManager = new UploadManager();
@@ -887,6 +893,7 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                     });
                     builder.setNegativeButton("不保存",
                             new android.content.DialogInterface.OnClickListener() {
+                                @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
                                     finish();
@@ -1614,23 +1621,18 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
 
         Log.d("xxx", "压缩后的视频路径为:"+strUri);
         // TODO: 2020/11/24 0024 压缩成功 处理压缩后的视频
+        Bitmap bitmap = getVideoThumbnail(filePath);
+        Drawable drawable = new BitmapDrawable(bitmap);
 
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+
                 rlSelectedimg.setVisibility(View.GONE);
                 rlVv.setVisibility(View.VISIBLE);
 
                 videoView.setVideoPath(strUri);
-                videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    @Override
-                    public void onPrepared(MediaPlayer mp) {
-                        //视频加载完成,准备好播放视频的回调
-                        //开始播放
-                        videoView.start();
-                    }
-                });
-
+                videoView.setBackground(drawable);
             }
         });
     }
@@ -1648,5 +1650,12 @@ public class DevelopmentDynamicActivity extends BaseAvtivity implements View.OnC
                 Toast.makeText(getApplicationContext(), "process error!", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    public Bitmap getVideoThumbnail(String url) {
+        MediaMetadataRetriever media = new MediaMetadataRetriever();
+
+        media.setDataSource(url);
+
+        return  media.getFrameAtTime();
     }
 }

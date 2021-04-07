@@ -76,7 +76,11 @@ public class CollectActivity extends BaseAvtivity {
         //腾讯AppId(替换你自己App Id)、上下文
         mTencent = Tencent.createInstance("101906973", CollectActivity.this);
 
-
+        rcMydraftDevelopment.setItemAnimator(null);
+        rcMydraftDevelopment.setHasFixedSize(true);
+        rcMydraftDevelopment.setNestedScrollingEnabled(false);
+        rcMydraftDevelopment.setFocusableInTouchMode(false);
+        rcMydraftDevelopment.requestFocus();
 
         //直接取消动画
         RecyclerView.ItemAnimator animator = rcMydraftDevelopment.getItemAnimator();

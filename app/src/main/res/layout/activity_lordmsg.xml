@@ -201,6 +201,7 @@
                 </View>
                 <RelativeLayout
                     android:layout_width="match_parent"
+                    android:visibility="gone"
                     android:layout_below="@id/rl_change_name"
                     android:id="@+id/rl_change_gonggao"
                     android:layout_height="@dimen/dp_38">
@@ -239,6 +240,7 @@
                     android:layout_below="@id/rl_change_gonggao"
                     android:background="@color/color_f7f7f7"
                     android:layout_marginLeft="@dimen/dp_15"
+                    android:visibility="gone"
                     android:layout_height="@dimen/dp_1">
                 </View>
 

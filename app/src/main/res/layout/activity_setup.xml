@@ -252,11 +252,42 @@
             android:layout_below="@id/rl_clean"
             android:layout_height="@dimen/dp_1">
         </View>
-
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:id="@+id/rl_kefu"
+            android:layout_below="@id/v6"
+            android:layout_height="@dimen/dp_38">
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="联系客服"
+                android:textSize="@dimen/sp_15"
+                android:textColor="@color/color_333333"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_15"
+                android:layout_height="wrap_content">
+            </TextView>
+            <ImageView
+                android:layout_width="@dimen/dp_8"
+                android:src="@mipmap/back_to"
+                android:scaleType="centerCrop"
+                android:id="@+id/iv4"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/dp_15"
+                android:layout_height="@dimen/dp_14">
+            </ImageView>
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:background="#f2f2f2"
+            android:id="@+id/v7"
+            android:layout_below="@id/rl_kefu"
+            android:layout_height="@dimen/dp_1">
+        </View>
         <RelativeLayout
             android:layout_width="match_parent"
             android:id="@+id/rl_update"
-            android:layout_below="@id/v6"
+            android:layout_below="@id/v7"
             android:layout_height="@dimen/dp_38">
             <TextView
                 android:layout_width="wrap_content"
@@ -291,13 +322,13 @@
         <View
             android:layout_width="match_parent"
             android:background="#f2f2f2"
-            android:id="@+id/v7"
+            android:id="@+id/v8"
             android:layout_below="@id/rl_update"
             android:layout_height="@dimen/dp_2">
         </View>
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_below="@id/v7"
+            android:layout_below="@id/v8"
             android:id="@+id/rl_loginout"
             android:layout_height="@dimen/dp_38">
             <TextView
@@ -312,7 +343,7 @@
         <View
             android:layout_width="match_parent"
             android:background="#f2f2f2"
-            android:id="@+id/v8"
+            android:id="@+id/v9"
             android:layout_below="@id/rl_loginout"
             android:layout_height="@dimen/dp_2">
         </View>

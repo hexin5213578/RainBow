@@ -250,6 +250,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rc_dynamic"
                     android:layout_width="match_parent"
+                    android:overScrollMode="never"
                     android:layout_marginBottom="@dimen/dp_48"
                     android:layout_height="match_parent">
                 </androidx.recyclerview.widget.RecyclerView>

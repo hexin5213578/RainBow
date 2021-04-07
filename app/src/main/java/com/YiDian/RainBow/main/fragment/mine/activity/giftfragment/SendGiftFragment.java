@@ -53,6 +53,12 @@ public class SendGiftFragment extends BaseFragment {
     protected void getData() {
         userid = Integer.parseInt(Common.getUserId());
 
+        rcGift.setItemAnimator(null);
+        rcGift.setHasFixedSize(true);
+        rcGift.setNestedScrollingEnabled(false);
+        rcGift.setFocusableInTouchMode(false);
+        rcGift.requestFocus();
+
         NetUtils.getInstance().getApis()
                 .dogetSendGift(userid)
                 .subscribeOn(Schedulers.io())

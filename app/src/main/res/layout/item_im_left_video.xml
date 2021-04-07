@@ -27,14 +27,25 @@
             android:layout_below="@id/tv_time"
             android:layout_height="@dimen/dp_30">
         </ImageView>
-        <com.YiDian.RainBow.custom.videoplayer.SampleCoverVideoNoOpen
+        <RelativeLayout
             android:layout_width="@dimen/dp_100"
-            android:id="@+id/video_player"
+            android:id="@+id/rl_vv"
             android:layout_toRightOf="@id/iv_headimg"
             android:layout_below="@id/tv_time"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_height="@dimen/dp_130">
-        </com.YiDian.RainBow.custom.videoplayer.SampleCoverVideoNoOpen>
+            <VideoView
+                android:layout_width="match_parent"
+                android:id="@+id/videoView"
+                android:layout_height="match_parent">
+            </VideoView>
+            <ImageView
+                android:layout_width="@dimen/dp_30"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/bofang"
+                android:layout_height="@dimen/dp_30">
+            </ImageView>
+        </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>
