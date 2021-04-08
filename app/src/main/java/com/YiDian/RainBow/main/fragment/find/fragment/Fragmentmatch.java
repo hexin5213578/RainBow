@@ -102,7 +102,7 @@ public class Fragmentmatch extends BaseFragment {
 
         //实例化一个定时器
         timer = new Timer();
-        timer.schedule(timerTask, 0, 1000*60);
+        timer.schedule(timerTask, 0, 1000*20);
 
         //条目点击
         soulPlanetView.setOnTagClickListener(new SoulPlanetsView.OnTagClickListener() {

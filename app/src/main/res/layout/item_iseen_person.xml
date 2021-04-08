@@ -33,7 +33,6 @@
         </RelativeLayout>
         <TextView
             android:layout_width="wrap_content"
-            android:text="偏爱"
             android:layout_marginTop="@dimen/dp_19"
             android:id="@+id/tv_name"
             android:layout_toRightOf="@id/rl_img"
@@ -45,7 +44,6 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_marginRight="@dimen/dp_70"
-            android:text="创造机会的人是勇者123132123123123123123123123"
             android:textSize="@dimen/sp_12"
             android:layout_marginLeft="@dimen/dp_10"
             android:ellipsize="end"

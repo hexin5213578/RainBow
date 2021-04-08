@@ -2,16 +2,13 @@ package com.YiDian.RainBow.welcome;
 
 import android.Manifest;
 import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.Settings;
@@ -20,7 +17,6 @@ import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -34,7 +30,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -48,20 +43,10 @@ import com.YiDian.RainBow.dynamic.bean.SaveMsgSuccessBean;
 import com.YiDian.RainBow.login.activity.CompleteMsgActivity;
 import com.YiDian.RainBow.login.activity.LoginActivity;
 import com.YiDian.RainBow.main.activity.MainActivity;
-import com.YiDian.RainBow.main.fragment.home.adapter.NewDynamicAdapter;
-import com.YiDian.RainBow.regist.activity.RegistActivity;
-import com.YiDian.RainBow.topic.SaveIntentMsgBean;
-import com.YiDian.RainBow.topic.TopicDetailsActivity;
-import com.YiDian.RainBow.user.PersonHomeActivity;
 import com.YiDian.RainBow.utils.NetUtils;
 import com.YiDian.RainBow.utils.SPUtil;
 import com.leaf.library.StatusBarUtil;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.api.BasicCallback;
 import io.reactivex.Observer;

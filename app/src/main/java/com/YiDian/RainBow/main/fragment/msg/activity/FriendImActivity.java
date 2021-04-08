@@ -883,7 +883,6 @@ public class FriendImActivity extends BaseAvtivity implements View.OnClickListen
         switch (v.getId()) {
             case R.id.iv_back:
                 finish();
-                EventBus.getDefault().post("收到了信息");
                 //退出此会话
                 JMessageClient.exitConversation();
                 break;

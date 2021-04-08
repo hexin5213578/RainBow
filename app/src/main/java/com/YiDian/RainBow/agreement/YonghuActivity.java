@@ -6,6 +6,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -17,18 +18,17 @@ import com.leaf.library.StatusBarUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * 用户协议
- * @author Administrator
- */
 public class YonghuActivity extends BaseAvtivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.iv_back)
     LinearLayout ivBack;
+    @BindView(R.id.rl_top)
+    RelativeLayout rlTop;
     @BindView(R.id.webView)
     WebView webView;
-    String str = "http://81.71.121.177/rainbow/protocol.html";
+    String str = "http://81.71.121.177/yd/protocol.html";
+
     @Override
     protected int getResId() {
         return R.layout.activity_yonghu;
@@ -74,4 +74,5 @@ public class YonghuActivity extends BaseAvtivity {
     protected BasePresenter initPresenter() {
         return null;
     }
+
 }

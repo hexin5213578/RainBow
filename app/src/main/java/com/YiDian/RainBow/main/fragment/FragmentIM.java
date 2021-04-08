@@ -1,12 +1,14 @@
 package com.YiDian.RainBow.main.fragment;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -66,6 +68,7 @@ public class FragmentIM extends BaseFragment implements RadioGroup.OnCheckedChan
         return null;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @SuppressLint("ResourceAsColor")
     @Override
     protected void getData() {
@@ -92,6 +95,7 @@ public class FragmentIM extends BaseFragment implements RadioGroup.OnCheckedChan
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {

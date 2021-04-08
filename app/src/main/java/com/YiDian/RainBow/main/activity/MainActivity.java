@@ -249,6 +249,14 @@ public class MainActivity extends BaseAvtivity {
             unReadMsg();
         }
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getString(String str){
+        if (str.equals("刷新消息列表")){
+            a = 0;
+            unReadMsg();
+        }
+    }
     public void initListener() {
         //TabLayout监听
         tlCommen.setOnTabSelectListener(new OnTabSelectListener() {

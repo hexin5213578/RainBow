@@ -538,22 +538,35 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             }
 
                             if (userRole == null) {
-                                if (friendAge != null) {
-                                    userRoleAge = friendAge + "";
+                                if (friendAge == null) {
+                                    userRoleAge ="保密";
                                 } else {
-                                    userRoleAge = 0 + "";
+                                    if (friendAge==0){
+                                        userRoleAge = "保密";
+
+                                    }else{
+                                        userRoleAge = friendAge + "";
+                                    }
                                 }
                             } else if (userRole.equals("保密")) {
-                                if (friendAge != null) {
-                                    userRoleAge = friendAge + "";
+                                if (friendAge == null) {
+                                    userRoleAge = "保密";
                                 } else {
-                                    userRoleAge = 0 + "";
+                                    if (friendAge==0){
+                                        userRoleAge = userRole + " ";
+                                    }else{
+                                        userRoleAge = friendAge + " 保密";
+                                    }
                                 }
                             } else {
-                                if (friendAge != null) {
-                                    userRoleAge = userRole + " " + friendAge;
+                                if (friendAge == null) {
+                                    userRoleAge = userRole + " " ;
                                 } else {
-                                    userRoleAge = 0 + "";
+                                    if (friendAge==0){
+                                        userRoleAge = userRole + " ";
+                                    }else{
+                                        userRoleAge = userRole + " " + friendAge;
+                                    }
                                 }
                             }
 
@@ -640,21 +653,34 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
                             if (userRole == null) {
                                 if (friendAge == null) {
-                                    userRoleAge = 0 + "";
+                                    userRoleAge ="保密";
                                 } else {
-                                    userRoleAge = friendAge + "";
+                                    if (friendAge==0){
+                                        userRoleAge = "保密";
+
+                                    }else{
+                                        userRoleAge = friendAge + "";
+                                    }
                                 }
                             } else if (userRole.equals("保密")) {
                                 if (friendAge == null) {
-                                    userRoleAge = 0 + "";
+                                    userRoleAge = "保密";
                                 } else {
-                                    userRoleAge = friendAge + "";
+                                    if (friendAge==0){
+                                        userRoleAge = userRole + " ";
+                                    }else{
+                                        userRoleAge = friendAge + " 保密";
+                                    }
                                 }
                             } else {
                                 if (friendAge == null) {
-                                    userRoleAge = userRole + " " + 0;
+                                    userRoleAge = userRole + " " ;
                                 } else {
-                                    userRoleAge = userRole + " " + friendAge;
+                                    if (friendAge==0){
+                                        userRoleAge = userRole + " ";
+                                    }else{
+                                        userRoleAge = userRole + " " + friendAge;
+                                    }
                                 }
                             }
 

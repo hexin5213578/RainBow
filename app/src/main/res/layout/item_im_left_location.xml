@@ -39,7 +39,6 @@
             <TextView
                 android:layout_width="match_parent"
                 android:id="@+id/tv_title"
-                android:text="信质桂圆新城小区"
                 android:paddingLeft="@dimen/dp_5"
                 android:textSize="@dimen/sp_10"
                 android:maxLines="1"
@@ -62,7 +61,6 @@
                 android:paddingRight="@dimen/dp_5"
                 android:paddingBottom="@dimen/dp_2"
                 android:id="@+id/tv_address"
-                android:text="柘城县长江新城街道淮海路与学苑路交叉口"
                 android:layout_height="wrap_content">
             </TextView>
             <TextView

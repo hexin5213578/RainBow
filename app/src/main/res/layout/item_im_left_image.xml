@@ -33,7 +33,6 @@
             android:layout_below="@id/tv_time"
             android:background="@drawable/img_bg_radious"
             android:id="@+id/iv_img"
-            android:src="@mipmap/headimg2"
             android:scaleType="centerCrop"
             android:layout_marginLeft="@dimen/dp_10"
             android:textSize="@dimen/sp_10"

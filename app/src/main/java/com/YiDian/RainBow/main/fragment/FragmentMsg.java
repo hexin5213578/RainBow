@@ -197,6 +197,7 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
                 getImList();
             }
         });
+        getImList();
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getMsg(String str){
@@ -260,18 +261,6 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
         }
     };
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            Log.d("xxx", "fragmentmsg的setUserVisibleHint");
-            if (firstInit) {
-                //重新计算通知数量
-                getImList();
-                getNoticeCount();
-            }
-        }
-    }
 
     @Override
     public void onResume() {
@@ -280,7 +269,6 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-        getImList();
     }
 
     @Override

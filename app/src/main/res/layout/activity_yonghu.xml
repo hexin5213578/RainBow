@@ -28,7 +28,7 @@
         </LinearLayout>
         <TextView
             android:layout_width="wrap_content"
-            android:text="服务协议"
+            android:text="用户协议"
             android:layout_centerHorizontal="true"
             android:textSize="@dimen/sp_18"
             android:layout_centerVertical="true"

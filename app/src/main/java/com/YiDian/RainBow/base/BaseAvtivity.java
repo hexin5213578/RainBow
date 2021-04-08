@@ -45,7 +45,6 @@ public abstract class BaseAvtivity<P extends BasePresenter> extends AppCompatAct
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN|WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(getResId());
 
-        //NetUtils netUtils = new NetUtils();
 
         presenter = initPresenter();
         bind = ButterKnife.bind(this);

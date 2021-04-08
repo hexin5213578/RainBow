@@ -146,7 +146,7 @@ public class MsgRecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     Intent intent = new Intent(context, FriendImActivity.class);
                     intent.putExtra("userid",conversation.getTargetId());
                     intent.putExtra("name",conversation.getTitle()+"");
-                    EventBus.getDefault().post("收到了信息");
+                    EventBus.getDefault().post("刷新消息列表");
 
                     context.startActivity(intent);
                 }

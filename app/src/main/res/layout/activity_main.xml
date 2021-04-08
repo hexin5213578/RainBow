@@ -18,6 +18,7 @@
         android:id="@+id/tl_commen"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_55"
+        android:elevation="@dimen/dp_5"
         android:background="#ffffff"
         android:layout_alignParentBottom="true"
         tl:tl_iconHeight="@dimen/dp_22"

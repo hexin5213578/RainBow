@@ -62,7 +62,7 @@
         </ImageView>
         <TextView
             android:layout_width="wrap_content"
-            android:text="彩虹"
+            android:text="彩虹公园"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_77"
             android:textSize="@dimen/sp_22"

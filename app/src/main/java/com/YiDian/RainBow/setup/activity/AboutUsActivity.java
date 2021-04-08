@@ -3,7 +3,6 @@ package com.YiDian.RainBow.setup.activity;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -21,7 +20,6 @@ import com.YiDian.RainBow.base.BasePresenter;
 import com.leaf.library.StatusBarUtil;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 //关于我们
 public class AboutUsActivity extends BaseAvtivity implements View.OnClickListener {

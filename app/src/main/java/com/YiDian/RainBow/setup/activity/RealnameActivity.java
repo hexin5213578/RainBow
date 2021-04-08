@@ -100,8 +100,8 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
     String num;
     private File file1;
     private File file2;
-    private String img1;
-    private String img2;
+    private String img1="";
+    private String img2="";
     private int userid;
 
     @Override
@@ -112,7 +112,7 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
     private MLCnIcrCapture.CallBack idCallback = new MLCnIcrCapture.CallBack() {
         @Override
         public void onSuccess(MLCnIcrCaptureResult idCardResult) {
-            Log.d("xxx","当前扫描的照片为"+idCardResult.sideType);
+            Log.d("xxx", "当前扫描的照片为" + idCardResult.sideType);
             // 识别成功处理。
             if (idCardResult.sideType == 1) {
                 ivZhengm.setVisibility(View.VISIBLE);
@@ -121,17 +121,16 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
                 ivZhengm.setImageBitmap(idCardResult.cardBitmap);
 
                 file1 = getFile(idCardResult.cardBitmap);
-                Log.d("xxx","身份证正面图片为"+file1.getAbsolutePath());
+                Log.d("xxx", "身份证正面图片为" + file1.getAbsolutePath());
 
                 Username = idCardResult.name;
                 num = idCardResult.idNum;
 
-                Log.d("xxx",idCardResult.idNum);
+                Log.d("xxx", idCardResult.idNum);
                 // 图片上传到七牛 重用 uploadManager。一般地，只需要创建一个 uploadManager 对象
-                uploadManager = new UploadManager();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
                 // 设置名字
-                String s = MD5Utils.string2Md5_16(file1.getAbsolutePath());
+                String s = MD5Utils.string2Md5_16(file1.getAbsolutePath() + "zhengmian");
                 String key = s + sdf.format(new Date()) + ".jpg";
                 uploadManager.put(file1, key, upToken,
                         new UpCompletionHandler() {
@@ -144,6 +143,7 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
                                         String upimg = res.getString("key");
                                         //将七牛返回图片的文件名添加到list集合中
                                         img1 = serverPath + upimg;
+                                        Log.i("xxx", img1);
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
@@ -151,7 +151,6 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
                                     Log.i("xxx", "Upload Fail");
                                     //如果失败，这里可以把 info 信息上报自己的服务器，便于后面分析上传错误原因
                                 }
-                                Log.i("xxx", img1);
                             }
                         }, null);
             } else if (idCardResult.sideType == 2) {
@@ -161,10 +160,10 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
                 ivFanm.setImageBitmap(idCardResult.cardBitmap);
 
                 file2 = getFile1(idCardResult.cardBitmap);
-                Log.d("xxx","身份证反面图片为"+file2.getAbsolutePath());
+                Log.d("xxx", "身份证反面图片为" + file2.getAbsolutePath());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
                 // 设置名字
-                String s = MD5Utils.string2Md5_16(file2.getAbsolutePath());
+                String s = MD5Utils.string2Md5_16(file2.getAbsolutePath() + "fanmian");
                 String key = s + sdf.format(new Date()) + ".jpg";
                 uploadManager.put(file2, key, upToken,
                         new UpCompletionHandler() {
@@ -177,6 +176,7 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
                                         String upimg = res.getString("key");
                                         //将七牛返回图片的文件名添加到list集合中
                                         img2 = serverPath + upimg;
+                                        Log.i("xxx", img2);
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
@@ -184,7 +184,6 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
                                     Log.i("xxx", "Upload Fail");
                                     //如果失败，这里可以把 info 信息上报自己的服务器，便于后面分析上传错误原因
                                 }
-                                Log.i("xxx", img2);
                             }
                         }, null);
             }
@@ -230,6 +229,8 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
         userid = Integer.valueOf(Common.getUserId());
         upToken = Common.getToken();
 
+        uploadManager = new UploadManager();
+
         //获取状态
         doGetRealStatus();
     }
@@ -238,7 +239,8 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
     protected BasePresenter initPresenter() {
         return null;
     }
-    public void doGetRealStatus(){
+
+    public void doGetRealStatus() {
         //先判断是否认证过
         NetUtils.getInstance().getApis()
                 .doGetRealMsg(userid)
@@ -291,6 +293,7 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
                     }
                 });
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -313,14 +316,14 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
             case R.id.bt_confirm:
                 String name = etName.getText().toString();
                 String idcard = etIdcard.getText().toString();
-                if (!TextUtils.isEmpty(img1)) {
-                    if (!TextUtils.isEmpty(img2)) {
+                if (!TextUtils.isEmpty(file1.getAbsolutePath())) {
+                    if (!TextUtils.isEmpty(file2.getAbsolutePath())) {
                         if (!TextUtils.isEmpty(name)) {
                             if (StringUtil.checkIdCard(idcard)) {
                                 if (name.equals(Username)) {
                                     if (idcard.equals(num)) {
                                         NetUtils.getInstance().getApis()
-                                                .doInsertReal(idcard,userid,name,img1,img2)
+                                                .doInsertReal(idcard, userid, name, img1, img2)
                                                 .subscribeOn(Schedulers.io())
                                                 .observeOn(AndroidSchedulers.mainThread())
                                                 .subscribe(new Observer<InsertRealBean>() {
@@ -332,7 +335,7 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
                                                     @Override
                                                     public void onNext(InsertRealBean insertRealBean) {
                                                         String str = insertRealBean.getObject();
-                                                        if(str.equals("新增成功")){
+                                                        if (str.equals("新增成功")) {
                                                             //上传成功 获取审核状态
                                                             doGetRealStatus();
                                                         }
@@ -407,11 +410,11 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
 
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         File directory = cw.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-        File file = new File(directory+"/zhengmian.jpg");
+        File file = new File(directory + "/zhengmian.jpg");
 
-        if (file.exists()){
+        if (file.exists()) {
             file.delete();
-        }else{
+        } else {
             try {
                 file.createNewFile();
                 FileOutputStream fos = new FileOutputStream(file);
@@ -428,6 +431,7 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
         }
         return file;
     }
+
     //在这里抽取了一个方法   可以封装到自己的工具类中...
     public File getFile1(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -435,11 +439,11 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
 
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         File directory = cw.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-        File file = new File(directory+"/fanmian.jpg");
+        File file = new File(directory + "/fanmian.jpg");
 
-        if (file.exists()){
+        if (file.exists()) {
             file.delete();
-        }else{
+        } else {
             try {
                 file.createNewFile();
                 FileOutputStream fos = new FileOutputStream(file);
@@ -456,6 +460,7 @@ public class RealnameActivity extends BaseAvtivity implements View.OnClickListen
         }
         return file;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

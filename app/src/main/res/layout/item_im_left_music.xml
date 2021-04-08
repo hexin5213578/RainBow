@@ -49,7 +49,6 @@
                     android:layout_height="@dimen/dp_33">
                     <com.YiDian.RainBow.custom.image.CustomRoundAngleImageView
                         android:layout_width="match_parent"
-                        android:src="@mipmap/headimg"
                         roundiv:radius="@dimen/dp_5"
                         android:scaleType="centerCrop"
                         android:id="@+id/iv_musicimg"
@@ -73,7 +72,6 @@
                 </View>
                 <TextView
                     android:layout_width="wrap_content"
-                    android:text="我们都一样"
                     android:layout_toRightOf="@id/rl_play"
                     android:layout_marginLeft="@dimen/dp_10"
                     android:id="@+id/tv_musicname"
@@ -88,7 +86,6 @@
                     android:layout_marginTop="@dimen/dp_3"
                     android:layout_toRightOf="@id/rl_play"
                     android:textSize="@dimen/sp_10"
-                    android:text="这里是作者"
                     android:id="@+id/tv_author"
                     android:textColor="@color/color_999999"
                     android:layout_marginLeft="@dimen/dp_10"
