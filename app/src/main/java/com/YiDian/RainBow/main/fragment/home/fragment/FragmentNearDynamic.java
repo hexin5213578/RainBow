@@ -370,8 +370,6 @@ public class FragmentNearDynamic extends BaseFragment implements AMapLocationLis
         //关闭输入框
         KeyBoardUtils.closeKeyboard(getActivity());
 
-        doLocation();
-
         Log.d("xxx", "onResume");
     }
 

@@ -137,21 +137,6 @@ public class MainActivity extends BaseAvtivity {
         //设置别名
         setAlias();
 
-        boolean ignoringBatteryOptimizations = isIgnoringBatteryOptimizations(MainActivity.this);
-        //判断是否存在于白名单
-        if (!ignoringBatteryOptimizations) {
-            //不存在加入白名单
-            requestIgnoreBatteryOptimizations(MainActivity.this);
-        }
-        //开启服务
-        Intent intent = new Intent(MainActivity.this, GrayService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //android8.0以上通过startForegroundService启动service
-            startForegroundService(intent);
-        } else {
-            startService(intent);
-        }
-
         //创建fragment实例
         fragmentHome = new FragmentHome();
         //fragmentIM = new FragmentIM();
@@ -250,13 +235,6 @@ public class MainActivity extends BaseAvtivity {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getString(String str){
-        if (str.equals("刷新消息列表")){
-            a = 0;
-            unReadMsg();
-        }
-    }
     public void initListener() {
         //TabLayout监听
         tlCommen.setOnTabSelectListener(new OnTabSelectListener() {
@@ -378,36 +356,6 @@ public class MainActivity extends BaseAvtivity {
 
                     }
                 });
-    }
-
-    /**
-     * 判断是否存在白名单
-     *
-     * @param context
-     * @return
-     */
-    @RequiresApi(Build.VERSION_CODES.M)
-    public boolean isIgnoringBatteryOptimizations(Context context) {
-        boolean isIgnoring = false;
-        if (Build.VERSION.SDK_INT >= 23) {
-            PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-
-            if (powerManager != null) {
-                isIgnoring = powerManager.isIgnoringBatteryOptimizations(getPackageName());
-            }
-        }
-        return isIgnoring;
-    }
-
-    //加入白名单
-    public void requestIgnoreBatteryOptimizations(Context context) {
-        try {
-            Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-            intent.setData(Uri.parse("package:" + getPackageName()));
-            context.startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

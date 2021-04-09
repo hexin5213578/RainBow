@@ -1007,8 +1007,9 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         while (true) {
             localCanvas.drawBitmap(bitmap, new Rect(0, 0, i, j), new Rect(0, 0, 80
                     , 80), null);
-            if (paramBoolean)
+            if (paramBoolean) {
                 bitmap.recycle();
+            }
             ByteArrayOutputStream localByteArrayOutputStream = new ByteArrayOutputStream();
             localBitmap.compress(Bitmap.CompressFormat.JPEG, 100,
                     localByteArrayOutputStream);
@@ -1223,6 +1224,7 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 listBean = list.get(position);
                 CustomDialogCleanNotice.Builder builder = new CustomDialogCleanNotice.Builder(context);
                 builder.setMessage("确定删除该动态吗?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
                     public void onClick(DialogInterface dialog, int which) {
 
                         NetUtils.getInstance().getApis()
@@ -1257,6 +1259,7 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 });
                 builder.setNegativeButton("取消",
                         new DialogInterface.OnClickListener() {
+                            @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
@@ -1508,6 +1511,7 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 listBean = list.get(position);
                 CustomDialogCleanNotice.Builder builder = new CustomDialogCleanNotice.Builder(context);
                 builder.setMessage("确定删除该动态吗?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
                     public void onClick(DialogInterface dialog, int which) {
 
                         NetUtils.getInstance().getApis()
@@ -1542,6 +1546,7 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 });
                 builder.setNegativeButton("取消",
                         new DialogInterface.OnClickListener() {
+                            @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
@@ -1794,6 +1799,7 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 listBean = list.get(position);
                 CustomDialogCleanNotice.Builder builder = new CustomDialogCleanNotice.Builder(context);
                 builder.setMessage("确定删除该动态吗?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
                     public void onClick(DialogInterface dialog, int which) {
 
                         NetUtils.getInstance().getApis()
@@ -1828,6 +1834,7 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 });
                 builder.setNegativeButton("取消",
                         new DialogInterface.OnClickListener() {
+                            @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
@@ -1848,6 +1855,8 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             }
         });
 
+        List<NewDynamicBean.ObjectBean.ListBean.TopicsBean> topics = listBean.getTopics();
+
         //获取发布时位置距离当前的距离
         String distance = listBean.getDistance();
         if (distance != null) {
@@ -1862,7 +1871,11 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             }
 
         } else {
-            holder.tvDistance.setVisibility(View.GONE);
+            if (topics!=null &&topics.size()>0){
+                holder.tvDistance.setVisibility(View.GONE);
+            }else{
+                holder.tvDistance.setVisibility(View.INVISIBLE);
+            }
         }
 
         //获取发布时间
@@ -2081,6 +2094,7 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 listBean = list.get(position);
                 CustomDialogCleanNotice.Builder builder = new CustomDialogCleanNotice.Builder(context);
                 builder.setMessage("确定删除该动态吗?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
                     public void onClick(DialogInterface dialog, int which) {
 
                         NetUtils.getInstance().getApis()
@@ -2115,6 +2129,7 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 });
                 builder.setNegativeButton("取消",
                         new DialogInterface.OnClickListener() {
+                            @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
@@ -2368,6 +2383,7 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 listBean = list.get(position);
                 CustomDialogCleanNotice.Builder builder = new CustomDialogCleanNotice.Builder(context);
                 builder.setMessage("确定删除该动态吗?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
                     public void onClick(DialogInterface dialog, int which) {
 
                         NetUtils.getInstance().getApis()
@@ -2402,6 +2418,7 @@ public class MyDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 });
                 builder.setNegativeButton("取消",
                         new DialogInterface.OnClickListener() {
+                            @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }

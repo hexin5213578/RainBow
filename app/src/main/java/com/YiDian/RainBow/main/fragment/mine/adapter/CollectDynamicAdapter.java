@@ -419,7 +419,6 @@ public class CollectDynamicAdapter extends RecyclerView.Adapter<CollectViewHolde
             }else{
                 holder.tvDistance.setVisibility(View.INVISIBLE);
             }
-
         }
 
         //获取发布时间

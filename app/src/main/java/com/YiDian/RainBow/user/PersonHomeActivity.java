@@ -7,6 +7,7 @@ import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -41,6 +42,7 @@ import com.YiDian.RainBow.base.BasePresenter;
 import com.YiDian.RainBow.base.Common;
 import com.YiDian.RainBow.custom.customDialog.CustomDialogCancleFollow;
 import com.YiDian.RainBow.custom.loading.CustomDialog;
+import com.YiDian.RainBow.custom.svag.SvgaUtils;
 import com.YiDian.RainBow.friend.activity.FriendsActivity;
 import com.YiDian.RainBow.login.bean.ComPleteMsgBean;
 import com.YiDian.RainBow.main.fragment.home.adapter.UserDetailsDynamicAdapter;
@@ -67,6 +69,7 @@ import com.leaf.library.StatusBarUtil;
 import com.liaoinstan.springview.container.AliFooter;
 import com.liaoinstan.springview.container.AliHeader;
 import com.liaoinstan.springview.widget.SpringView;
+import com.opensource.svgaplayer.SVGAImageView;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UploadManager;
@@ -78,6 +81,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -572,9 +577,9 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
 
                             Glide.with(PersonHomeActivity.this).load(headImg).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(ivUserimg);
-                            if (backImg == null)
+                            if (backImg == null) {
                                 IvBeijing.setBackgroundColor(PersonHomeActivity.this.getResources().getColor(R.color.color_8867E7));
-                            else {
+                            } else {
                                 Glide.with(PersonHomeActivity.this).load(backImg).into(IvBeijing);
                             }
 
@@ -620,7 +625,7 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
                             UserMsgBean.ObjectBean object = userMsgBean.getObject();
                             UserMsgBean.ObjectBean.UserInfoBean userInfo = userMsgBean.getObject().getUserInfo();
 
-                            reciveid = userInfo.getId();
+                            thePageuserId = userInfo.getId();
 
                             if (userInfo.getIsFans()==0){
                                 isfollow=  false;
@@ -1044,12 +1049,11 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
         vp = view.findViewById(R.id.vp);
         lldot = view.findViewById(R.id.ll_dot);
-        LinearLayout llrecharge= view.findViewById(R.id.ll_recharge);
+        LinearLayout llrecharge = view.findViewById(R.id.ll_recharge);
         RelativeLayout ll_close = view.findViewById(R.id.ll_close);
-        ImageView iv_anim = view.findViewById(R.id.iv_anim);
+        SVGAImageView svagimg = view.findViewById(R.id.svgaImage);
         tv_balance = view.findViewById(R.id.tv_balance);
         RelativeLayout rl_send = view.findViewById(R.id.rl_send);
-
 
         //获取金币数
         getGlodNum();
@@ -1101,16 +1105,16 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
             @Override
             public void onClick(View v) {
                 //送出当前选中的礼物
-                if (selectnum==-1){
+                if (selectnum == -1) {
                     Toast.makeText(PersonHomeActivity.this, "请先选择礼物", Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
                     GiftMsgBean.ObjectBean giftbean = list.get(selectnum);
-                    Log.d("xxx","当前选中为"+selectnum);
+                    Log.d("xxx", "当前选中为" + selectnum);
 
 
                     //发起赠送礼物的接口
                     NetUtils.getInstance().getApis()
-                            .doSendGift(reciveid,myId,giftbean.getId())
+                            .doSendGift(thePageuserId, myId, giftbean.getId())
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Observer<InsertRealBean>() {
@@ -1121,57 +1125,72 @@ public class PersonHomeActivity extends BaseAvtivity implements View.OnClickList
 
                                 @Override
                                 public void onNext(InsertRealBean insertRealBean) {
-                                    if (insertRealBean.getMsg().equals("送出成功")){
+                                    if (insertRealBean.getMsg().equals("送出成功")) {
                                         //送出成功 刷新余额
                                         getGlodNum();
 
                                         //展示动画
-                                        iv_anim.setVisibility(View.VISIBLE);
-                                        Glide.with(PersonHomeActivity.this).load(giftbean.getGiftImg()).into(iv_anim);
+                                        final SvgaUtils svgaUtils = new SvgaUtils(PersonHomeActivity.this, svagimg);
+                                        svgaUtils.initAnimator();
+                                        switch (selectnum) {
+                                            case 0:
+                                                svgaUtils.startAnimator("guzhang");
+                                                break;
+                                            case 1:
+                                                svgaUtils.startAnimator("liuliuliu");
+                                                break;
+                                            case 2:
+                                                svgaUtils.startAnimator("aixin");
+                                                break;
+                                            case 3:
+                                                svgaUtils.startAnimator("dangao");
 
+                                                break;
+                                            case 4:
+                                                svgaUtils.startAnimator("pijiu");
 
-                                        ObjectAnimator Animator1 = ObjectAnimator.ofFloat(iv_anim, "translationY", -700);
-                                        Animator1.setInterpolator(new LinearInterpolator());
-                                        Animator1.setDuration(1000);
+                                                break;
+                                            case 5:
+                                                svgaUtils.startAnimator("jiayou");
 
-                                        ObjectAnimator Animator2 = ObjectAnimator.ofFloat(iv_anim, "rotation", 0.0F, 1080.0f);
-                                        Animator2.setInterpolator(new LinearInterpolator());
-                                        Animator2.setDuration(1500);
+                                                break;
+                                            case 6:
+                                                svgaUtils.startAnimator("jiaonang");
 
-                                        AnimatorSet set=new AnimatorSet();
-                                        set.play(Animator1).before(Animator2);
+                                                break;
+                                            case 7:
+                                                svgaUtils.startAnimator("feiji");
 
-                                        set.start();
-                                        set.addListener(new Animator.AnimatorListener() {
-                                            @Override
-                                            public void onAnimationStart(Animator animation) {
+                                                break;
+                                            case 8:
+                                                svgaUtils.startAnimator("jiangbei");
 
-                                            }
+                                                break;
+                                            case 9:
+                                                svgaUtils.startAnimator("wen");
 
-                                            @Override
-                                            public void onAnimationEnd(Animator animation) {
-                                                animation.cancel();
+                                                break;
+                                            case 10:
+                                                svgaUtils.startAnimator("huojian");
 
-                                                iv_anim.setVisibility(View.GONE);
-                                                ObjectAnimator Animator = ObjectAnimator.ofFloat(iv_anim, "translationY", 700);
-                                                Animator.setInterpolator(new LinearInterpolator());
-                                                Animator.setDuration(200);
+                                                break;
+                                            case 11:
+                                                svgaUtils.startAnimator("paoche");
 
-                                                Animator.start();
-                                            }
+                                                break;
+                                            case 12:
+                                                svgaUtils.startAnimator("zhishengji");
 
-                                            @Override
-                                            public void onAnimationCancel(Animator animation) {
+                                                break;
+                                            case 13:
+                                                svgaUtils.startAnimator("motianlun");
 
-                                            }
-
-                                            @Override
-                                            public void onAnimationRepeat(Animator animation) {
-
-                                            }
-                                        });
+                                                break;
+                                            default:
+                                                break;
+                                        }
                                     }
-                                    if (insertRealBean.getMsg().equals("余额不足")){
+                                    if (insertRealBean.getMsg().equals("余额不足")) {
                                         // TODO: 2021/1/24 0024 接入充值功能提示去充值
                                         Toast.makeText(PersonHomeActivity.this, "账户余额不足", Toast.LENGTH_SHORT).show();
                                     }

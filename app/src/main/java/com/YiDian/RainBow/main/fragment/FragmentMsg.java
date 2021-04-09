@@ -4,17 +4,22 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -51,6 +56,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.model.Conversation;
 import io.reactivex.Observer;
@@ -58,7 +64,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class FragmentMsg extends BaseFragment implements View.OnClickListener {
+public class FragmentMsg extends Fragment implements View.OnClickListener {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.iv_my_buddy)
@@ -91,36 +97,20 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
     private boolean firstInit = false;
     private List<Conversation> conversationList;
 
+    @Nullable
     @Override
-    protected void getid(View view) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = View.inflate(getContext(), R.layout.home_fragment_msg, null);
 
+        ButterKnife.bind(this, view);
+
+        getData();
+        getNoticeCount();
+        return view;
     }
 
-    @Override
-    protected int getResId() {
-        return R.layout.home_fragment_msg;
-    }
-
-    @Override
-    protected BasePresenter initPresenter() {
-        return null;
-    }
-
-    Handler handler = new Handler() {//实例化一个Handler，并复写handlerMessage方法
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {//这句就不做说明了，都能看懂
-                case 1:
-                    //实例化时一个TimerTask实力类，调用构造函数，并执行run方法，测试用，看方法是否定时执行
-                    getNoticeCount();
-                    break;
-            }
-            super.handleMessage(msg);
-        }
-
-    };
-    @Override
     protected void getData() {
+        getImList();
         //设置状态栏颜色与字体颜色
         StatusBarUtil.setGradientColor(getActivity(), toolbar);
         StatusBarUtil.setDarkMode(getActivity());
@@ -132,10 +122,7 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
         rlComment.setOnClickListener(this);
         rlClick.setOnClickListener(this);
 
-        Timer timer = new Timer();//实例化一个定时器
-        timer.schedule(timerTask, 0, 1000 * 60);
-
-        firstInit  = true;
+        firstInit = true;
         //获取当前登录的用户
         userid = Integer.valueOf(Common.getUserId());
 
@@ -143,8 +130,7 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
         if (Build.VERSION.SDK_INT >= 23) {
             int request = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO);
             //缺少权限，进行权限申请
-            if (request != PackageManager.PERMISSION_GRANTED)
-            {
+            if (request != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, 100);
                 return;//
             }
@@ -174,22 +160,22 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
                 int menuPosition = menuBridge.getPosition(); // 菜单在RecyclerView的Item中的Position。
                 // TODO: 2021/1/8 `0008  调用删除单个回话并清空聊天记录
                 Conversation conversation = conversationList.get(adapterPosition);
-                if (conversation.getType().name().equals("group")){
+                if (conversation.getType().name().equals("group")) {
 
                     conversation.resetUnreadCount();
 
                     boolean b = JMessageClient.deleteGroupConversation(Long.parseLong(conversation.getTargetId()));
-                    if (b){
-                        Log.d("xxx","删除成功");
-                    }else{
-                        Log.d("xxx","删除失败");
+                    if (b) {
+                        Log.d("xxx", "删除成功");
+                    } else {
+                        Log.d("xxx", "删除失败");
                     }
 
-                }else{
+                } else {
                     String targetId = conversation.getTargetId();
 
                     //删除单个聊天对象
-                    JMessageClient.deleteSingleConversation(targetId,Common.get_JG());
+                    JMessageClient.deleteSingleConversation(targetId, Common.get_JG());
                     conversationList.remove(adapterPosition);
 
                     EventBus.getDefault().post("收到了信息");
@@ -197,18 +183,18 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
                 getImList();
             }
         });
-        getImList();
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getMsg(String str){
-        if (str.equals("收到了信息")){
+    public void getMsg(String str) {
+        if (str.equals("收到了信息")) {
             getImList();
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getReLoad(String str){
-        if (str.equals("重新获取消息")){
+    public void getReLoad(String str) {
+        if (str.equals("重新获取消息")) {
             getImList();
         }
     }
@@ -219,17 +205,17 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
 
         List<Conversation> newconverList = new ArrayList<>();
 
-        if (conversationList !=null && conversationList.size() > 0) {
+        if (conversationList != null && conversationList.size() > 0) {
             rlNodata.setVisibility(View.GONE);
             sv.setVisibility(View.VISIBLE);
 
-            for (int i =0;i<conversationList.size();i++){
+            for (int i = 0; i < conversationList.size(); i++) {
                 String name = conversationList.get(i).getType().name();
-                if (name.equals("single")){
+                if (name.equals("single")) {
                     newconverList.add(conversationList.get(i));
                 }
             }
-            if (newconverList!=null && newconverList.size()>0){
+            if (newconverList != null && newconverList.size() > 0) {
                 Log.d("xxx", newconverList.size() + "");
 
                 //创建recycleView管理器
@@ -241,31 +227,23 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
                 msgRecordingAdapter.setData(newconverList);
                 //设置适配器
                 rcMsgRecording.setAdapter(msgRecordingAdapter);
-            }else{
+            } else {
                 rlNodata.setVisibility(View.VISIBLE);
                 sv.setVisibility(View.GONE);
             }
-        }else{
+        } else {
             rlNodata.setVisibility(View.VISIBLE);
             sv.setVisibility(View.GONE);
         }
 
     }
-    //实例TimerTask,在run函数中向hangdler发送消息
-    TimerTask timerTask = new TimerTask() {
-        @Override
-        public void run() {
-            Message message = new Message();
-            message.what = 1;
-            handler.sendMessage(message);
-        }
-    };
-
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("xxx","重新进入了");
+        Log.d("xxx", "重新进入了");
+        getImList();
+
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
@@ -277,6 +255,13 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getImList();
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -358,7 +343,7 @@ public class FragmentMsg extends BaseFragment implements View.OnClickListener {
             case R.id.iv_my_buddy:
                 //跳转到我的好友页
                 intent = new Intent(getContext(), FriendsActivity.class);
-                intent.putExtra("flag",1);
+                intent.putExtra("flag", 1);
                 startActivity(intent);
                 break;
             //系统通知
